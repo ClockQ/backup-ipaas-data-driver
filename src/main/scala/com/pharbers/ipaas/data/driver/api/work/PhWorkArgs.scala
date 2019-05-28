@@ -1,5 +1,6 @@
 package com.pharbers.ipaas.data.driver.api.work
 
+import com.pharbers.pactions.actionbase.{MapArgs, pActionArgs}
 import org.apache.spark.rdd.RDD
 import org.apache.spark.sql.DataFrame
 
@@ -16,25 +17,25 @@ trait PhWorkArgs extends java.io.Serializable {
 //    override def get: RDD[T] = rdd
 //}
 //
-//case class DFArgs(df: DataFrame) extends pActionArgs {
-//    type t = DataFrame
-//    override def get: DataFrame = df
-//}
+case class DFArgs(df: DataFrame) extends pActionArgs with PhWorkArgs{
+    type t = DataFrame
+    override def get: DataFrame = df
+}
+
+case class StringArgs(str: String) extends pActionArgs {
+    type t = String
+    override def get: String = str
+}
 //
-//case class StringArgs(str: String) extends pActionArgs {
-//    type t = String
-//    override def get: String = str
-//}
+case class ListArgs(lst: List[pActionArgs]) extends pActionArgs {
+    type t = List[pActionArgs]
+    override def get: List[pActionArgs] = lst
+}
 //
-//case class ListArgs(lst: List[pActionArgs]) extends pActionArgs {
-//    type t = List[pActionArgs]
-//    override def get: List[pActionArgs] = lst
-//}
-//
-//case class MapArgs(map: Map[String, pActionArgs]) extends pActionArgs {
-//    type t = Map[String, pActionArgs]
-//    override def get: Map[String, pActionArgs] = map
-//}
+case class MapArgs(map: Map[String, pActionArgs]) extends pActionArgs with PhWorkArgs {
+    type t = Map[String, pActionArgs]
+    override def get: Map[String, pActionArgs] = map
+}
 //
 //case class BooleanArgs(b: Boolean) extends pActionArgs {
 //    type t = Boolean
