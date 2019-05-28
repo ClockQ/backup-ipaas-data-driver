@@ -6,7 +6,6 @@ import org.apache.spark.sql.DataFrame
 import org.scalatest.FunSuite
 import org.apache.spark.sql.functions._
 
-
 class TestRankOperator extends FunSuite {
 	test("rank operator output must have rank column") {
 		sparkDriver.sc.addJar("/Users/cui/github/ipaas-data-driver/target/ipaas-data-driver-0.1.jar")
