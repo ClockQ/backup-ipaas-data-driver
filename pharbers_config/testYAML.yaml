@@ -1,0 +1,50 @@
+#pools:
+#- name: PhMongodbPool
+#  args: &PhMongodbPool
+#    host: 123.56.179.133
+#    port: 5555
+#    database: pharbers-max-repository
+#    username: abc
+#    password: abc
+#- name: PhRedisPool
+#  args: &PhRedisPool
+#    host: 123.56.179.133
+#    port: 6378
+#    database: pharbers-max
+#    password: abc
+
+#plugins:
+#- name: CalcYTD
+#  args: &CalcYTDPlugin
+#    jar: ~/workspare/**.jar
+#    class: com.pharbers.ipass.data.driver.operators.CalcYTD
+#
+#operators:
+#- name: CalcYTD
+#  args: &CalcYTD
+#    class: com.pharbers.ipass.data.driver.operators.CalcYTD
+#- name: CalcMTD
+#  args: &CalcMTD
+#    class: com.pharbers.ipass.data.driver.operators.CalcMTD
+
+actions:
+- name: abcActions
+  args:
+    a: a
+    b: b
+  opers:
+  - name: CalcYTD
+    oper: CalcYTD
+    args:
+      date: 2018
+      YTDplugin: CalcYTDPlugin
+  - name: CalcMTD
+    oper: com.pharbers.ipass.data.driver.operators.CalcMTD
+    args:
+      date: 2018
+      MTDplugin: *CalcYTDPlugin
+
+jobs:
+- name: clean
+  actions:
+  - abcActions
