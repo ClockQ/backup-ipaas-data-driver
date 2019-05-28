@@ -1,5 +1,6 @@
 package com.pharbers.ipaas.data.driver.api.work
 
+import com.pharbers.pactions.actionbase.{MapArgs, pActionArgs}
 import org.apache.spark.rdd.RDD
 import org.apache.spark.sql.DataFrame
 
