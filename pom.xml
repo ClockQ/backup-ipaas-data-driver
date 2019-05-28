@@ -29,11 +29,6 @@
                 <!-- test lib -->
                 <dependency>
                     <groupId>com.pharbers</groupId>
-                    <artifactId>spark_driver</artifactId>
-                    <version>1.0</version>
-                </dependency>
-                <dependency>
-                    <groupId>com.pharbers</groupId>
                     <artifactId>mongo_drive</artifactId>
                     <version>1.0</version>
                 </dependency>
