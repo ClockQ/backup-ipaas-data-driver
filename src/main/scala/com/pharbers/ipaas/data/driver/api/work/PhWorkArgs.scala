@@ -3,60 +3,51 @@ package com.pharbers.ipaas.data.driver.api.work
 import org.apache.spark.rdd.RDD
 import org.apache.spark.sql.DataFrame
 
-trait PhWorkArgs extends java.io.Serializable {
-    type t
-    def get : t
-    def getBy[T <: pActionArgs]: T#t = this.asInstanceOf[T].get
-    def getAs[T <: pActionArgs](index: String): T#t =
-        this.asInstanceOf[MapArgs].get(index).asInstanceOf[T].get
+sealed trait PhWorkArgs[+A] extends Product with Serializable {
+    val args: A
+
+    def get: A
+
+    def isEmpty: Boolean = false
+
+    final def isDefined: Boolean = !isEmpty
+
+    @inline final def getOrElse[B >: A](default: => B): B =
+        if (isEmpty) default else this.get
 }
-//
-//case class RDDArgs[T](rdd: RDD[T]) extends pActionArgs {
-//    type t = RDD[T]
-//    override def get: RDD[T] = rdd
-//}
-//
-//case class DFArgs(df: DataFrame) extends pActionArgs {
-//    type t = DataFrame
-//    override def get: DataFrame = df
-//}
-//
-//case class StringArgs(str: String) extends pActionArgs {
-//    type t = String
-//    override def get: String = str
-//}
-//
-//case class ListArgs(lst: List[pActionArgs]) extends pActionArgs {
-//    type t = List[pActionArgs]
-//    override def get: List[pActionArgs] = lst
-//}
-//
-//case class MapArgs(map: Map[String, pActionArgs]) extends pActionArgs {
-//    type t = Map[String, pActionArgs]
-//    override def get: Map[String, pActionArgs] = map
-//}
-//
-//case class BooleanArgs(b: Boolean) extends pActionArgs {
-//    type t = Boolean
-//    override def get: Boolean = b
-//}
-//
-//case class NoneArgFuncArgs[R](func: Unit => R) extends pActionArgs {
-//    type t = Unit => R
-//    override def get: Unit => R = func
-//}
-//
-//case class SingleArgFuncArgs[T, R](func : T => R) extends pActionArgs {
-//    type t = T => R
-//    override def get: T => R = func
-//}
-//
-//case class BinaryArgsFuncArgs[T1, T2, R](func: (T1, T2) => R) extends pActionArgs {
-//    type t = (T1, T2) => R
-//    override def get: (T1, T2) => R = func
-//}
-//
-//object NULLArgs extends pActionArgs {
-//    type t = Unit
-//    override def get: Unit = Unit
-//}
+
+final case class PhBooleanArgs(args: Boolean) extends PhWorkArgs[Boolean] {
+    override def get: Boolean = args
+}
+
+final case class PhStringArgs(args: String) extends PhWorkArgs[String] {
+    override def get: String = args
+}
+
+final case class PhListArgs[A](args: List[A]) extends PhWorkArgs[List[A]] {
+    override def get: List[A] = args
+}
+
+final case class PhMapArgs[A](args: Map[String, A]) extends PhWorkArgs[Map[String, A]] {
+    override def get: Map[String, A] = args
+}
+
+final case class PhRDDArgs[A](args: RDD[A]) extends PhWorkArgs[RDD[A]] {
+    override def get: RDD[A] = args
+}
+
+final case class PhDFArgs(args: DataFrame) extends PhWorkArgs[DataFrame] {
+    override def get: DataFrame = args
+}
+
+final case class PhFuncArgs(args: PhWorkArgs[_] => PhWorkArgs[_]) extends PhWorkArgs[PhWorkArgs[_] => PhWorkArgs[_]] {
+    override def get: PhWorkArgs[_] => PhWorkArgs[_] = args
+}
+
+case object PhNoneArgs extends PhWorkArgs[Unit] {
+    override val args: Unit = Unit
+
+    override def isEmpty = true
+
+    def get: Unit = Unit
+}
