@@ -5,6 +5,8 @@
         <yarn-resource-address value="spark.master:8032"/>
         <yarn-dist-files value="hdfs://spark.master:9000/config"/>
         <executor-memory value="2g"/>
+        <parallel-number value="2" />
+        <wait-seconds value="30" />
     </spark-config>
     <spark-run-config>
         <jars-path value="hdfs:///jars/maxJars/" />
