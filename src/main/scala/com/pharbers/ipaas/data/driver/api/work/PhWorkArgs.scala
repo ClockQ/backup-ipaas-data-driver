@@ -1,9 +1,13 @@
 package com.pharbers.ipaas.data.driver.api.work
 
-import com.pharbers.pactions.actionbase.{MapArgs, pActionArgs}
 import org.apache.spark.rdd.RDD
 import org.apache.spark.sql.DataFrame
 
+/**
+  * @description:
+  * @author: clock
+  * @date: 2019-05-28 15:52
+  */
 sealed trait PhWorkArgs[+A] extends Product with Serializable {
     val args: A
 
