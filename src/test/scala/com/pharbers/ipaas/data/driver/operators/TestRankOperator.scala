@@ -11,9 +11,9 @@ class TestRankOperator extends FunSuite{
     test("rank operator output must have rank column"){
         import sparkDriver.ss.implicits._
 
-        val orderColumn = StringArgs("VALUE")
-        val partitionColumns = ListArgs(List(StringArgs("PROD"), StringArgs("DATE")))
-        val rankColumnName = StringArgs("VALUE_RANK")
+        val orderColumn = PhStringArgs("VALUE")
+        val partitionColumns = PhListArgs(List(PhStringArgs("PROD"), PhStringArgs("DATE")))
+        val rankColumnName = PhStringArgs("VALUE_RANK")
         val df: DataFrame = List(
             (
                 List("name1", "name2", "name3", "name4"),
@@ -32,14 +32,14 @@ class TestRankOperator extends FunSuite{
                     List(1,2,1,2)
             )
         ).toDF("CHECK_NAME", "CHECK_PROD", "CHECK_DATE", "CHECK_VALUE", "CHECK_VALUE_RANK")
-        val result: DataFrame = CalcRank().perform(MapArgs(
+        val result: DataFrame = CalcRank().perform(PhMapArgs(
             Map(
                 "orderColumn" -> orderColumn,
                 "partitionColumns" -> partitionColumns,
                 "rankColumnName" -> rankColumnName,
-                "data" -> DFArgs(df)
+                "data" -> PhDFArgs(df)
             )
-        )).getBy[DFArgs]
+        )).asInstanceOf[PhDFArgs].get
         assert(result.columns.contains(rankColumnName.get))
         assert(result.join(checkDf, col("CHECK_NAME") === col("NAME")).filter(col("CHECK_VALUE_RANK") =!= col("VALUE_RANK")).count() == 0)
     }
