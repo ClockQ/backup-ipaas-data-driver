@@ -14,8 +14,6 @@ object testPhWorkArgs extends App {
     println(list.get)
     val map = PhMapArgs(Map("key" -> boolean, "key2" -> string))
     println(map.get)
-    val a = map.getAs[PhBooleanArgs]("key")
-    println(a)
     val none = PhNoneArgs
     println(none.get)
     val func = PhFuncArgs(_ => string)
