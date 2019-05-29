@@ -1,18 +1,6 @@
 package com.pharbers.ipaas.data.driver.operators
 
-<<<<<<< HEAD
-import com.pharbers.ipaas.data.driver.api.work.{PhDFArgs, PhMapArgs, PhWorkArgs}
 
-case class CalcRank extends PhOperatorsTrait{
-    override val name: String = _
-    override val defaultArgs: PhWorkArgs[_] = _
-
-    override def perform(args: PhWorkArgs[_]): PhWorkArgs[_] = {
-        ???
-    }
-}
-
-=======
 import com.pharbers.data.util.sparkDriver
 import com.pharbers.ipaas.data.driver.api.work._
 import org.apache.spark.sql.Row
@@ -34,4 +22,3 @@ case class CalcRank() extends PhOperatorTrait{
 	    PhDFArgs(resultDF)
     }
 }
->>>>>>> pharbes-cui-0528
