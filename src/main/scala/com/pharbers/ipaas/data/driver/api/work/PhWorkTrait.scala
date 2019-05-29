@@ -5,10 +5,10 @@ package com.pharbers.ipaas.data.driver.api.work
   * @author: clock
   * @date: 2019-05-28 15:52
   */
-sealed trait PhWorkTrait extends java.io.Serializable {
+sealed trait PhWorkTrait extends Serializable {
     val name: String
     val defaultArgs: PhWorkArgs[_]
-    def perform(pr: PhWorkArgs[Any]): PhWorkArgs[_]
+    def perform(pr: PhWorkArgs[_]): PhWorkArgs[_]
 }
 
 trait PhPluginTrait extends PhWorkTrait

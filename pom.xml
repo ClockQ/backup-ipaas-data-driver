@@ -34,21 +34,6 @@
                 </dependency>
                 <dependency>
                     <groupId>com.pharbers</groupId>
-                    <artifactId>mongo_drive</artifactId>
-                    <version>1.0</version>
-                </dependency>
-                <dependency>
-                    <groupId>com.pharbers</groupId>
-                    <artifactId>paction</artifactId>
-                    <version>1.0</version>
-                </dependency>
-                <dependency>
-                    <groupId>com.pharbers</groupId>
-                    <artifactId>logs</artifactId>
-                    <version>1.0</version>
-                </dependency>
-                <dependency>
-                    <groupId>com.pharbers</groupId>
                     <artifactId>pharbers-data-repository</artifactId>
                     <version>1.0-SNAPSHOT</version>
                 </dependency>
