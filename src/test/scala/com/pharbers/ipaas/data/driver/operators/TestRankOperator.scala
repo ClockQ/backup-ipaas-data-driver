@@ -8,7 +8,7 @@ import org.apache.spark.sql.functions._
 
 class TestRankOperator extends FunSuite {
 	test("rank operator output must have rank column") {
-		sparkDriver.sc.addJar("/Users/cui/github/ipaas-data-driver/target/ipaas-data-driver-0.1.jar")
+		sparkDriver.sc.addJar("target/ipaas-data-driver-0.1.jar")
 		val sortList = PhListArgs(List(PhStringArgs("VALUE")))
 		//        val partitionColumns = List("PROD", "DATE")
 		val orderStr = PhStringArgs("asc")

@@ -11,7 +11,9 @@ sealed trait PhWorkTrait extends Serializable {
     def perform(pr: PhWorkArgs[_]): PhWorkArgs[_]
 }
 
-trait PhPluginTrait extends PhWorkTrait
+trait PhPluginTrait2 extends PhWorkTrait
+
+trait PhPluginTrait[+A]
 
 trait PhOperatorTrait extends PhWorkTrait
 
