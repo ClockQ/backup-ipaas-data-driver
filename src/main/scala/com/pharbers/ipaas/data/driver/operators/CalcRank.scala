@@ -1,7 +1,7 @@
 package com.pharbers.ipaas.data.driver.operators
 
 
-import com.pharbers.data.util.sparkDriver
+import com.pharbers.data.util.spark.sparkDriver
 import com.pharbers.ipaas.data.driver.api.work._
 import org.apache.spark.sql.Row
 import org.apache.spark.sql.types.{LongType, StructField, StructType}
