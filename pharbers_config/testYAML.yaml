@@ -34,17 +34,21 @@ actions:
     b: b
   opers:
   - name: CalcYTD
-    oper: CalcYTD
-    args:
-      date: 2018
-      YTDplugin: CalcYTDPlugin
-  - name: CalcMTD
     oper: com.pharbers.ipass.data.driver.operators.CalcMTD
     args:
       date: 2018
-      MTDplugin: *CalcYTDPlugin
+    plugins:
+      YTDplugin: CalcYTDPlugin
+  - name: CalcYTD
+    oper: com.pharbers.ipass.data.driver.operators.CalcMTD
+    args:
+      date: 2018
+    plugins:
+      YTDplugin: CalcYTDPlugin
+
 
 jobs:
 - name: clean
   actions:
   - abcActions
+

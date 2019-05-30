@@ -8,7 +8,7 @@ import org.apache.spark.sql.{Column, DataFrame}
   * @author: clock
   * @date: 2019-05-28 15:52
   */
-sealed trait PhWorkArgs[+A] extends Product with Serializable {
+trait PhWorkArgs[+A] extends Product with Serializable {
     val args: A
 
     def get: A = args
@@ -16,17 +16,16 @@ sealed trait PhWorkArgs[+A] extends Product with Serializable {
     def isEmpty: Boolean = false
 
     final def isDefined: Boolean = !isEmpty
-
-    @inline final def getOrElse[B >: A](default: => B): B = if (isEmpty) default else this.get
 }
 
 final case class PhBooleanArgs(args: Boolean) extends PhWorkArgs[Boolean]
 
 final case class PhStringArgs(args: String) extends PhWorkArgs[String]
 
-final case class PhListArgs[A <: PhWorkArgs[_]](args: List[A]) extends PhWorkArgs[List[A]]
+//final case class PhListArgs[A <: PhWorkArgs[_]](args: List[A]) extends PhWorkArgs[List[A]]
+final case class PhListArgs[A](args: List[A]) extends PhWorkArgs[List[A]]
 
-final case class PhMapArgs[A <: PhWorkArgs[_]](args: Map[String, A]) extends PhWorkArgs[Map[String, A]] {
+final case class PhMapArgs[A](args: Map[String, A]) extends PhWorkArgs[Map[String, A]] {
     def getAs[B <: PhWorkArgs[_]](key: String): Option[B] = args.get(key) match {
         case Some(one) => Some(one.asInstanceOf[B])
         case None => None
