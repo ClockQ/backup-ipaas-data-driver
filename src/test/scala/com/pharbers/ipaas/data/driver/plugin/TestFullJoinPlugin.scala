@@ -1,13 +1,14 @@
 package com.pharbers.ipaas.data.driver.plugin
 
-import com.pharbers.data.util.spark.sparkDriver
 import com.pharbers.ipaas.data.driver.api.work._
+import com.pharbers.ipaas.data.driver.libs.spark.PhSparkDriver
 import com.pharbers.ipaas.data.driver.plugins._
 import org.apache.spark.sql.DataFrame
 import org.apache.spark.sql.functions._
 import org.scalatest.FunSuite
 
 class TestFullJoinPlugin extends FunSuite{
+    implicit val sparkDriver: PhSparkDriver = PhSparkDriver("testSparkDriver")
     import sparkDriver.ss.implicits._
     val leftDf: DataFrame = List(
         ("name1"),
@@ -18,7 +19,7 @@ class TestFullJoinPlugin extends FunSuite{
         ("name5"),
         ("name6")
     ).toDF("RIGHT")
-    test("base concat str plugin"){
+    test("join by Cartesian product"){
 
         val checkDf: DataFrame = List(
             ("name1", "name5"),

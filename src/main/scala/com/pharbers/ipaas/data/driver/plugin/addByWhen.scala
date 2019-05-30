@@ -1,8 +1,13 @@
 package com.pharbers.ipaas.data.driver.plugin
 
-import com.pharbers.ipaas.data.driver.api.work.{PhColArgs, PhNoneArgs, PhOperatorTrait, PhWorkArgs}
+import com.pharbers.ipaas.data.driver.api.work._
 import org.apache.spark.sql.functions._
 
+/**
+  *
+  * @param args PhMapArgs
+  * @tparam T
+  */
 class addByWhen[T <: Map[String, PhWorkArgs[_]]](args: PhWorkArgs[T]) extends PhOperatorTrait{
     override val name: String = "add column by when"
     override val defaultArgs: PhWorkArgs[_] = PhNoneArgs

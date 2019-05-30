@@ -1,21 +1,22 @@
 package com.pharbers.ipaas.data.driver.plugin
 
-import com.pharbers.data.util.spark.sparkDriver
 import com.pharbers.ipaas.data.driver.api.work._
+import com.pharbers.ipaas.data.driver.libs.spark.PhSparkDriver
 import com.pharbers.ipaas.data.driver.plugins._
 import org.apache.spark.sql.{DataFrame, Row}
 import org.apache.spark.sql.functions.col
 import org.scalatest.FunSuite
 
 class TestSortPlugin extends FunSuite{
+    implicit val sparkDriver: PhSparkDriver = PhSparkDriver("testSparkDriver")
     import sparkDriver.ss.implicits._
-    sparkDriver.sc.addJar("D:\\code\\pharbers\\ipaas-data-driver\\target\\ipaas-data-driver-0.1.jar")
+
     val df: DataFrame = List(
-        ("name2", 2, 3),
-        ("name3", 2, 4),
-        ("name1", 1, 2),
-        ("name4", 3, 5)
-    ).toDF("NAME", "VALUE", "VALUE2")
+        ("name1", 2, 5, 1),
+        ("name2", 2, 4, 2),
+        ("name3", 2, 3, 3),
+        ("name4", 1, 2, 4)
+    ).toDF("NAME", "VALUE", "VALUE2", "RESULT")
     test("sort plugin"){
 
         val checkDf: DataFrame = List(
@@ -30,8 +31,8 @@ class TestSortPlugin extends FunSuite{
             "orderStr" -> PhStringArgs("asc"),
             "df" -> PhDFArgs(df)
         ))).toDFArgs.get
-//        result.show(false)
+        result.show(false)
 
-        assert(result.join(checkDf, col("CHECK_NAME") === col("NAME")).filter(col("RESULT") =!= col("CHECK_RESULT")).count() == 0)
+        assert(result.join(checkDf, col("CHECK_NAME") === col("NAME")).filter((col("RESULT") - col("CHECK_RESULT")) === -3).count() == 0)
     }
 }
