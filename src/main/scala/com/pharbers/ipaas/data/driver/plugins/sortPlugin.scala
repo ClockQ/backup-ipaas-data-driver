@@ -5,7 +5,7 @@ import org.apache.spark.sql.Column
 import org.apache.spark.sql.functions.col
 
 case class sortPlugin() extends PhPluginTrait {
-	override val name: String = "rankPlugin"
+	override val name: String = "sortPlugin"
 	override val defaultArgs: PhWorkArgs[_] = PhNoneArgs
 
 	override def perform(pr: PhWorkArgs[_]): PhWorkArgs[_] = {

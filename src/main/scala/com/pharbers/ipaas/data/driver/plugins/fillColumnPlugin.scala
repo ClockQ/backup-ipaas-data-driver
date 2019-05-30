@@ -10,11 +10,11 @@ case class fillColumnPlugin() extends PhPluginTrait {
 	override def perform(pr: PhWorkArgs[_]): PhWorkArgs[_] = {
 		val argsMap = pr.asInstanceOf[PhMapArgs[_]]
 		val df = argsMap.getAs[PhDFArgs]("df").get.get
-		val columnName = argsMap.getAs[PhStringArgs]("columnName").get.get
-		val columnName1 = argsMap.getAs[PhStringArgs]("columnName1").get.get
+		val columnNameNew = argsMap.getAs[PhStringArgs]("columnNameNew").get.get
+		val columnNameOld = argsMap.getAs[PhStringArgs]("columnNameOld").get.get
 		val replaceColumnName = argsMap.getAs[PhStringArgs]("replaceColumnName").get.get
 		val defaultValue = argsMap.getAs[PhStringArgs]("defaultValue").get.get
-		val resultDF = df.withColumn(columnName, when(col(columnName1).isNull, defaultValue).otherwise(col(replaceColumnName)))
+		val resultDF = df.withColumn(columnNameNew, when(col(columnNameOld).isNull, defaultValue).otherwise(col(replaceColumnName)))
 		PhDFArgs(resultDF)
 	}
 }
