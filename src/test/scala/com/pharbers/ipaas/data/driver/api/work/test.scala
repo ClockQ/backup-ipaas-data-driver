@@ -1,6 +1,6 @@
 package com.pharbers.ipaas.data.driver.api.work
 
-import com.pharbers.data.util.spark.sparkDriver
+import env.sparkObj
 import com.pharbers.ipaas.data.driver.funcs.{PhOperatorArgs, PhPluginArgs}
 import org.apache.spark.sql.expressions.UserDefinedFunction
 import org.apache.spark.sql.types.DoubleType
@@ -13,9 +13,9 @@ import org.bson.types.ObjectId
   * @date: 2019-05-29 14:36
   */
 object test extends App {
-    sparkDriver.sc.addJar("target/ipaas-data-driver-0.1.jar")
+    sparkObj.sc.addJar("target/ipaas-data-driver-0.1.jar")
 
-    import sparkDriver.ss.implicits._
+    import sparkObj.ss.implicits._
     import org.apache.spark.sql.functions._
 
     val df: DataFrame = List(

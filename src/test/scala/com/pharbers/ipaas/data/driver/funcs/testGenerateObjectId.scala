@@ -1,6 +1,6 @@
 package com.pharbers.ipaas.data.driver.funcs
 
-import com.pharbers.data.util.spark._
+import env.sparkObj
 import com.pharbers.ipaas.data.driver.api.work
 import com.pharbers.ipaas.data.driver.api.work._
 import com.pharbers.ipaas.data.driver.operators.addColumn
@@ -12,8 +12,8 @@ import org.apache.spark.sql.DataFrame
   * @date: 2019-05-28 20:12
   */
 object testGenerateObjectId extends App {
-    sparkDriver.sc.addJar("target/ipaas-data-driver-0.1.jar")
-    import sparkDriver.ss.implicits._
+    sparkObj.sc.addJar("target/ipaas-data-driver-0.1.jar")
+    import sparkObj.ss.implicits._
 
     val df: DataFrame = List(
         ("name1", "prod1", "201801", 1),
