@@ -2,7 +2,7 @@ package com.pharbers.ipaas.data.driver.plugins
 
 import com.pharbers.ipaas.data.driver.api.work.{PhDFArgs, PhMapArgs, PhNoneArgs, PhPluginTrait, PhWorkArgs}
 
-case class fullJoinPlugin() extends PhPluginTrait {
+case class FullJoinPlugin() extends PhPluginTrait {
 	override val name: String = "fullJoinPlugin"
 	override val defaultArgs: PhWorkArgs[_] = PhNoneArgs
 

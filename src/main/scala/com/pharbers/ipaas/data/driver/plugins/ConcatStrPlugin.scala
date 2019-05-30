@@ -3,7 +3,7 @@ package com.pharbers.ipaas.data.driver.plugins
 import com.pharbers.ipaas.data.driver.api.work.{PhDFArgs, PhListArgs, PhMapArgs, PhNoneArgs, PhPluginTrait, PhStringArgs, PhWorkArgs}
 import org.apache.spark.sql.functions._
 
-case class concatStrPlugin() extends PhPluginTrait {
+case class ConcatStrPlugin() extends PhPluginTrait {
 	override val name: String = "concatStrPlugin"
 	override val defaultArgs: PhWorkArgs[_] = PhNoneArgs
 

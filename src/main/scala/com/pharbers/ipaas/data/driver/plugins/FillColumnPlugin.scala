@@ -3,7 +3,7 @@ package com.pharbers.ipaas.data.driver.plugins
 import com.pharbers.ipaas.data.driver.api.work.{PhDFArgs, PhMapArgs, PhNoneArgs, PhPluginTrait, PhStringArgs, PhWorkArgs}
 import org.apache.spark.sql.functions._
 
-case class fillColumnPlugin() extends PhPluginTrait {
+case class FillColumnPlugin() extends PhPluginTrait {
 	override val name: String = "fillColumnPlugin"
 	override val defaultArgs: PhWorkArgs[_] = PhNoneArgs
 

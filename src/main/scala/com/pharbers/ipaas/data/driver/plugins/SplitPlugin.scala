@@ -4,7 +4,7 @@ import com.pharbers.ipaas.data.driver.api.work.{PhDFArgs, PhMapArgs, PhNoneArgs,
 import org.apache.spark.sql.expressions.UserDefinedFunction
 import org.apache.spark.sql.functions.{col, udf}
 
-case class splitPlugin() extends PhPluginTrait{
+case class SplitPlugin() extends PhPluginTrait{
 	override val name: String = "splitPlugin"
 	override val defaultArgs: PhWorkArgs[_] = PhNoneArgs
 
