@@ -9,7 +9,7 @@ import org.apache.spark.sql.functions._
   * @param args
   * @tparam T
   */
-class CalcShare [T <: Map[String, PhWorkArgs[_]]](args: PhWorkArgs[T]) extends PhOperatorTrait {
+case class CalcShare [T <: Map[String, PhWorkArgs[_]]](args: PhWorkArgs[T]) extends PhOperatorTrait {
     override val name: String = "calc share"
     override val defaultArgs: PhWorkArgs[_] = PhNoneArgs
 
