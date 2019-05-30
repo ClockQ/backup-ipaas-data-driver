@@ -18,7 +18,6 @@ case class CalcRank() extends PhOperatorTrait{
 		    pluginResultDF.rdd.zipWithIndex.map { case (row, columnindex) => Row.fromSeq(row.toSeq :+ (columnindex + 1)) },
 		    StructType(pluginResultDF.schema.fields :+ StructField(rankColumnName, LongType, false))
 		)
-	    resultDF.show(false)
 	    PhDFArgs(resultDF)
     }
 }

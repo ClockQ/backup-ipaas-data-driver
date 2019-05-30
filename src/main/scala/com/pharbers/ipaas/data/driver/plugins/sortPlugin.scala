@@ -1,12 +1,12 @@
-package com.pharbers.ipaas.data.driver.operators
+package com.pharbers.ipaas.data.driver.plugins
 
-import com.pharbers.ipaas.data.driver.api.work._
-import org.apache.spark.sql.{Column, DataFrame}
+import com.pharbers.ipaas.data.driver.api.work.{PhDFArgs, PhListArgs, PhMapArgs, PhNoneArgs, PhPluginTrait, PhStringArgs, PhWorkArgs}
+import org.apache.spark.sql.Column
 import org.apache.spark.sql.functions.col
 
 case class sortPlugin() extends PhPluginTrait {
-	override val name: String = "rankPlugin"
-	override val defaultArgs: PhWorkArgs[_] = PhMapArgs(Map.empty)
+	override val name: String = "sortPlugin"
+	override val defaultArgs: PhWorkArgs[_] = PhNoneArgs
 
 	override def perform(pr: PhWorkArgs[_]): PhWorkArgs[_] = {
 		val argsMap = pr.asInstanceOf[PhMapArgs[_]]
@@ -18,7 +18,6 @@ case class sortPlugin() extends PhPluginTrait {
 		val funcMap = Map("asc" -> ascFuc, "desc" -> descFunc)
 		val sortColList = funcMap(orderStr)(sortList)
 		val resultDF = df.sort(sortColList: _*)
-		df.sort()
 		PhDFArgs(resultDF)
 	}
 }

@@ -2,6 +2,7 @@ package com.pharbers.ipaas.data.driver.operators
 
 
 import com.pharbers.ipaas.data.driver.api.work._
+import com.pharbers.ipaas.data.driver.plugins.sortPlugin
 import org.apache.spark.sql.DataFrame
 import org.scalatest.FunSuite
 import org.apache.spark.sql.functions._
@@ -39,6 +40,7 @@ class TestRankOperator extends FunSuite {
 				"orderStr" -> orderStr
 			)
 		)).asInstanceOf[PhDFArgs].get
+		result.show(false)
 		assert(result.columns.contains(rankColumnName.get))
 		assert(result.join(checkDf, col("CHECK_NAME") === col("NAME")).filter(col("CHECK_VALUE_RANK") =!= col("VALUE_RANK")).count() == 0)
 	}
