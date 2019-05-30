@@ -2,7 +2,7 @@ package com.pharbers.ipaas.data.driver.operators
 
 
 import com.pharbers.ipaas.data.driver.api.work._
-import com.pharbers.ipaas.data.driver.plugins.sortPlugin
+import com.pharbers.ipaas.data.driver.plugins.SortPlugin
 import org.apache.spark.sql.DataFrame
 import org.scalatest.FunSuite
 import org.apache.spark.sql.functions._
@@ -15,7 +15,7 @@ class TestRankOperator extends FunSuite {
 		//        val partitionColumns = List("PROD", "DATE")
 		val orderStr = PhStringArgs("asc")
 		val rankColumnName = PhStringArgs("VALUE_RANK")
-		val plugin = PhFuncArgs(sortPlugin().perform)
+		val plugin = PhFuncArgs(SortPlugin().perform)
 		import sparkDriver.ss.implicits._
 		val df: DataFrame = List(
 			("name1", "prod1", "201801", 1),

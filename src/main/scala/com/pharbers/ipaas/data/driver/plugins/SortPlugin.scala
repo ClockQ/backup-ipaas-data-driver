@@ -4,7 +4,7 @@ import com.pharbers.ipaas.data.driver.api.work.{PhDFArgs, PhListArgs, PhMapArgs,
 import org.apache.spark.sql.Column
 import org.apache.spark.sql.functions.col
 
-case class sortPlugin() extends PhPluginTrait {
+case class SortPlugin() extends PhPluginTrait {
 	override val name: String = "sortPlugin"
 	override val defaultArgs: PhWorkArgs[_] = PhNoneArgs
 
