@@ -1,15 +1,16 @@
 package com.pharbers.ipaas.data.driver.operators
 
-import com.pharbers.data.util.spark._
+
 import com.pharbers.ipaas.data.driver.api.work._
 import com.pharbers.ipaas.data.driver.plugins.sortPlugin
 import org.apache.spark.sql.DataFrame
 import org.scalatest.FunSuite
 import org.apache.spark.sql.functions._
+import com.pharbers.data.util.spark.sparkDriver
 
 class TestRankOperator extends FunSuite {
 	test("rank operator output must have rank column") {
-		sparkDriver.sc.addJar("/Users/cui/github/ipaas-data-driver/target/ipaas-data-driver-0.1.jar")
+		sparkDriver.sc.addJar("target/ipaas-data-driver-0.1.jar")
 		val sortList = PhListArgs(List(PhStringArgs("VALUE")))
 		//        val partitionColumns = List("PROD", "DATE")
 		val orderStr = PhStringArgs("asc")
