@@ -13,6 +13,8 @@ sealed trait PhWorkTrait extends Serializable {
 
 trait PhPluginTrait extends PhWorkTrait
 
+trait PhPluginTrait2[+A]
+
 trait PhOperatorTrait extends PhWorkTrait
 
 trait PhActionTrait extends PhWorkTrait {
