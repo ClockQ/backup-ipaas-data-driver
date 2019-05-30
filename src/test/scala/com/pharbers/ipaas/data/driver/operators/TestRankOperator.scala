@@ -1,10 +1,12 @@
 package com.pharbers.ipaas.data.driver.operators
 
-import com.pharbers.data.util.spark._
+
 import com.pharbers.ipaas.data.driver.api.work._
+import com.pharbers.ipaas.data.driver.plugins.SortPlugin
 import org.apache.spark.sql.DataFrame
 import org.scalatest.FunSuite
 import org.apache.spark.sql.functions._
+import com.pharbers.data.util.spark.sparkDriver
 
 class TestRankOperator extends FunSuite {
 	test("rank operator output must have rank column") {
@@ -13,7 +15,7 @@ class TestRankOperator extends FunSuite {
 		//        val partitionColumns = List("PROD", "DATE")
 		val orderStr = PhStringArgs("asc")
 		val rankColumnName = PhStringArgs("VALUE_RANK")
-		val plugin = PhFuncArgs(sortPlugin().perform)
+		val plugin = PhFuncArgs(SortPlugin().perform)
 		import sparkDriver.ss.implicits._
 		val df: DataFrame = List(
 			("name1", "prod1", "201801", 1),
@@ -38,6 +40,7 @@ class TestRankOperator extends FunSuite {
 				"orderStr" -> orderStr
 			)
 		)).asInstanceOf[PhDFArgs].get
+		result.show(false)
 		assert(result.columns.contains(rankColumnName.get))
 		assert(result.join(checkDf, col("CHECK_NAME") === col("NAME")).filter(col("CHECK_VALUE_RANK") =!= col("VALUE_RANK")).count() == 0)
 	}
