@@ -8,7 +8,7 @@ import org.apache.spark.sql.functions._
   * @param args PhMapArgs
   * @tparam T
   */
-class addByWhen[T <: Map[String, PhWorkArgs[_]]](args: PhWorkArgs[T]) extends PhOperatorTrait{
+case class addByWhen[T <: Map[String, PhWorkArgs[_]]](args: PhWorkArgs[T]) extends PhOperatorTrait{
     override val name: String = "add column by when"
     override val defaultArgs: PhWorkArgs[_] = PhNoneArgs
 
