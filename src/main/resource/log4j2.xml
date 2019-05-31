@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Configuration status="All" name="MyApp" packages="">
+    <Appenders>
+        <Console name="Console" target="SYSTEM_OUT">
+            <PatternLayout>
+                <Pattern>%d %p %c{1.} [%t] %m%n</Pattern>
+            </PatternLayout>
+        </Console>
+        <File name="MyFile" fileName="logs/app.log">
+            <PatternLayout>
+                <Pattern>%d %p %c{1.} [%t] %m%n</Pattern>
+            </PatternLayout>
+        </File>
+    </Appenders>
+    <Loggers>
+        <root level="All">
+            <appender-ref ref="MyFile"/>
+            <appender-ref ref="Console"/>
+        </root>
+        <logger name="org.apache.spark" level="info">
+            <appender-ref ref="MyFile" level="All"/>
+        </logger>
+    </Loggers>
+</Configuration>
