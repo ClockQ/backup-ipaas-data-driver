@@ -4,12 +4,10 @@ import com.pharbers.ipaas.data.driver.api.work.{PhPluginTrait, PhStringArgs, PhW
 
 import scala.reflect.runtime.universe
 
-/** 这个类是干啥的
+/** 构造函数无参的plugin工厂
   *
   * @author dcs
-  * @param args 参数说明
-  * @tparam T 类型参数说明
-  * @note 一些值得注意的地方
+  * @note 通过反射获取
   */
 case class PhPluginFactory() extends PhFactoryTrait {
     def inst(args: PhWorkArgs[_]): PhPluginTrait = {

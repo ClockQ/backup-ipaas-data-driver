@@ -4,12 +4,9 @@ import com.pharbers.ipaas.data.driver.api.work.PhStringArgs
 
 import scala.beans.BeanProperty
 
-/** 这个类是干啥的
+/** job配置实体，读取yaml或json生成
   *
   * @author dcs
-  * @param args 参数说明
-  * @tparam T 类型参数说明
-  * @note 一些值得注意的地方
   */
 class Job(){
 //    @BeanProperty

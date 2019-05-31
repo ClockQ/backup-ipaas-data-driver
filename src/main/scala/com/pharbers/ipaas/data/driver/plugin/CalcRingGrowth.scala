@@ -6,15 +6,22 @@ import org.apache.spark.sql.expressions.Window
 import org.apache.spark.sql.functions.{col, first, to_date}
 import org.apache.spark.sql.types.IntegerType
 
-/**
-  *
-  * @param args
-  * @tparam T
+/** 计算环比插件
+  * @author dcs
+  * @note
   */
 case class CalcRingGrowth [T <: Map[String, PhWorkArgs[_]]]() extends PhOperatorTrait{
     override val name: String = "ring growth"
     override val defaultArgs: PhWorkArgs[_] = PhNoneArgs
 
+    /**  环比 （当月 - 上月） / 上月
+      *   @param   pr   实际类型PhMapArgs. valueColumnName -> 需要计算的列名，dateColName -> 时间列名，partitionColumnNames -> List(用来分区的复数列名)
+      *   @return  PhColArgs
+      *   @throws  Exception 传入map中没有规定key时抛出异常
+      *   @example df.CalcRingGrowth("$name", CalcMat().CalcRankByWindow(PhMapArgs).get)
+      *   @note
+      *   @history
+      */
     override def perform(pr: PhWorkArgs[_]): PhWorkArgs[Column] = {
         val args = pr.toMapArgs[PhWorkArgs[_]]
         val valueColumnName: String = args.get.getOrElse("valueColumnName",throw new Exception("not found valueColumnName")).get.asInstanceOf[String]

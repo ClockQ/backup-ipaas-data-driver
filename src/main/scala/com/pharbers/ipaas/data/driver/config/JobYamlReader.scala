@@ -8,11 +8,9 @@ import org.yaml.snakeyaml.constructor.Constructor
 
 import scala.reflect.ClassTag
 
-/** 这个类是干啥的
+/** 读取job Yaml配置文件
   *
   * @author dcs
-  * @param args 参数说明
-  * @tparam T 类型参数说明
   * @note 一些值得注意的地方
   */
 case class JobYamlReader(){
@@ -36,12 +34,12 @@ case class JobYamlReader(){
     constructor.addTypeDescription(carDescriptionPlugin)
     val yaml = new Yaml(constructor)
 
-    /**  这个方法干啥的
-      *   @param   yamlStream   参数说明.
-      *   @return   返回值类型及说明
-      *   @throws  Exception 异常类型及说明
+    /**  读取job yaml
+      *   @param   yamlStream   yaml 流.
+      *   @return   List[Job]
+      *   @throws  Exception
       *   @example 这是一个例子
-      *   @note 一些值得注意的地方
+      *   @note yaml与类模型不符合是会报第一行不能解析
       *   @history 记录修改历史，暂时在这儿写最后一个修改的是谁
       */
     def read(yamlStream: InputStream): List[Job] = {
@@ -54,10 +52,10 @@ case class JobYamlReader(){
         result
     }
 
-    /**  这个方法干啥的
-      *   @param  source   参数说明.
-      *   @param   T  类型参数说明
-      *   @return   返回值类型及说明
+    /**  读取简单的yaml， 只能读取没有实例集合的配置
+      *   @param  source   yaml 流.
+      *   @param   T  输出实例的类型
+      *   @return   实例
       *   @throws  Exception 异常类型及说明
       *   @example 这是一个例子
       *   @note 不能使用在有转换后有集合的情况

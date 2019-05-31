@@ -5,23 +5,21 @@ import org.apache.spark.sql.expressions.Window
 import org.apache.spark.sql.functions._
 import org.apache.spark.sql.types.IntegerType
 
-/** 这个类是干啥的
-  * @author 类创建者 不会出现在文档中
-  * @param args 参数说明
-  * @tparam T  类型参数说明
-  * @note 一些值得注意的地方
+/** 计算EI插件
+  * @author dcs
+  * @note
   */
-case class CalcEI [T <: Map[String, PhWorkArgs[_]]]() extends PhOperatorTrait{
+case class CalcEI () extends PhOperatorTrait{
     override val name: String = "calc ei"
     override val defaultArgs: PhWorkArgs[_] = PhNoneArgs
 
-    /**  这个方法干啥的
-      *   @param   pr   参数说明.
-      *   @return  返回值
-      *   @throws  Exception 异常类型及说明
-      *   @example 这是一个例子
-      *   @note 一些值得注意的地方
-      *   @history 记录修改历史，暂时在这儿写最后一个修改的是谁
+    /**  EI 今年占比/去年占比
+      *   @param   pr   实际类型PhMapArgs. valueColumnName -> 需要计算的列名，dateColName -> 时间列名，partitionColumnNames -> List(用来分区的列名)
+      *   @return  PhColArgs
+      *   @throws  Exception 传入map中没有规定key时抛出异常
+      *   @example df.withColumn("$name", CalcEI().perform(PhMapArgs).get)
+      *   @note
+      *   @history
       */
     override def perform(pr: PhWorkArgs[_]): PhWorkArgs[_] = {
         val args = pr.toMapArgs[PhWorkArgs[_]]
