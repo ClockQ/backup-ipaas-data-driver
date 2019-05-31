@@ -27,28 +27,57 @@
 #  args: &CalcMTD
 #    class: com.pharbers.ipass.data.driver.operators.CalcMTD
 
+name: clean
+factory: test
 actions:
-- name: abcActions
-  args:
-    a: a
-    b: b
-  opers:
-  - name: CalcYTD
-    oper: com.pharbers.ipass.data.driver.operators.CalcMTD
-    args:
-      date: 2018
-    plugins:
-      YTDplugin: CalcYTDPlugin
-  - name: CalcYTD
-    oper: com.pharbers.ipass.data.driver.operators.CalcMTD
-    args:
-      date: 2018
-    plugins:
-      YTDplugin: CalcYTDPlugin
+    - name: abcActions
+      factory: test
+      args:
+        a: a
+        b: b
+      opers:
+        - name: CalcYTD
+          factory: test
+          oper: com.pharbers.ipass.data.driver.operators.CalcMTD
+          args:
+            date: 2018
+          plugins:
+            - name: CalcYTDPlugin
+              factory: test
+        - name: CalcYTD
+          factory: test
+          oper: com.pharbers.ipass.data.driver.operators.CalcMTD
+          args:
+            date: 2018
+          plugins:
+            - name: CalcYTDPlugin
+              factory: test
 
+---
 
-jobs:
-- name: clean
-  actions:
-  - abcActions
+name: clean2
+factory: test
+actions:
+  - name: abcActions
+    factory: test
+    args:
+      a: a
+      b: b
+    opers:
+      - name: CalcYTD
+        factory: test
+        oper: com.pharbers.ipass.data.driver.operators.CalcMTD
+        args:
+          date: 2018
+        plugins:
+          - name: CalcYTDPlugin
+            factory: test
+      - name: CalcYTD
+        factory: test
+        oper: com.pharbers.ipass.data.driver.operators.CalcMTD
+        args:
+          date: 2018
+        plugins:
+          - name: CalcYTDPlugin
+            factory: test
 
