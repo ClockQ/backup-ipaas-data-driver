@@ -12,8 +12,9 @@ case class SplitPlugin() extends PhPluginTrait{
 		val prMapArgs = pr.asInstanceOf[PhMapArgs[_]]
 		val df = prMapArgs.getAs[PhDFArgs]("df").get.get
 		val splitedColName = prMapArgs.getAs[PhStringArgs]("splitedColName").get.get
-		val formatFunc: UserDefinedFunction = udf { lst: List[String] => lst.dropRight(1).mkString(" ")}
+		val formatFunc: UserDefinedFunction = udf { lst: Seq[String] => lst.dropRight(1).mkString(" ")}
 		val resultDF = df.withColumn(splitedColName, formatFunc(col(splitedColName)))
+		resultDF.join(resultDF, col(splitedColName) === col(splitedColName)).show(false)
 		PhDFArgs(resultDF)
 	}
 }
