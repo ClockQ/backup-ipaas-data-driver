@@ -42,11 +42,11 @@ object logTests extends App {
 	).toDF("CHECK_NAME", "CHECK_PROD", "CHECK_DATE", "CHECK_VALUE", "CHECK_RESULT")
 
 	val rankPartitionColumnNames = List("DATE")
-	val growthPlugin = CalcRankByWindow(PhMapArgs(Map(
+	val growthPlugin = CalcRankByWindow().perform(PhMapArgs(Map(
 		"dateColName" -> PhStringArgs(dateColName),
 		"valueColumnName" -> PhStringArgs(valueColumnName),
 		"partitionColumnNames" -> PhListArgs(rankPartitionColumnNames.map(x => PhStringArgs(x)))
-	))).perform(PhNoneArgs).asInstanceOf[PhColArgs].get
+	))).asInstanceOf[PhColArgs].get
 
 	val result = df.withColumn(outputColumnName, growthPlugin)
 	result.show()
