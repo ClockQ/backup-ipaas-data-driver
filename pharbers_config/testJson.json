@@ -18,12 +18,10 @@
                 "args" :{
                   "date" : "2018"
                 },
-                "plugins" :[
-                  {
+                "plugins" : {
                     "name" : "CalcYTDPlugin",
                     "factory" : "test"
-                  }
-                ]
+                }
               }
             ]
           }

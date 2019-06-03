@@ -1,6 +1,7 @@
 package com.pharbers.ipaas.data.driver.factory
 
 import com.pharbers.ipaas.data.driver.api.work._
+import com.pharbers.ipaas.data.driver.config.yamlModel.PluginBean
 import org.scalatest.FunSuite
 
 /** 这个类是干啥的
@@ -12,7 +13,7 @@ import org.scalatest.FunSuite
   */
 class TestPhPluginFactory extends FunSuite{
     test("PhPluginFactory"){
-        val addByWhen = PhPluginFactory().inst(PhMapArgs(Map("name" -> PhStringArgs("com.pharbers.ipaas.data.driver.plugin.BaseCalcPlugin"))))
-        assert(addByWhen.name == "CalcPlugin")
+        val addByWhen = PhPluginFactory(new PluginBean).inst()
+        assert(addByWhen.name.isEmpty)
     }
 }

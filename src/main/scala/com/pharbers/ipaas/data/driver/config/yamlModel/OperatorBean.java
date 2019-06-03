@@ -8,7 +8,7 @@ public class OperatorBean {
     private String factory;
     private String oper;
     private Map<String, String> args;
-    private List<PluginBean> plugins;
+    private PluginBean plugin;
 
     public String getName() {
         return name;
@@ -42,11 +42,11 @@ public class OperatorBean {
         this.args = args;
     }
 
-    public List<PluginBean> getPlugins() {
-        return plugins;
+    public PluginBean getPlugin() {
+        return plugin;
     }
 
-    public void setPlugins(List<PluginBean> plugins) {
-        this.plugins = plugins;
+    public void setPlugin(PluginBean plugin) {
+        this.plugin = plugin;
     }
 }

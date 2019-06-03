@@ -15,7 +15,7 @@ import scala.reflect.runtime.universe
 case class PhActionFactory(action: ActionBean) extends PhFactoryTrait[PhActionTrait] {
     override def inst(): PhActionTrait = {
         import scala.collection.JavaConverters._
-        val operators = action.getOpers.asScala.map(x => PhFactory.getMethodMirror(x.getFactory)(x).asInstanceOf[PhFactoryTrait].inst())
+        val operators = action.getOpers.asScala.map(x => PhFactory.getMethodMirror(x.getFactory)(x).asInstanceOf[PhOperatorFactory].inst()).toList
         val tmp = PhFactory.getMethodMirror(action.getName)(operators, action.getName)
         tmp.asInstanceOf[PhActionTrait]
     }
