@@ -9,13 +9,10 @@ import scala.beans.BeanProperty
   * @author dcs
   */
 class Job(){
-//    @BeanProperty
-    var name: PhStringArgs = PhStringArgs("")
+    @BeanProperty
+    var name = ""
     @BeanProperty
     var factory: String = ""
     @BeanProperty
     var actions: java.util.List[Action] = _
-    def setName(name: String): Unit ={
-        this.name = PhStringArgs(name)
-    }
 }

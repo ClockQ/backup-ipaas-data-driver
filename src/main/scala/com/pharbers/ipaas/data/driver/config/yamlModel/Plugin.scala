@@ -6,7 +6,9 @@ import scala.beans.BeanProperty
   *
   * @author dcs
   */
-class Plugin {
-    @BeanProperty var name = ""
-    @BeanProperty var factory = ""
+case class Plugin() {
+    @BeanProperty
+    var name = ""
+    @BeanProperty
+    var factory = ""
 }

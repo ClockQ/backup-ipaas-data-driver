@@ -6,7 +6,7 @@ import scala.beans.BeanProperty
   *
   * @author dcs
   */
-class Operator {
+case class Operator() {
     @BeanProperty var name = ""
     @BeanProperty var factory = ""
     @BeanProperty var oper = ""

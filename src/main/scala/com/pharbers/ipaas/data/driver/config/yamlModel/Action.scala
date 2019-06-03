@@ -6,7 +6,7 @@ import scala.beans.BeanProperty
   *
   * @author dcs
   */
-class Action {
+case class Action() {
     @BeanProperty var name = ""
     @BeanProperty var factory = ""
     @BeanProperty val args: java.util.HashMap[String, String] = null

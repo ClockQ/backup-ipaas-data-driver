@@ -1,0 +1,32 @@
+[
+  {
+    "name" : "clean",
+    "factory" : "test",
+        "actions" :[
+          {
+            "name" : "abcActions",
+            "factory" : "test",
+            "args" :{
+              "a" : "a",
+              "b" : "b"
+            },
+            "opers" :[
+              {
+                "name" : "CalcYTD",
+                "factory" : "test",
+                "oper" : "com.pharbers.ipass.data.driver.operators.CalcMTD",
+                "args" :{
+                  "date" : "2018"
+                },
+                "plugins" :[
+                  {
+                    "name" : "CalcYTDPlugin",
+                    "factory" : "test"
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+  }
+]
