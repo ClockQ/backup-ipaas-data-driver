@@ -1,6 +1,9 @@
 package com.pharbers.ipaas.data.driver.factory
 
-import com.pharbers.ipaas.data.driver.api.work.{PhWorkArgs, PhWorkTrait}
+import com.pharbers.ipaas.data.driver.api.work._
+import com.pharbers.ipaas.data.driver.config.yamlModel.OperatorBean
+
+import scala.reflect.runtime.universe
 
 /** 这个类是干啥的
   *
@@ -9,6 +12,11 @@ import com.pharbers.ipaas.data.driver.api.work.{PhWorkArgs, PhWorkTrait}
   * @tparam T 类型参数说明
   * @note 一些值得注意的地方
   */
-class PhOperatorFactory extends PhFactoryTrait {
-    override def inst(args: PhWorkArgs[_]): PhWorkTrait = ???
+case class PhOperatorFactory(operator: OperatorBean) extends PhFactoryTrait[PhOperatorTrait] {
+    override def inst(): PhOperatorTrait = {
+        import scala.collection.JavaConverters._
+        val plugins = operator.getPlugins.asScala.map(x => PhFactory.getRef(x.getFactory)(x).asInstanceOf[PhFactoryTrait[PhPluginTrait]].inst())
+        val tmp = PhFactory.getRef(operator.getOper)(plugins, operator.getName)
+        tmp.asInstanceOf[PhOperatorTrait]
+    }
 }
