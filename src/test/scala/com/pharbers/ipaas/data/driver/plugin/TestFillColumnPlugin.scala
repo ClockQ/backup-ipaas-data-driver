@@ -4,9 +4,9 @@ import com.pharbers.ipaas.data.driver.api.work._
 import com.pharbers.ipaas.data.driver.libs.spark.PhSparkDriver
 import org.apache.spark.sql.DataFrame
 import org.apache.spark.sql.functions.col
-import org.scalatest.FunSuite
+import org.scalatest.{BeforeAndAfterAll, FunSuite}
 
-class TestFillColumnPlugin extends FunSuite {
+class TestFillColumnPlugin extends FunSuite with BeforeAndAfterAll {
     implicit val sparkDriver: PhSparkDriver = PhSparkDriver("testSparkDriver")
     import sparkDriver.ss.implicits._
 
@@ -16,6 +16,7 @@ class TestFillColumnPlugin extends FunSuite {
         ("name3", "prod1", "201802", 2, null),
         ("name4", "prod2", "201802", 3, null)
     ).toDF("NAME", "PROD", "DATE", "VALUE", "VALUE2")
+
     test("add column by one column and default value"){
 
         val checkDf: DataFrame = List(
