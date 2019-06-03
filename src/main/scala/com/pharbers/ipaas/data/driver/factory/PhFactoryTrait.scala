@@ -13,7 +13,7 @@ trait PhFactoryTrait[T <: PhWorkTrait] {
 }
 
 object PhFactory{
-    def getRef(reference: String): MethodMirror ={
+    def getMethodMirror(reference: String): MethodMirror ={
         val m = universe.runtimeMirror(getClass.getClassLoader)
         val classSy = m.classSymbol(Class.forName(reference))
         val cm = m.reflectClass(classSy)
