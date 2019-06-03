@@ -2,7 +2,7 @@ package com.pharbers.ipaas.data.driver.config
 
 import java.io.{File, FileInputStream}
 
-import com.pharbers.ipaas.data.driver.config.yamlModel.Job
+import com.pharbers.ipaas.data.driver.config.yamlModel._
 import org.scalatest.FunSuite
 
 
@@ -15,7 +15,7 @@ import org.scalatest.FunSuite
 class testJsonReader extends FunSuite{
     test("json read"){
         val stream = new FileInputStream(new File("D:\\code\\pharbers\\ipaas-data-driver\\pharbers_config\\testJson.json"))
-        val jobs = JobJsonReader().readObjects[Job](stream)
-        println(jobs.get(0).name)
+        val jobs = JsonReader().readObjects[JobBean](stream)
+        assert(jobs.head.getName == "clean")
     }
 }

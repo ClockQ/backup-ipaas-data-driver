@@ -1,9 +1,6 @@
 package com.pharbers.ipaas.data.driver.config
 
-import com.pharbers.ipaas.data.driver.config.yamlModel.Job
-import org.codehaus.jackson.`type`.TypeReference
 import org.codehaus.jackson.map.ObjectMapper
-
 import scala.reflect.ClassTag
 import scala.tools.nsc.interpreter.InputStream
 
@@ -13,7 +10,7 @@ import scala.tools.nsc.interpreter.InputStream
   * @tparam T
   * @note
   */
-case class JobJsonReader() {
+case class JsonReader() extends ConfigReaderTrait{
     /**  读取为List[T]
       *   @param   json   参数说明.
       *   @param   T
@@ -23,12 +20,13 @@ case class JobJsonReader() {
       *   @note 只能读取成List[T]
       *   @history
       */
-    def readObjects[T:ClassTag](json: InputStream): java.util.List[T] ={
+    def readObjects[T:ClassTag](json: InputStream): Seq[T] ={
+        import scala.collection.JavaConverters._
         val mapper = new ObjectMapper()
         val javaType2 = mapper.getTypeFactory.constructParametricType(classOf[java.util.List[T]], implicitly[ClassTag[T]].runtimeClass)
 //        val ref = mapper.readValue(json, implicitly[ClassTag[T]].runtimeClass).asInstanceOf[T]
         val ref = mapper.readValue(json, javaType2).asInstanceOf[java.util.List[T]]
-        ref
+        ref.asScala
     }
 
     /**  读取为单个对象
@@ -45,6 +43,5 @@ case class JobJsonReader() {
         val ref = mapper.readValue(json, implicitly[ClassTag[T]].runtimeClass).asInstanceOf[T]
         ref
     }
-}
 
-case class test(name: String, factory: String)
+}
