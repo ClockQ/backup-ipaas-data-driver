@@ -93,12 +93,12 @@ actions:
         args:
           inDFName: df
           dropColName: _id
-      - name: distinct
-        factory: com.pharbers.ipaas.data.driver.factory.PhOperatorFactory
-        reference:
-        args:
-          inDFName: df
-          null: null
+#      - name: distinct
+#        factory: com.pharbers.ipaas.data.driver.factory.PhOperatorFactory
+#        reference:
+#        args:
+#          inDFName: df
+#          null: null
       - name: rename
           factory: com.pharbers.ipaas.data.driver.factory.PhOperatorFactory
           reference: com.pharbers.ipaas.data.driver.operators.withColumnRenamed
