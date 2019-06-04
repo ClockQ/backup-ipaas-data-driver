@@ -31,7 +31,7 @@ name: test
 reference: com.pharbers.ipaas.data.driver.job.PhBaseJob
 factory: com.pharbers.ipaas.data.driver.factory.PhJobFactory
 actions:
-    - name: read
+    - name: readCpaFile
       reference: com.pharbers.ipaas.data.driver.job.PhBaseAction
       factory: com.pharbers.ipaas.data.driver.factory.PhActionFactory
       args:
@@ -41,11 +41,18 @@ actions:
           factory: com.pharbers.ipaas.data.driver.factory.PhOperatorFactory
           reference: com.pharbers.ipaas.data.driver.job.PhReadOperator
           args:
-            path: /test/dcs/201801_201901_max_result_test.csv
-#          plugin:
-#              name:
-#              reference: com.pharbers.ipaas.data.driver.plugin.AddByWhen
-#              factory: com.pharbers.ipaas.data.driver.factory.PhPluginFactory
+            path: hdfs:///data/nhwa/pha_config_repository1809/Nhwa_201809_CPA_20181126.csv
+    - name: readHospitalFile
+      reference: com.pharbers.ipaas.data.driver.job.PhBaseAction
+      factory: com.pharbers.ipaas.data.driver.factory.PhActionFactory
+      args:
+        null: null
+      opers:
+        - name:
+          factory: com.pharbers.ipaas.data.driver.factory.PhOperatorFactory
+          reference: com.pharbers.ipaas.data.driver.job.PhReadOperator
+          args:
+            path: hdfs:///repository/hosp_dis_max
 
     - name: sales*Factor
       reference: com.pharbers.ipaas.data.driver.job.PhBaseAction
