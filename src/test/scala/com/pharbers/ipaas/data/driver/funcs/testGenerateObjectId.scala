@@ -22,13 +22,13 @@ object testGenerateObjectId extends App {
         ("name4", "prod2", "201801", 4)
     ).toDF("NAME", "PROD", "DATE", "VALUE")
 
-    val test = addColumn()
-    test.perform(PhMapArgs(Map(
-        "inDFName" -> PhStringArgs("inDF"),
-        "outDFName" -> PhStringArgs("outDF"),
-        "newColName" -> PhStringArgs("newCol"),
-        "funcName" -> PhStringArgs("func"),
-        "inDF" -> PhDFArgs(df),
-        "func" -> work.PhFuncArgs(generateObjectId().perform(_))
-    )))
+//    val test = ??? //addColumn()
+//    test.perform(PhMapArgs(Map(
+//        "inDFName" -> PhStringArgs("inDF"),
+//        "outDFName" -> PhStringArgs("outDF"),
+//        "newColName" -> PhStringArgs("newCol"),
+//        "funcName" -> PhStringArgs("func"),
+//        "inDF" -> PhDFArgs(df),
+//        "func" -> work.PhFuncArgs(generateObjectId().perform(_))
+//    )))
 }

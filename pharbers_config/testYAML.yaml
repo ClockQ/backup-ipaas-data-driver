@@ -50,23 +50,62 @@ actions:
       opers:
         - name:
           factory: com.pharbers.ipaas.data.driver.factory.PhOperatorFactory
-          reference: com.pharbers.ipaas.data.driver.job.PhReadOperator
+          reference: com.pharbers.ipaas.data.driver.job.PhReadParquetOperator
           args:
             path: hdfs:///repository/hosp_dis_max
-
-    - name: sales*Factor
+    - name: readProductFile
       reference: com.pharbers.ipaas.data.driver.job.PhBaseAction
       factory: com.pharbers.ipaas.data.driver.factory.PhActionFactory
       args:
-        df: read
+        null: null
       opers:
         - name:
           factory: com.pharbers.ipaas.data.driver.factory.PhOperatorFactory
-          reference: com.pharbers.ipaas.data.driver.job.PhBaseOperator
+          reference: com.pharbers.ipaas.data.driver.job.PhReadParquetOperator
           args:
-            newColumnName: new
-            exprString: f_sales * Factor
+            path: hdfs:///repository/prod_etc_dis_max/5ca069bceeefcc012918ec72
+    - name: readPhaFile
+      reference: com.pharbers.ipaas.data.driver.job.PhBaseAction
+      factory: com.pharbers.ipaas.data.driver.factory.PhActionFactory
+      args:
+        null: null
+      opers:
+        - name:
+          factory: com.pharbers.ipaas.data.driver.factory.PhOperatorFactory
+          reference: com.pharbers.ipaas.data.driver.job.PhReadParquetOperator
+          args:
+            path: hdfs:///repository/pha
+    - name: readProductMatchFile
+      reference: com.pharbers.ipaas.data.driver.job.PhBaseAction
+      factory: com.pharbers.ipaas.data.driver.factory.PhActionFactory
+      args:
+        null: null
+      opers:
+        - name:
+          factory: com.pharbers.ipaas.data.driver.factory.PhOperatorFactory
+          reference: com.pharbers.ipaas.data.driver.job.PhReadOperator
+          args:
+            path: hdfs:///data/nhwa/pha_config_repository1809/Nhwa_ProductMatchTable_20181126.csv
+    - name: cpaMatchHosp
+      reference: com.pharbers.ipaas.data.driver.job.PhBaseAction
+      factory: com.pharbers.ipaas.data.driver.factory.PhActionFactory
+      args:
+        test: readProductMatchFile
+      opers:
+        - name: addColumn
+          factory: com.pharbers.ipaas.data.driver.factory.PhOperatorFactory
+          reference: com.pharbers.ipaas.data.driver.operators.addColumn
+          args:
+            inDFName: readProductMatchFile
+            newColName: newColName1
           plugin:
-            name: baseCalc
-            reference: com.pharbers.ipaas.data.driver.plugin.BaseCalcPlugin
+            name: generateObjectId
             factory: com.pharbers.ipaas.data.driver.factory.PhPluginFactory
+            reference: com.pharbers.ipaas.data.driver.plugin.generateObjectId
+        - name: withColumnRenamed
+          factory: com.pharbers.ipaas.data.driver.factory.PhOperatorFactory
+          reference: com.pharbers.ipaas.data.driver.operators.withColumnRenamed
+          args:
+            inDFName: df
+            oldColName: newColName1
+            newColName: newColName2
