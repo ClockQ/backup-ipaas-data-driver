@@ -19,7 +19,10 @@ class TestJobFactory extends FunSuite{
         })
 //        implicit val sd: PhSparkDriver = PhSparkDriver("testSparkDriver")
 //        val df = sd.setUtil(readCsv()).readCsv("/test/dcs/201801_201901_max_result_test.csv")
-        val df = phJobs.head.perform(PhNoneArgs)
-        df.get.asInstanceOf[DataFrame].show(false)
+        val df = phJobs.head.perform(PhMapArgs(Map.empty))
+        df.toMapArgs[PhDFArgs].get.foreach(x => {
+            println(x._1)
+            x._2.get.show(false)
+        })
     }
 }

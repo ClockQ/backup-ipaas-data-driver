@@ -34,33 +34,32 @@ actions:
     - name: read
       reference: com.pharbers.ipaas.data.driver.job.PhBaseAction
       factory: com.pharbers.ipaas.data.driver.factory.PhActionFactory
-#      args:
-#        a: a
-#        b: b
+      args:
+        null: null
       opers:
         - name:
           factory: com.pharbers.ipaas.data.driver.factory.PhOperatorFactory
           reference: com.pharbers.ipaas.data.driver.job.PhReadOperator
           args:
-            Path: /test/dcs/201801_201901_max_result_test.csv
+            path: /test/dcs/201801_201901_max_result_test.csv
 #          plugin:
 #              name:
 #              reference: com.pharbers.ipaas.data.driver.plugin.AddByWhen
 #              factory: com.pharbers.ipaas.data.driver.factory.PhPluginFactory
 
     - name: sales*Factor
-        reference: com.pharbers.ipaas.data.driver.job.PhBaseAction
-        factory: com.pharbers.ipaas.data.driver.factory.PhActionFactory
-        args:
-          df: read
-        opers:
-          - name:
-            factory: com.pharbers.ipaas.data.driver.factory.PhOperatorFactory
-            reference: com.pharbers.ipaas.data.driver.job.PhBaseOperator
-            args:
-              newColumnName: new
-              exprString: f_sales * Factor
-            plugin:
-              name: baseCalc
-              reference: com.pharbers.ipaas.data.driver.plugin.BaseCalcPlugin
-              factory: com.pharbers.ipaas.data.driver.factory.PhPluginFactory
+      reference: com.pharbers.ipaas.data.driver.job.PhBaseAction
+      factory: com.pharbers.ipaas.data.driver.factory.PhActionFactory
+      args:
+        df: read
+      opers:
+        - name:
+          factory: com.pharbers.ipaas.data.driver.factory.PhOperatorFactory
+          reference: com.pharbers.ipaas.data.driver.job.PhBaseOperator
+          args:
+            newColumnName: new
+            exprString: f_sales * Factor
+          plugin:
+            name: baseCalc
+            reference: com.pharbers.ipaas.data.driver.plugin.BaseCalcPlugin
+            factory: com.pharbers.ipaas.data.driver.factory.PhPluginFactory

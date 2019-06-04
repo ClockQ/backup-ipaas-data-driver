@@ -16,11 +16,11 @@ case class PhReadOperator(plugin: PhPluginTrait, name: String, args: PhWorkArgs[
     override val defaultArgs: PhWorkArgs[_] = PhNoneArgs
 
     override def perform(pr: PhWorkArgs[_]): PhWorkArgs[_] = {
-        val tmp = pr match {
+        val tmp = args match {
             case mapArgs: PhMapArgs[_] => mapArgs
             case _ => throw new Exception("参数类型错误")
         }
         implicit val sd: PhSparkDriver = sparkObj
-        PhDFArgs(sd.setUtil(readCsv()).readCsv(tmp.get("path").asInstanceOf[PhStringArgs].get))
+        PhDFArgs(sd.setUtil(readCsv()).readCsv(tmp.get.getOrElse("path", throw new Exception("配置文件中没有path配置")).asInstanceOf[PhStringArgs].get))
     }
 }

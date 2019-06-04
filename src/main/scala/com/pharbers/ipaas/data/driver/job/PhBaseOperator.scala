@@ -17,7 +17,13 @@ case class PhBaseOperator(plugin: PhPluginTrait, name: String, args: PhWorkArgs[
             case mapArgs: PhMapArgs[_] => mapArgs
             case _ => throw new Exception("参数类型错误")
         }
-        val colFun = plugin.perform(tmp).toColArgs.get
-        PhDFArgs(tmp.get("df").asInstanceOf[PhDFArgs].get.withColumn(args.toMapArgs[PhStringArgs].getAs("newColumnName").get, colFun))
+
+        val argsMap = args match {
+            case mapArgs: PhMapArgs[_] => mapArgs
+            case _ => throw new Exception("参数类型错误")
+        }
+        val colFun = plugin.perform(argsMap).toColArgs.get
+        PhDFArgs(tmp.get("df").asInstanceOf[PhDFArgs].get.withColumn(args.toMapArgs[PhStringArgs]
+                .get.getOrElse("newColumnName", throw new Exception("无newColumnName配置")).get, colFun))
     }
 }

@@ -26,7 +26,7 @@ class TestBaseCalcPlugin extends FunSuite {
         ).toDF("CHECK_NAME", "CHECK_PROD", "CHECK_DATE", "CHECK_VALUE", "CHECK_VALUE2", "CHECK_RESULT")
 
         val col = BaseCalcPlugin().perform(PhMapArgs(Map(
-            "exprString" -> PhStringArgs("((VALUE * VALUE2) - (VALUE + VALUE2)) / 2"),
+            "exprString" -> PhStringArgs("((VALUE * VALUE2) - (VALUE + VALUE2)) / 2")
         ))).toColArgs.get
         val result = df.withColumn("RESULT", col)
         result.show(false)
