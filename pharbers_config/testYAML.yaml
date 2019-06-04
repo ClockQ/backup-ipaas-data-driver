@@ -96,10 +96,10 @@ actions:
           null: null
       - name: rename
           factory: com.pharbers.ipaas.data.driver.factory.PhOperatorFactory
-          reference:
+          reference: com.pharbers.ipaas.data.driver.operators.withColumnRenamed
           args:
-            columnName: HOSPITAL_ID
-            newColumnName: MISS_HOSPITAL_ID
+            oldColName: HOSPITAL_ID
+            newColName: MISS_HOSPITAL_ID
 
   - name: primalCpa
     reference: com.pharbers.ipaas.data.driver.job.PhBaseAction
@@ -165,6 +165,49 @@ actions:
             reference:
             args:
               df: reducedCpa
+
+  - name: sampleHosp
+      reference: com.pharbers.ipaas.data.driver.job.PhBaseAction
+      factory: com.pharbers.ipaas.data.driver.factory.PhActionFactory
+      args:
+        df: readSampleHosp
+      opers:
+        - name: filter
+            factory: com.pharbers.ipaas.data.driver.factory.PhOperatorFactory
+            reference: com.pharbers.ipaas.data.driver.job.PhFilterOperator
+            args:
+              filter: MARKET == '麻醉市场' && SAMPLE == 1
+        - name: rename
+            factory: com.pharbers.ipaas.data.driver.factory.PhOperatorFactory
+            reference: com.pharbers.ipaas.data.driver.operators.withColumnRenamed
+            args:
+              oldColName: HOSPITAL_ID
+              newColName: SAMPLE_HOSPITAL_ID
+
+  - name: panelERD
+      reference: com.pharbers.ipaas.data.driver.job.PhBaseAction
+      factory: com.pharbers.ipaas.data.driver.factory.PhActionFactory
+      args:
+        df: cpa
+      opers:
+        - name: join
+            factory: com.pharbers.ipaas.data.driver.factory.PhOperatorFactory
+            reference:
+            args:
+              joinDf: sampleHosp
+              joinExprs: SAMPLE_HOSPITAL_ID == HOSPITAL_ID
+              joinType: inner
+        - name: drop
+            factory: com.pharbers.ipaas.data.driver.factory.PhOperatorFactory
+            reference:
+            args:
+              drop: SAMPLE_HOSPITAL_ID
+        - name: group
+            factory: com.pharbers.ipaas.data.driver.factory.PhOperatorFactory
+            reference:
+            args:
+              drop: SAMPLE_HOSPITAL_ID
+
 
 
   - name: sales*Factor
