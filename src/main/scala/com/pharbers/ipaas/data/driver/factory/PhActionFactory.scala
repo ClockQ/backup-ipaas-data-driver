@@ -1,6 +1,9 @@
 package com.pharbers.ipaas.data.driver.factory
 
-import com.pharbers.ipaas.data.driver.api.work.{PhWorkArgs, PhWorkTrait}
+import com.pharbers.ipaas.data.driver.api.work._
+import com.pharbers.ipaas.data.driver.config.yamlModel.ActionBean
+
+import scala.reflect.runtime.universe
 
 /** 这个类是干啥的
   *
@@ -9,6 +12,11 @@ import com.pharbers.ipaas.data.driver.api.work.{PhWorkArgs, PhWorkTrait}
   * @tparam T 类型参数说明
   * @note 一些值得注意的地方
   */
-class PhActionFactory extends PhFactoryTrait {
-    override def inst(args: PhWorkArgs[_]): PhWorkTrait = ???
+case class PhActionFactory(action: ActionBean) extends PhFactoryTrait[PhActionTrait] {
+    override def inst(): PhActionTrait = {
+        import scala.collection.JavaConverters._
+        val operators = action.getOpers.asScala.map(x => PhFactory.getMethodMirror(x.getFactory)(x).asInstanceOf[PhOperatorFactory].inst()).toList
+        val tmp = PhFactory.getMethodMirror(action.getName)(operators, action.getName)
+        tmp.asInstanceOf[PhActionTrait]
+    }
 }

@@ -1,6 +1,8 @@
 package com.pharbers.ipaas.data.driver.config
 
 import java.io.{File, FileInputStream}
+
+import com.pharbers.ipaas.data.driver.config.yamlModel._
 import org.scalatest.FunSuite
 
 
@@ -14,7 +16,7 @@ import org.scalatest.FunSuite
 class testYamlReader extends FunSuite{
     test("yaml to job"){
         val stream = new FileInputStream(new File("D:\\code\\pharbers\\ipaas-data-driver\\pharbers_config\\testYAML.yaml"))
-        val jobs = JobYamlReader().read(stream)
-        println(jobs.head.name)
+        val jobs = YamlReader().readObjects[JobBean](stream)
+        assert(jobs.head.getName == "clean" && jobs.tail.head.getName == "clean2")
     }
 }

@@ -6,7 +6,7 @@ import org.apache.spark.sql.functions._
 /**when插件
   * @author dcs
   */
-case class AddByWhen() extends PhOperatorTrait{
+case class AddByWhen() extends PhPluginTrait{
     override val name: String = "add column by when"
     override val defaultArgs: PhWorkArgs[_] = PhNoneArgs
 

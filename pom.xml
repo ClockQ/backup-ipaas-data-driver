@@ -75,6 +75,14 @@
                     <version>1.25-SNAPSHOT</version>
                 </dependency>
 
+                <!--json-->
+                <dependency>
+                    <groupId>com.fasterxml.jackson.core</groupId>
+                    <artifactId>jackson-core</artifactId>
+                    <version>2.9.8</version>
+                </dependency>
+
+
                 <!--test-->
                 <dependency>
                     <groupId>org.scalatest</groupId>
@@ -99,9 +107,9 @@
     </profiles>
     <build>
         <plugins>
-            <plugin>
+            <plugins>
                 <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-compiler-plugin</artifactId>
+                <artifactId>maven-compiler-plugins</artifactId>
                 <configuration>
                     <source>1.8</source>
                     <target>1.8</target>
@@ -115,10 +123,10 @@
                         </goals>
                     </execution>
                 </executions>
-            </plugin>
-            <plugin>
+            </plugins>
+            <plugins>
                 <groupId>net.alchim31.maven</groupId>
-                <artifactId>scala-maven-plugin</artifactId>
+                <artifactId>scala-maven-plugins</artifactId>
                 <version>3.2.1</version>
                 <executions>
                     <execution>
@@ -155,20 +163,20 @@
                         <arg>-nobootcp</arg>
                     </args>
                 </configuration>
-            </plugin>
+            </plugins>
             <!--disable surefire-->
-            <plugin>
+            <plugins>
                 <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-surefire-plugin</artifactId>
+                <artifactId>maven-surefire-plugins</artifactId>
                 <version>2.7</version>
                 <configuration>
                     <skipTests>true</skipTests>
                 </configuration>
-            </plugin>
+            </plugins>
             <!--enable scalatest-->
-            <plugin>
+            <plugins>
                 <groupId>org.scalatest</groupId>
-                <artifactId>scalatest-maven-plugin</artifactId>
+                <artifactId>scalatest-maven-plugins</artifactId>
                 <version>1.0</version>
                 <configuration>
                     <reportsDirectory>${project.build.directory}/surefire-reports</reportsDirectory>
@@ -184,7 +192,7 @@
                         </goals>
                     </execution>
                 </executions>
-            </plugin>
+            </plugins>
         </plugins>
     </build>
 </project>
