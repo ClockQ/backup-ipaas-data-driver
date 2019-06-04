@@ -1,6 +1,6 @@
 package com.pharbers.ipaas.data.driver.api.work
 
-import com.pharbers.ipaas.data.driver.log.Phlog
+import com.pharbers.ipaas.data.driver.log.{PhLogMsg, Phlog}
 
 /**
   * @description:
@@ -14,9 +14,7 @@ sealed trait PhWorkTrait extends Serializable {
 	def perform(pr: PhWorkArgs[_]): PhWorkArgs[_]
 
 	val phlog = Phlog()
-	println("phLogTest==========")
-	phlog.setInfoLog("start****" + this.getClass.toString)
-	phlog.setTraceLog("aaaTest")
+	phlog.setInfoLog(PhLogMsg("user", "traceID", "jobID", this.getClass.toString.split("\\.").last, "description").toString)
 }
 
 trait PhPluginTrait extends PhWorkTrait
