@@ -7,20 +7,17 @@ import com.pharbers.ipaas.data.driver.api.work._
   * @author: clock
   * @date: 2019-05-28 17:21
   */
-case class addColumn(plugin: PhPluginTrait, name: String, defaultArgs: PhWorkArgs[_]) extends PhOperatorTrait {
+case class withColumnRenamed(plugin: PhPluginTrait, name: String, defaultArgs: PhWorkArgs[_]) extends PhOperatorTrait {
 
     override def perform(pr: PhWorkArgs[_]): PhWorkArgs[_] = {
         val defaultMapArgs = defaultArgs.toMapArgs[PhWorkArgs[_]]
         val prMapArgs = pr.toMapArgs[PhWorkArgs[_]]
+        println(prMapArgs)
         val inDFName = defaultMapArgs.getAs[PhStringArgs]("inDFName").get.get
-        val outDFName = defaultMapArgs.getAs[PhStringArgs]("outDFName") match {
-            case Some(one) => one.get
-            case None => inDFName
-        }
+        val oldColName = defaultMapArgs.getAs[PhStringArgs]("oldColName").get.get
         val newColName = defaultMapArgs.getAs[PhStringArgs]("newColName").get.get
         val inDF = prMapArgs.getAs[PhDFArgs](inDFName).get.get
-        val func = plugin.perform(pr).toColArgs.get
-        val outDF = inDF.withColumn(newColName, func)
+        val outDF = inDF.withColumnRenamed(oldColName, newColName)
 
         PhDFArgs(outDF)
     }
