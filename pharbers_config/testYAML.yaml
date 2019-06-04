@@ -32,8 +32,8 @@ reference: com.pharbers.ipaas.data.driver.job.PhBaseJob
 factory: com.pharbers.ipaas.data.driver.factory.PhJobFactory
 actions:
     - name: readCpaFile
-      reference: com.pharbers.ipaas.data.driver.job.PhBaseAction
       factory: com.pharbers.ipaas.data.driver.factory.PhActionFactory
+      reference: com.pharbers.ipaas.data.driver.job.PhBaseAction
       args:
         null: null
       opers:
@@ -42,6 +42,18 @@ actions:
           reference: com.pharbers.ipaas.data.driver.job.PhReadOperator
           args:
             path: hdfs:///data/nhwa/pha_config_repository1809/Nhwa_201809_CPA_20181126.csv
+        - name:
+          factory: com.pharbers.ipaas.data.driver.factory.PhOperatorFactory
+          reference: com.pharbers.ipaas.data.driver.operators.addColumn
+          args:
+            inDFName: df
+            newColName: HOSP_ID
+          plugin:
+            name: castInt
+            factory: com.pharbers.ipaas.data.driver.factory.PhPluginFactory
+            reference: com.pharbers.ipaas.data.driver.plugin.BaseCalcPlugin
+            args:
+              exprString: cast(HOSP_ID as int)
     - name: readHospitalFile
       reference: com.pharbers.ipaas.data.driver.job.PhBaseAction
       factory: com.pharbers.ipaas.data.driver.factory.PhActionFactory

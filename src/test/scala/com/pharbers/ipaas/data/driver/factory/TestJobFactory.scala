@@ -24,6 +24,6 @@ class TestJobFactory extends FunSuite{
 //            println(x._1)
 //            x._2.get.show(false)
 //        })
-        df.toMapArgs[PhDFArgs].get("cpaMatchHosp").get.show(false)
+        df.toMapArgs[PhDFArgs].get("readCpaFile").get.show(false)
     }
 }
