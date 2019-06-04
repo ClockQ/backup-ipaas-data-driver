@@ -1,7 +1,7 @@
 package com.pharbers.ipaas.data.driver.factory
 
 import com.pharbers.ipaas.data.driver.api.work._
-import com.pharbers.ipaas.data.driver.config.yamlModel.OperatorBean
+import com.pharbers.ipaas.data.driver.config.yamlModel.{OperatorBean, PluginBean}
 
 import scala.reflect.runtime.universe
 
@@ -15,8 +15,11 @@ import scala.reflect.runtime.universe
 case class PhOperatorFactory(operator: OperatorBean) extends PhFactoryTrait[PhOperatorTrait] {
     override def inst(): PhOperatorTrait = {
         import scala.collection.JavaConverters._
-        val plugin = PhFactory.getMethodMirror(operator.getPlugin.getFactory)(operator.getPlugin).asInstanceOf[PhFactoryTrait[PhPluginTrait]].inst()
-        val tmp = PhFactory.getMethodMirror(operator.getOper)(plugin, operator.getName, PhMapArgs(operator.getArgs.asScala.map(x => (x._1, PhStringArgs(x._2))).toMap))
+        val plugin = operator.getPlugin match {
+            case _: PluginBean => PhFactory.getMethodMirror(operator.getPlugin.getFactory)(operator.getPlugin).asInstanceOf[PhFactoryTrait[PhPluginTrait]].inst()
+            case _ => null
+        }
+        val tmp = PhFactory.getMethodMirror(operator.getReference)(plugin, operator.getName, PhMapArgs(operator.getArgs.asScala.map(x => (x._1, PhStringArgs(x._2))).toMap))
         tmp.asInstanceOf[PhOperatorTrait]
     }
 }

@@ -4,19 +4,17 @@ import org.codehaus.jackson.map.ObjectMapper
 import scala.reflect.ClassTag
 import scala.tools.nsc.interpreter.InputStream
 
-/**
+/** json读取
   * @author dcs
-  * @param $args
-  * @tparam T
   * @note
   */
 case class JsonReader() extends ConfigReaderTrait{
     /**  读取为List[T]
-      *   @param   json   参数说明.
-      *   @param   T
-      *   @return
+      *   @param   json   Json流.
+      *   @param   T 持久化类型，最好为java Pojo，scala类型可能报错
+      *   @return Seq[T]
       *   @throws  Exception
-      *   @example
+      *   @example readObjects[JobBean]
       *   @note 只能读取成List[T]
       *   @history
       */
@@ -30,12 +28,12 @@ case class JsonReader() extends ConfigReaderTrait{
     }
 
     /**  读取为单个对象
-      *   @param   json   参数说明.
-      *   @param   T
-      *   @return
+      *   @param   json   Json流.
+      *   @param   T  持久化类型，最好为java Pojo，scala类型可能报错
+      *   @return T
       *   @throws  Exception
       *   @example
-      *   @note
+      *   @note T 不能为集合
       *   @history
       */
     def readObject[T:ClassTag](json: InputStream): T ={

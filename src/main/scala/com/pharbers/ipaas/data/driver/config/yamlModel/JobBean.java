@@ -4,6 +4,7 @@ import java.util.List;
 
 public class JobBean {
     private String name;
+    private String reference;
     private String factory;
     private List<ActionBean> actions;
 
@@ -29,5 +30,13 @@ public class JobBean {
 
     public void setActions(List<ActionBean> actions) {
         this.actions = actions;
+    }
+
+    public String getReference() {
+        return reference;
+    }
+
+    public void setReference(String reference) {
+        this.reference = reference;
     }
 }

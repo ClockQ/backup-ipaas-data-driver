@@ -5,18 +5,24 @@ import com.pharbers.ipaas.data.driver.config.yamlModel.ActionBean
 
 import scala.reflect.runtime.universe
 
-/** 这个类是干啥的
+/** Action工厂
   *
   * @author dcs
-  * @param args 参数说明
-  * @tparam T 类型参数说明
+  * @param action 持久化的配置对象
   * @note 一些值得注意的地方
   */
 case class PhActionFactory(action: ActionBean) extends PhFactoryTrait[PhActionTrait] {
+
+    /**  生成Action实例
+      *   @return  PhActionTrait
+      *   @throws  Exception
+      *   @note
+      *   @history
+      */
     override def inst(): PhActionTrait = {
         import scala.collection.JavaConverters._
         val operators = action.getOpers.asScala.map(x => PhFactory.getMethodMirror(x.getFactory)(x).asInstanceOf[PhOperatorFactory].inst()).toList
-        val tmp = PhFactory.getMethodMirror(action.getName)(operators, action.getName)
+        val tmp = PhFactory.getMethodMirror(action.getReference)(operators, action.getName, PhMapArgs(action.getArgs.asScala.map(x => (x._1, PhStringArgs(x._2))).toMap))
         tmp.asInstanceOf[PhActionTrait]
     }
 }

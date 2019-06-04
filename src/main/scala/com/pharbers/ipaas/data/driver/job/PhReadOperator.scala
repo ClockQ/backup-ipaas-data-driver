@@ -1,6 +1,9 @@
 package com.pharbers.ipaas.data.driver.job
 
 import com.pharbers.ipaas.data.driver.api.work._
+import com.pharbers.ipaas.data.driver.libs.spark.PhSparkDriver
+import com.pharbers.ipaas.data.driver.libs.spark.util.readCsv
+import env.sparkObj
 import org.apache.spark.sql.DataFrame
 
 /**
@@ -9,7 +12,7 @@ import org.apache.spark.sql.DataFrame
   * @tparam T
   * @note
   */
-case class PhBaseOperator(plugin: PhPluginTrait, name: String, args: PhWorkArgs[_]) extends PhOperatorTrait{
+case class PhReadOperator(plugin: PhPluginTrait, name: String, args: PhWorkArgs[_]) extends PhOperatorTrait{
     override val defaultArgs: PhWorkArgs[_] = PhNoneArgs
 
     override def perform(pr: PhWorkArgs[_]): PhWorkArgs[_] = {
@@ -17,7 +20,7 @@ case class PhBaseOperator(plugin: PhPluginTrait, name: String, args: PhWorkArgs[
             case mapArgs: PhMapArgs[_] => mapArgs
             case _ => throw new Exception("参数类型错误")
         }
-        val colFun = plugin.perform(tmp).toColArgs.get
-        PhDFArgs(tmp.get("df").asInstanceOf[PhDFArgs].get.withColumn(args.toMapArgs[PhStringArgs].getAs("newColumnName").get, colFun))
+        implicit val sd: PhSparkDriver = sparkObj
+        PhDFArgs(sd.setUtil(readCsv()).readCsv(tmp.get("path").asInstanceOf[PhStringArgs].get))
     }
 }
