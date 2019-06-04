@@ -13,12 +13,9 @@
         </File>
     </Appenders>
     <Loggers>
-        <root level="All">
-            <appender-ref ref="MyFile"/>
+        <root level="ALL">
             <appender-ref ref="Console"/>
+            <appender-ref ref="MyFile"/>
         </root>
-        <logger name="org.apache.spark" level="info">
-            <appender-ref ref="MyFile" level="All"/>
-        </logger>
     </Loggers>
 </Configuration>
