@@ -12,7 +12,6 @@ case class withColumnRenamed(plugin: PhPluginTrait, name: String, defaultArgs: P
     override def perform(pr: PhWorkArgs[_]): PhWorkArgs[_] = {
         val defaultMapArgs = defaultArgs.toMapArgs[PhWorkArgs[_]]
         val prMapArgs = pr.toMapArgs[PhWorkArgs[_]]
-        println(prMapArgs)
         val inDFName = defaultMapArgs.getAs[PhStringArgs]("inDFName").get.get
         val oldColName = defaultMapArgs.getAs[PhStringArgs]("oldColName").get.get
         val newColName = defaultMapArgs.getAs[PhStringArgs]("newColName").get.get
