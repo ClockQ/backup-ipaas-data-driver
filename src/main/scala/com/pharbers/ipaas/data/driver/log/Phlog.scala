@@ -2,27 +2,30 @@ package com.pharbers.ipaas.data.driver.log
 
 import org.apache.logging.log4j.LogManager
 
-trait Phlog {
-	def setInfoLog(msg: String): Unit = {
-		LogManager.getLogger().info(msg)
+case class Phlog() {
+	val logger =LogManager.getLogger()
+
+	def setInfoLog(msg: AnyRef): Unit = {
+		logger.info(msg)
 	}
 
-	def setTraceLog(msg: String): Unit = {
-		LogManager.getLogger().trace(msg)
+	def setTraceLog(msg: AnyRef): Unit = {
+		logger.trace(msg)
 	}
 
-	def setDebugLog(msg: String): Unit = {
-		LogManager.getLogger().trace(msg)
+	def setDebugLog(msg: AnyRef): Unit = {
+		logger.debug(msg)
 	}
 
-	def setErrorLog(msg: String): Unit = {
-		LogManager.getLogger().trace(msg)
-	}
-	def setWarnLog(msg: String): Unit = {
-		LogManager.getLogger().trace(msg)
+	def setErrorLog(msg: AnyRef): Unit = {
+		logger.error(msg)
 	}
 
-	def setFATALLog(msg: String): Unit = {
-		LogManager.getLogger().trace(msg)
+	def setWarnLog(msg: AnyRef): Unit = {
+		logger.warn(msg)
+	}
+
+	def setFATALLog(msg: AnyRef): Unit = {
+		logger.fatal(msg)
 	}
 }
