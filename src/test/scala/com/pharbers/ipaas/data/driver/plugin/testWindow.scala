@@ -27,11 +27,11 @@ class testWindow extends FunSuite {
             ("name3", "prod1", "201801", 2, 1.0),
             ("name4", "prod2", "201801", 3, 0.5)
         ).toDF("CHECK_NAME", "CHECK_PROD", "CHECK_DATE", "CHECK_VALUE", "CHECK_RESULT")
-        val yearGrowthPlugin = CalcYearGrowth(PhMapArgs(Map(
+        val yearGrowthPlugin = CalcYearGrowth().perform(PhMapArgs(Map(
             "dateColName" -> PhStringArgs(dateColName),
             "valueColumnName" -> PhStringArgs(valueColumnName),
             "partitionColumnNames" -> PhListArgs(partitionColumnNames.map(x => PhStringArgs(x)))
-        ))).perform(PhNoneArgs).asInstanceOf[PhColArgs].get
+        ))).asInstanceOf[PhColArgs].get
 
         val result = df.withColumn(outputColumnName, yearGrowthPlugin)
         result.show()
@@ -56,11 +56,11 @@ class testWindow extends FunSuite {
         ).toDF("CHECK_NAME", "CHECK_PROD", "CHECK_DATE", "CHECK_VALUE", "CHECK_RESULT")
 
         df.withColumn("test", when(expr("VALUE > '1'"), 0)).show()
-        val growthPlugin = CalcRingGrowth(PhMapArgs(Map(
+        val growthPlugin = CalcRingGrowth().perform(PhMapArgs(Map(
             "dateColName" -> PhStringArgs(dateColName),
             "valueColumnName" -> PhStringArgs(valueColumnName),
             "partitionColumnNames" -> PhListArgs(partitionColumnNames.map(x => PhStringArgs(x)))
-        ))).perform(PhNoneArgs).asInstanceOf[PhColArgs].get
+        ))).asInstanceOf[PhColArgs].get
 
         val result = df.withColumn(outputColumnName, growthPlugin)
         result.show()

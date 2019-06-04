@@ -27,28 +27,46 @@
 #  args: &CalcMTD
 #    class: com.pharbers.ipass.data.driver.operators.CalcMTD
 
+name: test
+reference: com.pharbers.ipaas.data.driver.job.PhBaseJob
+factory: com.pharbers.ipaas.data.driver.factory.PhJobFactory
 actions:
-- name: abcActions
-  args:
-    a: a
-    b: b
-  opers:
-  - name: CalcYTD
-    oper: com.pharbers.ipass.data.driver.operators.CalcMTD
-    args:
-      date: 2018
-    plugins:
-      YTDplugin: CalcYTDPlugin
-  - name: CalcYTD
-    oper: com.pharbers.ipass.data.driver.operators.CalcMTD
-    args:
-      date: 2018
-    plugins:
-      YTDplugin: CalcYTDPlugin
+    - name: readCpaFile
+      reference: com.pharbers.ipaas.data.driver.job.PhBaseAction
+      factory: com.pharbers.ipaas.data.driver.factory.PhActionFactory
+      args:
+        null: null
+      opers:
+        - name:
+          factory: com.pharbers.ipaas.data.driver.factory.PhOperatorFactory
+          reference: com.pharbers.ipaas.data.driver.job.PhReadOperator
+          args:
+            path: hdfs:///data/nhwa/pha_config_repository1809/Nhwa_201809_CPA_20181126.csv
+    - name: readHospitalFile
+      reference: com.pharbers.ipaas.data.driver.job.PhBaseAction
+      factory: com.pharbers.ipaas.data.driver.factory.PhActionFactory
+      args:
+        null: null
+      opers:
+        - name:
+          factory: com.pharbers.ipaas.data.driver.factory.PhOperatorFactory
+          reference: com.pharbers.ipaas.data.driver.job.PhReadOperator
+          args:
+            path: hdfs:///repository/hosp_dis_max
 
-
-jobs:
-- name: clean
-  actions:
-  - abcActions
-
+    - name: sales*Factor
+      reference: com.pharbers.ipaas.data.driver.job.PhBaseAction
+      factory: com.pharbers.ipaas.data.driver.factory.PhActionFactory
+      args:
+        df: read
+      opers:
+        - name:
+          factory: com.pharbers.ipaas.data.driver.factory.PhOperatorFactory
+          reference: com.pharbers.ipaas.data.driver.job.PhBaseOperator
+          args:
+            newColumnName: new
+            exprString: f_sales * Factor
+          plugin:
+            name: baseCalc
+            reference: com.pharbers.ipaas.data.driver.plugin.BaseCalcPlugin
+            factory: com.pharbers.ipaas.data.driver.factory.PhPluginFactory

@@ -2,7 +2,7 @@ package com.pharbers.ipaas.data.driver.operators
 
 
 import com.pharbers.ipaas.data.driver.api.work._
-import com.pharbers.ipaas.data.driver.plugins.SortPlugin
+import com.pharbers.ipaas.data.driver.plugin.SortPlugin
 import org.apache.spark.sql.DataFrame
 import org.scalatest.FunSuite
 import org.apache.spark.sql.functions._

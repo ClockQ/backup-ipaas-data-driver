@@ -30,11 +30,11 @@ class calcPluginTest extends FunSuite {
             ("name4", "prod2", "201801", 3, 0.5)
         ).toDF("CHECK_NAME", "CHECK_PROD", "CHECK_DATE", "CHECK_VALUE", "CHECK_RESULT")
 
-        val yearGrowthPlugin = CalcYearGrowth(PhMapArgs(Map(
-            "dateColName" -> PhStringArgs(dateColName),
-            "valueColumnName" -> PhStringArgs(valueColumnName),
-            "partitionColumnNames" -> PhListArgs(partitionColumnNames.map(x => PhStringArgs(x)))
-        ))).perform(PhNoneArgs).asInstanceOf[PhColArgs].get
+        val yearGrowthPlugin = CalcYearGrowth().perform(PhMapArgs(Map(
+			"dateColName" -> PhStringArgs(dateColName),
+			"valueColumnName" -> PhStringArgs(valueColumnName),
+			"partitionColumnNames" -> PhListArgs(partitionColumnNames.map(x => PhStringArgs(x)))
+		))).asInstanceOf[PhColArgs].get
 
 
 
@@ -61,11 +61,11 @@ class calcPluginTest extends FunSuite {
         ).toDF("CHECK_NAME", "CHECK_PROD", "CHECK_DATE", "CHECK_VALUE", "CHECK_RESULT")
 
         df.withColumn("test", when(expr("VALUE > '1'"), 0)).show()
-        val growthPlugin = CalcRingGrowth(PhMapArgs(Map(
-            "dateColName" -> PhStringArgs(dateColName),
-            "valueColumnName" -> PhStringArgs(valueColumnName),
-            "partitionColumnNames" -> PhListArgs(partitionColumnNames.map(x => PhStringArgs(x)))
-        ))).perform(PhNoneArgs).asInstanceOf[PhColArgs].get
+        val growthPlugin = CalcRingGrowth().perform(PhMapArgs(Map(
+			"dateColName" -> PhStringArgs(dateColName),
+			"valueColumnName" -> PhStringArgs(valueColumnName),
+			"partitionColumnNames" -> PhListArgs(partitionColumnNames.map(x => PhStringArgs(x)))
+		))).asInstanceOf[PhColArgs].get
 
         val result = df.withColumn(outputColumnName, growthPlugin)
         result.show()
@@ -92,11 +92,11 @@ class calcPluginTest extends FunSuite {
 		val condition = "DATE == 201801"
 		val trueValue = lit(col("VALUE"))
 		val otherValue = lit(0)
-		val growthPlugin = addByWhen(PhMapArgs(Map(
+		val growthPlugin = AddByWhen().perform(PhMapArgs(Map(
 			"condition" -> PhStringArgs(condition),
 			"trueValue" -> PhColArgs(trueValue),
 			"otherValue" -> PhColArgs(otherValue)
-		))).perform(PhNoneArgs).asInstanceOf[PhColArgs].get
+		))).asInstanceOf[PhColArgs].get
 
 		val result = df.withColumn(outputColumnName, growthPlugin)
 		result.show()
@@ -121,11 +121,11 @@ class calcPluginTest extends FunSuite {
 		).toDF("CHECK_NAME", "CHECK_PROD", "CHECK_DATE", "CHECK_VALUE", "CHECK_RESULT")
 
 
-		val growthPlugin = CalcEI(PhMapArgs(Map(
+		val growthPlugin = CalcEI().perform(PhMapArgs(Map(
 			"valueColumnName" -> PhStringArgs(valueColumnName),
 			"dateColName" -> PhStringArgs(dateColName),
 			"partitionColumnNames" -> PhListArgs(partitionColumnNames.map(x => PhStringArgs(x)))
-		))).perform(PhNoneArgs).asInstanceOf[PhColArgs].get
+		))).asInstanceOf[PhColArgs].get
 
 		val result = df.withColumn(outputColumnName, growthPlugin)
 		result.show()
@@ -150,11 +150,11 @@ class calcPluginTest extends FunSuite {
 		).toDF("CHECK_NAME", "CHECK_PROD", "CHECK_DATE", "CHECK_VALUE", "CHECK_RESULT")
 
 
-		val growthPlugin = CalcMat(PhMapArgs(Map(
+		val growthPlugin = CalcMat().perform(PhMapArgs(Map(
 			"valueColumnName" -> PhStringArgs(valueColumnName),
 			"dateColName" -> PhStringArgs(dateColName),
 			"partitionColumnNames" -> PhListArgs(partitionColumnNames.map(x => PhStringArgs(x)))
-		))).perform(PhNoneArgs).asInstanceOf[PhColArgs].get
+		))).asInstanceOf[PhColArgs].get
 
 		val result = df.withColumn(outputColumnName, growthPlugin)
 		result.show()
@@ -179,11 +179,11 @@ class calcPluginTest extends FunSuite {
 		).toDF("CHECK_NAME", "CHECK_PROD", "CHECK_DATE", "CHECK_VALUE", "CHECK_RESULT")
 
 		val rankPartitionColumnNames = List("DATE")
-		val growthPlugin = CalcRankByWindow(PhMapArgs(Map(
+		val growthPlugin = CalcRankByWindow().perform(PhMapArgs(Map(
 			"dateColName" -> PhStringArgs(dateColName),
 			"valueColumnName" -> PhStringArgs(valueColumnName),
 			"partitionColumnNames" -> PhListArgs(rankPartitionColumnNames.map(x => PhStringArgs(x)))
-		))).perform(PhNoneArgs).asInstanceOf[PhColArgs].get
+		))).asInstanceOf[PhColArgs].get
 
 		val result = df.withColumn(outputColumnName, growthPlugin)
 		result.show()
@@ -208,10 +208,10 @@ class calcPluginTest extends FunSuite {
 		).toDF("CHECK_NAME", "CHECK_PROD", "CHECK_DATE", "CHECK_VALUE", "CHECK_RESULT")
 
 		val rankPartitionColumnNames = List("DATE")
-		val growthPlugin = CalcShare(PhMapArgs(Map(
+		val growthPlugin = CalcShare().perform(PhMapArgs(Map(
 			"valueColumnName" -> PhStringArgs(valueColumnName),
 			"partitionColumnNames" -> PhListArgs(rankPartitionColumnNames.map(x => PhStringArgs(x)))
-		))).perform(PhNoneArgs).asInstanceOf[PhColArgs].get
+		))).asInstanceOf[PhColArgs].get
 
 		val result = df.withColumn(outputColumnName, growthPlugin)
 		result.show()

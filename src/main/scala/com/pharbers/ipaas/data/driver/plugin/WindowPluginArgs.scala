@@ -2,7 +2,7 @@ package com.pharbers.ipaas.data.driver.plugin
 
 import com.pharbers.ipaas.data.driver.api.work.{PhMapArgs, PhOperatorTrait, PhStringArgs, PhWorkArgs}
 
-/** 使用窗口函数插件的共用参数基类
+/** 暂时没用了
   * @author dcs
   * @param args PhMapArgs
   * @tparam T (map(valueColumnName -> 要计算的列名，dateColName -> 日期的列名，partitionColumnNames -> 用来分组的一列或多列的列名))

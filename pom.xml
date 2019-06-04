@@ -25,6 +25,14 @@
                 <hadoop.version>2.7.2</hadoop.version>
             </properties>
 
+            <repositories>
+                <repository>
+                    <id>Sonatype-public</id>
+                    <name>SnakeYAML repository</name>
+                    <url>http://oss.sonatype.org/content/groups/public/</url>
+                </repository>
+            </repositories>
+
             <dependencies>
                 <!-- spark -->
                 <dependency>
@@ -58,6 +66,20 @@
                     <groupId>org.apache.hadoop</groupId>
                     <artifactId>hadoop-hdfs</artifactId>
                     <version>${hadoop.version}</version>
+                </dependency>
+
+                <!--yaml-->
+                <dependency>
+                    <groupId>org.yaml</groupId>
+                    <artifactId>snakeyaml</artifactId>
+                    <version>1.25-SNAPSHOT</version>
+                </dependency>
+
+                <!--json-->
+                <dependency>
+                    <groupId>com.fasterxml.jackson.core</groupId>
+                    <artifactId>jackson-core</artifactId>
+                    <version>2.9.8</version>
                 </dependency>
 
                 <!--test-->
@@ -120,6 +142,18 @@
                         <goals>
                             <goal>testCompile</goal>
                         </goals>
+                    </execution>
+                    <execution>
+                        <id>Scaladoc</id>
+                        <goals>
+                            <goal>doc</goal>
+                        </goals>
+                        <phase>prepare-package</phase>
+                        <configuration>
+                            <args>
+                                <arg>-no-link-warnings</arg>
+                            </args>
+                        </configuration>
                     </execution>
                 </executions>
                 <configuration>
