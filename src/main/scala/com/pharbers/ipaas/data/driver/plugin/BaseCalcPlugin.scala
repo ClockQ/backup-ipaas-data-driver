@@ -1,6 +1,6 @@
 package com.pharbers.ipaas.data.driver.plugin
 
-import com.pharbers.ipaas.data.driver.api.work.{PhDFArgs, PhMapArgs, PhNoneArgs, PhPluginTrait, PhStringArgs, PhWorkArgs}
+import com.pharbers.ipaas.data.driver.api.work._
 import org.apache.spark.sql.functions.expr
 
 /** 这个类是干啥的
@@ -16,10 +16,7 @@ case class BaseCalcPlugin() extends PhPluginTrait {
 
 	override def perform(pr: PhWorkArgs[_]): PhWorkArgs[_] = {
 		val argsMap = pr.asInstanceOf[PhMapArgs[_]]
-		val df = argsMap.getAs[PhDFArgs]("df").get.get
-		val columnNameNew = argsMap.getAs[PhStringArgs]("columnNameNew").get.get
 		val exprString = argsMap.getAs[PhStringArgs]("exprString").get.get
-		val resultDF = df.withColumn(columnNameNew, expr(exprString))
-		PhDFArgs(resultDF)
+		PhColArgs(expr(exprString))
 	}
 }

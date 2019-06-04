@@ -5,8 +5,8 @@ import java.util.Map;
 
 public class OperatorBean {
     private String name;
+    private String reference;
     private String factory;
-    private String oper;
     private Map<String, String> args;
     private PluginBean plugin;
 
@@ -26,14 +26,6 @@ public class OperatorBean {
         this.factory = factory;
     }
 
-    public String getOper() {
-        return oper;
-    }
-
-    public void setOper(String oper) {
-        this.oper = oper;
-    }
-
     public Map<String, String> getArgs() {
         return args;
     }
@@ -48,5 +40,13 @@ public class OperatorBean {
 
     public void setPlugin(PluginBean plugin) {
         this.plugin = plugin;
+    }
+
+    public String getReference() {
+        return reference;
+    }
+
+    public void setReference(String reference) {
+        this.reference = reference;
     }
 }

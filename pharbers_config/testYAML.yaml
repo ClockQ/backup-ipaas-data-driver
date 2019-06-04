@@ -27,57 +27,39 @@
 #  args: &CalcMTD
 #    class: com.pharbers.ipass.data.driver.operators.CalcMTD
 
-name: com.pharbers.ipaas.data.driver.job.PhBaseJob
+name: test
+reference: com.pharbers.ipaas.data.driver.job.PhBaseJob
 factory: com.pharbers.ipaas.data.driver.factory.PhJobFactory
 actions:
-    - name: com.pharbers.ipaas.data.driver.job.PhBaseAction
+    - name: read
+      reference: com.pharbers.ipaas.data.driver.job.PhBaseAction
       factory: com.pharbers.ipaas.data.driver.factory.PhActionFactory
       args:
-        a: a
-        b: b
+        null: null
       opers:
-        - name: CalcYTD
+        - name:
           factory: com.pharbers.ipaas.data.driver.factory.PhOperatorFactory
-          oper: com.pharbers.ipaas.data.driver.job.PhBaseOperator
+          reference: com.pharbers.ipaas.data.driver.job.PhReadOperator
           args:
-            date: 2018
-          plugin:
-              name: com.pharbers.ipaas.data.driver.plugin.AddByWhen
-              factory: com.pharbers.ipaas.data.driver.factory.PhPluginFactory
-#        - name: CalcYTD
-#          factory: test
-#          oper: com.pharbers.ipass.data.driver.operators.CalcMTD
-#          args:
-#            date: 2018
+            path: /test/dcs/201801_201901_max_result_test.csv
 #          plugin:
-#              name: CalcYTDPlugin
-#              factory: test
-#
-#---
-#
-#name: clean2
-#factory: test
-#actions:
-#  - name: abcActions
-#    factory: test
-#    args:
-#      a: a
-#      b: b
-#    opers:
-#      - name: CalcYTD
-#        factory: test
-#        oper: com.pharbers.ipass.data.driver.operators.CalcMTD
-#        args:
-#          date: 2018
-#        plugins:
-#          - name: CalcYTDPlugin
-#            factory: test
-#      - name: CalcYTD
-#        factory: test
-#        oper: com.pharbers.ipass.data.driver.operators.CalcMTD
-#        args:
-#          date: 2018
-#        plugin:
-#            name: CalcYTDPlugin
-#            factory: test
-#
+#              name:
+#              reference: com.pharbers.ipaas.data.driver.plugin.AddByWhen
+#              factory: com.pharbers.ipaas.data.driver.factory.PhPluginFactory
+
+    - name: sales*Factor
+      reference: com.pharbers.ipaas.data.driver.job.PhBaseAction
+      factory: com.pharbers.ipaas.data.driver.factory.PhActionFactory
+      args:
+        df: read
+      opers:
+        - name:
+          factory: com.pharbers.ipaas.data.driver.factory.PhOperatorFactory
+          reference: com.pharbers.ipaas.data.driver.job.PhBaseOperator
+          args:
+            newColumnName: new
+            exprString: f_sales * Factor
+          plugin:
+            name: baseCalc
+            reference: com.pharbers.ipaas.data.driver.plugin.BaseCalcPlugin
+            factory: com.pharbers.ipaas.data.driver.factory.PhPluginFactory

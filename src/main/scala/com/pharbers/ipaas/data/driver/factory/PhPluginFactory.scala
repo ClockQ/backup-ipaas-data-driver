@@ -12,7 +12,7 @@ import scala.reflect.runtime.universe
   */
 case class PhPluginFactory(plugin: PluginBean) extends PhFactoryTrait[PhPluginTrait] {
     override def inst(): PhPluginTrait = {
-        val tmp = PhFactory.getMethodMirror(plugin.getName)()
+        val tmp = PhFactory.getMethodMirror(plugin.getReference)()
         tmp.asInstanceOf[PhPluginTrait]
     }
 }

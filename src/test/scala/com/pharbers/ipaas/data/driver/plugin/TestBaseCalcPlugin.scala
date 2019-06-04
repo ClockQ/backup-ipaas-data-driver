@@ -25,11 +25,10 @@ class TestBaseCalcPlugin extends FunSuite {
             ("name4", "prod2", "201802", 3, 5, 3.5)
         ).toDF("CHECK_NAME", "CHECK_PROD", "CHECK_DATE", "CHECK_VALUE", "CHECK_VALUE2", "CHECK_RESULT")
 
-        val result = BaseCalcPlugin().perform(PhMapArgs(Map(
-            "columnNameNew" -> PhStringArgs("RESULT"),
-            "exprString" -> PhStringArgs("((VALUE * VALUE2) - (VALUE + VALUE2)) / 2"),
-            "df" -> PhDFArgs(df)
-        ))).toDFArgs.get
+        val col = BaseCalcPlugin().perform(PhMapArgs(Map(
+            "exprString" -> PhStringArgs("((VALUE * VALUE2) - (VALUE + VALUE2)) / 2")
+        ))).toColArgs.get
+        val result = df.withColumn("RESULT", col)
         result.show(false)
         assert(result.join(checkDf, col("CHECK_NAME") === col("NAME")).filter(col("RESULT") =!= col("CHECK_RESULT")).count() == 0)
     }

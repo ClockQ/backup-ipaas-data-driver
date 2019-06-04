@@ -3,9 +3,8 @@ package com.pharbers.ipaas.data.driver.config
 import java.io.InputStream
 import scala.reflect.ClassTag
 
-/**
+/** 读取配置文件接口
   * @author dcs
-  * @param $args
   * @tparam T
   * @note
   */

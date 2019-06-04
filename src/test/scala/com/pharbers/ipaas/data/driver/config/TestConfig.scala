@@ -18,17 +18,4 @@ class TestConfig extends FunSuite{
         val jsonJobs =  Config.readJobConfig("pharbers_config/testJson.json")
         assert(yamlJobs.head.getName == jsonJobs.head.getName)
     }
-
-    test("yaml to job"){
-        val stream = new FileInputStream(new File("pharbers_config/testYAML.yaml"))
-        val jobs = YamlReader().readObjects[JobBean](stream)
-        assert(jobs.head.getName == "clean" && jobs.tail.head.getName == "clean2")
-    }
-
-    test("json to job"){
-        val stream = new FileInputStream(new File("pharbers_config/testJson.json"))
-        val jobs = JsonReader().readObjects[JobBean](stream)
-        assert(jobs.head.getName == "clean")
-    }
-
 }

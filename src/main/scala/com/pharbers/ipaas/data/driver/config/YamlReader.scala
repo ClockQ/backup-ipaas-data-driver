@@ -12,25 +12,6 @@ import scala.reflect.ClassTag
   * @note 一些值得注意的地方
   */
 case class YamlReader() extends ConfigReaderTrait{
-//    val constructor = new Constructor(classOf[Job])
-//    val carDescriptionJob = new TypeDescription(classOf[Job])
-//    carDescriptionJob.putListPropertyType("actions", classOf[Action])
-//
-//    val carDescriptionAction = new TypeDescription(classOf[Action])
-//    carDescriptionAction.putMapPropertyType("args", classOf[String], classOf[String])
-//    carDescriptionAction.putListPropertyType("opers", classOf[Operator])
-//
-//    val carDescriptionOpers = new TypeDescription(classOf[Operator])
-//    carDescriptionOpers.putMapPropertyType("args", classOf[String], classOf[String])
-//    carDescriptionOpers.putListPropertyType("plugins", classOf[Plugin])
-//
-//    val carDescriptionPlugin = new TypeDescription(classOf[Plugin])
-//
-//    constructor.addTypeDescription(carDescriptionJob)
-//    constructor.addTypeDescription(carDescriptionAction)
-//    constructor.addTypeDescription(carDescriptionOpers)
-//    constructor.addTypeDescription(carDescriptionPlugin)
-//    val yaml = new Yaml(constructor)
 
     /**  读取yaml 为Seq[Object]
       *   @param   yamlStream   yaml 流.
@@ -53,7 +34,7 @@ case class YamlReader() extends ConfigReaderTrait{
     /**  读取简单的yaml
       *   @param  source   yaml 流.
       *   @param   T  输出实例的类型
-      *   @return   实例
+      *   @return   T
       *   @throws  Exception 异常类型及说明
       *   @example 这是一个例子
       *   @note

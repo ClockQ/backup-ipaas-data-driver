@@ -25,7 +25,7 @@ case class PhJobFactory(job: JobBean) extends PhFactoryTrait[PhJobTrait] {
     override def inst(): PhJobTrait = {
         import scala.collection.JavaConverters._
         val actions = job.getActions.asScala.map(x => PhFactory.getMethodMirror(x.getFactory)(x).asInstanceOf[PhActionFactory].inst()).toList
-        val tmp = PhFactory.getMethodMirror(job.getName)(actions, job.getName)
+        val tmp = PhFactory.getMethodMirror(job.getReference)(actions, job.getName)
         tmp.asInstanceOf[PhJobTrait]
     }
 }

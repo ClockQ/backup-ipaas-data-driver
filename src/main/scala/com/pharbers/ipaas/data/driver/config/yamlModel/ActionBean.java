@@ -5,6 +5,7 @@ import java.util.Map;
 
 public class ActionBean {
     private String name;
+    private String reference;
     private String factory;
     private Map<String, String> args;
     private List<OperatorBean> opers;
@@ -39,5 +40,13 @@ public class ActionBean {
 
     public void setOpers(List<OperatorBean> opers) {
         this.opers = opers;
+    }
+
+    public String getReference() {
+        return reference;
+    }
+
+    public void setReference(String reference) {
+        this.reference = reference;
     }
 }
