@@ -1,0 +1,107 @@
+name: test
+reference: com.pharbers.ipaas.data.driver.job.PhBaseJob
+factory: com.pharbers.ipaas.data.driver.factory.PhJobFactory
+actions:
+- name: readCpaFile
+  factory: com.pharbers.ipaas.data.driver.factory.PhActionFactory
+  reference: com.pharbers.ipaas.data.driver.job.PhBaseAction
+  args:
+    null: null
+  opers:
+  - name:
+    factory: com.pharbers.ipaas.data.driver.factory.PhOperatorFactory
+    reference: com.pharbers.ipaas.data.driver.job.PhReadOperator
+    args:
+      path: hdfs:///data/nhwa/pha_config_repository1809/Nhwa_201809_CPA_20181126.csv
+  - name:
+    factory: com.pharbers.ipaas.data.driver.factory.PhOperatorFactory
+    reference: com.pharbers.ipaas.data.driver.operators.addColumn
+    args:
+      inDFName: df
+      newColName: HOSP_ID
+    plugin:
+      name: castInt
+      factory: com.pharbers.ipaas.data.driver.factory.PhPluginFactory
+      reference: com.pharbers.ipaas.data.driver.plugin.BaseCalcPlugin
+      args:
+        exprString: cast(HOSP_ID as int)
+  - name:
+    factory: com.pharbers.ipaas.data.driver.factory.PhOperatorFactory
+    reference: com.pharbers.ipaas.data.driver.operators.select
+    args:
+      inDFName: df
+      selects: HOSP_ID#PROVINCES
+  - name:
+    factory: com.pharbers.ipaas.data.driver.factory.PhOperatorFactory
+    reference: com.pharbers.ipaas.data.driver.operators.distinctByKey
+    args:
+      inDFName: df
+      keys: PROVINCES
+      chooseBy: HOSP_ID
+- name: readHospitalFile
+  reference: com.pharbers.ipaas.data.driver.job.PhBaseAction
+  factory: com.pharbers.ipaas.data.driver.factory.PhActionFactory
+  args:
+    null: null
+  opers:
+  - name:
+    factory: com.pharbers.ipaas.data.driver.factory.PhOperatorFactory
+    reference: com.pharbers.ipaas.data.driver.job.PhReadParquetOperator
+    args:
+      path: hdfs:///repository/hosp_dis_max
+- name: readProductFile
+  reference: com.pharbers.ipaas.data.driver.job.PhBaseAction
+  factory: com.pharbers.ipaas.data.driver.factory.PhActionFactory
+  args:
+    null: null
+  opers:
+  - name:
+    factory: com.pharbers.ipaas.data.driver.factory.PhOperatorFactory
+    reference: com.pharbers.ipaas.data.driver.job.PhReadParquetOperator
+    args:
+      path: hdfs:///repository/prod_etc_dis_max/5ca069bceeefcc012918ec72
+- name: readPhaFile
+  reference: com.pharbers.ipaas.data.driver.job.PhBaseAction
+  factory: com.pharbers.ipaas.data.driver.factory.PhActionFactory
+  args:
+    null: null
+  opers:
+  - name:
+    factory: com.pharbers.ipaas.data.driver.factory.PhOperatorFactory
+    reference: com.pharbers.ipaas.data.driver.job.PhReadParquetOperator
+    args:
+      path: hdfs:///repository/pha
+- name: readProductMatchFile
+  reference: com.pharbers.ipaas.data.driver.job.PhBaseAction
+  factory: com.pharbers.ipaas.data.driver.factory.PhActionFactory
+  args:
+    null: null
+  opers:
+  - name:
+    factory: com.pharbers.ipaas.data.driver.factory.PhOperatorFactory
+    reference: com.pharbers.ipaas.data.driver.job.PhReadOperator
+    args:
+      path: hdfs:///data/nhwa/pha_config_repository1809/Nhwa_ProductMatchTable_20181126.csv
+- name: cpaMatchHosp
+  reference: com.pharbers.ipaas.data.driver.job.PhBaseAction
+  factory: com.pharbers.ipaas.data.driver.factory.PhActionFactory
+  args:
+    test: readProductMatchFile
+  opers:
+  - name: addColumn
+    factory: com.pharbers.ipaas.data.driver.factory.PhOperatorFactory
+    reference: com.pharbers.ipaas.data.driver.operators.addColumn
+    args:
+      inDFName: readProductMatchFile
+      newColName: newColName1
+    plugin:
+      name: generateObjectId
+      factory: com.pharbers.ipaas.data.driver.factory.PhPluginFactory
+      reference: com.pharbers.ipaas.data.driver.plugin.generateObjectId
+  - name: withColumnRenamed
+    factory: com.pharbers.ipaas.data.driver.factory.PhOperatorFactory
+    reference: com.pharbers.ipaas.data.driver.operators.withColumnRenamed
+    args:
+      inDFName: df
+      oldColName: newColName1
+      newColName: newColName2
