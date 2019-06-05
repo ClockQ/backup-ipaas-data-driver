@@ -15,7 +15,7 @@ case class select(plugin: PhPluginTrait, name: String, defaultArgs: PhWorkArgs[_
         val inDFName = defaultMapArgs.getAs[PhStringArgs]("inDFName").get.get
         val selectLst = defaultMapArgs.getAs[PhStringArgs]("selects").get.get.split("#")
         val inDF = prMapArgs.getAs[PhDFArgs](inDFName).get.get
-        val outDF = inDF.select(selectLst.head, selectLst.tail: _*)
+        val outDF = inDF.selectExpr(selectLst: _*)
 
         PhDFArgs(outDF)
     }
