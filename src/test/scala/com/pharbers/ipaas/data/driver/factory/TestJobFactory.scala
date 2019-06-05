@@ -13,7 +13,7 @@ import org.scalatest.FunSuite
   */
 class TestJobFactory extends FunSuite{
     test("get job from job factory"){
-        val jobs = Config.readJobConfig("pharbers_config/testYAML.yaml")
+        val jobs = Config.readJobConfig("pharbers_config/max.yaml")
         val phJobs = jobs.map(x => {
             PhFactory.getMethodMirror(x.getFactory)(x).asInstanceOf[PhJobFactory].inst()
         })
@@ -24,6 +24,6 @@ class TestJobFactory extends FunSuite{
 //            println(x._1)
 //            x._2.get.show(false)
 //        })
-        df.toMapArgs[PhDFArgs].get("readCpaFile").get.show(false)
+        df.toMapArgs[PhDFArgs].get("maxResultDF").get.show(false)
     }
 }
