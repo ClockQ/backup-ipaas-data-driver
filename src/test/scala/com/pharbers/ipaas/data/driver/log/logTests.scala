@@ -3,7 +3,6 @@ package com.pharbers.ipaas.data.driver.log
 import com.pharbers.ipaas.data.driver.api.work.{PhColArgs, PhListArgs, PhMapArgs, PhNoneArgs, PhStringArgs}
 import com.pharbers.ipaas.data.driver.libs.spark.PhSparkDriver
 import com.pharbers.ipaas.data.driver.plugin.CalcRankByWindow
-import org.apache.logging.log4j.LogManager
 import org.apache.spark.sql.DataFrame
 import org.apache.spark.sql.functions.col
 
@@ -16,12 +15,12 @@ object logTests extends App {
 	val outputColumnName = "RESULT"
 
 	def infoTest(i: Int): Unit ={
-		val log = LogManager.getLogger(logTests.getClass)
-		log.trace("traceTest")
-		log.debug("debugTest")
-		log.info("infoTest")
-		log.error("errorTest")
-		log.info("test" + i)
+		val log = Phlog()
+		log.setTraceLog("traceTest")
+		log.setDebugLog("debugTest")
+		log.setInfoLog("infoTest")
+		log.setErrorLog("errorTest")
+		log.setInfoLog("test" + i)
 	}
 	for (i <- Range(0, 100)){
 		infoTest(i)
