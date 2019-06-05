@@ -1,6 +1,6 @@
 package com.pharbers.ipaas.data.driver.plugin
 
-import com.pharbers.ipaas.data.driver.api.work.{PhDFArgs, PhListArgs, PhMapArgs, PhStringArgs}
+import com.pharbers.ipaas.data.driver.api.work.{PhDFArgs, PhListArgs, PhMapArgs, PhNoneArgs, PhStringArgs}
 import com.pharbers.ipaas.data.driver.libs.spark.PhSparkDriver
 import org.apache.spark.sql.DataFrame
 import org.apache.spark.sql.functions.col
@@ -25,12 +25,10 @@ class TestConcatStrPlugin extends FunSuite{
             ("name4", "prod2", "201802", 3, 5, "name4+prod2+3")
         ).toDF("CHECK_NAME", "CHECK_PROD", "CHECK_DATE", "CHECK_VALUE", "CHECK_VALUE2", "CHECK_RESULT")
 
-        val result = ConcatStrPlugin().perform(PhMapArgs(Map(
+        val result = ConcatStrPlugin("", PhMapArgs(Map(
             "columnList" -> PhListArgs(List(PhStringArgs("NAME"),PhStringArgs("PROD"),PhStringArgs("VALUE"))),
-            "concatedColName" -> PhStringArgs("RESULT"),
-            "dilimiter" -> PhStringArgs("+"),
-            "df" -> PhDFArgs(df)
-        ))).toDFArgs.get
+            "dilimiter" -> PhStringArgs("+")
+        ))).perform(PhNoneArgs).toDFArgs.get
         result.show(false)
         assert(result.join(checkDf, col("CHECK_NAME") === col("NAME")).filter(col("RESULT") =!= col("CHECK_RESULT")).count() == 0)
     }

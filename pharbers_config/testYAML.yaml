@@ -11,7 +11,7 @@ actions:
     opers:
       - name: read
         reference: com.pharbers.ipaas.data.driver.job.PhReadParquetOperator
-        factory: com.pharbers.ipaas.data.driver.job.PhOperatorFactory
+        factory: com.pharbers.ipaas.data.driver.factory.PhOperatorFactory
         args:
           path: hdfs:///workData/Clean/20bfd585-c889-4385-97ec-a8d4c77d71cc
 
@@ -23,7 +23,7 @@ actions:
     opers:
       - name: read
         reference: com.pharbers.ipaas.data.driver.job.PhReadParquetOperator
-        factory: com.pharbers.ipaas.data.driver.job.PhOperatorFactory
+        factory: com.pharbers.ipaas.data.driver.factory.PhOperatorFactory
         args:
           path: hdfs:///repository/miss_hosp/5ca069bceeefcc012918ec72
 
@@ -77,7 +77,7 @@ actions:
           filter: DATE == 201809
       - name: drop
         factory: com.pharbers.ipaas.data.driver.factory.PhOperatorFactory
-        reference: com.pharbers.ipaas.data.driver.operators.dropOperator
+        reference: com.pharbers.ipaas.data.driver.operators.DropOperator
         args:
           inDFName: df
           dropColName: DATE
@@ -89,23 +89,23 @@ actions:
           unionDFName: readNotPublishHosp
       - name: drop
         factory: com.pharbers.ipaas.data.driver.factory.PhOperatorFactory
-        reference: com.pharbers.ipaas.data.driver.operators.dropOperator
+        reference: com.pharbers.ipaas.data.driver.operators.DropOperator
         args:
           inDFName: df
           dropColName: _id
-#      - name: distinct
-#        factory: com.pharbers.ipaas.data.driver.factory.PhOperatorFactory
-#        reference:
-#        args:
-#          inDFName: df
-#          null: null
+      - name: distinct
+        factory: com.pharbers.ipaas.data.driver.factory.PhOperatorFactory
+        reference: com.pharbers.ipaas.data.driver.operators.DistinctOperator
+        args:
+          inDFName: df
+          null: null
       - name: rename
-          factory: com.pharbers.ipaas.data.driver.factory.PhOperatorFactory
-          reference: com.pharbers.ipaas.data.driver.operators.withColumnRenamed
-          args:
-            inDFName: df
-            oldColName: HOSPITAL_ID
-            newColName: MISS_HOSPITAL_ID
+        factory: com.pharbers.ipaas.data.driver.factory.PhOperatorFactory
+        reference: com.pharbers.ipaas.data.driver.operators.withColumnRenamed
+        args:
+          inDFName: df
+          oldColName: HOSPITAL_ID
+          newColName: MISS_HOSPITAL_ID
 
   - name: primalCpa
     reference: com.pharbers.ipaas.data.driver.job.PhBaseAction
@@ -135,17 +135,17 @@ actions:
             joinExpr: MISS_HOSPITAL_ID == HOSPITAL_ID
             joinType: left
         - name: filter
-            factory: com.pharbers.ipaas.data.driver.factory.PhOperatorFactory
-            reference: com.pharbers.ipaas.data.driver.job.PhFilterOperator
-            args:
-              inDFName: df
-              filter: MISS_HOSPITAL_ID IS NULL
+          factory: com.pharbers.ipaas.data.driver.factory.PhOperatorFactory
+          reference: com.pharbers.ipaas.data.driver.job.PhFilterOperator
+          args:
+            inDFName: df
+            filter: MISS_HOSPITAL_ID IS NULL
         - name: drop
-            factory: com.pharbers.ipaas.data.driver.factory.PhOperatorFactory
-            reference: com.pharbers.ipaas.data.driver.operators.dropOperator
-            args:
-              inDFName: df
-              dropColName: MISS_HOSPITAL_ID
+          factory: com.pharbers.ipaas.data.driver.factory.PhOperatorFactory
+          reference: com.pharbers.ipaas.data.driver.operators.DropOperator
+          args:
+            inDFName: df
+            dropColName: MISS_HOSPITAL_ID
 
   - name: cpa
     reference: com.pharbers.ipaas.data.driver.job.PhBaseAction
@@ -154,29 +154,29 @@ actions:
         df: readFullHosp
     opers:
         - name: filter
-            factory: com.pharbers.ipaas.data.driver.factory.PhOperatorFactory
-            reference: com.pharbers.ipaas.data.driver.job.PhFilterOperator
-            args:
-              inDFName: df
-              filter: YM == 201809
+          factory: com.pharbers.ipaas.data.driver.factory.PhOperatorFactory
+          reference: com.pharbers.ipaas.data.driver.job.PhFilterOperator
+          args:
+            inDFName: df
+            filter: YM == 201809
         - name: join
-            factory: com.pharbers.ipaas.data.driver.factory.PhOperatorFactory
-            reference: com.pharbers.ipaas.data.driver.operators.JoinOperator
-            args:
+          factory: com.pharbers.ipaas.data.driver.factory.PhOperatorFactory
+          reference: com.pharbers.ipaas.data.driver.operators.JoinOperator
+          args:
               inDFName: df
               joinDFName: missHosp
               joinExpr: MISS_HOSPITAL_ID == HOSPITAL_ID
               joinType: inner
         - name: drop
-            factory: com.pharbers.ipaas.data.driver.factory.PhOperatorFactory
-            reference: com.pharbers.ipaas.data.driver.operators.dropOperator
-            args:
+          factory: com.pharbers.ipaas.data.driver.factory.PhOperatorFactory
+          reference: com.pharbers.ipaas.data.driver.operators.DropOperator
+          args:
               inDFName: df
               dropColName: MISS_HOSPITAL_ID
         - name: union
-            factory: com.pharbers.ipaas.data.driver.factory.PhOperatorFactory
-            reference: com.pharbers.ipaas.data.driver.operators.unionOperator
-            args:
+          factory: com.pharbers.ipaas.data.driver.factory.PhOperatorFactory
+          reference: com.pharbers.ipaas.data.driver.operators.unionOperator
+          args:
               inDFName: df
               unionDFName: reducedCpa
 
@@ -187,17 +187,18 @@ actions:
         df: readSampleHosp
     opers:
         - name: filter
-            factory: com.pharbers.ipaas.data.driver.factory.PhOperatorFactory
-            reference: com.pharbers.ipaas.data.driver.job.PhFilterOperator
-            args:
-              inDFName: df
-              filter: MARKET == '麻醉市场' && SAMPLE == 1
+          factory: com.pharbers.ipaas.data.driver.factory.PhOperatorFactory
+          reference: com.pharbers.ipaas.data.driver.job.PhFilterOperator
+          args:
+            inDFName: df
+            filter: "MARKET == '麻醉市场' AND SAMPLE == 1"
         - name: rename
-            factory: com.pharbers.ipaas.data.driver.factory.PhOperatorFactory
-            reference: com.pharbers.ipaas.data.driver.operators.withColumnRenamed
-            args:
-              oldColName: HOSPITAL_ID
-              newColName: SAMPLE_HOSPITAL_ID
+          factory: com.pharbers.ipaas.data.driver.factory.PhOperatorFactory
+          reference: com.pharbers.ipaas.data.driver.operators.withColumnRenamed
+          args:
+            inDFName: df
+            oldColName: HOSPITAL_ID
+            newColName: SAMPLE_HOSPITAL_ID
 
   - name: panelERD
     reference: com.pharbers.ipaas.data.driver.job.PhBaseAction
@@ -206,40 +207,43 @@ actions:
         df: cpa
     opers:
         - name: join
-            factory: com.pharbers.ipaas.data.driver.factory.PhOperatorFactory
-            reference: com.pharbers.ipaas.data.driver.operators.JoinOperator
-            args:
+          factory: com.pharbers.ipaas.data.driver.factory.PhOperatorFactory
+          reference: com.pharbers.ipaas.data.driver.operators.JoinOperator
+          args:
               inDFName: df
               joinDFName: sampleHosp
               joinExpr: SAMPLE_HOSPITAL_ID == HOSPITAL_ID
               joinType: inner
         - name: drop
-            factory: com.pharbers.ipaas.data.driver.factory.PhOperatorFactory
-            reference: com.pharbers.ipaas.data.driver.operators.dropOperator
-            args:
+          factory: com.pharbers.ipaas.data.driver.factory.PhOperatorFactory
+          reference: com.pharbers.ipaas.data.driver.operators.DropOperator
+          args:
               inDFName: df
               dropColName: SAMPLE_HOSPITAL_ID
         - name: concant
-            factory: com.pharbers.ipaas.data.driver.factory.PhOperatorFactory
-            reference: com.pharbers.ipaas.data.driver.operators.addColumn
-            args:
+          factory: com.pharbers.ipaas.data.driver.factory.PhOperatorFactory
+          reference: com.pharbers.ipaas.data.driver.operators.addColumn
+          args:
               inDFName: df
               newColName: GROUP
-            plugin:
+          plugin:
               name: concat
               reference: com.pharbers.ipaas.data.driver.plugin.ConcatStrPlugin
               factory: com.pharbers.ipaas.data.driver.factory.PhPluginFactory
+              args:
+                columns: COMPANY_ID,YM,HOSPITAL_ID,PRODUCT_ID
+                dilimiter: "#"
         - name: group
-            factory: com.pharbers.ipaas.data.driver.factory.PhOperatorFactory
-            reference: com.pharbers.ipaas.data.driver.operators.groupOperator
-            args:
+          factory: com.pharbers.ipaas.data.driver.factory.PhOperatorFactory
+          reference: com.pharbers.ipaas.data.driver.operators.groupOperator
+          args:
               inDFName: df
               groupCol: GROUP
               agg: sum(UNITS) as UNITS,sum(SALES) as SALES,first(COMPANY_ID) as COMPANY_ID,first(YM) as YM,first(HOSPITAL_ID) as HOSPITAL_ID,first(PRODUCT_ID) as PRODUCT_ID,
         - name: drop
-            factory: com.pharbers.ipaas.data.driver.factory.PhOperatorFactory
-            reference: com.pharbers.ipaas.data.driver.operators.dropOperator
-            args:
+          factory: com.pharbers.ipaas.data.driver.factory.PhOperatorFactory
+          reference: com.pharbers.ipaas.data.driver.operators.DropOperator
+          args:
               inDFName: df
               dropColName: GROUP
 

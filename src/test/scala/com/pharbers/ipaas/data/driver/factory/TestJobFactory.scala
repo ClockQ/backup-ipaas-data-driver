@@ -17,13 +17,11 @@ class TestJobFactory extends FunSuite{
         val phJobs = jobs.map(x => {
             PhFactory.getMethodMirror(x.getFactory)(x).asInstanceOf[PhJobFactory].inst()
         })
-//        implicit val sd: PhSparkDriver = PhSparkDriver("testSparkDriver")
-//        val df = sd.setUtil(readCsv()).readCsv("/test/dcs/201801_201901_max_result_test.csv")
         val df = phJobs.head.perform(PhMapArgs(Map.empty))
 //        df.toMapArgs[PhDFArgs].get.foreach(x => {
 //            println(x._1)
 //            x._2.get.show(false)
 //        })
-        df.toMapArgs[PhDFArgs].get("readCpaFile").get.show(false)
+        df.toMapArgs[PhDFArgs].get("panelERD").get.show(false)
     }
 }
