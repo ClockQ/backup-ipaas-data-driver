@@ -13,10 +13,10 @@ import org.apache.spark.sql.functions.{col, concat, lit}
 case class ConcatStrPlugin(name: String, defaultArgs: PhWorkArgs[_]) extends PhPluginTrait {
 
 	override def perform(pr: PhWorkArgs[_]): PhWorkArgs[_] = {
-		val argsMap = pr.asInstanceOf[PhMapArgs[_]]
-		val columnList = argsMap.getAs[PhListArgs[PhStringArgs]]("columnList").get.get.map(x => col(x.get))
+		val argsMap = defaultArgs.asInstanceOf[PhMapArgs[_]]
+		val columnList = argsMap.getAs[PhStringArgs]("columns").get.get.split(",").map(x => col(x))
 		val dilimiter = argsMap.getAs[PhStringArgs]("dilimiter").get.get
-		val concatExpr = columnList.head :: columnList.tail.flatMap(x => List(lit(dilimiter), x))
+		val concatExpr = columnList.head +: columnList.tail.flatMap(x => List(lit(dilimiter), x))
 		PhColArgs(concat(concatExpr: _*))
 	}
 }
