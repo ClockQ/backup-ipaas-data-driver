@@ -564,13 +564,13 @@ actions:
             reference: com.pharbers.ipaas.data.driver.plugin.BaseCalcPlugin
             factory: com.pharbers.ipaas.data.driver.factory.PhPluginFactory
             args:
-                exprString: Factor as Int
+                exprString: Factor as Double
     -   name: filter factor
         factory: com.pharbers.ipaas.data.driver.factory.PhOperatorFactory
         reference: com.pharbers.ipaas.data.driver.job.PhFilterOperator
         args:
             df: df
-            filter: Factor > 0
+            filter: Factor > 0.0
     -   name: addCol f_sales
         factory: com.pharbers.ipaas.data.driver.factory.PhOperatorFactory
         reference: com.pharbers.ipaas.data.driver.operators.addColumn
@@ -660,7 +660,7 @@ actions:
         reference: com.pharbers.ipaas.data.driver.job.PhFilterOperator
         args:
             df: df
-            filter: IS_PANEL_HOSP == 0 AND (f_units != 0 OR f_sales != 0)
+            filter: IS_PANEL_HOSP == 0 AND (f_units >= 0 OR f_sales >= 0)
     -   name: cast String to Int
         factory: com.pharbers.ipaas.data.driver.factory.PhOperatorFactory
         reference: com.pharbers.ipaas.data.driver.operators.addColumn
