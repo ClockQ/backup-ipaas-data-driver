@@ -445,7 +445,7 @@ actions:
             args:
                 columns: SEGMENT,PRODUCT_ID,YM
                 dilimiter: +
-    -   name:  group
+    -   name:  group sumSales
         factory: com.pharbers.ipaas.data.driver.factory.PhOperatorFactory
         reference: com.pharbers.ipaas.data.driver.operators.groupOperator
         args:
@@ -527,7 +527,7 @@ actions:
     args:
         df: joinData
     opers:
-    -   name: join
+    -   name: join segmentDF
         factory: com.pharbers.ipaas.data.driver.factory.PhOperatorFactory
         reference: com.pharbers.ipaas.data.driver.operators.JoinOperator
         args:
@@ -564,7 +564,11 @@ actions:
             reference: com.pharbers.ipaas.data.driver.plugin.BaseCalcPlugin
             factory: com.pharbers.ipaas.data.driver.factory.PhPluginFactory
             args:
+<<<<<<< Updated upstream
                 exprString: Factor as Double
+=======
+                exprString: Factor as double
+>>>>>>> Stashed changes
     -   name: filter factor
         factory: com.pharbers.ipaas.data.driver.factory.PhOperatorFactory
         reference: com.pharbers.ipaas.data.driver.job.PhFilterOperator
