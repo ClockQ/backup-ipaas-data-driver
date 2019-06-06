@@ -1,7 +1,7 @@
 package com.pharbers.ipaas.data.driver.operators
 
 import com.pharbers.ipaas.data.driver.api.work._
-import org.apache.spark.sql.functions.expr
+import org.apache.spark.sql.functions._
 
 /**
   * @author dcs
