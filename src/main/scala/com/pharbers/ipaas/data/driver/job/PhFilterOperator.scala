@@ -22,7 +22,9 @@ case class PhFilterOperator(plugin: PhPluginTrait, name: String, args: PhWorkArg
             case mapArgs: PhMapArgs[_] => mapArgs
             case _ => throw new Exception("参数类型错误")
         }
-        PhDFArgs(tmp.get("df").asInstanceOf[PhDFArgs].get
-                .filter(expr(argsMap.get.getOrElse("filter", throw new Exception("无newColumnName配置")).asInstanceOf[PhStringArgs].get)))
+        val inDF = tmp.get("df").asInstanceOf[PhDFArgs].get
+        val resultDF = inDF.filter(expr(argsMap.get.getOrElse("filter", throw new Exception("无newColumnName配置")).asInstanceOf[PhStringArgs].get))
+        PhDFArgs(resultDF)
+
     }
 }
