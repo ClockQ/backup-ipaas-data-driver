@@ -30,6 +30,7 @@ class calcPluginTest extends FunSuite {
             ("name4", "prod2", "201801", 3, 0.5)
         ).toDF("CHECK_NAME", "CHECK_PROD", "CHECK_DATE", "CHECK_VALUE", "CHECK_RESULT")
 
+		df.withColumn("test", expr("case when `VALUE` == 1 then 1 when `VALUE` < 3 then 2 else 3 end")).show(false)
         val yearGrowthPlugin = CalcYearGrowth().perform(PhMapArgs(Map(
 			"dateColName" -> PhStringArgs(dateColName),
 			"valueColumnName" -> PhStringArgs(valueColumnName),
