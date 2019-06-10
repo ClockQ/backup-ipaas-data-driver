@@ -1,14 +1,14 @@
 package com.pharbers.ipaas.data.driver.factory
 
-import com.pharbers.ipaas.data.driver.api.work.{PhMapArgs, PhPluginTrait, PhStringArgs, PhWorkArgs}
-import com.pharbers.ipaas.data.driver.config.yamlModel.PluginBean
+import com.pharbers.ipaas.data.driver.api.work._
+import com.pharbers.ipaas.data.driver.config.yamlModel._
 
 /** 构造函数无参的plugin工厂
   *
   * @author dcs
   * @note 通过反射获取
   */
-case class PhPluginFactory(plugin: PluginBean) extends PhFactoryTrait[PhPluginTrait] {
+case class PhPluginFactory(plugin: Plugin) extends PhFactoryTrait[PhPluginTrait] {
     override def inst(): PhPluginTrait = {
         import scala.collection.JavaConverters._
         val tmp = PhFactory.getMethodMirror(plugin.getReference)(plugin.getName, PhMapArgs(
