@@ -12,7 +12,7 @@ case class CalcRank() extends PhOperatorTrait{
 
     override def perform(pr: PhWorkArgs[_]): PhWorkArgs[_] = {
         val prMapArgs = pr.toMapArgs[PhWorkArgs[_]]
-	    val pluginResultDF = prMapArgs.getAs[PhFuncArgs]("plugin").get.get(pr).asInstanceOf[PhDFArgs].get
+	    val pluginResultDF = prMapArgs.getAs[PhFuncArgs[Any, Any]]("plugin").get.get(pr).asInstanceOf[PhDFArgs].get
 	    val rankColumnName = prMapArgs.getAs[PhStringArgs]("rankColumnName").get.get
 	    val resultDF = sparkObj.sqc.createDataFrame(
 		    pluginResultDF.rdd.zipWithIndex.map { case (row, columnindex) => Row.fromSeq(row.toSeq :+ (columnindex + 1)) },

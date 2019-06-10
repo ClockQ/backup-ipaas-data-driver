@@ -11,7 +11,7 @@ import env.sparkObj
   * @tparam T
   * @note
   */
-case class PhReadParquetOperator(plugin: PhPluginTrait, name: String, args: PhWorkArgs[_]) extends PhOperatorTrait{
+case class PhReadParquetOperator(name: String, args: PhWorkArgs[_], plugin: PhPluginTrait) extends PhOperatorTrait{
     override val defaultArgs: PhWorkArgs[_] = PhNoneArgs
 
     override def perform(pr: PhWorkArgs[_]): PhWorkArgs[_] = {

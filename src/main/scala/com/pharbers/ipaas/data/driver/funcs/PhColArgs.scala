@@ -8,10 +8,12 @@ import com.pharbers.ipaas.data.driver.api.work.PhWorkArgs
   * @author: clock
   * @date: 2019-05-29 16:38
   */
-trait PhPluginArgs[+A] extends PhWorkArgs[A]
+trait PhPluginArgs[+A] extends PhWorkArgs[A] {
+    val args: A
+    def get: A = args
+}
 
 trait PhOperatorArgs[A] extends PhWorkArgs[A] {
     def perform(pr: A): A
 }
 
-final case class PhColArgs(args: Column) extends PhPluginArgs[Column]

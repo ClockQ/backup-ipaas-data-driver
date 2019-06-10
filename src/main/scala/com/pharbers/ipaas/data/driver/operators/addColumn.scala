@@ -1,5 +1,6 @@
 package com.pharbers.ipaas.data.driver.operators
 
+import org.apache.spark.sql.{Column, DataFrame}
 import com.pharbers.ipaas.data.driver.api.work._
 
 /**
@@ -7,17 +8,13 @@ import com.pharbers.ipaas.data.driver.api.work._
   * @author: clock
   * @date: 2019-05-28 17:21
   */
-case class addColumn(plugin: PhPluginTrait, name: String, defaultArgs: PhWorkArgs[_]) extends PhOperatorTrait {
+case class addColumn(name: String, args: PhMapArgs[PhWorkArgs[Any]], pluginLst: Seq[PhPluginTrait2[Column]]) extends PhOperatorTrait2[DataFrame] {
+    val inDFName: String = args.getAs[PhStringArgs]("inDFName").get.get
+    val newColName: String = args.getAs[PhStringArgs]("newColName").get.get
 
-    override def perform(pr: PhWorkArgs[_]): PhWorkArgs[_] = {
-        val defaultMapArgs = defaultArgs.toMapArgs[PhWorkArgs[_]]
-        val prMapArgs = pr.toMapArgs[PhWorkArgs[_]]
-        val inDFName = defaultMapArgs.getAs[PhStringArgs]("inDFName").get.get
-        val newColName = defaultMapArgs.getAs[PhStringArgs]("newColName").get.get
-        val inDF = prMapArgs.getAs[PhDFArgs](inDFName).get.get
-        val func = plugin.perform(pr).toColArgs.get
-        val outDF = inDF.withColumn(newColName, func)
-
-        PhDFArgs(outDF)
+    override def perform(pr: PhMapArgs[PhWorkArgs[Any]]): PhWorkArgs[DataFrame] = {
+        val inDF = pr.getAs[PhDFArgs](inDFName).get.get
+        val plugin = pluginLst.head.perform(pr).get
+        PhDFArgs(inDF.withColumn(newColName, plugin))
     }
 }

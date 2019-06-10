@@ -25,8 +25,8 @@ case class PhBaseJob(actionLst: List[PhActionTrait], name: String) extends PhJob
                 PhBaseJob(actionLst.tail, name).perform(tmp)
             }catch {
                 case e: PhOperatorException => {
-                    phlog.setErrorLog("jobName#actionName#operatorName -> " + name + "#" + e.getMessage)
-                    phlog.setErrorLog(e.getStackTrace.map(x => x.toString).mkString("\n"))
+//                    phlog.setErrorLog("jobName#actionName#operatorName -> " + name + "#" + e.getMessage)
+//                    phlog.setErrorLog(e.getStackTrace.map(x => x.toString).mkString("\n"))
                     pr
                 }
             }

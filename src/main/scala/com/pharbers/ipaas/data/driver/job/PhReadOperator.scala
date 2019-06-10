@@ -12,7 +12,7 @@ import org.apache.spark.sql.DataFrame
   * @tparam T
   * @note
   */
-case class PhReadOperator(plugin: PhPluginTrait, name: String, args: PhWorkArgs[_]) extends PhOperatorTrait{
+case class PhReadOperator(name: String, args: PhWorkArgs[_], plugin: PhPluginTrait) extends PhOperatorTrait{
     override val defaultArgs: PhWorkArgs[_] = PhNoneArgs
 
     override def perform(pr: PhWorkArgs[_]): PhWorkArgs[_] = {

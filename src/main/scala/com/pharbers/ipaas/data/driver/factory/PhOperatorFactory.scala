@@ -19,7 +19,7 @@ case class PhOperatorFactory(operator: Operator) extends PhFactoryTrait[PhOperat
             case _: Plugin => PhFactory.getMethodMirror(operator.getPlugin.getFactory)(operator.getPlugin).asInstanceOf[PhFactoryTrait[PhPluginTrait]].inst()
             case _ => null
         }
-        val tmp = PhFactory.getMethodMirror(operator.getReference)(plugin, operator.getName, PhMapArgs(operator.getArgs.asScala.map(x => (x._1, PhStringArgs(x._2))).toMap))
+        val tmp = PhFactory.getMethodMirror(operator.getReference)(operator.getName, PhMapArgs(operator.getArgs.asScala.map(x => (x._1, PhStringArgs(x._2))).toMap), Seq(plugin))
         tmp.asInstanceOf[PhOperatorTrait]
     }
 }
