@@ -97,11 +97,7 @@ class testPhWorkTrait extends FunSuite with BeforeAndAfterAll {
                        args: PhMapArgs[PhWorkArgs[Any]],
                        actionLst: List[PhActionTrait2]) extends PhJobTrait2 {
             override def perform(pr: PhMapArgs[PhWorkArgs[Any]]): PhWorkArgs[Any] = {
-                var mapArgs = pr
-                actionLst.foreach { action =>
-                    mapArgs = PhMapArgs(mapArgs.get + (action.name -> action.perform(mapArgs)))
-                }
-                mapArgs
+                actionLst.foldLeft(pr)((l, r) => PhMapArgs(l.get + (r.name -> r.perform(l))))
             }
         }
 
