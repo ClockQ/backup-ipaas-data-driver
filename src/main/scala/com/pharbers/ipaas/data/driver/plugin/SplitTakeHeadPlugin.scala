@@ -15,6 +15,16 @@ case class SplitTakeHeadPlugin() extends PhPluginTrait{
 	override val name: String = "splitTakeHeadPlugin"
 	override val defaultArgs: PhWorkArgs[_] = PhNoneArgs
 
+/**  功能描述:
+  *   
+  *   @param pr 参数描述
+  *   @tparam
+  *   @return _root_.com.pharbers.ipaas.data.driver.api.work.PhWorkArgs[_]
+  *   @throws
+  *   @example
+  *   @note
+  *   @history
+  */
 	override def perform(pr: PhWorkArgs[_]): PhWorkArgs[_] = {
 		val prMapArgs = pr.asInstanceOf[PhMapArgs[_]]
 		val df = prMapArgs.getAs[PhDFArgs]("df").get.get

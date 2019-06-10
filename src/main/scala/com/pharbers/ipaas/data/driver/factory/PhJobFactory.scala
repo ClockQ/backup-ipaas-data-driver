@@ -1,7 +1,7 @@
 package com.pharbers.ipaas.data.driver.factory
 
 import com.pharbers.ipaas.data.driver.api.work._
-import com.pharbers.ipaas.data.driver.config.yamlModel.JobBean
+import com.pharbers.ipaas.data.driver.config.yamlModel._
 
 import scala.reflect.runtime.universe
 
@@ -12,7 +12,7 @@ import scala.reflect.runtime.universe
   * @tparam T 类型参数说明
   * @note 一些值得注意的地方
   */
-case class PhJobFactory(job: JobBean) extends PhFactoryTrait[PhJobTrait] {
+case class PhJobFactory(job: Job) extends PhFactoryTrait[PhJobTrait] {
     /**  这个方法干啥的
       *   @param   args  参数说明.
       *   @param   T

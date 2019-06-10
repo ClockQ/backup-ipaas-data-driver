@@ -16,7 +16,7 @@ import org.scalatest.FunSuite
 class testYamlReader extends FunSuite{
     test("yaml to job"){
         val stream = new FileInputStream(new File("D:\\code\\pharbers\\ipaas-data-driver\\pharbers_config\\testYAML.yaml"))
-        val jobs = YamlReader().readObjects[JobBean](stream)
+        val jobs = YamlReader().readObjects[Job](stream)
         assert(!jobs.head.getName.isEmpty)
     }
 }
