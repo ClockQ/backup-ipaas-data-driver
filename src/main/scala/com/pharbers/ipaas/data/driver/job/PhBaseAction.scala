@@ -1,6 +1,7 @@
 package com.pharbers.ipaas.data.driver.job
 
 import com.pharbers.ipaas.data.driver.api.work._
+import com.pharbers.ipaas.data.driver.exceptions.PhOperatorException
 import org.apache.spark.sql.DataFrame
 
 /**
@@ -25,7 +26,14 @@ case class PhBaseAction(operatorLst: List[PhOperatorTrait], name: String, args: 
                 case _ => PhNoneArgs
             }
 
-            operatorLst.foldLeft(df)((left, right) => right.perform(PhMapArgs(tmp.get + ("df" -> left))))
+            operatorLst.foldLeft(df)((left, right) => {
+                try{
+                    right.perform(PhMapArgs(tmp.get + ("df" -> left)))
+                }catch {
+                    case e:Exception => throw PhOperatorException(name + "#" + right.name, e)
+                }
+            })
+
         }
     }
 }

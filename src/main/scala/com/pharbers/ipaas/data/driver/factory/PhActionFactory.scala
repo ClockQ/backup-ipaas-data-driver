@@ -1,7 +1,7 @@
 package com.pharbers.ipaas.data.driver.factory
 
 import com.pharbers.ipaas.data.driver.api.work._
-import com.pharbers.ipaas.data.driver.config.yamlModel.ActionBean
+import com.pharbers.ipaas.data.driver.config.yamlModel.Action
 
 import scala.reflect.runtime.universe
 
@@ -11,7 +11,7 @@ import scala.reflect.runtime.universe
   * @param action 持久化的配置对象
   * @note 一些值得注意的地方
   */
-case class PhActionFactory(action: ActionBean) extends PhFactoryTrait[PhActionTrait] {
+case class PhActionFactory(action: Action) extends PhFactoryTrait[PhActionTrait] {
 
     /**  生成Action实例
       *   @return  PhActionTrait

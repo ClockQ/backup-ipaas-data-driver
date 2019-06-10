@@ -2,7 +2,7 @@ package com.pharbers.ipaas.data.driver.config
 
 import java.io.{File, FileInputStream}
 
-import com.pharbers.ipaas.data.driver.config.yamlModel.JobBean
+import com.pharbers.ipaas.data.driver.config.yamlModel.{Job, JobBean}
 
 /**
   * @author dcs
@@ -16,7 +16,7 @@ object Config{
         "yaml" -> YamlReader()
     )
 
-    def readJobConfig(path: String): Seq[JobBean] ={
-        configReaderMap.getOrElse(path.split('.').last, throw new Exception("不能解析的文件类型")).readObjects[JobBean](new FileInputStream(new File(path)))
+    def readJobConfig(path: String): Seq[Job] ={
+        configReaderMap.getOrElse(path.split('.').last, throw new Exception("不能解析的文件类型")).readObjects[Job](new FileInputStream(new File(path)))
     }
 }
