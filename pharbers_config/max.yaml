@@ -594,7 +594,7 @@ actions:
       factory: com.pharbers.ipaas.data.driver.factory.PhPluginFactory
       args:
         exprString: f_sales as Double
-  - name: addCol f_sales
+  - name: addCol f_units
     factory: com.pharbers.ipaas.data.driver.factory.PhOperatorFactory
     reference: com.pharbers.ipaas.data.driver.operators.addColumn
     args:
