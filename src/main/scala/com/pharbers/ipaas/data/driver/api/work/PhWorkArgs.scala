@@ -225,7 +225,7 @@ case object PhNoneArgs extends PhWorkArgs[Nothing] {
     /** PhNoneArgs类无法get，没有意义
       *
       * @return Nothing
-      * @throws NoSuchElementException("PhNoneArgs.get")
+      * @throws NoSuchElementException ("PhNoneArgs.get")
       * @author clock
       * @version 0.0
       * @since 2019/6/11 15:03

@@ -2,7 +2,7 @@ package com.pharbers.ipaas.data.driver.libs.spark
 
 import org.scalatest.{BeforeAndAfterAll, FunSuite}
 
-class testSparkDriver extends FunSuite with BeforeAndAfterAll {
+class TestSparkDriver extends FunSuite with BeforeAndAfterAll {
     implicit var sd: PhSparkDriver = PhSparkDriver("testSparkDriver")
     import util._
 

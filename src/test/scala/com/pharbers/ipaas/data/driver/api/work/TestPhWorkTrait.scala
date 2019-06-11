@@ -5,12 +5,7 @@ import org.scalatest.{BeforeAndAfterAll, FunSuite}
 import org.apache.spark.sql.{Column, DataFrame, Row}
 import com.pharbers.ipaas.data.driver.libs.spark.PhSparkDriver
 
-/**
-  * @description:
-  * @author: clock
-  * @date: 2019-05-28 15:06
-  */
-class testPhWorkTrait extends FunSuite with BeforeAndAfterAll {
+class TestPhWorkTrait extends FunSuite with BeforeAndAfterAll {
     implicit val sd: PhSparkDriver = PhSparkDriver("testSparkDriver")
 
     var testDF: DataFrame = _
@@ -137,6 +132,7 @@ class testPhWorkTrait extends FunSuite with BeforeAndAfterAll {
         println(result)
         result.toMapArgs.getAs[PhDFArgs]("testAction1").get.get.show(false)
         result.toMapArgs.getAs[PhDFArgs]("testAction2").get.get.show(false)
+        assert(result.toMapArgs.get.size === 3)
     }
 
     test("PhWorkTrait-RDD") {
@@ -211,5 +207,6 @@ class testPhWorkTrait extends FunSuite with BeforeAndAfterAll {
         val job1 = job("testJob", PhMapArgs(), List(action1, action2))
         val result = job1.perform(PhMapArgs(Map("rdd" -> PhRDDArgs(testDF.rdd))))
         println(result)
+        assert(result.toMapArgs.get.size === 3)
     }
 }

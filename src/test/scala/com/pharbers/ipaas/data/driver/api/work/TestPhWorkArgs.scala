@@ -2,25 +2,19 @@ package com.pharbers.ipaas.data.driver.api.work
 
 import org.scalatest.FunSuite
 
-/**
-  * @description:
-  * @author: clock
-  * @date: 2019-05-28 15:06
-  */
-class testPhWorkArgs extends FunSuite {
+class TestPhWorkArgs extends FunSuite {
     test("PhWorkArgs") {
         val boolean = PhBooleanArgs(false)
-        println(boolean.get)
+        assert(!boolean.get)
         val string = PhStringArgs("string")
-        println(string.get)
+        assert(string.get == "string")
         val list = PhListArgs(boolean :: string :: Nil)
-        println(list.get)
+        assert(list.get.length == 2)
         val map = PhMapArgs(Map("key" -> boolean, "key2" -> string))
-        println(map.get)
+        assert(map.get.size == 2)
 //        val none = PhNoneArgs
 //        println(none.get)
         val func = PhFuncArgs((_: Unit) => string)
-        println(func.get)
-        println(func.get(Unit))
+        assert(func.get(Unit).get == "string")
     }
 }

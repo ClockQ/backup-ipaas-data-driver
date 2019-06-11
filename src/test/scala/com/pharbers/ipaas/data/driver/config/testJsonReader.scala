@@ -14,7 +14,7 @@ import org.scalatest.FunSuite
   */
 class testJsonReader extends FunSuite{
     test("json read"){
-        val stream = new FileInputStream(new File("D:\\code\\pharbers\\ipaas-data-driver\\pharbers_config\\testJson.json"))
+        val stream = new FileInputStream(new File("pharbers_config/testJson.json"))
         val jobs = JsonReader().readObjects[JobBean](stream)
         assert(!jobs.head.getName.isEmpty)
     }
