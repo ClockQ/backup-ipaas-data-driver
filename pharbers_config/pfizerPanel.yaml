@@ -66,17 +66,17 @@ actions:
         args:
           path: hdfs:///repository/miss_hosp/5ca069bceeefcc012918ec72
 
-  - name: readNotPublishHosp
-    reference: com.pharbers.ipaas.data.driver.job.PhBaseAction
-    factory: com.pharbers.ipaas.data.driver.factory.PhActionFactory
-    args:
-      null: null
-    opers:
-      - name: read
-        reference: com.pharbers.ipaas.data.driver.job.PhReadParquetOperator
-        factory: com.pharbers.ipaas.data.driver.factory.PhOperatorFactory
-        args:
-          path: hdfs:///repository/not_published_hosp/5ca069bceeefcc012918ec72
+#  - name: readNotPublishHosp
+#    reference: com.pharbers.ipaas.data.driver.job.PhBaseAction
+#    factory: com.pharbers.ipaas.data.driver.factory.PhActionFactory
+#    args:
+#      null: null
+#    opers:
+#      - name: read
+#        reference: com.pharbers.ipaas.data.driver.job.PhReadParquetOperator
+#        factory: com.pharbers.ipaas.data.driver.factory.PhOperatorFactory
+#        args:
+#          path: hdfs:///repository/not_published_hosp/5ca069bceeefcc012918ec72
 
   - name: readFullHosp
     reference: com.pharbers.ipaas.data.driver.job.PhBaseAction
@@ -120,12 +120,12 @@ actions:
         args:
           inDFName: df
           dropColName: DATE
-      - name: union
-        factory: com.pharbers.ipaas.data.driver.factory.PhOperatorFactory
-        reference: com.pharbers.ipaas.data.driver.operators.unionOperator
-        args:
-          inDFName: df
-          unionDFName: readNotPublishHosp
+#      - name: union
+#        factory: com.pharbers.ipaas.data.driver.factory.PhOperatorFactory
+#        reference: com.pharbers.ipaas.data.driver.operators.unionOperator
+#        args:
+#          inDFName: df
+#          unionDFName: readNotPublishHosp
       - name: drop
         factory: com.pharbers.ipaas.data.driver.factory.PhOperatorFactory
         reference: com.pharbers.ipaas.data.driver.operators.DropOperator
