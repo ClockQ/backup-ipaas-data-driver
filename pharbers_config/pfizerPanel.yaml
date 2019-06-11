@@ -64,7 +64,7 @@ actions:
         reference: com.pharbers.ipaas.data.driver.job.PhReadParquetOperator
         factory: com.pharbers.ipaas.data.driver.factory.PhOperatorFactory
         args:
-          path: hdfs:///repository/miss_hosp/5ca069bceeefcc012918ec72
+          path: hdfs:///repository/miss_hosp/5ca069e2eeefcc012918ec73
 
 #  - name: readNotPublishHosp
 #    reference: com.pharbers.ipaas.data.driver.job.PhBaseAction
@@ -88,7 +88,7 @@ actions:
         reference: com.pharbers.ipaas.data.driver.job.PhReadParquetOperator
         factory: com.pharbers.ipaas.data.driver.factory.PhOperatorFactory
         args:
-          path: hdfs:///repository/full_hosp/5ca069bceeefcc012918ec72/20180629
+#          path: hdfs:///repository/full_hosp/5ca069e2eeefcc012918ec73/20180629
 
   - name: readSampleHosp
     reference: com.pharbers.ipaas.data.driver.job.PhBaseAction
@@ -100,7 +100,7 @@ actions:
         reference: com.pharbers.ipaas.data.driver.job.PhReadParquetOperator
         factory: com.pharbers.ipaas.data.driver.factory.PhOperatorFactory
         args:
-          path: hdfs:///repository/sample_hosp/5ca069bceeefcc012918ec72/mz
+          path: hdfs:///repository/sample_hosp/5ca069e2eeefcc012918ec73/DVP
 
   - name: missHosp
     reference: com.pharbers.ipaas.data.driver.job.PhBaseAction
