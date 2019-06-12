@@ -14,9 +14,9 @@ case class DropOperator(plugin: PhPluginTrait, name: String, defaultArgs: PhWork
         val defaultMapArgs = defaultArgs.toMapArgs[PhWorkArgs[_]]
         val prMapArgs = pr.toMapArgs[PhWorkArgs[_]]
         val inDFName = defaultMapArgs.getAs[PhStringArgs]("inDFName").get.get
-        val dropColName = defaultMapArgs.getAs[PhStringArgs]("dropColName").get.get
+        val dropColName = defaultMapArgs.getAs[PhStringArgs]("dropColName").get.get.split(",")
         val inDF = prMapArgs.getAs[PhDFArgs](inDFName).get.get
-        val outDF = inDF.drop(dropColName)
+        val outDF = inDF.drop(dropColName: _*)
 
         PhDFArgs(outDF)
     }
