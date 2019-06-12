@@ -247,19 +247,3 @@ actions:
               inDFName: df
               dropColName: GROUP
 
-#  - name: sales*Factor
-#    reference: com.pharbers.ipaas.data.driver.job.PhBaseAction
-#    factory: com.pharbers.ipaas.data.driver.factory.PhActionFactory
-#    args:
-#      df: read
-#    opers:
-#      - name:
-#        factory: com.pharbers.ipaas.data.driver.factory.PhOperatorFactory
-#        reference: com.pharbers.ipaas.data.driver.job.PhBaseOperator
-#        args:
-#          newColumnName: new
-#          exprString: f_sales * Factor
-#        plugin:
-#          name: baseCalc
-#          reference: com.pharbers.ipaas.data.driver.plugin.BaseCalcPlugin
-#          factory: com.pharbers.ipaas.data.driver.factory.PhPluginFactory

@@ -6,21 +6,23 @@ import com.pharbers.ipaas.data.driver.libs.spark.util._
 import env.sparkObj
 
 /** 功能描述
-  *
-  * @author EDZ
-  * @param
-  * @tparam
-  * @note
+  * 读取mongo算子
+  * @param plugin 插件
+  * @param name 算子 name
+  * @param defaultArgs 配置参数 "mongodbHost"-> 地址, "mongodbPort" -> 端口, "databaseName" -> 库名, "collName" -> 表名
+  * @author dcs
+  * @version 0.0
+  * @since 2019/6/11 16:50
+  * @note 一些值得注意的地方
   */
-case class ReadMongoOperator(plugin: PhPluginTrait, name: String, args: PhWorkArgs[_]) extends PhOperatorTrait{
-    override val defaultArgs: PhWorkArgs[_] = PhNoneArgs
+case class ReadMongoOperator(plugin: PhPluginTrait, name: String, defaultArgs: PhWorkArgs[_]) extends PhOperatorTrait{
+    val defaultMapArgs: PhMapArgs[PhWorkArgs[_]] = defaultArgs.toMapArgs[PhWorkArgs[_]]
+    val mongodbHost: String = defaultMapArgs.getAs[PhStringArgs]("mongodbHost").get.get
+    val mongodbPort: String = defaultMapArgs.getAs[PhStringArgs]("mongodbPort").get.get
+    val databaseName: String = defaultMapArgs.getAs[PhStringArgs]("databaseName").get.get
+    val collName: String = defaultMapArgs.getAs[PhStringArgs]("collName").get.get
 
     override def perform(pr: PhWorkArgs[_]): PhWorkArgs[_] = {
-        val defaultMapArgs = defaultArgs.toMapArgs[PhWorkArgs[_]]
-        val mongodbHost = defaultMapArgs.getAs[PhStringArgs]("mongodbHost").get.get
-        val mongodbPort = defaultMapArgs.getAs[PhStringArgs]("mongodbPort").get.get
-        val databaseName = defaultMapArgs.getAs[PhStringArgs]("databaseName").get.get
-        val collName = defaultMapArgs.getAs[PhStringArgs]("collName").get.get
 
         implicit val sd: PhSparkDriver = sparkObj
         PhDFArgs(sd.setUtil(readMongo()).readMongo(mongodbHost, mongodbPort, databaseName, collName))
