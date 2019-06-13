@@ -227,7 +227,7 @@ case object PhNoneArgs extends PhWorkArgs[Nothing] {
       * @return Nothing
       * @throws NoSuchElementException ("PhNoneArgs.get")
       * @author clock
-      * @version 0.0
+      * @version 0.1
       * @since 2019/6/11 15:03
       */
     def get: Nothing = throw new NoSuchElementException("PhNoneArgs.get")
