@@ -6,8 +6,13 @@ actions:
     reference: com.pharbers.ipaas.data.driver.job.PhBaseAction
     factory: com.pharbers.ipaas.data.driver.factory.PhActionFactory
     args:
-        df: panelResult
+        null: null
     opers:
+    -   name: read panel for CNS_R
+        reference: com.pharbers.ipaas.data.driver.job.PhReadParquetOperator
+        factory: com.pharbers.ipaas.data.driver.factory.PhOperatorFactory
+        args:
+            path: hdfs:///workData/Panel/c8c0f2f4-bda2-4610-96d0-30201a021d63
     -   name: rename Date to YM
         factory: com.pharbers.ipaas.data.driver.factory.PhOperatorFactory
         reference: com.pharbers.ipaas.data.driver.operators.withColumnRenamed
@@ -43,10 +48,10 @@ actions:
         null: null
     opers:
     -   name: read universe for DVP
-        reference: com.pharbers.ipaas.data.driver.job.PhReadParquetOperator
+        reference: com.pharbers.ipaas.data.driver.job.PhReadOperator
         factory: com.pharbers.ipaas.data.driver.factory.PhOperatorFactory
         args:
-            path: path TODO
+            path: hdfs:///data/pfizer/pha_config_repository1804/Pfizer_Universe_CNS_R.csv
     -   name: rename PHA_HOSP_ID to PHA_ID
         factory: com.pharbers.ipaas.data.driver.factory.PhOperatorFactory
         reference: com.pharbers.ipaas.data.driver.operators.withColumnRenamed
@@ -208,18 +213,12 @@ actions:
             factory: com.pharbers.ipaas.data.driver.factory.PhPluginFactory
             args:
                 exprString: case when sumUnits IS NULL THEN 0.0 else sumUnits end
-    -   name: drop sumSales
+    -   name: drop sumSales,sumUnits
         factory: com.pharbers.ipaas.data.driver.factory.PhOperatorFactory
         reference: com.pharbers.ipaas.data.driver.operators.DropOperator
         args:
             inDFName: df
-            dropColName: sumSales
-    -   name: drop sumUnits
-        factory: com.pharbers.ipaas.data.driver.factory.PhOperatorFactory
-        reference: com.pharbers.ipaas.data.driver.operators.DropOperator
-        args:
-            inDFName: df
-            dropColName: sumUnits
+            dropColName: sumSales,sumUnits
     -   name: rename j_sumSales to sumSales
         factory: com.pharbers.ipaas.data.driver.factory.PhOperatorFactory
         reference: com.pharbers.ipaas.data.driver.operators.withColumnRenamed
@@ -297,30 +296,12 @@ actions:
             factory: com.pharbers.ipaas.data.driver.factory.PhPluginFactory
             args:
                 exprString: s_sumUnits / s_westMedicineIncome
-    -   name: drop s_sumSales
+    -   name: drop s_sumSales,s_sumUnits,s_westMedicineIncome
         factory: com.pharbers.ipaas.data.driver.factory.PhOperatorFactory
         reference: com.pharbers.ipaas.data.driver.operators.DropOperator
         args:
             inDFName: df
-            dropColName: s_sumSales
-    -   name: drop s_sumSales
-        factory: com.pharbers.ipaas.data.driver.factory.PhOperatorFactory
-        reference: com.pharbers.ipaas.data.driver.operators.DropOperator
-        args:
-            inDFName: df
-            dropColName: s_sumSales
-    -   name: drop s_sumUnits
-        factory: com.pharbers.ipaas.data.driver.factory.PhOperatorFactory
-        reference: com.pharbers.ipaas.data.driver.operators.DropOperator
-        args:
-            inDFName: df
-            dropColName: s_sumUnits
-    -   name: drop s_westMedicineIncome
-        factory: com.pharbers.ipaas.data.driver.factory.PhOperatorFactory
-        reference: com.pharbers.ipaas.data.driver.operators.DropOperator
-        args:
-            inDFName: df
-            dropColName: s_westMedicineIncome
+            dropColName: s_sumSales,s_sumUnits,s_westMedicineIncome
 
 -   name: enlargedDF
     reference: com.pharbers.ipaas.data.driver.job.PhBaseAction
@@ -336,24 +317,12 @@ actions:
             joinDFName: segmentDF
             joinExpr: SEGMENT == s_SEGMENT AND min1 == s_min1 AND YM == s_YM
             joinType: inner
-    -   name: drop s_SEGMENT
+    -   name: drop s_SEGMENT,s_min1,s_YM
         factory: com.pharbers.ipaas.data.driver.factory.PhOperatorFactory
         reference: com.pharbers.ipaas.data.driver.operators.DropOperator
         args:
             inDFName: df
-            dropColName: s_SEGMENT
-    -   name: drop s_min1
-        factory: com.pharbers.ipaas.data.driver.factory.PhOperatorFactory
-        reference: com.pharbers.ipaas.data.driver.operators.DropOperator
-        args:
-            inDFName: df
-            dropColName: s_min1
-    -   name: drop s_YM
-        factory: com.pharbers.ipaas.data.driver.factory.PhOperatorFactory
-        reference: com.pharbers.ipaas.data.driver.operators.DropOperator
-        args:
-            inDFName: df
-            dropColName: s_YM
+            dropColName: s_SEGMENT,s_min1,s_YM
     -   name: add column Factor
         factory: com.pharbers.ipaas.data.driver.factory.PhOperatorFactory
         reference: com.pharbers.ipaas.data.driver.operators.addColumn
@@ -365,7 +334,7 @@ actions:
             reference: com.pharbers.ipaas.data.driver.plugin.BaseCalcPlugin
             factory: com.pharbers.ipaas.data.driver.factory.PhPluginFactory
             args:
-                exprString: case when min1 LIKE %粉针剂% OR min1 LIKE %注射剂% THEN Factor1 else Factor2 end
+                exprString: case when min1 LIKE '%粉针剂%' OR min1 LIKE '%注射剂%' THEN Factor1 else Factor2 end
     -   name: cast String to Int
         factory: com.pharbers.ipaas.data.driver.factory.PhOperatorFactory
         reference: com.pharbers.ipaas.data.driver.operators.addColumn
@@ -395,7 +364,7 @@ actions:
             reference: com.pharbers.ipaas.data.driver.plugin.BaseCalcPlugin
             factory: com.pharbers.ipaas.data.driver.factory.PhPluginFactory
             args:
-                exprString: case when IS_PANEL_HOSP == 1 then sumSales when avg_Sales <= 0.0 or avg_Units  <= 0.0 then 0.0 else WEST_MEDICINE_INCOME * Factor * avg_Sales  end
+                exprString: case when IS_PANEL_HOSP == 1 then sumSales when avg_Sales <= 0.0 or avg_Units  <= 0.0 then 0.0 else westMedicineIncome * Factor * avg_Sales  end
     -   name: cast String to Double
         factory: com.pharbers.ipaas.data.driver.factory.PhOperatorFactory
         reference: com.pharbers.ipaas.data.driver.operators.addColumn
@@ -419,7 +388,7 @@ actions:
             reference: com.pharbers.ipaas.data.driver.plugin.BaseCalcPlugin
             factory: com.pharbers.ipaas.data.driver.factory.PhPluginFactory
             args:
-                exprString: case when IS_PANEL_HOSP == 1 then sumUnits when avg_Sales <= 0.0 or avg_Units  <= 0.0 then 0.0 else WEST_MEDICINE_INCOME * avg_Units * Factor end
+                exprString: case when IS_PANEL_HOSP == 1 then sumUnits when avg_Sales <= 0.0 or avg_Units  <= 0.0 then 0.0 else westMedicineIncome * avg_Units * Factor end
     -   name: cast String to Double
         factory: com.pharbers.ipaas.data.driver.factory.PhOperatorFactory
         reference: com.pharbers.ipaas.data.driver.operators.addColumn
@@ -432,24 +401,12 @@ actions:
             factory: com.pharbers.ipaas.data.driver.factory.PhPluginFactory
             args:
                 exprString: f_units as Double
-    -   name: drop s_sumSales
+    -   name: drop s_sumSales,s_sumUnits,s_westMedicineIncome
         factory: com.pharbers.ipaas.data.driver.factory.PhOperatorFactory
         reference: com.pharbers.ipaas.data.driver.operators.DropOperator
         args:
             inDFName: df
-            dropColName: s_sumSales
-    -   name: drop s_sumUnits
-        factory: com.pharbers.ipaas.data.driver.factory.PhOperatorFactory
-        reference: com.pharbers.ipaas.data.driver.operators.DropOperator
-        args:
-            inDFName: df
-            dropColName: s_sumUnits
-    -   name: drop s_westMedicineIncome
-        factory: com.pharbers.ipaas.data.driver.factory.PhOperatorFactory
-        reference: com.pharbers.ipaas.data.driver.operators.DropOperator
-        args:
-            inDFName: df
-            dropColName: s_westMedicineIncome
+            dropColName: s_sumSales,s_sumUnits,s_westMedicineIncome
     -   name: filter
         factory: com.pharbers.ipaas.data.driver.factory.PhOperatorFactory
         reference: com.pharbers.ipaas.data.driver.job.PhFilterOperator
@@ -561,7 +518,7 @@ actions:
             reference: com.pharbers.ipaas.data.driver.plugin.BaseCalcPlugin
             factory: com.pharbers.ipaas.data.driver.factory.PhPluginFactory
             args:
-                exprString: case when min1 LIKE %粉针剂% OR min1 LIKE %注射剂% THEN Factor1 else Factor2 end
+                exprString: case when min1 LIKE '%粉针剂%' OR min1 LIKE '%注射剂%' THEN Factor1 else Factor2 end
     -   name: rename min1 to Product
         factory: com.pharbers.ipaas.data.driver.factory.PhOperatorFactory
         reference: com.pharbers.ipaas.data.driver.operators.withColumnRenamed
@@ -576,7 +533,7 @@ actions:
             inDFName: df
             selects: Date#Province#City#Panel_ID#Product#Factor#f_sales#f_units#MARKET
 
-- name: CNS_RResultDF
+- name: maxResultDF
   reference: com.pharbers.ipaas.data.driver.job.PhBaseAction
   factory: com.pharbers.ipaas.data.driver.factory.PhActionFactory
   args:

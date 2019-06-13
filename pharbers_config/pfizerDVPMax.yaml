@@ -6,8 +6,13 @@ actions:
     reference: com.pharbers.ipaas.data.driver.job.PhBaseAction
     factory: com.pharbers.ipaas.data.driver.factory.PhActionFactory
     args:
-        df: panelDF
+        null: null
     opers:
+    -   name: read panel for CNS_R
+        reference: com.pharbers.ipaas.data.driver.job.PhReadParquetOperator
+        factory: com.pharbers.ipaas.data.driver.factory.PhOperatorFactory
+        args:
+            path: hdfs:///workData/Panel/af10188b-7608-499a-908f-b5db28c91111
     -   name: select panelDF for DVP
         reference: com.pharbers.ipaas.data.driver.operators.select
         factory: com.pharbers.ipaas.data.driver.factory.PhOperatorFactory
@@ -15,17 +20,17 @@ actions:
             inDFName: df
             selects: Date#Prod_Name#HOSP_ID#Sales#Units
 
--   name: universeDF for DVP
+-   name: universeDF
     reference: com.pharbers.ipaas.data.driver.job.PhBaseAction
     factory: com.pharbers.ipaas.data.driver.factory.PhActionFactory
     args:
         null: null
     opers:
     -   name: read universe for DVP
-        reference: com.pharbers.ipaas.data.driver.job.PhReadParquetOperator
+        reference: com.pharbers.ipaas.data.driver.job.PhReadOperator
         factory: com.pharbers.ipaas.data.driver.factory.PhOperatorFactory
         args:
-            path: path TODO
+            path: hdfs:///data/pfizer/pha_config_repository1804/Pfizer_Universe_DVP.csv
     -   name: rename
         factory: com.pharbers.ipaas.data.driver.factory.PhOperatorFactory
         reference: com.pharbers.ipaas.data.driver.operators.withColumnRenamed
@@ -54,10 +59,10 @@ actions:
         null: null
     opers:
     -   name: read coefDF for DVP
-        reference: com.pharbers.ipaas.data.driver.job.PhReadParquetOperator
+        reference: com.pharbers.ipaas.data.driver.job.PhReadOperator
         factory: com.pharbers.ipaas.data.driver.factory.PhOperatorFactory
         args:
-            path: path TODO
+            path: hdfs:///data/pfizer/pha_config_repository1804/Pfizer_CoefForDVP.csv
     -   name: rename
         factory: com.pharbers.ipaas.data.driver.factory.PhOperatorFactory
         reference: com.pharbers.ipaas.data.driver.operators.withColumnRenamed
@@ -66,7 +71,7 @@ actions:
             oldColName: CITY
             newColName: coefCity
 
--   name: DVPMaxResult
+-   name: maxResultDF
     reference: com.pharbers.ipaas.data.driver.job.PhBaseAction
     factory: com.pharbers.ipaas.data.driver.factory.PhActionFactory
     args:
@@ -91,7 +96,7 @@ actions:
             reference: com.pharbers.ipaas.data.driver.plugin.BaseCalcPlugin
             factory: com.pharbers.ipaas.data.driver.factory.PhPluginFactory
             args:
-                exprString: case when City == 福州市 then City when City == 珠海市 or City == 东莞市 or City == 中山市 or City == 佛山市 then 珠三角市 else City end
+                exprString: case when City == '福州市' then City when City == '珠海市' or City == '东莞市' or City == '中山市' or City == '佛山市' then '珠三角市' else City end
     -   name: join
         factory: com.pharbers.ipaas.data.driver.factory.PhOperatorFactory
         reference: com.pharbers.ipaas.data.driver.operators.JoinOperator
@@ -179,7 +184,7 @@ actions:
         args:
             inDFName: df
             groupCol: GROUP
-            agg: sum(Sales) as Sales,sum(Units) as Units,sum(f_sales) as f_sales,sum(f_units) as f_units
+            agg: sum(Sales) as Sales,sum(Units) as Units,sum(f_sales) as f_sales,sum(f_units) as f_units, first(Province) as Province, first(City) as City, first(Date) as Date, first(Prod_Name) as Prod_Name, first(coef) as coef, first(MARKET) as MARKET
     -   name: drop
         factory: com.pharbers.ipaas.data.driver.factory.PhOperatorFactory
         reference: com.pharbers.ipaas.data.driver.operators.DropOperator
@@ -204,7 +209,7 @@ actions:
             reference: com.pharbers.ipaas.data.driver.plugin.BaseCalcPlugin
             factory: com.pharbers.ipaas.data.driver.factory.PhPluginFactory
             args:
-                exprString: 'none'
+                exprString: 'null'
     -   name: add column Factor
         factory: com.pharbers.ipaas.data.driver.factory.PhOperatorFactory
         reference: com.pharbers.ipaas.data.driver.operators.addColumn
@@ -216,23 +221,10 @@ actions:
             reference: com.pharbers.ipaas.data.driver.plugin.BaseCalcPlugin
             factory: com.pharbers.ipaas.data.driver.factory.PhPluginFactory
             args:
-                exprString: 'none'
+                exprString: 'null'
     -   name: select panelDF for DVP Max result
         reference: com.pharbers.ipaas.data.driver.operators.select
         factory: com.pharbers.ipaas.data.driver.factory.PhOperatorFactory
         args:
             inDFName: df
             selects: Date#Province#City#Panel_ID#Product#Factor#f_sales#f_units#MARKET#coef#Sales#Units
-
-- name: DVPMaxResultDF
-  reference: com.pharbers.ipaas.data.driver.job.PhBaseAction
-  factory: com.pharbers.ipaas.data.driver.factory.PhActionFactory
-  args:
-      df: backfillDF
-  opers:
-  - name: union
-    factory: com.pharbers.ipaas.data.driver.factory.PhOperatorFactory
-    reference: com.pharbers.ipaas.data.driver.operators.unionOperator
-    args:
-        inDFName: df
-        unionDFName: enlargedDF
