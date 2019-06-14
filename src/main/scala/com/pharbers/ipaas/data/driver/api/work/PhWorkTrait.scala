@@ -21,23 +21,23 @@ trait PhJobTrait extends PhWorkTrait {
 
 sealed trait PhWorkTrait2[+A] extends Serializable {
     val name: String
-    protected val args: PhMapArgs[PhWorkArgs[Any]]
+    val defaultArgs: PhMapArgs[PhWorkArgs[Any]]
 
     def perform(pr: PhMapArgs[PhWorkArgs[Any]]): PhWorkArgs[A]
 }
 
 trait PhPluginTrait2[+A] extends PhWorkTrait2[A] {
-    protected val subPluginLst: Seq[PhPluginTrait2[Any]]
+    val subPluginLst: Seq[PhPluginTrait2[Any]]
 }
 
 trait PhOperatorTrait2[+A] extends PhWorkTrait2[A] {
-    protected val pluginLst: Seq[PhPluginTrait2[Any]]
+    val pluginLst: Seq[PhPluginTrait2[Any]]
 }
 
 trait PhActionTrait2 extends PhWorkTrait2[Any] {
-    protected val operatorLst: Seq[PhOperatorTrait2[Any]]
+    val operatorLst: Seq[PhOperatorTrait2[Any]]
 }
 
 trait PhJobTrait2 extends PhWorkTrait2[Any] {
-    protected val actionLst: Seq[PhActionTrait2]
+    val actionLst: Seq[PhActionTrait2]
 }

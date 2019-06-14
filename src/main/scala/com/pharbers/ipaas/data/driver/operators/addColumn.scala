@@ -13,7 +13,10 @@ import com.pharbers.ipaas.data.driver.api.work._
   * @since 2019/6/11 16:50
   * @note 一些值得注意的地方
   */
-case class addColumn(plugin: PhPluginTrait, name: String, defaultArgs: PhWorkArgs[_]) extends PhOperatorTrait {
+case class addColumn(name: String,
+                     defaultArgs: PhMapArgs[PhWorkArgs[Any]],
+                     pluginLst: Seq[PhPluginTrait2[Any]])
+        extends PhOperatorTrait2[DataFrame] {
     val defaultMapArgs: PhMapArgs[PhWorkArgs[_]] = defaultArgs.toMapArgs[PhWorkArgs[_]]
     val inDFName: String = defaultMapArgs.getAs[PhStringArgs]("inDFName").get.get
     val newColName: String = defaultMapArgs.getAs[PhStringArgs]("newColName").get.get
@@ -29,10 +32,10 @@ case class addColumn(plugin: PhPluginTrait, name: String, defaultArgs: PhWorkArg
       * @note 一些值得注意的地方
       * @example {{{这是一个例子}}}
       */
-    override def perform(pr: PhWorkArgs[_]): PhWorkArgs[_] = {
+    override def perform(pr: PhMapArgs[PhWorkArgs[Any]]): PhWorkArgs[DataFrame] = {
         val prMapArgs = pr.toMapArgs[PhWorkArgs[_]]
         val inDF = prMapArgs.getAs[PhDFArgs](inDFName).get.get
-        val func = plugin.perform(pr).toColArgs.get
+        val func = pluginLst.head.perform(pr).toColArgs.get
         val outDF = inDF.withColumn(newColName, func)
 
         PhDFArgs(outDF)

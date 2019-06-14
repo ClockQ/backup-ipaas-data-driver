@@ -3,7 +3,7 @@ package com.pharbers.ipaas.data.driver.libs.spark
 import org.scalatest.{BeforeAndAfterAll, FunSuite}
 
 class TestSparkDriver extends FunSuite with BeforeAndAfterAll {
-    implicit var sd: PhSparkDriver = PhSparkDriver("testSparkDriver")
+    implicit var sd: PhSparkDriver = _
     import util._
 
     val mongodbHost: String = "192.168.100.176"
@@ -18,12 +18,12 @@ class TestSparkDriver extends FunSuite with BeforeAndAfterAll {
     val parquetName: String = "/repository/pha"
     val falseParquetName: String = "/repository/false"
 
-    def beforeAll(configMap: Map[String, Any]) {
+    override def beforeAll(): Unit = {
         sd = PhSparkDriver("testSparkDriver")
         require(sd != null)
     }
 
-    def afterAll(configMap: Map[String, Any]) {
+    override def afterAll(): Unit = {
         sd.stopSpark()
     }
 

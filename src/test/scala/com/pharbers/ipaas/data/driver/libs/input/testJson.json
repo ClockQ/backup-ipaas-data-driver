@@ -1,30 +1,77 @@
 [
   {
-    "name" : "clean",
-    "factory" : "test",
-        "actions" :[
+    "name": "job1",
+    "factory": "factory",
+    "reference": "reference",
+    "args": {},
+    "actions": [
+      {
+        "name": "action1",
+        "factory": "factory",
+        "reference": "reference",
+        "args": {
+          "a": "a",
+          "b": "b"
+        },
+        "opers": [
           {
-            "name" : "abcActions",
-            "factory" : "test",
-            "args" :{
-              "a" : "a",
-              "b" : "b"
-            },
-            "opers" :[
-              {
-                "name" : "CalcYTD",
-                "factory" : "test",
-                "oper" : "com.pharbers.ipass.data.driver.operators.CalcMTD",
-                "args" :{
-                  "date" : "2018"
-                },
-                "plugins" : {
-                    "name" : "CalcYTDPlugin",
-                    "factory" : "test"
-                }
+            "name": "oper1",
+            "factory": "factory",
+            "reference": "reference",
+            "args": {},
+            "plugin": {
+              "name": "plugin1",
+              "factory": "factory",
+              "reference": "reference",
+              "sub": {
+                "name": "subPlugin1",
+                "factory": "factory",
+                "reference": "reference"
               }
-            ]
+            }
+          },
+          {
+            "name": "oper2",
+            "factory": "factory",
+            "reference": "reference"
           }
         ]
+      }
+    ]
+  },
+  {
+    "name": "job2",
+    "factory": "factory",
+    "reference": "reference",
+    "args": {},
+    "actions": [
+      {
+        "name": "action1",
+        "factory": "factory",
+        "reference": "reference",
+        "args": {
+          "a": "a",
+          "b": "b"
+        },
+        "opers": [
+          {
+            "name": "oper1",
+            "factory": "factory",
+            "reference": "reference",
+            "args": {},
+            "plugin": {
+              "name": "plugin1",
+              "factory": "factory",
+              "reference": "reference"
+            }
+          },
+          {
+            "name": "oper2",
+            "factory": "factory",
+            "reference": "reference"
+          }
+        ]
+      }
+    ]
   }
 ]

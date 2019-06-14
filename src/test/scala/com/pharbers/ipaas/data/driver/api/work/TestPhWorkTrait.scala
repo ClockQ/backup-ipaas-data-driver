@@ -33,28 +33,28 @@ class TestPhWorkTrait extends FunSuite with BeforeAndAfterAll {
 
     test("PhWorkTrait-DataFrame") {
 
-        case class lit(name: String, args: PhMapArgs[PhWorkArgs[Any]], subPluginLst: Seq[PhPluginTrait2[Any]])
+        case class lit(name: String, defaultArgs: PhMapArgs[PhWorkArgs[Any]], subPluginLst: Seq[PhPluginTrait2[Any]])
                 extends PhPluginTrait2[Column] {
 
             import org.apache.spark.sql.{functions => sf}
 
-            private val value: String = args.getAs[PhStringArgs]("value").get.get
+            private val value: String = defaultArgs.getAs[PhStringArgs]("value").get.get
 
             def perform(pr: PhMapArgs[PhWorkArgs[Any]]): PhWorkArgs[Column] = PhColArgs(sf.lit(value))
         }
 
-        case class cast(name: String = "cast", args: PhMapArgs[PhWorkArgs[Any]], subPluginLst: Seq[PhPluginTrait2[Any]] = Nil)
+        case class cast(name: String = "cast", defaultArgs: PhMapArgs[PhWorkArgs[Any]], subPluginLst: Seq[PhPluginTrait2[Any]] = Nil)
                 extends PhPluginTrait2[Column] {
 
             import org.apache.spark.sql.{functions => sf}
 
-            private val col: String = args.getAs[PhStringArgs]("col").get.get
-            private val value: String = args.getAs[PhStringArgs]("value").get.get
+            private val col: String = defaultArgs.getAs[PhStringArgs]("col").get.get
+            private val value: String = defaultArgs.getAs[PhStringArgs]("value").get.get
 
             def perform(pr: PhMapArgs[PhWorkArgs[Any]]): PhWorkArgs[Column] = PhColArgs(sf.col(col).cast(value))
         }
 
-        case class generateIdUdf(name: String = "udf", args: PhMapArgs[PhWorkArgs[Any]], subPluginLst: Seq[PhPluginTrait2[Any]] = Nil)
+        case class generateIdUdf(name: String = "udf", defaultArgs: PhMapArgs[PhWorkArgs[Any]], subPluginLst: Seq[PhPluginTrait2[Any]] = Nil)
                 extends PhPluginTrait2[Column] {
 
             import org.bson.types.ObjectId
@@ -66,10 +66,10 @@ class TestPhWorkTrait extends FunSuite with BeforeAndAfterAll {
             def perform(pr: PhMapArgs[PhWorkArgs[Any]]): PhWorkArgs[Column] = PhColArgs(generateIdUdf())
         }
 
-        case class withColumn(name: String, args: PhMapArgs[PhWorkArgs[Any]], pluginLst: Seq[PhPluginTrait2[Column]])
+        case class withColumn(name: String, defaultArgs: PhMapArgs[PhWorkArgs[Any]], pluginLst: Seq[PhPluginTrait2[Column]])
                 extends PhOperatorTrait2[DataFrame] {
-            val inDFName: String = args.getAs[PhStringArgs]("inDFName").get.get
-            val newColName: String = args.getAs[PhStringArgs]("newColName").get.get
+            val inDFName: String = defaultArgs.getAs[PhStringArgs]("inDFName").get.get
+            val newColName: String = defaultArgs.getAs[PhStringArgs]("newColName").get.get
 
             def perform(pr: PhMapArgs[PhWorkArgs[Any]]): PhWorkArgs[DataFrame] = {
                 val inDF = pr.getAs[PhDFArgs](inDFName).get.get
@@ -79,7 +79,7 @@ class TestPhWorkTrait extends FunSuite with BeforeAndAfterAll {
         }
 
         case class action(name: String = "testAction",
-                          args: PhMapArgs[PhWorkArgs[Any]],
+                          defaultArgs: PhMapArgs[PhWorkArgs[Any]],
                           operatorLst: Seq[PhOperatorTrait2[Any]]) extends PhActionTrait2 {
             override def perform(pr: PhMapArgs[PhWorkArgs[Any]]): PhWorkArgs[Any] = {
                 operatorLst
@@ -89,7 +89,7 @@ class TestPhWorkTrait extends FunSuite with BeforeAndAfterAll {
         }
 
         case class job(name: String = "testJob",
-                       args: PhMapArgs[PhWorkArgs[Any]],
+                       defaultArgs: PhMapArgs[PhWorkArgs[Any]],
                        actionLst: List[PhActionTrait2]) extends PhJobTrait2 {
             override def perform(pr: PhMapArgs[PhWorkArgs[Any]]): PhWorkArgs[Any] = {
                 actionLst.foldLeft(pr)((l, r) => PhMapArgs(l.get + (r.name -> r.perform(l))))
@@ -137,14 +137,14 @@ class TestPhWorkTrait extends FunSuite with BeforeAndAfterAll {
 
     test("PhWorkTrait-RDD") {
 
-        case class addOne(name: String, args: PhMapArgs[PhWorkArgs[Any]], subPluginLst: Seq[PhPluginTrait2[Any]])
+        case class addOne(name: String, defaultArgs: PhMapArgs[PhWorkArgs[Any]], subPluginLst: Seq[PhPluginTrait2[Any]])
                 extends PhPluginTrait2[Any => Any] {
-            def perform(pr: PhMapArgs[PhWorkArgs[Any]]): PhWorkArgs[Any => Any] = PhFuncArgs( (x: Any) => x )
+            def perform(pr: PhMapArgs[PhWorkArgs[Any]]): PhWorkArgs[Any => Any] = PhFuncArgs((x: Any) => x)
         }
 
-        case class map(name: String, args: PhMapArgs[PhWorkArgs[Any]], pluginLst: Seq[PhPluginTrait2[Any => Any]])
+        case class map(name: String, defaultArgs: PhMapArgs[PhWorkArgs[Any]], pluginLst: Seq[PhPluginTrait2[Any => Any]])
                 extends PhOperatorTrait2[RDD[_]] {
-            val inRDDName: String = args.getAs[PhStringArgs]("inRDDName").get.get
+            val inRDDName: String = defaultArgs.getAs[PhStringArgs]("inRDDName").get.get
 
             def perform(pr: PhMapArgs[PhWorkArgs[Any]]): PhWorkArgs[RDD[_]] = {
                 val inRDD = pr.getAs[PhRDDArgs[_]](inRDDName).get.get
@@ -154,7 +154,7 @@ class TestPhWorkTrait extends FunSuite with BeforeAndAfterAll {
         }
 
         case class action(name: String = "testAction",
-                          args: PhMapArgs[PhWorkArgs[Any]],
+                          defaultArgs: PhMapArgs[PhWorkArgs[Any]],
                           operatorLst: Seq[PhOperatorTrait2[Any]]) extends PhActionTrait2 {
             override def perform(pr: PhMapArgs[PhWorkArgs[Any]]): PhWorkArgs[Any] = {
                 operatorLst.foldLeft(pr)((l, r) => PhMapArgs(l.get + (r.name -> r.perform(l))))
@@ -163,7 +163,7 @@ class TestPhWorkTrait extends FunSuite with BeforeAndAfterAll {
         }
 
         case class job(name: String = "testJob",
-                       args: PhMapArgs[PhWorkArgs[Any]],
+                       defaultArgs: PhMapArgs[PhWorkArgs[Any]],
                        actionLst: List[PhActionTrait2]) extends PhJobTrait2 {
             override def perform(pr: PhMapArgs[PhWorkArgs[Any]]): PhWorkArgs[Any] = {
                 var mapArgs = pr.toMapArgs[PhWorkArgs[_]]

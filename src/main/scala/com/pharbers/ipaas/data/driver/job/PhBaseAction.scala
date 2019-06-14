@@ -6,20 +6,23 @@ import org.apache.spark.sql.DataFrame
 
 /** 功能描述
   * action基类
+  *
   * @param operatorLst 算子
-  * @param name action name
-  * @param args 配置参数
+  * @param name        action name
+  * @param args        配置参数
   * @author dcs
   * @version 0.0
   * @since ${YEAR}/${MONTH}/${DAY} ${TIME}
   * @note 一些值得注意的地方
   */
-case class PhBaseAction(operatorLst: List[PhOperatorTrait], name: String, args: PhWorkArgs[_]) extends PhActionTrait{
-    override val defaultArgs: PhWorkArgs[_] = PhNoneArgs
+case class PhBaseAction(name: String,
+                        defaultArgs: PhMapArgs[PhWorkArgs[Any]],
+                        operatorLst: Seq[PhOperatorTrait2[Any]])
+        extends PhActionTrait2 {
 
     /** 功能描述
-      *action执行入口
-
+      * action执行入口
+      *
       * @param pr 运行时其他action的结果 PhMapArgs[PhDfArgs]
       * @return _root_.com.pharbers.ipaas.data.driver.api.work.PhWorkArgs[_]
       * @throws PhOperatorException 算子执行时异常
@@ -29,24 +32,20 @@ case class PhBaseAction(operatorLst: List[PhOperatorTrait], name: String, args: 
       * @note 一些值得注意的地方
       * @example {{{这是一个例子}}}
       */
-    override def perform(pr: PhWorkArgs[_]): PhWorkArgs[_] = {
+    def perform(pr: PhMapArgs[PhWorkArgs[Any]]): PhWorkArgs[Any] = {
         if (operatorLst.isEmpty) pr
         else {
-            val tmp = pr match {
-                case mapArgs: PhMapArgs[_] => mapArgs
-                case _ => throw new Exception("参数类型错误")
-            }
-            val dfKey = args.toMapArgs[PhStringArgs].getAs[PhStringArgs]("df")
+            val dfKey = defaultArgs.toMapArgs[PhStringArgs].getAs[PhStringArgs]("df")
             val df = dfKey match {
-                case key: Some[PhStringArgs] => tmp.get(key.get.get).asInstanceOf[PhWorkArgs[_]]
+                case key: Some[PhStringArgs] => pr.get(key.get.get)
                 case _ => PhNoneArgs
             }
 
             operatorLst.foldLeft(df)((left, right) => {
-                try{
-                    right.perform(PhMapArgs(tmp.get + ("df" -> left)))
-                }catch {
-                    case e:Exception => throw PhOperatorException(List(right.name, name), e)
+                try {
+                    right.perform(PhMapArgs(pr.get + ("df" -> left)))
+                } catch {
+                    case e: Exception => throw PhOperatorException(List(right.name, name), e)
                 }
             })
 
