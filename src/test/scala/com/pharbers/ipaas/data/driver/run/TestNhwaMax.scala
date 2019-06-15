@@ -9,14 +9,14 @@ import com.pharbers.ipaas.data.driver.libs.spark.util.readParquet
 
 class TestNhwaMax extends FunSuite {
 	test("test nhwa clean") {
-		implicit val sd: PhSparkDriver = env.sparkObj()
+		implicit val sd: PhSparkDriver = PhSparkDriver("test-driver")
 
 		val phJobs = inst(readJobConfig("max_config/nhwa/clean.yaml"))
 		val result = phJobs.head.perform(PhMapArgs(Map(
 			"sparkDriver" -> PhSparkDriverArgs(PhSparkDriver("test"))
 		)))
 
-		val cleanDF = result.toMapArgs[PhDFArgs].get("readCpaFile").get
+		val cleanDF = result.toMapArgs[PhDFArgs].get("readHospitalFile").get
 		cleanDF.show(false)
 //
 //		val cleanTrueDF = sd.setUtil(readParquet()).readParquet("hdfs:///workData/Clean/20bfd585-c889-4385-97ec-a8d4c77d71cc")

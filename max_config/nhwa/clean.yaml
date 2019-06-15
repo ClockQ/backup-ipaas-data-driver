@@ -24,17 +24,15 @@ actions:
       args:
         exprString: cast(HOSP_ID as int)
 
-#- name: readHospitalFile
-#  reference: com.pharbers.ipaas.data.driver.api.job.PhBaseAction
-#  factory: com.pharbers.ipaas.data.driver.api.factory.PhActionFactory
-#  args:
-#    null: null
-#  opers:
-#  - name:
-#    factory: com.pharbers.ipaas.data.driver.api.factory.PhOperatorFactory
-#    reference: com.pharbers.ipaas.data.driver.operators.PhReadParquetOperator
-#    args:
-#      path: hdfs:///repository/hosp_dis_max
+- name: readHospitalFile
+  reference: com.pharbers.ipaas.data.driver.api.job.PhBaseAction
+  factory: com.pharbers.ipaas.data.driver.api.factory.PhActionFactory
+  opers:
+  - name: loadHospitalFile
+    factory: com.pharbers.ipaas.data.driver.api.factory.PhOperatorFactory
+    reference: com.pharbers.ipaas.data.driver.operators.ReadParquetOperator
+    args:
+      path: hdfs:///repository/hosp_dis_max
 #
 #- name: readProductFile
 #  reference: com.pharbers.ipaas.data.driver.api.job.PhBaseAction
