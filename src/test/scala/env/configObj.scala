@@ -2,7 +2,9 @@ package env
 
 import java.io._
 import com.pharbers.ipaas.data.driver.libs.input._
+import com.pharbers.ipaas.data.driver.api.factory._
 import com.pharbers.ipaas.data.driver.api.model.Job
+import com.pharbers.ipaas.data.driver.api.work.PhJobTrait
 
 /** Spark Config 实例
   *
@@ -30,5 +32,9 @@ object configObj {
       */
     def readJobConfig(path: String): Seq[Job] = {
         configReaderMap.getOrElse(path.split('.').last, throw new Exception("不能解析的文件类型")).readObjects[Job](new FileInputStream(new File(path)))
+    }
+
+    def inst(jobs: Seq[Job]): Seq[PhJobTrait] = {
+        jobs.map(x => getMethodMirror(x.getFactory)(x).asInstanceOf[PhFactoryTrait[PhJobTrait]].inst())
     }
 }

@@ -1,4 +1,4 @@
-package com.pharbers.ipaas.data.driver.job
+package com.pharbers.ipaas.data.driver.api.job
 
 import org.apache.spark.sql.{Column, DataFrame}
 import com.pharbers.ipaas.data.driver.api.work._

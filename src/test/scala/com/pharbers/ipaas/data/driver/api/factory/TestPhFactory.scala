@@ -41,7 +41,7 @@ class TestPhFactory extends FunSuite with BeforeAndAfterAll {
         action = Action()
         action.setName("action")
         action.setFactory("com.pharbers.ipaas.data.driver.api.factory.PhActionFactory")
-        action.setReference("com.pharbers.ipaas.data.driver.job.PhBaseAction")
+        action.setReference("com.pharbers.ipaas.data.driver.api.job.PhBaseAction")
         action.setOpers {
             val tmp = new java.util.ArrayList[Operator]
             tmp.add(operator)
@@ -52,7 +52,7 @@ class TestPhFactory extends FunSuite with BeforeAndAfterAll {
         job = Job()
         job.setName("job")
         job.setFactory("com.pharbers.ipaas.data.driver.api.factory.PhJobFactory")
-        job.setReference("com.pharbers.ipaas.data.driver.job.PhBaseJob")
+        job.setReference("com.pharbers.ipaas.data.driver.api.job.PhBaseJob")
         job.setActions{
             val tmp = new util.ArrayList[Action]
             tmp.add(action)

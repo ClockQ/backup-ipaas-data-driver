@@ -4,7 +4,7 @@ import org.apache.spark.rdd.RDD
 import org.scalatest.{BeforeAndAfterAll, FunSuite}
 import org.apache.spark.sql.{Column, DataFrame, Row}
 import com.pharbers.ipaas.data.driver.libs.spark.PhSparkDriver
-import com.pharbers.ipaas.data.driver.job.{PhBaseAction, PhBaseJob}
+import com.pharbers.ipaas.data.driver.api.job.{PhBaseAction, PhBaseJob}
 
 class TestPhWorkTrait extends FunSuite with BeforeAndAfterAll {
     implicit var sd: PhSparkDriver = _

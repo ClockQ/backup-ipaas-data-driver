@@ -14,7 +14,7 @@ import org.scalatest.FunSuite
   * @tparam T
   * @note
   */
-class TestJobFactory extends FunSuite {
+class TestNhwaMax2 extends FunSuite {
 	test("test nhwa max") {
 		implicit val sd: PhSparkDriver = PhSparkDriver("testSparkDriver")
 
@@ -78,7 +78,7 @@ class TestJobFactory extends FunSuite {
 	test("test nhwa clean") {
 		implicit val sd: PhSparkDriver = PhSparkDriver("testSparkDriver")
 
-		val jobs = configObj.readJobConfig("pharbers_config/testClean.yaml")
+		val jobs = configObj.readJobConfig("pharbers_config/clean.yaml")
 		val phJobs = jobs.map(x => getMethodMirror(x.getFactory)(x).asInstanceOf[PhJobFactory].inst())
 		val result = phJobs.head.perform(PhMapArgs(Map.empty))
 

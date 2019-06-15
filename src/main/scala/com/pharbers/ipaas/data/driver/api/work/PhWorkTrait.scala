@@ -43,7 +43,7 @@ sealed trait PhWorkTrait2[+A] extends Serializable {
       * @version 0.1
       * @since 2019/6/15 15:24
       */
-    def perform(pr: PhMapArgs[PhWorkArgs[Any]]): PhWorkArgs[A]
+    def perform(pr: PhMapArgs[PhWorkArgs[Any]] = PhMapArgs(Map.empty)): PhWorkArgs[A]
 }
 
 /** Plugin 运行实体基类
