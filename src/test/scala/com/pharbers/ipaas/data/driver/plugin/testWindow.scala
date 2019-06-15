@@ -4,7 +4,7 @@ import com.pharbers.ipaas.data.driver.api.work._
 import org.apache.spark.sql.DataFrame
 import org.apache.spark.sql.functions._
 import org.scalatest.FunSuite
-import env.sparkObj.ss.implicits._
+import env.sparkObj2.ss.implicits._
 
 class testWindow extends FunSuite {
     val partitionColumnNames = List("PROD")

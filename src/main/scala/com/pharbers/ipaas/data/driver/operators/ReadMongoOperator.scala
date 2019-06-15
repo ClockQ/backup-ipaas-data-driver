@@ -3,7 +3,7 @@ package com.pharbers.ipaas.data.driver.operators
 import com.pharbers.ipaas.data.driver.api.work.{PhDFArgs, PhMapArgs, PhNoneArgs, PhOperatorTrait, PhPluginTrait, PhStringArgs, PhWorkArgs}
 import com.pharbers.ipaas.data.driver.libs.spark.PhSparkDriver
 import com.pharbers.ipaas.data.driver.libs.spark.util._
-import env.sparkObj
+import env.sparkObj2
 
 /** 功能描述
   * 读取mongo算子
@@ -24,7 +24,7 @@ case class ReadMongoOperator(plugin: PhPluginTrait, name: String, defaultArgs: P
 
     override def perform(pr: PhWorkArgs[_]): PhWorkArgs[_] = {
 
-        implicit val sd: PhSparkDriver = sparkObj
+        implicit val sd: PhSparkDriver = sparkObj2
         PhDFArgs(sd.setUtil(readMongo()).readMongo(mongodbHost, mongodbPort, databaseName, collName))
     }
 }

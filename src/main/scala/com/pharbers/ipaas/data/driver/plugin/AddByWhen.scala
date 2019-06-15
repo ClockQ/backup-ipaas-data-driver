@@ -10,7 +10,7 @@ import com.pharbers.ipaas.data.driver.api.work._
   */
 case class AddByWhen(name: String,
                      defaultArgs: PhMapArgs[PhWorkArgs[Any]],
-                     subPluginLst: Seq[PhPluginTrait2[Any]])
+                     subPluginLst: Seq[PhPluginTrait2[Column]])
         extends PhPluginTrait2[Column] {
 
     val mapArgs: PhMapArgs[PhWorkArgs[String]] = defaultArgs.toMapArgs[PhWorkArgs[String]]

@@ -1,9 +1,9 @@
 name: pfizerDVPMax
-reference: com.pharbers.ipaas.data.driver.job.PhBaseJob
+reference: com.pharbers.ipaas.data.driver.api.job.PhBaseJob
 factory: com.pharbers.ipaas.data.driver.factory.PhJobFactory
 actions:
 -   name: panelDF
-    reference: com.pharbers.ipaas.data.driver.job.PhBaseAction
+    reference: com.pharbers.ipaas.data.driver.api.job.PhBaseAction
     factory: com.pharbers.ipaas.data.driver.factory.PhActionFactory
     args:
         null: null
@@ -21,7 +21,7 @@ actions:
             selects: Date#Prod_Name#HOSP_ID#Sales#Units
 
 -   name: universeDF
-    reference: com.pharbers.ipaas.data.driver.job.PhBaseAction
+    reference: com.pharbers.ipaas.data.driver.api.job.PhBaseAction
     factory: com.pharbers.ipaas.data.driver.factory.PhActionFactory
     args:
         null: null
@@ -53,7 +53,7 @@ actions:
             selects: Province#City#PHA_HOSP_ID#MARKET
 
 -   name: coefDF
-    reference: com.pharbers.ipaas.data.driver.job.PhBaseAction
+    reference: com.pharbers.ipaas.data.driver.api.job.PhBaseAction
     factory: com.pharbers.ipaas.data.driver.factory.PhActionFactory
     args:
         null: null
@@ -72,7 +72,7 @@ actions:
             newColName: coefCity
 
 -   name: maxResultDF
-    reference: com.pharbers.ipaas.data.driver.job.PhBaseAction
+    reference: com.pharbers.ipaas.data.driver.api.job.PhBaseAction
     factory: com.pharbers.ipaas.data.driver.factory.PhActionFactory
     args:
         df: panelDF

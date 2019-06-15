@@ -2,15 +2,15 @@ package com.pharbers.ipaas.data.driver.operators
 
 import com.pharbers.ipaas.data.driver.api.work._
 import com.pharbers.ipaas.data.driver.plugin.SortPlugin
-import env.sparkObj
+import env.sparkObj2
 import org.apache.spark.sql.DataFrame
 import org.apache.spark.sql.functions._
 import org.scalatest.FunSuite
 
 class TestJoinOperator extends FunSuite {
 	test("join operator") {
-        sparkObj.sc.addJar("target/ipaas-data-driver-0.1.jar")
-		import sparkObj.ss.implicits._
+        sparkObj2.sc.addJar("target/ipaas-data-driver-0.1.jar")
+		import sparkObj2.ss.implicits._
 
 		val df1: DataFrame = List(
 			("name1", "prod1", "201801", 1),

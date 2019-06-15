@@ -15,7 +15,7 @@ import com.pharbers.ipaas.data.driver.api.work._
   */
 case class addColumn(name: String,
                      defaultArgs: PhMapArgs[PhWorkArgs[Any]],
-                     pluginLst: Seq[PhPluginTrait2[Any]])
+                     pluginLst: Seq[PhPluginTrait2[Column]])
         extends PhOperatorTrait2[DataFrame] {
     val defaultMapArgs: PhMapArgs[PhWorkArgs[_]] = defaultArgs.toMapArgs[PhWorkArgs[_]]
     val inDFName: String = defaultMapArgs.getAs[PhStringArgs]("inDFName").get.get
@@ -35,7 +35,7 @@ case class addColumn(name: String,
     override def perform(pr: PhMapArgs[PhWorkArgs[Any]]): PhWorkArgs[DataFrame] = {
         val prMapArgs = pr.toMapArgs[PhWorkArgs[_]]
         val inDF = prMapArgs.getAs[PhDFArgs](inDFName).get.get
-        val func = pluginLst.head.perform(pr).toColArgs.get
+        val func = pluginLst.head.perform(pr).get
         val outDF = inDF.withColumn(newColName, func)
 
         PhDFArgs(outDF)

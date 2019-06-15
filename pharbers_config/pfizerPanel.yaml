@@ -1,10 +1,10 @@
 
 name: panel
-reference: com.pharbers.ipaas.data.driver.job.PhBaseJob
+reference: com.pharbers.ipaas.data.driver.api.job.PhBaseJob
 factory: com.pharbers.ipaas.data.driver.factory.PhJobFactory
 actions:
   - name: readCpa
-    reference: com.pharbers.ipaas.data.driver.job.PhBaseAction
+    reference: com.pharbers.ipaas.data.driver.api.job.PhBaseAction
     factory: com.pharbers.ipaas.data.driver.factory.PhActionFactory
     args:
       null: null
@@ -16,7 +16,7 @@ actions:
 #          cpaERD path
           path:
   - name: readGycx
-      reference: com.pharbers.ipaas.data.driver.job.PhBaseAction
+      reference: com.pharbers.ipaas.data.driver.api.job.PhBaseAction
       factory: com.pharbers.ipaas.data.driver.factory.PhActionFactory
       args:
         null: null
@@ -29,7 +29,7 @@ actions:
             path:
 
   - name: readProdErd
-      reference: com.pharbers.ipaas.data.driver.job.PhBaseAction
+      reference: com.pharbers.ipaas.data.driver.api.job.PhBaseAction
       factory: com.pharbers.ipaas.data.driver.factory.PhActionFactory
       args:
         null: null
@@ -55,7 +55,7 @@ actions:
 
 
   - name: readMissHosp
-    reference: com.pharbers.ipaas.data.driver.job.PhBaseAction
+    reference: com.pharbers.ipaas.data.driver.api.job.PhBaseAction
     factory: com.pharbers.ipaas.data.driver.factory.PhActionFactory
     args:
       null: null
@@ -67,7 +67,7 @@ actions:
           path: hdfs:///repository/miss_hosp/5ca069e2eeefcc012918ec73
 
 #  - name: readNotPublishHosp
-#    reference: com.pharbers.ipaas.data.driver.job.PhBaseAction
+#    reference: com.pharbers.ipaas.data.driver.api.job.PhBaseAction
 #    factory: com.pharbers.ipaas.data.driver.factory.PhActionFactory
 #    args:
 #      null: null
@@ -79,7 +79,7 @@ actions:
 #          path: hdfs:///repository/not_published_hosp/5ca069bceeefcc012918ec72
 
   - name: readFullHosp
-    reference: com.pharbers.ipaas.data.driver.job.PhBaseAction
+    reference: com.pharbers.ipaas.data.driver.api.job.PhBaseAction
     factory: com.pharbers.ipaas.data.driver.factory.PhActionFactory
     args:
       null: null
@@ -91,7 +91,7 @@ actions:
 #          path: hdfs:///repository/full_hosp/5ca069e2eeefcc012918ec73/20180629
 
   - name: readSampleHosp
-    reference: com.pharbers.ipaas.data.driver.job.PhBaseAction
+    reference: com.pharbers.ipaas.data.driver.api.job.PhBaseAction
     factory: com.pharbers.ipaas.data.driver.factory.PhActionFactory
     args:
       null: null
@@ -103,7 +103,7 @@ actions:
           path: hdfs:///repository/sample_hosp/5ca069e2eeefcc012918ec73/DVP
 
   - name: missHosp
-    reference: com.pharbers.ipaas.data.driver.job.PhBaseAction
+    reference: com.pharbers.ipaas.data.driver.api.job.PhBaseAction
     factory: com.pharbers.ipaas.data.driver.factory.PhActionFactory
     args:
       df: readMissHosp
@@ -147,7 +147,7 @@ actions:
           newColName: MISS_HOSPITAL_ID
 
   - name: primalCpa
-    reference: com.pharbers.ipaas.data.driver.job.PhBaseAction
+    reference: com.pharbers.ipaas.data.driver.api.job.PhBaseAction
     factory: com.pharbers.ipaas.data.driver.factory.PhActionFactory
     args:
       df: readCpa
@@ -160,7 +160,7 @@ actions:
           filter: YM == 201809
 
   - name: reducedCpa
-    reference: com.pharbers.ipaas.data.driver.job.PhBaseAction
+    reference: com.pharbers.ipaas.data.driver.api.job.PhBaseAction
     factory: com.pharbers.ipaas.data.driver.factory.PhActionFactory
     args:
       df: primalCpa
@@ -187,7 +187,7 @@ actions:
           dropColName: MISS_HOSPITAL_ID
 
   - name: cpa
-    reference: com.pharbers.ipaas.data.driver.job.PhBaseAction
+    reference: com.pharbers.ipaas.data.driver.api.job.PhBaseAction
     factory: com.pharbers.ipaas.data.driver.factory.PhActionFactory
     args:
       df: readFullHosp
@@ -240,7 +240,7 @@ actions:
             dropColName: DEV_PRODUCT_ID
 
   - name: sampleHosp
-    reference: com.pharbers.ipaas.data.driver.job.PhBaseAction
+    reference: com.pharbers.ipaas.data.driver.api.job.PhBaseAction
     factory: com.pharbers.ipaas.data.driver.factory.PhActionFactory
     args:
       df: readSampleHosp
@@ -266,7 +266,7 @@ actions:
             dropColName: MARKET
 
   - name: panelERD
-    reference: com.pharbers.ipaas.data.driver.job.PhBaseAction
+    reference: com.pharbers.ipaas.data.driver.api.job.PhBaseAction
     factory: com.pharbers.ipaas.data.driver.factory.PhActionFactory
     args:
       df: cpa

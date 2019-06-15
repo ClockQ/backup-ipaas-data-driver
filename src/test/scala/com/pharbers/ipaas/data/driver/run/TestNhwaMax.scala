@@ -9,7 +9,7 @@ import com.pharbers.ipaas.data.driver.libs.spark.util.readParquet
 
 class TestNhwaMax extends FunSuite {
 	test("test nhwa clean") {
-		implicit val sd: PhSparkDriver = env.sparkObj
+		implicit val sd: PhSparkDriver = env.sparkObj()
 
 		val phJobs = inst(readJobConfig("max_config/nhwa/clean.yaml"))
 		val result = phJobs.head.perform()

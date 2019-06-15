@@ -1,9 +1,9 @@
 name: panel
-reference: com.pharbers.ipaas.data.driver.job.PhBaseJob
+reference: com.pharbers.ipaas.data.driver.api.job.PhBaseJob
 factory: com.pharbers.ipaas.data.driver.factory.PhJobFactory
 actions:
 -   name: readCpa
-    reference: com.pharbers.ipaas.data.driver.job.PhBaseAction
+    reference: com.pharbers.ipaas.data.driver.api.job.PhBaseAction
     factory: com.pharbers.ipaas.data.driver.factory.PhActionFactory
     args:
         null: null
@@ -15,7 +15,7 @@ actions:
             path: hdfs:///workData/Clean/20bfd585-c889-4385-97ec-a8d4c77d71cc
 
 -   name: readMissHosp
-    reference: com.pharbers.ipaas.data.driver.job.PhBaseAction
+    reference: com.pharbers.ipaas.data.driver.api.job.PhBaseAction
     factory: com.pharbers.ipaas.data.driver.factory.PhActionFactory
     args:
         null: null
@@ -27,7 +27,7 @@ actions:
             path: hdfs:///repository/miss_hosp/5ca069bceeefcc012918ec72
 
 -   name: readNotPublishHosp
-    reference: com.pharbers.ipaas.data.driver.job.PhBaseAction
+    reference: com.pharbers.ipaas.data.driver.api.job.PhBaseAction
     factory: com.pharbers.ipaas.data.driver.factory.PhActionFactory
     args:
         null: null
@@ -39,7 +39,7 @@ actions:
             path: hdfs:///repository/not_published_hosp/5ca069bceeefcc012918ec72
 
 -   name: readFullHosp
-    reference: com.pharbers.ipaas.data.driver.job.PhBaseAction
+    reference: com.pharbers.ipaas.data.driver.api.job.PhBaseAction
     factory: com.pharbers.ipaas.data.driver.factory.PhActionFactory
     args:
         null: null
@@ -51,7 +51,7 @@ actions:
             path: hdfs:///repository/full_hosp/5ca069bceeefcc012918ec72/20180629
 
 -   name: readSampleHosp
-    reference: com.pharbers.ipaas.data.driver.job.PhBaseAction
+    reference: com.pharbers.ipaas.data.driver.api.job.PhBaseAction
     factory: com.pharbers.ipaas.data.driver.factory.PhActionFactory
     args:
         null: null
@@ -63,7 +63,7 @@ actions:
             path: hdfs:///repository/sample_hosp/5ca069bceeefcc012918ec72/mz
 
 -   name: missHosp
-    reference: com.pharbers.ipaas.data.driver.job.PhBaseAction
+    reference: com.pharbers.ipaas.data.driver.api.job.PhBaseAction
     factory: com.pharbers.ipaas.data.driver.factory.PhActionFactory
     args:
         df: readMissHosp
@@ -101,7 +101,7 @@ actions:
             newColName: MISS_HOSPITAL_ID
 
 -   name: primalCpa
-    reference: com.pharbers.ipaas.data.driver.job.PhBaseAction
+    reference: com.pharbers.ipaas.data.driver.api.job.PhBaseAction
     factory: com.pharbers.ipaas.data.driver.factory.PhActionFactory
     args:
         df: readCpa
@@ -114,7 +114,7 @@ actions:
             filter: YM == 201809
 
 -   name: reducedCpa
-    reference: com.pharbers.ipaas.data.driver.job.PhBaseAction
+    reference: com.pharbers.ipaas.data.driver.api.job.PhBaseAction
     factory: com.pharbers.ipaas.data.driver.factory.PhActionFactory
     args:
         df: primalCpa
@@ -141,7 +141,7 @@ actions:
             dropColName: MISS_HOSPITAL_ID
 
 -   name: cpa
-    reference: com.pharbers.ipaas.data.driver.job.PhBaseAction
+    reference: com.pharbers.ipaas.data.driver.api.job.PhBaseAction
     factory: com.pharbers.ipaas.data.driver.factory.PhActionFactory
     args:
         df: readFullHosp
@@ -174,7 +174,7 @@ actions:
             unionDFName: reducedCpa
 
 -   name: sampleHosp
-    reference: com.pharbers.ipaas.data.driver.job.PhBaseAction
+    reference: com.pharbers.ipaas.data.driver.api.job.PhBaseAction
     factory: com.pharbers.ipaas.data.driver.factory.PhActionFactory
     args:
         df: readSampleHosp
@@ -194,7 +194,7 @@ actions:
             newColName: SAMPLE_HOSPITAL_ID
 
 -   name: panelData
-    reference: com.pharbers.ipaas.data.driver.job.PhBaseAction
+    reference: com.pharbers.ipaas.data.driver.api.job.PhBaseAction
     factory: com.pharbers.ipaas.data.driver.factory.PhActionFactory
     args:
         df: cpa
@@ -241,7 +241,7 @@ actions:
             dropColName: GROUP
 -   name: universeData
     factory: com.pharbers.ipaas.data.driver.factory.PhActionFactory
-    reference: com.pharbers.ipaas.data.driver.job.PhBaseAction
+    reference: com.pharbers.ipaas.data.driver.api.job.PhBaseAction
     args:
         null: null
     opers:
@@ -252,7 +252,7 @@ actions:
             path: hdfs:///repository/universe_hosp/5ca069bceeefcc012918ec72/mz
 -   name: universeDF
     factory: com.pharbers.ipaas.data.driver.factory.PhActionFactory
-    reference: com.pharbers.ipaas.data.driver.job.PhBaseAction
+    reference: com.pharbers.ipaas.data.driver.api.job.PhBaseAction
     args:
         df: universeData
     opers:
@@ -277,7 +277,7 @@ actions:
             oldColName: IF_PANEL_TO_USE
             newColName: NEED_MAX_HOSP
 #-   name: panelData
-#    reference: com.pharbers.ipaas.data.driver.job.PhBaseAction
+#    reference: com.pharbers.ipaas.data.driver.api.job.PhBaseAction
 #    factory: com.pharbers.ipaas.data.driver.factory.PhActionFactory
 #    args:
 #        null: null
@@ -288,7 +288,7 @@ actions:
 #        args:
 #            path: hdfs:///workData/Panel/5ca069bceeefcc012918ec72
 -   name: panelSummed
-    reference: com.pharbers.ipaas.data.driver.job.PhBaseAction
+    reference: com.pharbers.ipaas.data.driver.api.job.PhBaseAction
     factory: com.pharbers.ipaas.data.driver.factory.PhActionFactory
     args:
         df: panelData
@@ -320,7 +320,7 @@ actions:
             inDFName: df
             dropColName: GROUP
 -   name: joinDataWithEmptyValue
-    reference: com.pharbers.ipaas.data.driver.job.PhBaseAction
+    reference: com.pharbers.ipaas.data.driver.api.job.PhBaseAction
     factory: com.pharbers.ipaas.data.driver.factory.PhActionFactory
     args:
         df: panelData
@@ -346,7 +346,7 @@ actions:
             joinExpr: TRUE
             joinType: cross
 -   name: joinData
-    reference: com.pharbers.ipaas.data.driver.job.PhBaseAction
+    reference: com.pharbers.ipaas.data.driver.api.job.PhBaseAction
     factory: com.pharbers.ipaas.data.driver.factory.PhActionFactory
     args:
         df: joinDataWithEmptyValue
@@ -408,7 +408,7 @@ actions:
             oldColName: j_sumUnits
             newColName: sumUnits
 -   name: segmentDF
-    reference: com.pharbers.ipaas.data.driver.job.PhBaseAction
+    reference: com.pharbers.ipaas.data.driver.api.job.PhBaseAction
     factory: com.pharbers.ipaas.data.driver.factory.PhActionFactory
     args:
         df: joinData
@@ -498,7 +498,7 @@ actions:
             dropColName: s_sumSales,s_sumUnits,s_westMedicineIncome
 
 -   name: enlargedDF
-    reference: com.pharbers.ipaas.data.driver.job.PhBaseAction
+    reference: com.pharbers.ipaas.data.driver.api.job.PhBaseAction
     factory: com.pharbers.ipaas.data.driver.factory.PhActionFactory
     args:
         df: joinData
@@ -632,7 +632,7 @@ actions:
             inDFName: df
             selects: Date#HOSPITAL_ID#PRODUCT_ID#f_units#f_sales
 -   name: backfillDF
-    reference: com.pharbers.ipaas.data.driver.job.PhBaseAction
+    reference: com.pharbers.ipaas.data.driver.api.job.PhBaseAction
     factory: com.pharbers.ipaas.data.driver.factory.PhActionFactory
     args:
         df: panelData
@@ -685,7 +685,7 @@ actions:
             inDFName: df
             selects: Date#HOSPITAL_ID#PRODUCT_ID#f_units#f_sales
 -   name: maxResultDF
-    reference: com.pharbers.ipaas.data.driver.job.PhBaseAction
+    reference: com.pharbers.ipaas.data.driver.api.job.PhBaseAction
     factory: com.pharbers.ipaas.data.driver.factory.PhActionFactory
     args:
         df: backfillDF

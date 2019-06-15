@@ -10,7 +10,7 @@ import com.pharbers.ipaas.data.driver.libs.spark.PhSparkDriver
   * @note 测试使用，随时删除
   */
 @deprecated
-object sparkObj extends PhSparkDriver("testSparkObj"){
+object sparkObj2 extends PhSparkDriver("testSparkObj"){
     sc.addJar("target/ipaas-data-driver-0.1.jar")
     sc.setLogLevel("ERROR")
 }

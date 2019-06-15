@@ -1,9 +1,9 @@
 name: pfizerCNS_RMax
-reference: com.pharbers.ipaas.data.driver.job.PhBaseJob
+reference: com.pharbers.ipaas.data.driver.api.job.PhBaseJob
 factory: com.pharbers.ipaas.data.driver.factory.PhJobFactory
 actions:
 -   name: panelDF
-    reference: com.pharbers.ipaas.data.driver.job.PhBaseAction
+    reference: com.pharbers.ipaas.data.driver.api.job.PhBaseAction
     factory: com.pharbers.ipaas.data.driver.factory.PhActionFactory
     args:
         null: null
@@ -42,7 +42,7 @@ actions:
             selects: YM#min1#HOSP_ID#Sales#Units#MARKET
 
 -   name: universeDF
-    reference: com.pharbers.ipaas.data.driver.job.PhBaseAction
+    reference: com.pharbers.ipaas.data.driver.api.job.PhBaseAction
     factory: com.pharbers.ipaas.data.driver.factory.PhActionFactory
     args:
         null: null
@@ -117,7 +117,7 @@ actions:
             selects: PHA_ID#Factor1#Factor2#IS_PANEL_HOSP#NEED_MAX_HOSP#SEGMENT#Province#Prefecture#westMedicineIncome
 
 -   name: panelSummed
-    reference: com.pharbers.ipaas.data.driver.job.PhBaseAction
+    reference: com.pharbers.ipaas.data.driver.api.job.PhBaseAction
     factory: com.pharbers.ipaas.data.driver.factory.PhActionFactory
     args:
         df: panelDF
@@ -150,7 +150,7 @@ actions:
             dropColName: GROUP
 
 -   name: joinDataWithEmptyValue
-    reference: com.pharbers.ipaas.data.driver.job.PhBaseAction
+    reference: com.pharbers.ipaas.data.driver.api.job.PhBaseAction
     factory: com.pharbers.ipaas.data.driver.factory.PhActionFactory
     args:
         df: panelDF
@@ -176,7 +176,7 @@ actions:
           joinType: cross
 
 -   name: joinData
-    reference: com.pharbers.ipaas.data.driver.job.PhBaseAction
+    reference: com.pharbers.ipaas.data.driver.api.job.PhBaseAction
     factory: com.pharbers.ipaas.data.driver.factory.PhActionFactory
     args:
         df: joinDataWithEmptyValue
@@ -235,7 +235,7 @@ actions:
             newColName: sumUnits
 
 -   name: segmentDF
-    reference: com.pharbers.ipaas.data.driver.job.PhBaseAction
+    reference: com.pharbers.ipaas.data.driver.api.job.PhBaseAction
     factory: com.pharbers.ipaas.data.driver.factory.PhActionFactory
     args:
         df: joinData
@@ -304,7 +304,7 @@ actions:
             dropColName: s_sumSales,s_sumUnits,s_westMedicineIncome
 
 -   name: enlargedDF
-    reference: com.pharbers.ipaas.data.driver.job.PhBaseAction
+    reference: com.pharbers.ipaas.data.driver.api.job.PhBaseAction
     factory: com.pharbers.ipaas.data.driver.factory.PhActionFactory
     args:
         df: joinData
@@ -454,7 +454,7 @@ actions:
             selects: Date#Province#City#Panel_ID#Product#Factor#f_sales#f_units#MARKET
 
 -   name: backfillDF
-    reference: com.pharbers.ipaas.data.driver.job.PhBaseAction
+    reference: com.pharbers.ipaas.data.driver.api.job.PhBaseAction
     factory: com.pharbers.ipaas.data.driver.factory.PhActionFactory
     args:
         df: panelDF
@@ -534,7 +534,7 @@ actions:
             selects: Date#Province#City#Panel_ID#Product#Factor#f_sales#f_units#MARKET
 
 - name: maxResultDF
-  reference: com.pharbers.ipaas.data.driver.job.PhBaseAction
+  reference: com.pharbers.ipaas.data.driver.api.job.PhBaseAction
   factory: com.pharbers.ipaas.data.driver.factory.PhActionFactory
   args:
       df: backfillDF

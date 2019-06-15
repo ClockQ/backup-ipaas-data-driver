@@ -3,7 +3,7 @@ package com.pharbers.ipaas.data.driver.operators
 import com.pharbers.ipaas.data.driver.api.work.{PhDFArgs, PhMapArgs, PhNoneArgs, PhOperatorTrait, PhPluginTrait, PhStringArgs, PhWorkArgs}
 import com.pharbers.ipaas.data.driver.libs.spark.PhSparkDriver
 import com.pharbers.ipaas.data.driver.libs.spark.util.{save2Mongo, save2Parquet}
-import env.sparkObj
+import env.sparkObj2
 
 /** 功能描述
   * 存mongo算子
@@ -27,7 +27,7 @@ case class SaveMongoOperator(plugin: PhPluginTrait, name: String, defaultArgs: P
         val prMapArgs = pr.toMapArgs[PhWorkArgs[_]]
         val inDF = prMapArgs.getAs[PhDFArgs](inDFName).get.get
 
-        implicit val sd: PhSparkDriver = sparkObj
+        implicit val sd: PhSparkDriver = sparkObj2
         sd.setUtil(save2Mongo()).save2Mongo(inDF, mongodbHost, mongodbPort, databaseName, collName)
         PhDFArgs(inDF)
     }
