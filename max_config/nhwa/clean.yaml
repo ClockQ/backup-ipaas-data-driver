@@ -8,22 +8,22 @@ actions:
   opers:
   - name: loadCpaFromParquet
     factory: com.pharbers.ipaas.data.driver.api.factory.PhOperatorFactory
-    reference: com.pharbers.ipaas.data.driver.operators.PhReadOperator
+    reference: com.pharbers.ipaas.data.driver.operators.ReadCsvOperator
     args:
       path: hdfs:///data/nhwa/pha_config_repository1809/Nhwa_201809_CPA_20181126.csv
   - name: hospIdCastInt
     factory: com.pharbers.ipaas.data.driver.api.factory.PhOperatorFactory
-    reference: com.pharbers.ipaas.data.driver.operators.addColumn
+    reference: com.pharbers.ipaas.data.driver.operators.AddColumnOperator
     args:
-      inDFName: df
+      inDFName: loadCpaFromParquet
       newColName: HOSP_ID
     plugin:
       name: castInt
       factory: com.pharbers.ipaas.data.driver.api.factory.PhPluginFactory
-      reference: com.pharbers.ipaas.data.driver.plugin.BaseCalcPlugin
+      reference: com.pharbers.ipaas.data.driver.plugin.ExprPlugin
       args:
         exprString: cast(HOSP_ID as int)
-#
+
 #- name: readHospitalFile
 #  reference: com.pharbers.ipaas.data.driver.api.job.PhBaseAction
 #  factory: com.pharbers.ipaas.data.driver.api.factory.PhActionFactory

@@ -37,7 +37,7 @@ sealed trait PhWorkTrait2[+A] extends Serializable {
 
     /** CMD执行方法
       *
-      * @param pr 包含的子的 CMD 执行结果
+      * @param pr 包含的子的 CMD 执行结果及之前执行过的 Action 中的结果
       * @return _root_.com.pharbers.ipaas.data.driver.api.work.PhWorkArgs[A]
       * @author clock
       * @version 0.1

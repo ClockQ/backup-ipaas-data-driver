@@ -12,7 +12,9 @@ class TestNhwaMax extends FunSuite {
 		implicit val sd: PhSparkDriver = env.sparkObj()
 
 		val phJobs = inst(readJobConfig("max_config/nhwa/clean.yaml"))
-		val result = phJobs.head.perform()
+		val result = phJobs.head.perform(PhMapArgs(Map(
+			"sparkDriver" -> PhSparkDriverArgs(PhSparkDriver("test"))
+		)))
 
 		val cleanDF = result.toMapArgs[PhDFArgs].get("readCpaFile").get
 		cleanDF.show(false)

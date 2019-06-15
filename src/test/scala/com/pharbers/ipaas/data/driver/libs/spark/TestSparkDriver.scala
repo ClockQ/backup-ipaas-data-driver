@@ -19,7 +19,7 @@ class TestSparkDriver extends FunSuite with BeforeAndAfterAll {
     val falseParquetName: String = "/repository/false"
 
     override def beforeAll(): Unit = {
-        sd = PhSparkDriver("testSparkDriver")
+        sd = PhSparkDriver("test-driver")
         require(sd != null)
     }
 
