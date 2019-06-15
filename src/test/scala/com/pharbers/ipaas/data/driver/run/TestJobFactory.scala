@@ -1,10 +1,10 @@
-package com.pharbers.ipaas.data.driver.factory
+package com.pharbers.ipaas.data.driver.run
 
+import com.pharbers.ipaas.data.driver.api.factory._
 import com.pharbers.ipaas.data.driver.api.work._
-import com.pharbers.ipaas.data.driver.config.Config
 import com.pharbers.ipaas.data.driver.libs.spark.PhSparkDriver
-import com.pharbers.ipaas.data.driver.libs.spark.util.{readCsv, readParquet}
-import org.apache.spark.sql.DataFrame
+import com.pharbers.ipaas.data.driver.libs.spark.util.readParquet
+import env.configObj
 import org.apache.spark.sql.functions._
 import org.scalatest.FunSuite
 
@@ -18,8 +18,8 @@ class TestJobFactory extends FunSuite {
 	test("test nhwa max") {
 		implicit val sd: PhSparkDriver = PhSparkDriver("testSparkDriver")
 
-		val jobs = Config.readJobConfig("pharbers_config/max.yaml")
-		val phJobs = jobs.map(x => PhFactory.getMethodMirror(x.getFactory)(x).asInstanceOf[PhJobFactory].inst())
+		val jobs = configObj.readJobConfig("pharbers_config/max.yaml")
+		val phJobs = jobs.map(x => getMethodMirror(x.getFactory)(x).asInstanceOf[PhJobFactory].inst())
 		val result = phJobs.head.perform(PhMapArgs(Map.empty))
 
 		val maxDF = result.toMapArgs[PhDFArgs].get("maxResultDF").get
@@ -38,8 +38,8 @@ class TestJobFactory extends FunSuite {
 	test("test pfizer CNS_R max") {
 		implicit val sd: PhSparkDriver = PhSparkDriver("testSparkDriver")
 
-		val jobs = Config.readJobConfig("pharbers_config/pfizerCNS_RMax.yaml")
-		val phJobs = jobs.map(x => PhFactory.getMethodMirror(x.getFactory)(x).asInstanceOf[PhJobFactory].inst())
+		val jobs = configObj.readJobConfig("pharbers_config/pfizerCNS_RMax.yaml")
+		val phJobs = jobs.map(x => getMethodMirror(x.getFactory)(x).asInstanceOf[PhJobFactory].inst())
 		val result = phJobs.head.perform(PhMapArgs(Map.empty))
 
 		val maxDF = result.toMapArgs[PhDFArgs].get("maxResultDF").get
@@ -58,8 +58,8 @@ class TestJobFactory extends FunSuite {
 	test("test pfizer DVP max") {
 		implicit val sd: PhSparkDriver = PhSparkDriver("testSparkDriver")
 
-		val jobs = Config.readJobConfig("pharbers_config/pfizerDVPMax.yaml")
-		val phJobs = jobs.map(x => PhFactory.getMethodMirror(x.getFactory)(x).asInstanceOf[PhJobFactory].inst())
+		val jobs = configObj.readJobConfig("pharbers_config/pfizerDVPMax.yaml")
+		val phJobs = jobs.map(x => getMethodMirror(x.getFactory)(x).asInstanceOf[PhJobFactory].inst())
 		val result = phJobs.head.perform(PhMapArgs(Map.empty))
 
 		val maxDF = result.toMapArgs[PhDFArgs].get("maxResultDF").get
@@ -78,8 +78,8 @@ class TestJobFactory extends FunSuite {
 	test("test nhwa clean") {
 		implicit val sd: PhSparkDriver = PhSparkDriver("testSparkDriver")
 
-		val jobs = Config.readJobConfig("pharbers_config/testClean.yaml")
-		val phJobs = jobs.map(x => PhFactory.getMethodMirror(x.getFactory)(x).asInstanceOf[PhJobFactory].inst())
+		val jobs = configObj.readJobConfig("pharbers_config/testClean.yaml")
+		val phJobs = jobs.map(x => getMethodMirror(x.getFactory)(x).asInstanceOf[PhJobFactory].inst())
 		val result = phJobs.head.perform(PhMapArgs(Map.empty))
 
 		val cleanDF = result.toMapArgs[PhDFArgs].get("clean").get
