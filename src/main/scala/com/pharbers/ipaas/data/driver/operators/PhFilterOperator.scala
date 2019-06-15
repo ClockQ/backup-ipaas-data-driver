@@ -1,10 +1,11 @@
-package com.pharbers.ipaas.data.driver.job
+package com.pharbers.ipaas.data.driver.operators
 
-import com.pharbers.ipaas.data.driver.api.work._
-import org.apache.spark.sql.functions._
+import com.pharbers.ipaas.data.driver.api.work.{PhDFArgs, PhMapArgs, PhOperatorTrait, PhPluginTrait, PhStringArgs, PhWorkArgs}
+import org.apache.spark.sql.functions.expr
 
 /** 功能描述
   * filter算子
+ *
   * @param plugin 插件
   * @param name 算子 name
   * @param defaultArgs 配置参数 "inDFName"-> pr中的df名  "filter" -> 筛选表达式

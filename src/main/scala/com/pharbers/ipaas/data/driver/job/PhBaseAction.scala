@@ -2,53 +2,40 @@ package com.pharbers.ipaas.data.driver.job
 
 import com.pharbers.ipaas.data.driver.api.work._
 import com.pharbers.ipaas.data.driver.exceptions.PhOperatorException
-import org.apache.spark.sql.DataFrame
 
-/** 功能描述
-  * action基类
+/** Action 运行实体
   *
-  * @param operatorLst 算子
-  * @param name        action name
-  * @param args        配置参数
+  * @param name        Action 名字
+  * @param defaultArgs 配置参数
+  * @param operatorLst Action 包含的 Operator 列表
   * @author dcs
-  * @version 0.0
-  * @since ${YEAR}/${MONTH}/${DAY} ${TIME}
-  * @note 一些值得注意的地方
+  * @version 0.1
+  * @since 2019/06/11 15:30
   */
 case class PhBaseAction(name: String,
                         defaultArgs: PhMapArgs[PhWorkArgs[Any]],
                         operatorLst: Seq[PhOperatorTrait2[Any]])
-        extends PhActionTrait2 {
+        extends PhActionTrait {
 
-    /** 功能描述
-      * action执行入口
+    /** Action 执行入口
       *
-      * @param pr 运行时其他action的结果 PhMapArgs[PhDfArgs]
-      * @return _root_.com.pharbers.ipaas.data.driver.api.work.PhWorkArgs[_]
-      * @throws PhOperatorException 算子执行时异常
-      * @author EDZ
-      * @version 0.0
+      * @param pr operator 运行时储存的结果
+      * @throws PhOperatorException operator执行时异常
+      * @author dcs
+      * @version 0.1
       * @since 2019/6/11 16:43
-      * @note 一些值得注意的地方
-      * @example {{{这是一个例子}}}
       */
     def perform(pr: PhMapArgs[PhWorkArgs[Any]]): PhWorkArgs[Any] = {
         if (operatorLst.isEmpty) pr
         else {
-            val dfKey = defaultArgs.toMapArgs[PhStringArgs].getAs[PhStringArgs]("df")
-            val df = dfKey match {
-                case key: Some[PhStringArgs] => pr.get(key.get.get)
-                case _ => PhNoneArgs
-            }
-
-            operatorLst.foldLeft(df)((left, right) => {
+            operatorLst.foldLeft(pr) { (l, r) =>
                 try {
-                    right.perform(PhMapArgs(pr.get + ("df" -> left)))
+                    PhMapArgs(l.get + (r.name -> r.perform(l)))
                 } catch {
-                    case e: Exception => throw PhOperatorException(List(right.name, name), e)
+                    case e: Exception => throw PhOperatorException(List(r.name, name), e)
                 }
-            })
 
+            }.get(operatorLst.last.name)
         }
     }
 }

@@ -3,46 +3,37 @@ package com.pharbers.ipaas.data.driver.job
 import com.pharbers.ipaas.data.driver.api.work._
 import com.pharbers.ipaas.data.driver.exceptions.PhOperatorException
 
-/** 功能描述
-  * job基类
+/** Job 运行实体
   *
-  * @param actionLst action集合
-  * @param name      job name
+  * @param name        Job 名字
+  * @param defaultArgs 配置参数
+  * @param actionLst   Job 包含的 Action 列表
   * @author dcs
-  * @version 0.0
+  * @version 0.1
   * @since 2019/6/11 16:50
-  * @note 一些值得注意的地方
   */
 case class PhBaseJob(name: String,
                      defaultArgs: PhMapArgs[PhWorkArgs[Any]],
-                     actionLst: Seq[PhActionTrait2]) extends PhJobTrait2 {
+                     actionLst: Seq[PhActionTrait]) extends PhJobTrait {
 
-    /** 功能描述
-      * job运行入口
+    /** Job 执行入口
       *
-      * @param pr 运行时储存action的结果
-      * @return _root_.com.pharbers.ipaas.data.driver.api.work.PhWorkArgs[_]
-      * @author EDZ
-      * @version 0.0
-      * @since 2019/6/11 16:50
-      * @note 一些值得注意的地方
-      * @example {{{这是一个例子}}}
+      * @param pr action 运行时储存的结果
+      * @author dcs
+      * @version 0.1
+      * @since 2019/6/11 16:43
       */
     def perform(pr: PhMapArgs[PhWorkArgs[Any]]): PhWorkArgs[Any] = {
         if (actionLst.isEmpty) pr
         else {
-            try {
-                val tmp = pr match {
-                    case mapArgs: PhMapArgs[PhWorkArgs[Any]] => PhMapArgs(mapArgs.get +
-                            (actionLst.head.name -> actionLst.head.perform(pr)))
-                    case _ => pr
-                }
-
-                PhBaseJob(name, defaultArgs, actionLst.tail).perform(tmp)
-            } catch {
-                case e: PhOperatorException => {
+            actionLst.foldLeft(pr) { (l, r) =>
+                try {
+                    PhMapArgs(l.get + (r.name -> r.perform(l)))
+                } catch {
+                    case e: PhOperatorException => {
 //                    phlog.setErrorLog(PhOperatorException(e.names :+ name, e.exception).getMessage)
-                    pr
+                        pr
+                    }
                 }
             }
         }

@@ -9,7 +9,7 @@ actions:
         null: null
     opers:
     -   name: read panel for CNS_R
-        reference: com.pharbers.ipaas.data.driver.job.PhReadParquetOperator
+        reference: com.pharbers.ipaas.data.driver.operators.PhReadParquetOperator
         factory: com.pharbers.ipaas.data.driver.factory.PhOperatorFactory
         args:
             path: hdfs:///workData/Panel/c8c0f2f4-bda2-4610-96d0-30201a021d63
@@ -48,7 +48,7 @@ actions:
         null: null
     opers:
     -   name: read universe for DVP
-        reference: com.pharbers.ipaas.data.driver.job.PhReadOperator
+        reference: com.pharbers.ipaas.data.driver.operators.PhReadOperator
         factory: com.pharbers.ipaas.data.driver.factory.PhOperatorFactory
         args:
             path: hdfs:///data/pfizer/pha_config_repository1804/Pfizer_Universe_CNS_R.csv
@@ -242,7 +242,7 @@ actions:
     opers:
     -   name: filter NEED_MAX_HOSP
         factory: com.pharbers.ipaas.data.driver.factory.PhOperatorFactory
-        reference: com.pharbers.ipaas.data.driver.job.PhFilterOperator
+        reference: com.pharbers.ipaas.data.driver.operators.PhFilterOperator
         args:
             df: df
             filter: NEED_MAX_HOSP == 1
@@ -349,7 +349,7 @@ actions:
                 exprString: Factor as Double
     -   name: filter factor
         factory: com.pharbers.ipaas.data.driver.factory.PhOperatorFactory
-        reference: com.pharbers.ipaas.data.driver.job.PhFilterOperator
+        reference: com.pharbers.ipaas.data.driver.operators.PhFilterOperator
         args:
             df: df
             filter: Factor > 0.0
@@ -409,7 +409,7 @@ actions:
             dropColName: s_sumSales,s_sumUnits,s_westMedicineIncome
     -   name: filter
         factory: com.pharbers.ipaas.data.driver.factory.PhOperatorFactory
-        reference: com.pharbers.ipaas.data.driver.job.PhFilterOperator
+        reference: com.pharbers.ipaas.data.driver.operators.PhFilterOperator
         args:
             df: df
             filter: IS_PANEL_HOSP == 0 AND (f_units != 0.0 AND f_sales != 0.0)

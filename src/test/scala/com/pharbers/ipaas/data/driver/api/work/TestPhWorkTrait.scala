@@ -4,15 +4,18 @@ import org.apache.spark.rdd.RDD
 import org.scalatest.{BeforeAndAfterAll, FunSuite}
 import org.apache.spark.sql.{Column, DataFrame, Row}
 import com.pharbers.ipaas.data.driver.libs.spark.PhSparkDriver
+import com.pharbers.ipaas.data.driver.job.{PhBaseAction, PhBaseJob}
 
 class TestPhWorkTrait extends FunSuite with BeforeAndAfterAll {
-    implicit val sd: PhSparkDriver = PhSparkDriver("testSparkDriver")
+    implicit var sd: PhSparkDriver = _
 
     var testDF: DataFrame = _
     var testRDD: RDD[Row] = _
 
     override def beforeAll(): Unit = {
-        import sd.ss.implicits._
+        sd = PhSparkDriver("test-driver")
+        val tmp = sd.ss.implicits
+        import tmp._
         testDF = List(
             ("name1", "prod1", "201801", 1),
             ("name2", "prod1", "201801", 2),
@@ -78,25 +81,7 @@ class TestPhWorkTrait extends FunSuite with BeforeAndAfterAll {
             }
         }
 
-        case class action(name: String = "testAction",
-                          defaultArgs: PhMapArgs[PhWorkArgs[Any]],
-                          operatorLst: Seq[PhOperatorTrait2[Any]]) extends PhActionTrait2 {
-            override def perform(pr: PhMapArgs[PhWorkArgs[Any]]): PhWorkArgs[Any] = {
-                operatorLst
-                        .foldLeft(pr)((l, r) => PhMapArgs(l.get + (r.name -> r.perform(l))))
-                        .get(operatorLst.last.name)
-            }
-        }
-
-        case class job(name: String = "testJob",
-                       defaultArgs: PhMapArgs[PhWorkArgs[Any]],
-                       actionLst: List[PhActionTrait2]) extends PhJobTrait2 {
-            override def perform(pr: PhMapArgs[PhWorkArgs[Any]]): PhWorkArgs[Any] = {
-                actionLst.foldLeft(pr)((l, r) => PhMapArgs(l.get + (r.name -> r.perform(l))))
-            }
-        }
-
-        val action1 = action("testAction1", PhMapArgs(), List(
+        val action1 = PhBaseAction("testAction1", PhMapArgs(), List(
             withColumn("withColumn1",
                 PhMapArgs(Map("inDFName" -> PhStringArgs("df"), "newColName" -> PhStringArgs("a"))),
                 Seq(lit("", PhMapArgs(Map("value" -> PhStringArgs("lit+a"))), Nil))
@@ -111,7 +96,7 @@ class TestPhWorkTrait extends FunSuite with BeforeAndAfterAll {
             )
         ))
 
-        val action2 = action("testAction2", PhMapArgs(), List(
+        val action2 = PhBaseAction("testAction2", PhMapArgs(), List(
             withColumn("withColumn1",
                 PhMapArgs(Map("inDFName" -> PhStringArgs("testAction1"), "newColName" -> PhStringArgs("aa"))),
                 Seq(lit("", PhMapArgs(Map("value" -> PhStringArgs("lit+a"))), Nil))
@@ -127,8 +112,9 @@ class TestPhWorkTrait extends FunSuite with BeforeAndAfterAll {
         ))
 
 
-        val job1 = job("testJob", PhMapArgs(), List(action1, action2))
+        val job1 = PhBaseJob("testJob", PhMapArgs(), List(action1, action2))
         val result = job1.perform(PhMapArgs(Map("df" -> PhDFArgs(testDF))))
+
         println(result)
         result.toMapArgs.getAs[PhDFArgs]("testAction1").get.get.show(false)
         result.toMapArgs.getAs[PhDFArgs]("testAction2").get.get.show(false)
@@ -153,28 +139,7 @@ class TestPhWorkTrait extends FunSuite with BeforeAndAfterAll {
             }
         }
 
-        case class action(name: String = "testAction",
-                          defaultArgs: PhMapArgs[PhWorkArgs[Any]],
-                          operatorLst: Seq[PhOperatorTrait2[Any]]) extends PhActionTrait2 {
-            override def perform(pr: PhMapArgs[PhWorkArgs[Any]]): PhWorkArgs[Any] = {
-                operatorLst.foldLeft(pr)((l, r) => PhMapArgs(l.get + (r.name -> r.perform(l))))
-                        .get(operatorLst.last.name)
-            }
-        }
-
-        case class job(name: String = "testJob",
-                       defaultArgs: PhMapArgs[PhWorkArgs[Any]],
-                       actionLst: List[PhActionTrait2]) extends PhJobTrait2 {
-            override def perform(pr: PhMapArgs[PhWorkArgs[Any]]): PhWorkArgs[Any] = {
-                var mapArgs = pr.toMapArgs[PhWorkArgs[_]]
-                actionLst.foreach { action =>
-                    mapArgs = PhMapArgs(mapArgs.get + (action.name -> action.perform(mapArgs)))
-                }
-                mapArgs
-            }
-        }
-
-        val action1 = action("testAction1", PhMapArgs(), List(
+        val action1 = PhBaseAction("testAction1", PhMapArgs(), List(
             map("map1",
                 PhMapArgs(Map("inRDDName" -> PhStringArgs("rdd"))),
                 Seq(addOne("", PhMapArgs(), Nil))
@@ -189,7 +154,7 @@ class TestPhWorkTrait extends FunSuite with BeforeAndAfterAll {
             )
         ))
 
-        val action2 = action("testAction2", PhMapArgs(), List(
+        val action2 = PhBaseAction("testAction2", PhMapArgs(), List(
             map("map1",
                 PhMapArgs(Map("inRDDName" -> PhStringArgs("testAction1"), "newColName" -> PhStringArgs("aa"))),
                 Seq(addOne("", PhMapArgs(Map("value" -> PhStringArgs("lit+a"))), Nil))
@@ -204,8 +169,9 @@ class TestPhWorkTrait extends FunSuite with BeforeAndAfterAll {
             )
         ))
 
-        val job1 = job("testJob", PhMapArgs(), List(action1, action2))
+        val job1 = PhBaseJob("testJob", PhMapArgs(), List(action1, action2))
         val result = job1.perform(PhMapArgs(Map("rdd" -> PhRDDArgs(testDF.rdd))))
+
         println(result)
         assert(result.toMapArgs.get.size === 3)
     }

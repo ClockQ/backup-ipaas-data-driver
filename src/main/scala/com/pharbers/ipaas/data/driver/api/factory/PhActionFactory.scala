@@ -2,7 +2,7 @@ package com.pharbers.ipaas.data.driver.api.factory
 
 import com.pharbers.ipaas.data.driver.api.model.Action
 import com.pharbers.ipaas.data.driver.exceptions.PhOperatorException
-import com.pharbers.ipaas.data.driver.api.work.{PhActionTrait2, PhMapArgs, PhOperatorTrait2, PhStringArgs}
+import com.pharbers.ipaas.data.driver.api.work.{PhActionTrait, PhMapArgs, PhOperatorTrait2, PhStringArgs}
 
 /** Action 实体工厂
   *
@@ -11,10 +11,10 @@ import com.pharbers.ipaas.data.driver.api.work.{PhActionTrait2, PhMapArgs, PhOpe
   * @version 0.1
   * @since 2019/06/14 15:30
   */
-case class PhActionFactory(action: Action) extends PhFactoryTrait[PhActionTrait2] {
+case class PhActionFactory(action: Action) extends PhFactoryTrait[PhActionTrait] {
 
     /** 构建 Action 运行实例 */
-    override def inst(): PhActionTrait2 = {
+    override def inst(): PhActionTrait = {
         import scala.collection.JavaConverters._
 
         val args = action.getArgs match {
@@ -37,6 +37,6 @@ case class PhActionFactory(action: Action) extends PhFactoryTrait[PhActionTrait2
             action.getName,
             PhMapArgs(args),
             opers
-        ).asInstanceOf[PhActionTrait2]
+        ).asInstanceOf[PhActionTrait]
     }
 }

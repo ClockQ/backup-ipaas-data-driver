@@ -9,7 +9,7 @@ actions:
         null: null
     opers:
     -   name: read
-        reference: com.pharbers.ipaas.data.driver.job.PhReadParquetOperator
+        reference: com.pharbers.ipaas.data.driver.operators.PhReadParquetOperator
         factory: com.pharbers.ipaas.data.driver.factory.PhOperatorFactory
         args:
             path: hdfs:///workData/Clean/20bfd585-c889-4385-97ec-a8d4c77d71cc
@@ -21,7 +21,7 @@ actions:
         null: null
     opers:
     -   name: read
-        reference: com.pharbers.ipaas.data.driver.job.PhReadParquetOperator
+        reference: com.pharbers.ipaas.data.driver.operators.PhReadParquetOperator
         factory: com.pharbers.ipaas.data.driver.factory.PhOperatorFactory
         args:
             path: hdfs:///repository/miss_hosp/5ca069bceeefcc012918ec72
@@ -33,7 +33,7 @@ actions:
         null: null
     opers:
     -   name: read
-        reference: com.pharbers.ipaas.data.driver.job.PhReadParquetOperator
+        reference: com.pharbers.ipaas.data.driver.operators.PhReadParquetOperator
         factory: com.pharbers.ipaas.data.driver.factory.PhOperatorFactory
         args:
             path: hdfs:///repository/not_published_hosp/5ca069bceeefcc012918ec72
@@ -45,7 +45,7 @@ actions:
         null: null
     opers:
     -   name: read
-        reference: com.pharbers.ipaas.data.driver.job.PhReadParquetOperator
+        reference: com.pharbers.ipaas.data.driver.operators.PhReadParquetOperator
         factory: com.pharbers.ipaas.data.driver.factory.PhOperatorFactory
         args:
             path: hdfs:///repository/full_hosp/5ca069bceeefcc012918ec72/20180629
@@ -57,7 +57,7 @@ actions:
         null: null
     opers:
     -   name: read
-        reference: com.pharbers.ipaas.data.driver.job.PhReadParquetOperator
+        reference: com.pharbers.ipaas.data.driver.operators.PhReadParquetOperator
         factory: com.pharbers.ipaas.data.driver.factory.PhOperatorFactory
         args:
             path: hdfs:///repository/sample_hosp/5ca069bceeefcc012918ec72/mz
@@ -70,7 +70,7 @@ actions:
     opers:
     -   name: filter
         factory: com.pharbers.ipaas.data.driver.factory.PhOperatorFactory
-        reference: com.pharbers.ipaas.data.driver.job.PhFilterOperator
+        reference: com.pharbers.ipaas.data.driver.operators.PhFilterOperator
         args:
             inDFName: df
             filter: DATE == 201809
@@ -108,7 +108,7 @@ actions:
     opers:
     -   name: filter
         factory: com.pharbers.ipaas.data.driver.factory.PhOperatorFactory
-        reference: com.pharbers.ipaas.data.driver.job.PhFilterOperator
+        reference: com.pharbers.ipaas.data.driver.operators.PhFilterOperator
         args:
             inDFName: df
             filter: YM == 201809
@@ -129,7 +129,7 @@ actions:
             joinType: left
     -   name: filter
         factory: com.pharbers.ipaas.data.driver.factory.PhOperatorFactory
-        reference: com.pharbers.ipaas.data.driver.job.PhFilterOperator
+        reference: com.pharbers.ipaas.data.driver.operators.PhFilterOperator
         args:
             inDFName: df
             filter: MISS_HOSPITAL_ID IS NULL
@@ -148,7 +148,7 @@ actions:
     opers:
     -   name: filter
         factory: com.pharbers.ipaas.data.driver.factory.PhOperatorFactory
-        reference: com.pharbers.ipaas.data.driver.job.PhFilterOperator
+        reference: com.pharbers.ipaas.data.driver.operators.PhFilterOperator
         args:
             inDFName: df
             filter: YM == 201809
@@ -181,7 +181,7 @@ actions:
     opers:
     -   name: filter
         factory: com.pharbers.ipaas.data.driver.factory.PhOperatorFactory
-        reference: com.pharbers.ipaas.data.driver.job.PhFilterOperator
+        reference: com.pharbers.ipaas.data.driver.operators.PhFilterOperator
         args:
             inDFName: df
             filter: "MARKET == '麻醉市场' AND SAMPLE == 1"
@@ -247,7 +247,7 @@ actions:
     opers:
     -   name: readCsv
         factory: com.pharbers.ipaas.data.driver.factory.PhOperatorFactory
-        reference: com.pharbers.ipaas.data.driver.job.PhReadParquetOperator
+        reference: com.pharbers.ipaas.data.driver.operators.PhReadParquetOperator
         args:
             path: hdfs:///repository/universe_hosp/5ca069bceeefcc012918ec72/mz
 -   name: universeDF
@@ -284,7 +284,7 @@ actions:
 #    opers:
 #    -   name: readParquet
 #        factory: com.pharbers.ipaas.data.driver.factory.PhOperatorFactory
-#        reference: com.pharbers.ipaas.data.driver.job.PhReadParquetOperator
+#        reference: com.pharbers.ipaas.data.driver.operators.PhReadParquetOperator
 #        args:
 #            path: hdfs:///workData/Panel/5ca069bceeefcc012918ec72
 -   name: panelSummed
@@ -415,7 +415,7 @@ actions:
     opers:
     -   name:
         factory: com.pharbers.ipaas.data.driver.factory.PhOperatorFactory
-        reference: com.pharbers.ipaas.data.driver.job.PhFilterOperator
+        reference: com.pharbers.ipaas.data.driver.operators.PhFilterOperator
         args:
             df: df
             filter: NEED_MAX_HOSP == 1
@@ -531,7 +531,7 @@ actions:
                 exprString: Factor as Double
     -   name: filter factor
         factory: com.pharbers.ipaas.data.driver.factory.PhOperatorFactory
-        reference: com.pharbers.ipaas.data.driver.job.PhFilterOperator
+        reference: com.pharbers.ipaas.data.driver.operators.PhFilterOperator
         args:
             df: df
             filter: Factor > 0.0
@@ -603,13 +603,13 @@ actions:
     #                exprString: case when IS_PANEL_HOSP == 1 then 1 when f_units == 0 or avg_Units  == 0 then 0 else 1 end
     #    -   name: filter
     #        factory: com.pharbers.ipaas.data.driver.factory.PhOperatorFactory
-    #        reference: com.pharbers.ipaas.data.driver.job.PhFilterOperator
+    #        reference: com.pharbers.ipaas.data.driver.operators.PhFilterOperator
     #        args:
     #            df: df
     #            filter: flag == 1 AND IS_PANEL_HOSP == 0
     -   name: filter
         factory: com.pharbers.ipaas.data.driver.factory.PhOperatorFactory
-        reference: com.pharbers.ipaas.data.driver.job.PhFilterOperator
+        reference: com.pharbers.ipaas.data.driver.operators.PhFilterOperator
         args:
             df: df
             filter: IS_PANEL_HOSP == 0 AND (f_units != 0.0 AND f_sales != 0.0)

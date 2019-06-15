@@ -1,10 +1,9 @@
-package com.pharbers.ipaas.data.driver.job
+package com.pharbers.ipaas.data.driver.operators
 
-import com.pharbers.ipaas.data.driver.api.work._
+import com.pharbers.ipaas.data.driver.api.work.{PhDFArgs, PhMapArgs, PhNoneArgs, PhOperatorTrait, PhPluginTrait, PhStringArgs, PhWorkArgs}
 import com.pharbers.ipaas.data.driver.libs.spark.PhSparkDriver
 import com.pharbers.ipaas.data.driver.libs.spark.util.readCsv
 import env.sparkObj
-import org.apache.spark.sql.DataFrame
 
 /**
   * @author dcs
@@ -12,7 +11,7 @@ import org.apache.spark.sql.DataFrame
   * @tparam T
   * @note
   */
-case class PhReadOperator(name: String, args: PhWorkArgs[_], plugin: PhPluginTrait) extends PhOperatorTrait{
+case class PhReadOperator(plugin: PhPluginTrait, name: String, args: PhWorkArgs[_]) extends PhOperatorTrait{
     override val defaultArgs: PhWorkArgs[_] = PhNoneArgs
 
     override def perform(pr: PhWorkArgs[_]): PhWorkArgs[_] = {

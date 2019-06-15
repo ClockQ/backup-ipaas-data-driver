@@ -2,7 +2,7 @@ package com.pharbers.ipaas.data.driver.api.factory
 
 import com.pharbers.ipaas.data.driver.api.model.Job
 import com.pharbers.ipaas.data.driver.exceptions.PhOperatorException
-import com.pharbers.ipaas.data.driver.api.work.{PhActionTrait2, PhJobTrait2, PhMapArgs, PhStringArgs}
+import com.pharbers.ipaas.data.driver.api.work.{PhActionTrait, PhJobTrait, PhMapArgs, PhStringArgs}
 
 /** Job 实体工厂
   *
@@ -11,10 +11,10 @@ import com.pharbers.ipaas.data.driver.api.work.{PhActionTrait2, PhJobTrait2, PhM
   * @version 0.1
   * @since 2019/06/14 15:30
   */
-case class PhJobFactory(job: Job) extends PhFactoryTrait[PhJobTrait2] {
+case class PhJobFactory(job: Job) extends PhFactoryTrait[PhJobTrait] {
 
     /** 构建 Job 运行实例 */
-    override def inst(): PhJobTrait2 = {
+    override def inst(): PhJobTrait = {
         import scala.collection.JavaConverters._
 
         val args = job.getArgs match {
@@ -26,7 +26,7 @@ case class PhJobFactory(job: Job) extends PhFactoryTrait[PhJobTrait2] {
             case null => Seq()
             case lst => lst.map { action =>
                 try {
-                    getMethodMirror(action.getFactory)(action).asInstanceOf[PhFactoryTrait[PhActionTrait2]].inst()
+                    getMethodMirror(action.getFactory)(action).asInstanceOf[PhFactoryTrait[PhActionTrait]].inst()
                 } catch {
                     case e: PhOperatorException => throw PhOperatorException(e.names :+ job.name, e.exception)
                 }
@@ -37,6 +37,6 @@ case class PhJobFactory(job: Job) extends PhFactoryTrait[PhJobTrait2] {
             job.getName,
             PhMapArgs(args),
             actions
-        ).asInstanceOf[PhJobTrait2]
+        ).asInstanceOf[PhJobTrait]
     }
 }

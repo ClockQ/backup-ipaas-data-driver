@@ -10,7 +10,7 @@ actions:
   opers:
   - name:
     factory: com.pharbers.ipaas.data.driver.factory.PhOperatorFactory
-    reference: com.pharbers.ipaas.data.driver.job.PhReadOperator
+    reference: com.pharbers.ipaas.data.driver.operators.PhReadOperator
     args:
       path: hdfs:///data/nhwa/pha_config_repository1809/Nhwa_201809_CPA_20181126.csv
   - name: hospIdCastInt
@@ -34,7 +34,7 @@ actions:
   opers:
   - name:
     factory: com.pharbers.ipaas.data.driver.factory.PhOperatorFactory
-    reference: com.pharbers.ipaas.data.driver.job.PhReadParquetOperator
+    reference: com.pharbers.ipaas.data.driver.operators.PhReadParquetOperator
     args:
       path: hdfs:///repository/hosp_dis_max
 
@@ -46,7 +46,7 @@ actions:
   opers:
   - name:
     factory: com.pharbers.ipaas.data.driver.factory.PhOperatorFactory
-    reference: com.pharbers.ipaas.data.driver.job.PhReadParquetOperator
+    reference: com.pharbers.ipaas.data.driver.operators.PhReadParquetOperator
     args:
       path: hdfs:///repository/prod_etc_dis_max/5ca069bceeefcc012918ec72
   - name: concant
@@ -77,7 +77,7 @@ actions:
   opers:
   - name:
     factory: com.pharbers.ipaas.data.driver.factory.PhOperatorFactory
-    reference: com.pharbers.ipaas.data.driver.job.PhReadParquetOperator
+    reference: com.pharbers.ipaas.data.driver.operators.PhReadParquetOperator
     args:
       path: hdfs:///repository/pha
 
@@ -89,7 +89,7 @@ actions:
   opers:
   - name:
     factory: com.pharbers.ipaas.data.driver.factory.PhOperatorFactory
-    reference: com.pharbers.ipaas.data.driver.job.PhReadOperator
+    reference: com.pharbers.ipaas.data.driver.operators.PhReadOperator
     args:
       path: hdfs:///data/nhwa/pha_config_repository1809/Nhwa_ProductMatchTable_20181126.csv
   - name: productMatchSelect

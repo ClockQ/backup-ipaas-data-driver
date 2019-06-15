@@ -10,7 +10,7 @@ actions:
       null: null
     opers:
       - name: read
-        reference: com.pharbers.ipaas.data.driver.job.PhReadParquetOperator
+        reference: com.pharbers.ipaas.data.driver.operators.PhReadParquetOperator
         factory: com.pharbers.ipaas.data.driver.factory.PhOperatorFactory
         args:
 #          cpaERD path
@@ -22,7 +22,7 @@ actions:
         null: null
       opers:
         - name: read
-          reference: com.pharbers.ipaas.data.driver.job.PhReadParquetOperator
+          reference: com.pharbers.ipaas.data.driver.operators.PhReadParquetOperator
           factory: com.pharbers.ipaas.data.driver.factory.PhOperatorFactory
           args:
 #            gycxERD path
@@ -35,7 +35,7 @@ actions:
         null: null
       opers:
         - name: read
-          reference: com.pharbers.ipaas.data.driver.job.PhReadParquetOperator
+          reference: com.pharbers.ipaas.data.driver.operators.PhReadParquetOperator
           factory: com.pharbers.ipaas.data.driver.factory.PhOperatorFactory
           args:
             #            ProdErd path
@@ -48,7 +48,7 @@ actions:
               selects: MARKET#DEV_PRODUCT_ID
         - name: filter
             factory: com.pharbers.ipaas.data.driver.factory.PhOperatorFactory
-            reference: com.pharbers.ipaas.data.driver.job.PhFilterOperator
+            reference: com.pharbers.ipaas.data.driver.operators.PhFilterOperator
             args:
               inDFName: df
               filter: MARKET == DVP
@@ -61,7 +61,7 @@ actions:
       null: null
     opers:
       - name: read
-        reference: com.pharbers.ipaas.data.driver.job.PhReadParquetOperator
+        reference: com.pharbers.ipaas.data.driver.operators.PhReadParquetOperator
         factory: com.pharbers.ipaas.data.driver.factory.PhOperatorFactory
         args:
           path: hdfs:///repository/miss_hosp/5ca069e2eeefcc012918ec73
@@ -73,7 +73,7 @@ actions:
 #      null: null
 #    opers:
 #      - name: read
-#        reference: com.pharbers.ipaas.data.driver.job.PhReadParquetOperator
+#        reference: com.pharbers.ipaas.data.driver.operators.PhReadParquetOperator
 #        factory: com.pharbers.ipaas.data.driver.factory.PhOperatorFactory
 #        args:
 #          path: hdfs:///repository/not_published_hosp/5ca069bceeefcc012918ec72
@@ -85,7 +85,7 @@ actions:
       null: null
     opers:
       - name: read
-        reference: com.pharbers.ipaas.data.driver.job.PhReadParquetOperator
+        reference: com.pharbers.ipaas.data.driver.operators.PhReadParquetOperator
         factory: com.pharbers.ipaas.data.driver.factory.PhOperatorFactory
         args:
 #          path: hdfs:///repository/full_hosp/5ca069e2eeefcc012918ec73/20180629
@@ -97,7 +97,7 @@ actions:
       null: null
     opers:
       - name: read
-        reference: com.pharbers.ipaas.data.driver.job.PhReadParquetOperator
+        reference: com.pharbers.ipaas.data.driver.operators.PhReadParquetOperator
         factory: com.pharbers.ipaas.data.driver.factory.PhOperatorFactory
         args:
           path: hdfs:///repository/sample_hosp/5ca069e2eeefcc012918ec73/DVP
@@ -110,7 +110,7 @@ actions:
     opers:
       - name: filter
         factory: com.pharbers.ipaas.data.driver.factory.PhOperatorFactory
-        reference: com.pharbers.ipaas.data.driver.job.PhFilterOperator
+        reference: com.pharbers.ipaas.data.driver.operators.PhFilterOperator
         args:
           inDFName: df
           filter: DATE == 201809
@@ -154,7 +154,7 @@ actions:
     opers:
       - name: filter
         factory: com.pharbers.ipaas.data.driver.factory.PhOperatorFactory
-        reference: com.pharbers.ipaas.data.driver.job.PhFilterOperator
+        reference: com.pharbers.ipaas.data.driver.operators.PhFilterOperator
         args:
           inDFName: df
           filter: YM == 201809
@@ -175,7 +175,7 @@ actions:
           joinType: left
       - name: filter
         factory: com.pharbers.ipaas.data.driver.factory.PhOperatorFactory
-        reference: com.pharbers.ipaas.data.driver.job.PhFilterOperator
+        reference: com.pharbers.ipaas.data.driver.operators.PhFilterOperator
         args:
           inDFName: df
           filter: MISS_HOSPITAL_ID IS NULL
@@ -194,7 +194,7 @@ actions:
     opers:
       - name: filter
         factory: com.pharbers.ipaas.data.driver.factory.PhOperatorFactory
-        reference: com.pharbers.ipaas.data.driver.job.PhFilterOperator
+        reference: com.pharbers.ipaas.data.driver.operators.PhFilterOperator
         args:
           inDFName: df
           filter: YM == 201809
@@ -247,7 +247,7 @@ actions:
     opers:
       - name: filter
         factory: com.pharbers.ipaas.data.driver.factory.PhOperatorFactory
-        reference: com.pharbers.ipaas.data.driver.job.PhFilterOperator
+        reference: com.pharbers.ipaas.data.driver.operators.PhFilterOperator
         args:
           inDFName: df
           filter: "MARKET == 'DVP' AND SAMPLE == 1"
