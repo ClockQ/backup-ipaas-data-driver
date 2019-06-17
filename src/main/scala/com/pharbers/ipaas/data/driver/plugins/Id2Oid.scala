@@ -7,15 +7,14 @@ import org.apache.spark.sql.functions.udf
 import org.apache.spark.sql.types.{StringType, StructField, StructType}
 import org.apache.spark.sql.functions._
 
-/** 功能描述
+/** id to oid 插件
   *
-  * @author EDZ
-  * @param
-  * @tparam
-  * @note
+  * @author clock
+  * @version 0.1
+  * @since 2019/6/17 18:50
   */
 case class Id2Oid(override val name: String = "Id2Oid",
-             override val defaultArgs: PhWorkArgs[_] = PhNoneArgs) extends PhPluginTrait {
+                  override val defaultArgs: PhWorkArgs[_] = PhNoneArgs) extends PhPluginTrait {
 
 
     val trimOIdUdf: UserDefinedFunction = udf(oidSchema)
@@ -27,7 +26,13 @@ case class Id2Oid(override val name: String = "Id2Oid",
     }
 }
 
-case class oidSchema(oid: String){
+/** oidSchema
+  *
+  * @author clock
+  * @version 0.1
+  * @since 2019/6/17 18:50
+  */
+private[plugins] case class oidSchema(oid: String) {
     val oidSchema = StructType(StructField("oid", StringType, nullable = false) :: Nil)
     new GenericRowWithSchema(Array(oid), oidSchema)
 }
