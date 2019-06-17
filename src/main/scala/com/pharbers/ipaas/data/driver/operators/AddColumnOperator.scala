@@ -9,10 +9,10 @@ import com.pharbers.ipaas.data.driver.api.work._
   * @version 0.1
   * @since 2019/6/15 18:10
   * @example 默认参数例子
-  *          {{{
-  *           inDFName: actionName // 要作用的DataFrame名字
-  *           newColName: newCol // 新增的列名
-  *          }}}
+  * {{{
+  * inDFName: actionName // 要作用的DataFrame名字
+  * newColName: newCol // 新增的列名
+  * }}}
   */
 case class AddColumnOperator(name: String,
                              defaultArgs: PhMapArgs[PhWorkArgs[Any]],
@@ -20,7 +20,7 @@ case class AddColumnOperator(name: String,
         extends PhOperatorTrait2[DataFrame] {
     /** 要作用的DataFrame名字 */
     val inDFName: String = defaultArgs.getAs[PhStringArgs]("inDFName").get.get
-    /** 新增的列名 */
+    /** 新增的列名列表 */
     val newColName: String = defaultArgs.getAs[PhStringArgs]("newColName").get.get
 
     override def perform(pr: PhMapArgs[PhWorkArgs[Any]]): PhWorkArgs[DataFrame] = {

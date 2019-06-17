@@ -43,6 +43,7 @@ class TestConcatStrPlugin extends FunSuite with BeforeAndAfterAll {
             Seq(plugin)
         )
 
+        require(plugin != null)
         require(operator != null)
         require(sd != null)
         require(testDF != null)
