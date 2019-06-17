@@ -1,0 +1,235 @@
+name: panel
+factory: com.pharbers.ipaas.data.driver.api.factory.PhJobFactory
+reference: com.pharbers.ipaas.data.driver.api.job.PhBaseJob
+actions:
+- name: readCpa
+  factory: com.pharbers.ipaas.data.driver.api.factory.PhActionFactory
+  reference: com.pharbers.ipaas.data.driver.api.job.PhBaseAction
+  opers:
+  - name: read
+    factory: com.pharbers.ipaas.data.driver.api.factory.PhOperatorFactory
+    reference: com.pharbers.ipaas.data.driver.operators.ReadParquetOperator
+    args:
+      path: hdfs:///workData/Clean/20bfd585-c889-4385-97ec-a8d4c77d71cc
+
+- name: readMissHosp
+  factory: com.pharbers.ipaas.data.driver.api.factory.PhActionFactory
+  reference: com.pharbers.ipaas.data.driver.api.job.PhBaseAction
+  opers:
+  - name: read
+    factory: com.pharbers.ipaas.data.driver.api.factory.PhOperatorFactory
+    reference: com.pharbers.ipaas.data.driver.operators.ReadParquetOperator
+    args:
+      path: hdfs:///repository/miss_hosp/5ca069bceeefcc012918ec72
+
+- name: readNotPublishHosp
+  factory: com.pharbers.ipaas.data.driver.api.factory.PhActionFactory
+  reference: com.pharbers.ipaas.data.driver.api.job.PhBaseAction
+  opers:
+  - name: read
+    factory: com.pharbers.ipaas.data.driver.api.factory.PhOperatorFactory
+    reference: com.pharbers.ipaas.data.driver.operators.ReadParquetOperator
+    args:
+      path: hdfs:///repository/not_published_hosp/5ca069bceeefcc012918ec72
+
+- name: readFullHosp
+  factory: com.pharbers.ipaas.data.driver.api.factory.PhActionFactory
+  reference: com.pharbers.ipaas.data.driver.api.job.PhBaseAction
+  opers:
+  - name: read
+    factory: com.pharbers.ipaas.data.driver.api.factory.PhOperatorFactory
+    reference: com.pharbers.ipaas.data.driver.operators.ReadParquetOperator
+    args:
+      path: hdfs:///repository/full_hosp/5ca069bceeefcc012918ec72/20180629
+
+- name: readSampleHosp
+  factory: com.pharbers.ipaas.data.driver.api.factory.PhActionFactory
+  reference: com.pharbers.ipaas.data.driver.api.job.PhBaseAction
+  opers:
+  - name: read
+    factory: com.pharbers.ipaas.data.driver.api.factory.PhOperatorFactory
+    reference: com.pharbers.ipaas.data.driver.operators.ReadParquetOperator
+    args:
+      path: hdfs:///repository/sample_hosp/5ca069bceeefcc012918ec72/mz
+
+- name: missHosp
+  reference: com.pharbers.ipaas.data.driver.api.job.PhBaseAction
+  factory: com.pharbers.ipaas.data.driver.api.factory.PhActionFactory
+  opers:
+  - name: filter
+    factory: com.pharbers.ipaas.data.driver.api.factory.PhOperatorFactory
+    reference: com.pharbers.ipaas.data.driver.operators.ExprFilterOperator
+    args:
+      inDFName: readMissHosp
+      filter: DATE == 201809
+#  - name: drop
+#    factory: com.pharbers.ipaas.data.driver.factory.PhOperatorFactory
+#    reference: com.pharbers.ipaas.data.driver.operators.DropOperator
+#    args:
+#      inDFName: df
+#      dropColName: DATE
+#  - name: union
+#    factory: com.pharbers.ipaas.data.driver.factory.PhOperatorFactory
+#    reference: com.pharbers.ipaas.data.driver.operators.unionOperator
+#    args:
+#      inDFName: df
+#      unionDFName: readNotPublishHosp
+#  - name: drop
+#    factory: com.pharbers.ipaas.data.driver.factory.PhOperatorFactory
+#    reference: com.pharbers.ipaas.data.driver.operators.DropOperator
+#    args:
+#      inDFName: df
+#      dropColName: _id
+#  - name: distinct
+#    factory: com.pharbers.ipaas.data.driver.factory.PhOperatorFactory
+#    reference: com.pharbers.ipaas.data.driver.operators.DistinctOperator
+#    args:
+#      inDFName: df
+#      null: null
+#  - name: rename
+#    factory: com.pharbers.ipaas.data.driver.factory.PhOperatorFactory
+#    reference: com.pharbers.ipaas.data.driver.operators.withColumnRenamed
+#    args:
+#      inDFName: df
+#      oldColName: HOSPITAL_ID
+#      newColName: MISS_HOSPITAL_ID
+#
+#- name: primalCpa
+#  reference: com.pharbers.ipaas.data.driver.job.PhBaseAction
+#  factory: com.pharbers.ipaas.data.driver.factory.PhActionFactory
+#  args:
+#    df: readCpa
+#  opers:
+#  - name: filter
+#    factory: com.pharbers.ipaas.data.driver.factory.PhOperatorFactory
+#    reference: com.pharbers.ipaas.data.driver.job.PhFilterOperator
+#    args:
+#      inDFName: df
+#      filter: YM == 201809
+#
+#- name: reducedCpa
+#  reference: com.pharbers.ipaas.data.driver.job.PhBaseAction
+#  factory: com.pharbers.ipaas.data.driver.factory.PhActionFactory
+#  args:
+#    df: primalCpa
+#  opers:
+#  - name: join
+#    factory: com.pharbers.ipaas.data.driver.factory.PhOperatorFactory
+#    reference: com.pharbers.ipaas.data.driver.operators.JoinOperator
+#    args:
+#      inDFName: df
+#      joinDFName: missHosp
+#      joinExpr: MISS_HOSPITAL_ID == HOSPITAL_ID
+#      joinType: left
+#  - name: filter
+#    factory: com.pharbers.ipaas.data.driver.factory.PhOperatorFactory
+#    reference: com.pharbers.ipaas.data.driver.job.PhFilterOperator
+#    args:
+#      inDFName: df
+#      filter: MISS_HOSPITAL_ID IS NULL
+#  - name: drop
+#    factory: com.pharbers.ipaas.data.driver.factory.PhOperatorFactory
+#    reference: com.pharbers.ipaas.data.driver.operators.DropOperator
+#    args:
+#      inDFName: df
+#      dropColName: MISS_HOSPITAL_ID
+#
+#- name: cpa
+#  reference: com.pharbers.ipaas.data.driver.job.PhBaseAction
+#  factory: com.pharbers.ipaas.data.driver.factory.PhActionFactory
+#  args:
+#    df: readFullHosp
+#  opers:
+#  - name: filter
+#    factory: com.pharbers.ipaas.data.driver.factory.PhOperatorFactory
+#    reference: com.pharbers.ipaas.data.driver.job.PhFilterOperator
+#    args:
+#      inDFName: df
+#      filter: YM == 201809
+#  - name: join
+#    factory: com.pharbers.ipaas.data.driver.factory.PhOperatorFactory
+#    reference: com.pharbers.ipaas.data.driver.operators.JoinOperator
+#    args:
+#      inDFName: df
+#      joinDFName: missHosp
+#      joinExpr: MISS_HOSPITAL_ID == HOSPITAL_ID
+#      joinType: inner
+#  - name: drop
+#    factory: com.pharbers.ipaas.data.driver.factory.PhOperatorFactory
+#    reference: com.pharbers.ipaas.data.driver.operators.DropOperator
+#    args:
+#      inDFName: df
+#      dropColName: MISS_HOSPITAL_ID
+#  - name: union
+#    factory: com.pharbers.ipaas.data.driver.factory.PhOperatorFactory
+#    reference: com.pharbers.ipaas.data.driver.operators.unionOperator
+#    args:
+#      inDFName: df
+#      unionDFName: reducedCpa
+#
+#- name: sampleHosp
+#  reference: com.pharbers.ipaas.data.driver.job.PhBaseAction
+#  factory: com.pharbers.ipaas.data.driver.factory.PhActionFactory
+#  args:
+#    df: readSampleHosp
+#  opers:
+#  - name: filter
+#    factory: com.pharbers.ipaas.data.driver.factory.PhOperatorFactory
+#    reference: com.pharbers.ipaas.data.driver.job.PhFilterOperator
+#    args:
+#      inDFName: df
+#      filter: "MARKET == '麻醉市场' AND SAMPLE == 1"
+#  - name: rename
+#    factory: com.pharbers.ipaas.data.driver.factory.PhOperatorFactory
+#    reference: com.pharbers.ipaas.data.driver.operators.withColumnRenamed
+#    args:
+#      inDFName: df
+#      oldColName: HOSPITAL_ID
+#      newColName: SAMPLE_HOSPITAL_ID
+#
+#- name: panelERD
+#  reference: com.pharbers.ipaas.data.driver.job.PhBaseAction
+#  factory: com.pharbers.ipaas.data.driver.factory.PhActionFactory
+#  args:
+#    df: cpa
+#  opers:
+#  - name: join
+#    factory: com.pharbers.ipaas.data.driver.factory.PhOperatorFactory
+#    reference: com.pharbers.ipaas.data.driver.operators.JoinOperator
+#    args:
+#      inDFName: df
+#      joinDFName: sampleHosp
+#      joinExpr: SAMPLE_HOSPITAL_ID == HOSPITAL_ID
+#      joinType: inner
+#  - name: drop
+#    factory: com.pharbers.ipaas.data.driver.factory.PhOperatorFactory
+#    reference: com.pharbers.ipaas.data.driver.operators.DropOperator
+#    args:
+#      inDFName: df
+#      dropColName: SAMPLE_HOSPITAL_ID
+#  - name: concant
+#    factory: com.pharbers.ipaas.data.driver.factory.PhOperatorFactory
+#    reference: com.pharbers.ipaas.data.driver.operators.addColumn
+#    args:
+#      inDFName: df
+#      newColName: GROUP
+#    plugin:
+#      name: concat
+#      reference: com.pharbers.ipaas.data.driver.plugin.ConcatStrPlugin
+#      factory: com.pharbers.ipaas.data.driver.factory.PhPluginFactory
+#      args:
+#        columns: COMPANY_ID,YM,HOSPITAL_ID,PRODUCT_ID
+#        dilimiter: "#"
+#  - name: group
+#    factory: com.pharbers.ipaas.data.driver.factory.PhOperatorFactory
+#    reference: com.pharbers.ipaas.data.driver.operators.groupOperator
+#    args:
+#      inDFName: df
+#      groupCol: GROUP
+#      agg: sum(UNITS) as UNITS,sum(SALES) as SALES,first(COMPANY_ID) as COMPANY_ID,first(YM) as YM,first(HOSPITAL_ID) as HOSPITAL_ID,first(PRODUCT_ID) as PRODUCT_ID,
+#  - name: drop
+#    factory: com.pharbers.ipaas.data.driver.factory.PhOperatorFactory
+#    reference: com.pharbers.ipaas.data.driver.operators.DropOperator
+#    args:
+#      inDFName: df
+#      dropColName: GROUP
