@@ -20,10 +20,9 @@ actions:
     plugin:
       name: castInt
       factory: com.pharbers.ipaas.data.driver.api.factory.PhPluginFactory
-      reference: com.pharbers.ipaas.data.driver.plugin.ExprPlugin
+      reference: com.pharbers.ipaas.data.driver.plugins.ExprPlugin
       args:
         exprString: cast(HOSP_ID as int)
-
 - name: readHospitalFile
   reference: com.pharbers.ipaas.data.driver.api.job.PhBaseAction
   factory: com.pharbers.ipaas.data.driver.api.factory.PhActionFactory
@@ -33,27 +32,24 @@ actions:
     reference: com.pharbers.ipaas.data.driver.operators.ReadParquetOperator
     args:
       path: hdfs:///repository/hosp_dis_max
-#
-#- name: readProductFile
-#  reference: com.pharbers.ipaas.data.driver.api.job.PhBaseAction
-#  factory: com.pharbers.ipaas.data.driver.api.factory.PhActionFactory
-#  args:
-#    null: null
-#  opers:
-#  - name:
+- name: readProductFile
+  reference: com.pharbers.ipaas.data.driver.api.job.PhBaseAction
+  factory: com.pharbers.ipaas.data.driver.api.factory.PhActionFactory
+  opers:
+  - name: loadProductFile
+    factory: com.pharbers.ipaas.data.driver.api.factory.PhOperatorFactory
+    reference: com.pharbers.ipaas.data.driver.operators.ReadParquetOperator
+    args:
+      path: hdfs:///repository/prod_etc_dis_max/5ca069bceeefcc012918ec72
+#  - name: concantMin2
 #    factory: com.pharbers.ipaas.data.driver.api.factory.PhOperatorFactory
-#    reference: com.pharbers.ipaas.data.driver.operators.PhReadParquetOperator
+#    reference: com.pharbers.ipaas.data.driver.operators.AddColumnOperator
 #    args:
-#      path: hdfs:///repository/prod_etc_dis_max/5ca069bceeefcc012918ec72
-#  - name: concant
-#    factory: com.pharbers.ipaas.data.driver.api.factory.PhOperatorFactory
-#    reference: com.pharbers.ipaas.data.driver.operators.addColumn
-#    args:
-#      inDFName: df
+#      inDFName: loadProductFile
 #      newColName: min2
 #    plugin:
 #      name: concatMin2
-#      reference: com.pharbers.ipaas.data.driver.plugin.ConcatStrPlugin
+#      reference: com.pharbers.ipaas.data.driver.plugins.ConcatStrPlugin
 #      factory: com.pharbers.ipaas.data.driver.api.factory.PhPluginFactory
 #      args:
 #        columns: ETC_PRODUCT_NAME,ETC_DOSAGE_NAME,ETC_PACKAGE_DES,ETC_PACKAGE_NUMBER,ETC_CORP_NAME
@@ -62,7 +58,7 @@ actions:
 #    factory: com.pharbers.ipaas.data.driver.api.factory.PhOperatorFactory
 #    reference: com.pharbers.ipaas.data.driver.operators.select
 #    args:
-#      inDFName: df
+#      inDFName: concantMin2
 #      selects: DEV_PRODUCT_ID as PRODUCT_ID#regexp_replace(min2, " ", "") as min2
 #
 #- name: readPhaFile

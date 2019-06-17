@@ -1,14 +1,15 @@
-package com.pharbers.ipaas.data.driver.operators
+package com.pharbers.ipaas.data.driver.plugins
 
+import org.apache.spark.sql.{Column, DataFrame}
 import org.scalatest.{BeforeAndAfterAll, FunSuite}
-import com.pharbers.ipaas.data.driver.api.work.{PhDFArgs, PhMapArgs, PhOperatorTrait2, PhStringArgs}
 import com.pharbers.ipaas.data.driver.libs.spark.PhSparkDriver
-import com.pharbers.ipaas.data.driver.plugins.ExprPlugin
-import org.apache.spark.sql.DataFrame
+import com.pharbers.ipaas.data.driver.operators.AddColumnOperator
+import com.pharbers.ipaas.data.driver.api.work.{PhDFArgs, PhMapArgs, PhOperatorTrait2, PhPluginTrait2, PhStringArgs}
 
-class TestAddColumnOperator extends FunSuite with BeforeAndAfterAll {
+class TestExprPlugin extends FunSuite with BeforeAndAfterAll {
     implicit var sd: PhSparkDriver = _
-    var operator: PhOperatorTrait2[_] = _
+    var operator: PhOperatorTrait2[DataFrame] = _
+    var plugin: PhPluginTrait2[Column] = _
     var testDF: DataFrame = _
 
     override def beforeAll(): Unit = {
@@ -23,19 +24,21 @@ class TestAddColumnOperator extends FunSuite with BeforeAndAfterAll {
             ("name4", "prod2", "201801", 4)
         ).toDF("NAME", "PROD", "DATE", "VALUE")
 
+        plugin = ExprPlugin(
+            "ExprPlugin",
+            PhMapArgs(Map(
+                "exprString" -> PhStringArgs("cast(VALUE as double)")
+            )),
+            Seq.empty
+        )
+
         operator = AddColumnOperator(
             "AddColumnOperator",
             PhMapArgs(Map(
                 "inDFName" -> PhStringArgs("inDFName"),
                 "newColName" -> PhStringArgs("newColName")
             )),
-            Seq(ExprPlugin(
-                "ExprPlugin",
-                PhMapArgs(Map(
-                    "exprString" -> PhStringArgs("cast(VALUE as double)")
-                )),
-                Seq.empty
-            ))
+            Seq(plugin)
         )
 
         require(operator != null)
@@ -43,8 +46,9 @@ class TestAddColumnOperator extends FunSuite with BeforeAndAfterAll {
         require(testDF != null)
     }
 
-    test("add column") {
+    test("add column by expr") {
         val result = operator.perform(PhMapArgs(Map("inDFName" -> PhDFArgs(testDF))))
+        result.toDFArgs.get.show(false)
         assert(result.toDFArgs.get.columns.contains("newColName"))
     }
 }

@@ -1,4 +1,4 @@
-package com.pharbers.ipaas.data.driver.plugin
+package com.pharbers.ipaas.data.driver.plugins
 
 import com.pharbers.ipaas.data.driver.api.work.{PhColArgs, PhNoneArgs, PhOperatorTrait, PhStringArgs, PhWorkArgs}
 import org.apache.spark.sql.expressions.Window

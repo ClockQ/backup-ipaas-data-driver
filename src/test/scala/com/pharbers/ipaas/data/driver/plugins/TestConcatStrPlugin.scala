@@ -1,15 +1,17 @@
-package com.pharbers.ipaas.data.driver.plugin
+package com.pharbers.ipaas.data.driver.plugins
 
-import org.apache.spark.sql.DataFrame
+import org.apache.spark.sql.{Column, DataFrame}
 import org.scalatest.{BeforeAndAfterAll, FunSuite}
 import com.pharbers.ipaas.data.driver.libs.spark.PhSparkDriver
 import com.pharbers.ipaas.data.driver.operators.AddColumnOperator
-import com.pharbers.ipaas.data.driver.api.work.{PhDFArgs, PhMapArgs, PhOperatorTrait2, PhStringArgs}
+import com.pharbers.ipaas.data.driver.api.work.{PhDFArgs, PhMapArgs, PhOperatorTrait2, PhPluginTrait2, PhStringArgs}
 
-class TestExprPlugin extends FunSuite with BeforeAndAfterAll {
+class TestConcatStrPlugin extends FunSuite with BeforeAndAfterAll {
     implicit var sd: PhSparkDriver = _
-    var operator: PhOperatorTrait2[_] = _
+    var operator: PhOperatorTrait2[DataFrame] = _
+    var plugin: PhPluginTrait2[Column] = _
     var testDF: DataFrame = _
+    val dilimiter: String = ","
 
     override def beforeAll(): Unit = {
         sd = PhSparkDriver("test-driver")
@@ -23,19 +25,22 @@ class TestExprPlugin extends FunSuite with BeforeAndAfterAll {
             ("name4", "prod2", "201801", 4)
         ).toDF("NAME", "PROD", "DATE", "VALUE")
 
+        plugin = ConcatStrPlugin(
+            "ConcatStrPlugin",
+            PhMapArgs(Map(
+                "columns" -> PhStringArgs("NAME#PROD"),
+                "dilimiter" -> PhStringArgs(dilimiter)
+            )),
+            Seq.empty
+        )
+
         operator = AddColumnOperator(
             "AddColumnOperator",
             PhMapArgs(Map(
                 "inDFName" -> PhStringArgs("inDFName"),
                 "newColName" -> PhStringArgs("newColName")
             )),
-            Seq(ExprPlugin(
-                "ExprPlugin",
-                PhMapArgs(Map(
-                    "exprString" -> PhStringArgs("cast(VALUE as double)")
-                )),
-                Seq.empty
-            ))
+            Seq(plugin)
         )
 
         require(operator != null)
@@ -43,8 +48,15 @@ class TestExprPlugin extends FunSuite with BeforeAndAfterAll {
         require(testDF != null)
     }
 
-    test("add column by expr") {
+    test("add column by concat") {
         val result = operator.perform(PhMapArgs(Map("inDFName" -> PhDFArgs(testDF))))
+        val df = result.toDFArgs.get
+        val tmp = df.take(1).head
+        val name = tmp.getString(0)
+        val prod = tmp.getString(1)
+        val newColName = tmp.getString(4)
+
         assert(result.toDFArgs.get.columns.contains("newColName"))
+        assert(name + dilimiter + prod == newColName)
     }
 }

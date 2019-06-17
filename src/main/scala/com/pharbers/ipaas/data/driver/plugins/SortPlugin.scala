@@ -1,4 +1,4 @@
-package com.pharbers.ipaas.data.driver.plugin
+package com.pharbers.ipaas.data.driver.plugins
 
 import com.pharbers.ipaas.data.driver.api.work.{PhDFArgs, PhListArgs, PhMapArgs, PhNoneArgs, PhPluginTrait, PhStringArgs, PhWorkArgs}
 import org.apache.spark.sql.Column

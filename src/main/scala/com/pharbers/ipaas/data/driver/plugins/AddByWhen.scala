@@ -1,4 +1,4 @@
-package com.pharbers.ipaas.data.driver.plugin
+package com.pharbers.ipaas.data.driver.plugins
 
 import org.apache.spark.sql.Column
 import org.apache.spark.sql.functions._

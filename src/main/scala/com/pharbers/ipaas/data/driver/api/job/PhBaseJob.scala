@@ -2,6 +2,7 @@ package com.pharbers.ipaas.data.driver.api.job
 
 import com.pharbers.ipaas.data.driver.api.work._
 import com.pharbers.ipaas.data.driver.exceptions.PhOperatorException
+import com.pharbers.ipaas.data.driver.log.Phlog
 
 /** Job 运行实体
   *
@@ -30,10 +31,9 @@ case class PhBaseJob(name: String,
                 try {
                     PhMapArgs(l.get + (r.name -> r.perform(l)))
                 } catch {
-                    case e: PhOperatorException => {
-//                    phlog.setErrorLog(PhOperatorException(e.names :+ name, e.exception).getMessage)
+                    case e: PhOperatorException =>
+                        Phlog().setErrorLog(PhOperatorException(e.names :+ name, e.exception).getMessage)
                         pr
-                    }
                 }
             }
         }

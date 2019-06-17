@@ -2,7 +2,7 @@ package com.pharbers.ipaas.data.driver.log
 
 import com.pharbers.ipaas.data.driver.api.work.{PhColArgs, PhListArgs, PhMapArgs, PhNoneArgs, PhStringArgs}
 import com.pharbers.ipaas.data.driver.libs.spark.PhSparkDriver
-import com.pharbers.ipaas.data.driver.plugin.CalcRankByWindow
+import com.pharbers.ipaas.data.driver.plugins.CalcRankByWindow
 import org.apache.spark.sql.DataFrame
 import org.apache.spark.sql.functions.col
 
