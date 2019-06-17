@@ -1,8 +1,5 @@
 package com.pharbers.ipaas.data.driver.libs.spark.session
 
-/**
-  * Created by clock on 19-5-30
-  */
 private[spark] object SparkConnConfig {
 //    val configPath: String = "pharbers_config/spark-config.xml"
 
