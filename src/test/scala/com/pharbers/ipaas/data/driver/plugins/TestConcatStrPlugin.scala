@@ -1,15 +1,13 @@
 package com.pharbers.ipaas.data.driver.plugins
 
-import org.apache.spark.sql.{Column, DataFrame}
+import org.apache.spark.sql.DataFrame
 import org.scalatest.{BeforeAndAfterAll, FunSuite}
 import com.pharbers.ipaas.data.driver.libs.spark.PhSparkDriver
 import com.pharbers.ipaas.data.driver.operators.AddColumnOperator
-import com.pharbers.ipaas.data.driver.api.work.{PhDFArgs, PhMapArgs, PhOperatorTrait2, PhPluginTrait2, PhStringArgs}
+import com.pharbers.ipaas.data.driver.api.work.{PhDFArgs, PhMapArgs, PhStringArgs}
 
 class TestConcatStrPlugin extends FunSuite with BeforeAndAfterAll {
     implicit var sd: PhSparkDriver = _
-    var operator: PhOperatorTrait2[DataFrame] = _
-    var plugin: PhPluginTrait2[Column] = _
     var testDF: DataFrame = _
     val dilimiter: String = ","
 
@@ -25,7 +23,12 @@ class TestConcatStrPlugin extends FunSuite with BeforeAndAfterAll {
             ("name4", "prod2", "201801", 4)
         ).toDF("NAME", "PROD", "DATE", "VALUE")
 
-        plugin = ConcatStrPlugin(
+        require(sd != null)
+        require(testDF != null)
+    }
+
+    test("add column by concat") {
+        val plugin = ConcatStrPlugin(
             "ConcatStrPlugin",
             PhMapArgs(Map(
                 "columns" -> PhStringArgs("NAME#PROD"),
@@ -34,7 +37,7 @@ class TestConcatStrPlugin extends FunSuite with BeforeAndAfterAll {
             Seq.empty
         )
 
-        operator = AddColumnOperator(
+        val operator = AddColumnOperator(
             "AddColumnOperator",
             PhMapArgs(Map(
                 "inDFName" -> PhStringArgs("inDFName"),
@@ -43,13 +46,6 @@ class TestConcatStrPlugin extends FunSuite with BeforeAndAfterAll {
             Seq(plugin)
         )
 
-        require(plugin != null)
-        require(operator != null)
-        require(sd != null)
-        require(testDF != null)
-    }
-
-    test("add column by concat") {
         val result = operator.perform(PhMapArgs(Map("inDFName" -> PhDFArgs(testDF))))
         val df = result.toDFArgs.get
         val tmp = df.take(1).head

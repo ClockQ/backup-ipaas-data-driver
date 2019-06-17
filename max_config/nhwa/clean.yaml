@@ -60,56 +60,47 @@ actions:
     args:
       inDFName: concantMin2
       selects: DEV_PRODUCT_ID as PRODUCT_ID#regexp_replace(min2, " ", "") as min2
+- name: readPhaFile
+  reference: com.pharbers.ipaas.data.driver.api.job.PhBaseAction
+  factory: com.pharbers.ipaas.data.driver.api.factory.PhActionFactory
+  opers:
+  - name: loadPhaFile
+    factory: com.pharbers.ipaas.data.driver.api.factory.PhOperatorFactory
+    reference: com.pharbers.ipaas.data.driver.operators.ReadParquetOperator
+    args:
+      path: hdfs:///repository/pha
+- name: readProductMatchFile
+  reference: com.pharbers.ipaas.data.driver.api.job.PhBaseAction
+  factory: com.pharbers.ipaas.data.driver.api.factory.PhActionFactory
+  opers:
+  - name: loadProductMatchFile
+    factory: com.pharbers.ipaas.data.driver.api.factory.PhOperatorFactory
+    reference: com.pharbers.ipaas.data.driver.operators.ReadCsvOperator
+    args:
+      path: hdfs:///data/nhwa/pha_config_repository1809/Nhwa_ProductMatchTable_20181126.csv
+  - name: productMatchSelect
+    factory: com.pharbers.ipaas.data.driver.api.factory.PhOperatorFactory
+    reference: com.pharbers.ipaas.data.driver.operators.SelectOperator
+    args:
+      inDFName: loadProductMatchFile
+      selects: regexp_replace(MIN_PRODUCT_UNIT, " ", "") as MIN_PRODUCT_UNIT#regexp_replace(MIN_PRODUCT_UNIT_STANDARD, " ", "") as MIN_PRODUCT_UNIT_STANDARD
+- name: distinctHosp
+  reference: com.pharbers.ipaas.data.driver.api.job.PhBaseAction
+  factory: com.pharbers.ipaas.data.driver.api.factory.PhActionFactory
+  opers:
+  - name: hospitalSelect
+    factory: com.pharbers.ipaas.data.driver.api.factory.PhOperatorFactory
+    reference: com.pharbers.ipaas.data.driver.operators.SelectOperator
+    args:
+      inDFName: readHospitalFile
+      selects: HOSPITAL_ID#PHA_HOSP_ID
+  - name: distinctByKey
+    factory: com.pharbers.ipaas.data.driver.api.factory.PhOperatorFactory
+    reference: com.pharbers.ipaas.data.driver.operators.DistinctByKeyOperator
+    args:
+      inDFName: hospitalSelect
+      keys: PHA_HOSP_ID
 
-#- name: readPhaFile
-#  reference: com.pharbers.ipaas.data.driver.api.job.PhBaseAction
-#  factory: com.pharbers.ipaas.data.driver.api.factory.PhActionFactory
-#  args:
-#    null: null
-#  opers:
-#  - name:
-#    factory: com.pharbers.ipaas.data.driver.api.factory.PhOperatorFactory
-#    reference: com.pharbers.ipaas.data.driver.operators.PhReadParquetOperator
-#    args:
-#      path: hdfs:///repository/pha
-#
-#- name: readProductMatchFile
-#  reference: com.pharbers.ipaas.data.driver.api.job.PhBaseAction
-#  factory: com.pharbers.ipaas.data.driver.api.factory.PhActionFactory
-#  args:
-#    null: null
-#  opers:
-#  - name:
-#    factory: com.pharbers.ipaas.data.driver.api.factory.PhOperatorFactory
-#    reference: com.pharbers.ipaas.data.driver.operators.PhReadOperator
-#    args:
-#      path: hdfs:///data/nhwa/pha_config_repository1809/Nhwa_ProductMatchTable_20181126.csv
-#  - name: productMatchSelect
-#    factory: com.pharbers.ipaas.data.driver.api.factory.PhOperatorFactory
-#    reference: com.pharbers.ipaas.data.driver.operators.select
-#    args:
-#      inDFName: df
-#      selects: regexp_replace(MIN_PRODUCT_UNIT, " ", "") as MIN_PRODUCT_UNIT#regexp_replace(MIN_PRODUCT_UNIT_STANDARD, " ", "") as MIN_PRODUCT_UNIT_STANDARD
-#
-#- name: distinctHosp
-#  reference: com.pharbers.ipaas.data.driver.api.job.PhBaseAction
-#  factory: com.pharbers.ipaas.data.driver.api.factory.PhActionFactory
-#  args:
-#    null: null
-#  opers:
-#  - name: hospitalSelect
-#    factory: com.pharbers.ipaas.data.driver.api.factory.PhOperatorFactory
-#    reference: com.pharbers.ipaas.data.driver.operators.select
-#    args:
-#      inDFName: readHospitalFile
-#      selects: HOSPITAL_ID#PHA_HOSP_ID
-#  - name:
-#    factory: com.pharbers.ipaas.data.driver.api.factory.PhOperatorFactory
-#    reference: com.pharbers.ipaas.data.driver.operators.distinctByKey
-#    args:
-#      inDFName: df
-#      keys: PHA_HOSP_ID
-#
 #- name: distinctPha
 #  reference: com.pharbers.ipaas.data.driver.api.job.PhBaseAction
 #  factory: com.pharbers.ipaas.data.driver.api.factory.PhActionFactory

@@ -8,8 +8,6 @@ import com.pharbers.ipaas.data.driver.api.work.{PhDFArgs, PhMapArgs, PhOperatorT
 
 class TestExprPlugin extends FunSuite with BeforeAndAfterAll {
     implicit var sd: PhSparkDriver = _
-    var operator: PhOperatorTrait2[DataFrame] = _
-    var plugin: PhPluginTrait2[Column] = _
     var testDF: DataFrame = _
 
     override def beforeAll(): Unit = {
@@ -24,7 +22,12 @@ class TestExprPlugin extends FunSuite with BeforeAndAfterAll {
             ("name4", "prod2", "201801", 4)
         ).toDF("NAME", "PROD", "DATE", "VALUE")
 
-        plugin = ExprPlugin(
+        require(sd != null)
+        require(testDF != null)
+    }
+
+    test("add column by expr") {
+        val plugin = ExprPlugin(
             "ExprPlugin",
             PhMapArgs(Map(
                 "exprString" -> PhStringArgs("cast(VALUE as double)")
@@ -32,7 +35,7 @@ class TestExprPlugin extends FunSuite with BeforeAndAfterAll {
             Seq.empty
         )
 
-        operator = AddColumnOperator(
+        val operator = AddColumnOperator(
             "AddColumnOperator",
             PhMapArgs(Map(
                 "inDFName" -> PhStringArgs("inDFName"),
@@ -40,14 +43,6 @@ class TestExprPlugin extends FunSuite with BeforeAndAfterAll {
             )),
             Seq(plugin)
         )
-
-        require(plugin != null)
-        require(operator != null)
-        require(sd != null)
-        require(testDF != null)
-    }
-
-    test("add column by expr") {
         val result = operator.perform(PhMapArgs(Map("inDFName" -> PhDFArgs(testDF))))
         result.toDFArgs.get.show(false)
         assert(result.toDFArgs.get.columns.contains("newColName"))

@@ -7,7 +7,6 @@ import com.pharbers.ipaas.data.driver.api.work.{PhDFArgs, PhMapArgs, PhOperatorT
 
 class TestSelectOperator extends FunSuite with BeforeAndAfterAll {
     implicit var sd: PhSparkDriver = _
-    var operator: PhOperatorTrait2[_] = _
     var testDF: DataFrame = _
 
     override def beforeAll(): Unit = {
@@ -22,7 +21,12 @@ class TestSelectOperator extends FunSuite with BeforeAndAfterAll {
             ("name4", "prod2", "201801", 4)
         ).toDF("NAME", "PROD", "DATE", "VALUE")
 
-        operator = SelectOperator(
+        require(sd != null)
+        require(testDF != null)
+    }
+
+    test("select column") {
+        val operator = SelectOperator(
             "SelectOperator",
             PhMapArgs(Map(
                 "inDFName" -> PhStringArgs("inDFName"),
@@ -31,12 +35,6 @@ class TestSelectOperator extends FunSuite with BeforeAndAfterAll {
             Seq()
         )
 
-        require(operator != null)
-        require(sd != null)
-        require(testDF != null)
-    }
-
-    test("select column") {
         val result = operator.perform(PhMapArgs(Map("inDFName" -> PhDFArgs(testDF))))
         val df = result.toDFArgs.get
         val columns = df.columns
