@@ -10,14 +10,14 @@ import com.pharbers.ipaas.data.driver.api.work._
   * @since 2019/6/17 17:00
   * @example 默认参数例子
   * {{{
-  *  inDFName: actionName // 要作用的DataFrame名字
+  *  inDFName: actionName // 要作用的 DataFrame 名字
   *  selects: col_1#col_2 // 选择的列名，用`#`号分割
   * }}}
   */
 case class SelectOperator(name: String,
                           defaultArgs: PhMapArgs[PhWorkArgs[Any]],
                           pluginLst: Seq[PhPluginTrait2[Column]]) extends PhOperatorTrait2[DataFrame] {
-    /** 要作用的DataFrame名字 */
+    /** 要作用的 DataFrame 名字 */
     val inDFName: String = defaultArgs.getAs[PhStringArgs]("inDFName").get.get
     /** 选择的列名列表 */
     val selectLst: Array[String] = defaultArgs.getAs[PhStringArgs]("selects").get.get.split("#")

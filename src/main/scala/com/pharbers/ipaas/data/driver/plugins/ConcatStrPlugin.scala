@@ -10,7 +10,7 @@ import com.pharbers.ipaas.data.driver.api.work.{PhColArgs, PhMapArgs, PhPluginTr
   * @version 0.1
   * @since 2019/6/12 18:25
   * @example 默认参数例子
-  * {{
+  * {{{
   * columns: col_1#col_2 // 要拼接的多个列名，用`#`号分割
   * dilimiter: "," //拼接后字符串的分隔符
   * }}}
