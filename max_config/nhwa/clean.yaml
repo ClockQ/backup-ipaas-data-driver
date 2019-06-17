@@ -1,4 +1,4 @@
-name: panel
+name: clean
 reference: com.pharbers.ipaas.data.driver.api.job.PhBaseJob
 factory: com.pharbers.ipaas.data.driver.api.factory.PhJobFactory
 actions:
@@ -205,7 +205,7 @@ actions:
       joinDFName: readProductFile
       joinExpr: MIN_PRODUCT_UNIT_STANDARD = min2
       joinType: left
-- name: cleanPanel
+- name: cleanResult
   reference: com.pharbers.ipaas.data.driver.api.job.PhBaseAction
   factory: com.pharbers.ipaas.data.driver.api.factory.PhActionFactory
   opers:
@@ -264,13 +264,13 @@ actions:
     args:
       inDFName: addYM
       selects: COMPANY_ID#SOURCE#YM#HOSPITAL_ID#PRODUCT_ID#cast(VALUE as double) as SALES#cast(STANDARD_UNIT as double) as UNITS#PRODUCT_NAME_NOTE
-#  - name: generateObjectId
-#    factory: com.pharbers.ipaas.data.driver.api.factory.PhOperatorFactory
-#    reference: com.pharbers.ipaas.data.driver.operators.AddColumnOperator
-#    args:
-#      inDFName: SelectKeepCol
-#      newColName: _id
-#    plugin:
-#      name: generateObjectId
-#      factory: com.pharbers.ipaas.data.driver.api.factory.PhPluginFactory
-#      reference: com.pharbers.ipaas.data.driver.plugin.generateObjectId
+  - name: genCleanId
+    factory: com.pharbers.ipaas.data.driver.api.factory.PhOperatorFactory
+    reference: com.pharbers.ipaas.data.driver.operators.AddColumnOperator
+    args:
+      inDFName: SelectKeepCol
+      newColName: _id
+    plugin:
+      name: generateObjectId
+      factory: com.pharbers.ipaas.data.driver.api.factory.PhPluginFactory
+      reference: com.pharbers.ipaas.data.driver.plugins.GenerateObjectIdPlugin

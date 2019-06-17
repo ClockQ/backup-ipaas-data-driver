@@ -10,28 +10,31 @@ import com.pharbers.ipaas.data.driver.libs.spark.util.readParquet
 class TestNhwaMax extends FunSuite {
 	test("test nhwa clean") {
 		implicit val sd: PhSparkDriver = PhSparkDriver("test-driver")
+		sd.addJar("target/ipaas-data-driver-0.1.jar")
+        sd.sc.setLogLevel("ERROR")
 
 		val phJobs = inst(readJobConfig("max_config/nhwa/clean.yaml"))
 		val result = phJobs.head.perform(PhMapArgs(Map(
-			"sparkDriver" -> PhSparkDriverArgs(PhSparkDriver("test"))
+			"sparkDriver" -> PhSparkDriverArgs(sd)
 		)))
 
 		val cleanDF = result.toMapArgs[PhDFArgs].get("cleanPanel").get
+		cleanDF.columns.foreach(println)
 		cleanDF.show(false)
-//
-//		val cleanTrueDF = sd.setUtil(readParquet()).readParquet("hdfs:///workData/Clean/20bfd585-c889-4385-97ec-a8d4c77d71cc")
-//
-//		cleanDF.show(false)
-//		cleanTrueDF.show(false)
-//
-//		println(cleanDF.count())
-//		println(cleanTrueDF.count())
-//
-//		println(cleanDF.agg(sum("UNITS")).first.get(0))
-//		println(cleanDF.agg(sum("SALES")).first.get(0))
-//
-//		println(cleanTrueDF.agg(sum("UNITS")).first.get(0))
-//		println(cleanTrueDF.agg(sum("SALES")).first.get(0))
+
+		val cleanTrueDF = sd.setUtil(readParquet()).readParquet("hdfs:///workData/Clean/20bfd585-c889-4385-97ec-a8d4c77d71cc")
+
+		cleanDF.show(false)
+		cleanTrueDF.show(false)
+
+		println(cleanDF.count())
+		println(cleanTrueDF.count())
+
+		println(cleanDF.agg(sum("UNITS")).first.get(0))
+		println(cleanDF.agg(sum("SALES")).first.get(0))
+
+		println(cleanTrueDF.agg(sum("UNITS")).first.get(0))
+		println(cleanTrueDF.agg(sum("SALES")).first.get(0))
 	}
 
 //	test("test nhwa panel") {
