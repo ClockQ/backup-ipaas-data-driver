@@ -62,12 +62,12 @@ actions:
     args:
       inDFName: readMissHosp
       filter: DATE == 201809
-#  - name: drop
-#    factory: com.pharbers.ipaas.data.driver.factory.PhOperatorFactory
-#    reference: com.pharbers.ipaas.data.driver.operators.DropOperator
-#    args:
-#      inDFName: df
-#      dropColName: DATE
+  - name: drop
+    factory: com.pharbers.ipaas.data.driver.api.factory.PhOperatorFactory
+    reference: com.pharbers.ipaas.data.driver.operators.DropOperator
+    args:
+      inDFName: filter
+      drops: DATE
 #  - name: union
 #    factory: com.pharbers.ipaas.data.driver.factory.PhOperatorFactory
 #    reference: com.pharbers.ipaas.data.driver.operators.unionOperator
