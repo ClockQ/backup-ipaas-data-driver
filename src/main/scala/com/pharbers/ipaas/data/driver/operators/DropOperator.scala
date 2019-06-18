@@ -43,7 +43,6 @@ case class DropOperator(name: String,
     override def perform(pr: PhMapArgs[PhWorkArgs[Any]]): PhWorkArgs[DataFrame] = {
         val inDF = pr.getAs[PhDFArgs](inDFName).get.get
         val outDF = inDF.drop(drops: _*)
-//        phLog.setInfoLog(PhLogMsg("user", "traceID", "jobId", this.getClass.toString.split("\\.").last, "dec").toString)
         PhDFArgs(outDF)
     }
 }

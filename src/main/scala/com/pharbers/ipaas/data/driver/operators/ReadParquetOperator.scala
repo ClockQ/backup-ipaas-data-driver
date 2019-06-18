@@ -42,7 +42,6 @@ case class ReadParquetOperator(name: String,
 
     override def perform(pr: PhMapArgs[PhWorkArgs[Any]]): PhWorkArgs[DataFrame] = {
         implicit val sd: PhSparkDriver = pr.get("sparkDriver").asInstanceOf[PhSparkDriverArgs].get
-//        phLog.setInfoLog(PhLogMsg("user", "traceID", "jobId", this.getClass.toString.split("\\.").last, "dec").toString)
         PhDFArgs(sd.setUtil(readParquet()).readParquet(path))
     }
 }
