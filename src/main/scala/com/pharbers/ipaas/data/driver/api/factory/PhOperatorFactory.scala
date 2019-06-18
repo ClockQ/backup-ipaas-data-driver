@@ -32,7 +32,7 @@ case class PhOperatorFactory(operator: Operator) extends PhFactoryTrait[PhOperat
 
     /** 构建 Operator 运行实例
       *
-      * @throws PhOperatorException 构建算子时的异常
+      * @throws com.pharbers.ipaas.data.driver.exceptions.PhOperatorException 构建算子时的异常
       **/
     override def inst(): PhOperatorTrait2[Any] = {
         import scala.collection.JavaConverters.mapAsScalaMapConverter

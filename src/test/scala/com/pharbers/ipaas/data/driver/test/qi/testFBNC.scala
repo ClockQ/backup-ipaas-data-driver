@@ -1,4 +1,4 @@
-package com.pharbers.ipaas.data.driver.qi
+package com.pharbers.ipaas.data.driver.test.qi
 
 /** 功能描述
   *

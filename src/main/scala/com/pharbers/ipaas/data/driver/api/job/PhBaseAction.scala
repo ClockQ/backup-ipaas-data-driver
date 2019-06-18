@@ -37,7 +37,7 @@ case class PhBaseAction(name: String,
     /** Action 执行入口
       *
       * @param pr operator 运行时储存的结果
-      * @throws PhOperatorException operator执行时异常
+      * @throws com.pharbers.ipaas.data.driver.exceptions.PhOperatorException operator执行时异常
       * @author dcs
       * @version 0.1
       * @since 2019/6/11 16:43

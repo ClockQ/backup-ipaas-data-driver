@@ -46,9 +46,6 @@ case class ReadCsvOperator(name: String,
         case _ => ","
     }
 
-    /**
-      * @note pr中需要传递 `key` 为 `sparkDriver` 的 PhSparkDriverArgs
-      */
     override def perform(pr: PhMapArgs[PhWorkArgs[Any]]): PhWorkArgs[DataFrame] = {
         implicit val sd: PhSparkDriver = pr.get("sparkDriver").asInstanceOf[PhSparkDriverArgs].get
 

@@ -59,6 +59,11 @@ sealed trait PhWorkTrait2[+A] extends Serializable {
       * @author clock
       * @version 0.1
       * @since 2019/6/15 15:24
+      * @note
+      * {{{
+      *     pr中需要传递 `key` 为 `sparkDriver` 的 PhSparkDriverArgs
+      *     pr中需要传递 `key` 为 `logDriver` 的 PhLogDriverArgs
+      * }}}
       */
     def perform(pr: PhMapArgs[PhWorkArgs[Any]]): PhWorkArgs[A]
 }

@@ -40,9 +40,6 @@ case class ReadParquetOperator(name: String,
     /** Parquet 的路径 */
     val path: String = defaultArgs.getAs[PhStringArgs]("path").get.get
 
-    /**
-      * @note pr中需要传递 `key` 为 `sparkDriver` 的 PhSparkDriverArgs
-      */
     override def perform(pr: PhMapArgs[PhWorkArgs[Any]]): PhWorkArgs[DataFrame] = {
         implicit val sd: PhSparkDriver = pr.get("sparkDriver").asInstanceOf[PhSparkDriverArgs].get
 //        phLog.setInfoLog(PhLogMsg("user", "traceID", "jobId", this.getClass.toString.split("\\.").last, "dec").toString)
