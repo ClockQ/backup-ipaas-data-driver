@@ -18,10 +18,7 @@ class TestNhwaMax extends FunSuite {
 			"sparkDriver" -> PhSparkDriverArgs(sd)
 		)))
 
-		val cleanDF = result.toMapArgs[PhDFArgs].get("cleanPanel").get
-		cleanDF.columns.foreach(println)
-		cleanDF.show(false)
-
+		val cleanDF = result.toMapArgs[PhDFArgs].get("cleanResult").get
 		val cleanTrueDF = sd.setUtil(readParquet()).readParquet("hdfs:///workData/Clean/20bfd585-c889-4385-97ec-a8d4c77d71cc")
 
 		cleanDF.show(false)
