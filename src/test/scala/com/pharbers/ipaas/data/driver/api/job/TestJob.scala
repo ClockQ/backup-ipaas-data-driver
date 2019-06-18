@@ -2,6 +2,7 @@ package com.pharbers.ipaas.data.driver.api.job
 
 import org.apache.spark.sql.{Column, DataFrame}
 import com.pharbers.ipaas.data.driver.api.work._
+import com.pharbers.ipaas.data.driver.libs.log.{PhLogDriver, formatMsg}
 import org.scalatest.{BeforeAndAfterAll, FunSuite}
 import com.pharbers.ipaas.data.driver.libs.spark.PhSparkDriver
 
@@ -92,10 +93,15 @@ class TestJob extends FunSuite with BeforeAndAfterAll {
             )
         ))
 
-        val result = action1.perform(PhMapArgs(Map("df" -> PhDFArgs(testDF))))
+        val result = action1.perform(PhMapArgs(Map(
+            "df" -> PhDFArgs(testDF),
+            "sparkDriver" -> PhSparkDriverArgs(sd),
+            "logDriver" -> PhLogDriverArgs(PhLogDriver(formatMsg("test_user", "test_traceID", "test_jobID")))
+        )))
 
         println(result)
         result.toDFArgs.get.show(false)
+        assert(result.toDFArgs.get.columns.length == 7)
     }
 
     test("PhBaseJob") {
@@ -130,13 +136,17 @@ class TestJob extends FunSuite with BeforeAndAfterAll {
             )
         ))
 
-
         val job1 = PhBaseJob("testJob", PhMapArgs(), List(action1, action2))
-        val result = job1.perform(PhMapArgs(Map("df" -> PhDFArgs(testDF))))
+        val result = job1.perform(PhMapArgs(Map(
+            "df" -> PhDFArgs(testDF),
+            "sparkDriver" -> PhSparkDriverArgs(sd),
+            "logDriver" -> PhLogDriverArgs(PhLogDriver(formatMsg("test_user", "test_traceID", "test_jobID")))
+        )))
 
         println(result)
         result.toMapArgs.getAs[PhDFArgs]("testAction1").get.get.show(false)
         result.toMapArgs.getAs[PhDFArgs]("testAction2").get.get.show(false)
-        assert(result.toMapArgs.get.size === 3)
+        assert(result.toMapArgs.getAs[PhDFArgs]("testAction1").get.get.columns.length == 7)
+        assert(result.toMapArgs.getAs[PhDFArgs]("testAction2").get.get.columns.length == 10)
     }
 }
