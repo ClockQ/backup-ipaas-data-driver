@@ -25,9 +25,7 @@ package com.pharbers.ipaas.data.driver.libs
   * @note 常用 log 工具
   */
 package object log {
-    implicit def formatMsg(user: String, traceID: String, jobID: String)(msgs: Seq[Any]): String = {
-        s"""
-           | user: $user, traceID: $traceID, jobID: $jobID, ${msgs.map(_.toString).mkString(", ")}
-         """.stripMargin
+    def formatMsg(user: String, traceID: String, jobID: String)(msgs: Seq[Any]): String = {
+        s"""user: $user, traceID: $traceID, jobID: $jobID, ${msgs.map(_.toString).mkString(", ")}"""
     }
 }
