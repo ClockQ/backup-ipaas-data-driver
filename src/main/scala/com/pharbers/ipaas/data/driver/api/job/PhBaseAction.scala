@@ -33,7 +33,7 @@ import com.pharbers.ipaas.data.driver.exceptions.PhOperatorException
   */
 case class PhBaseAction(name: String,
                         defaultArgs: PhMapArgs[PhWorkArgs[Any]],
-                        operatorLst: Seq[PhOperatorTrait2[Any]])
+                        operatorLst: Seq[PhOperatorTrait[Any]])
         extends PhActionTrait {
 
     /** Action 执行入口

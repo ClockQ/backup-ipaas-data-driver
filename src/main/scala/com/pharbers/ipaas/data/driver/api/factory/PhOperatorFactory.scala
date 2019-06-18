@@ -19,7 +19,7 @@ package com.pharbers.ipaas.data.driver.api.factory
 
 import com.pharbers.ipaas.data.driver.api.model.{Operator, Plugin}
 import com.pharbers.ipaas.data.driver.exceptions.PhOperatorException
-import com.pharbers.ipaas.data.driver.api.work.{PhMapArgs, PhOperatorTrait2, PhPluginTrait2, PhStringArgs}
+import com.pharbers.ipaas.data.driver.api.work.{PhMapArgs, PhOperatorTrait, PhPluginTrait, PhStringArgs}
 
 /** Operator实体工厂
   *
@@ -28,13 +28,13 @@ import com.pharbers.ipaas.data.driver.api.work.{PhMapArgs, PhOperatorTrait2, PhP
   * @version 0.1
   * @since 2019/06/14 15:30
   */
-case class PhOperatorFactory(operator: Operator) extends PhFactoryTrait[PhOperatorTrait2[Any]] {
+case class PhOperatorFactory(operator: Operator) extends PhFactoryTrait[PhOperatorTrait[Any]] {
 
     /** 构建 Operator 运行实例
       *
       * @throws com.pharbers.ipaas.data.driver.exceptions.PhOperatorException 构建算子时的异常
       **/
-    override def inst(): PhOperatorTrait2[Any] = {
+    override def inst(): PhOperatorTrait[Any] = {
         import scala.collection.JavaConverters.mapAsScalaMapConverter
 
         val args = operator.getArgs match {
@@ -45,14 +45,14 @@ case class PhOperatorFactory(operator: Operator) extends PhFactoryTrait[PhOperat
         try {
             val plugin = operator.getPlugin match {
                 case null => Seq()
-                case one: Plugin => Seq(getMethodMirror(one.getFactory)(one).asInstanceOf[PhFactoryTrait[PhPluginTrait2[Any]]].inst())
+                case one: Plugin => Seq(getMethodMirror(one.getFactory)(one).asInstanceOf[PhFactoryTrait[PhPluginTrait[Any]]].inst())
             }
 
             getMethodMirror(operator.getReference)(
                 operator.getName,
                 PhMapArgs(args),
                 plugin
-            ).asInstanceOf[PhOperatorTrait2[Any]]
+            ).asInstanceOf[PhOperatorTrait[Any]]
         } catch {
             case e: Exception => throw PhOperatorException(List(operator.name), e)
         }

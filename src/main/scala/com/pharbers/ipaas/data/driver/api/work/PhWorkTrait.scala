@@ -17,17 +17,6 @@
 
 package com.pharbers.ipaas.data.driver.api.work
 
-sealed trait PhWorkTrait extends Serializable {
-    val name: String
-    val defaultArgs: PhWorkArgs[_]
-
-    def perform(pr: PhWorkArgs[_]): PhWorkArgs[_]
-}
-
-trait PhPluginTrait extends PhWorkTrait
-
-trait PhOperatorTrait extends PhWorkTrait
-
 /** CMD 运行实体基类
   *
   * @tparam A 运行实体泛型
@@ -35,7 +24,7 @@ trait PhOperatorTrait extends PhWorkTrait
   * @version 0.1
   * @since 2019/6/11 16:43
   */
-sealed trait PhWorkTrait2[+A] extends Serializable {
+sealed trait PhWorkTrait[+A] extends Serializable {
     /** 运行实例的名字
       *
       * @author clock
@@ -75,14 +64,14 @@ sealed trait PhWorkTrait2[+A] extends Serializable {
   * @version 0.1
   * @since 2019/6/11 16:43
   */
-trait PhPluginTrait2[+A] extends PhWorkTrait2[A] {
+trait PhPluginTrait[+A] extends PhWorkTrait[A] {
     /** Plugin 实例中包含的子 Plugin
       *
       * @author clock
       * @version 0.1
       * @since 2019/6/11 16:43
       */
-    val subPluginLst: Seq[PhPluginTrait2[Any]]
+    val subPluginLst: Seq[PhPluginTrait[Any]]
 }
 
 /** Operator 运行实体基类
@@ -92,14 +81,14 @@ trait PhPluginTrait2[+A] extends PhWorkTrait2[A] {
   * @version 0.1
   * @since 2019/6/11 16:43
   */
-trait PhOperatorTrait2[+A] extends PhWorkTrait2[A] {
+trait PhOperatorTrait[+A] extends PhWorkTrait[A] {
     /** Operator 实例中包含的 Plugin
       *
       * @author clock
       * @version 0.1
       * @since 2019/6/11 16:43
       */
-    val pluginLst: Seq[PhPluginTrait2[Any]]
+    val pluginLst: Seq[PhPluginTrait[Any]]
 }
 
 /** Action 运行实体基类
@@ -108,14 +97,14 @@ trait PhOperatorTrait2[+A] extends PhWorkTrait2[A] {
   * @version 0.1
   * @since 2019/6/11 16:43
   */
-trait PhActionTrait extends PhWorkTrait2[Any] {
+trait PhActionTrait extends PhWorkTrait[Any] {
     /** Action 实例中包含的 Operator
       *
       * @author clock
       * @version 0.1
       * @since 2019/6/11 16:43
       */
-    val operatorLst: Seq[PhOperatorTrait2[Any]]
+    val operatorLst: Seq[PhOperatorTrait[Any]]
 }
 
 /** Job 运行实体基类
@@ -124,7 +113,7 @@ trait PhActionTrait extends PhWorkTrait2[Any] {
   * @version 0.1
   * @since 2019/6/11 16:43
   */
-trait PhJobTrait extends PhWorkTrait2[Any] {
+trait PhJobTrait extends PhWorkTrait[Any] {
     /** Job 实例中包含的 Action
       *
       * @author clock

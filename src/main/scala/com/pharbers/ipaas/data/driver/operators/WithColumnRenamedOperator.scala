@@ -34,8 +34,8 @@ import org.apache.spark.sql.{Column, DataFrame}
   */
 case class WithColumnRenamedOperator(name: String,
                                      defaultArgs: PhMapArgs[PhWorkArgs[Any]],
-                                     pluginLst: Seq[PhPluginTrait2[Column]])
-        extends PhOperatorTrait2[DataFrame] {
+                                     pluginLst: Seq[PhPluginTrait[Column]])
+        extends PhOperatorTrait[DataFrame] {
     /** 要作用的 DataFrame 名字 */
     val inDFName: String = defaultArgs.getAs[PhStringArgs]("inDFName").get.get
     /** 要修改的列名 */

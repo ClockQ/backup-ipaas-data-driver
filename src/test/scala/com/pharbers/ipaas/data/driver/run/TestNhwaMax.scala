@@ -43,7 +43,7 @@ class TestNhwaMax extends FunSuite {
             "logDriver" -> PhLogDriverArgs(PhLogDriver(formatMsg("test_user", "test_traceID", "test_jobID")))
         )))
 
-        val panelDF = result.toMapArgs[PhDFArgs].get("missHosp").get
+        val panelDF = result.toMapArgs[PhDFArgs].get("reducedCpa").get
 //		val panelTrueDF = sd.setUtil(readParquet()).readParquet("hdfs:///test/qi/qi/1809_panel.csv")
 
         panelDF.show(false)
@@ -55,7 +55,7 @@ class TestNhwaMax extends FunSuite {
         println(panelDF.agg(sum("UNITS")).first.get(0))
 //		println(panelTrueDF.agg(sum("Units")).first.get(0))
 
-        println(panelDF.agg(sum("UNITS")).first.get(0))
+        println(panelDF.agg(sum("SALES")).first.get(0))
 //		println(panelTrueDF.agg(sum("Sales")).first.get(0))
     }
 

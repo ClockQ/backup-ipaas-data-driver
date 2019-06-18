@@ -21,7 +21,7 @@ import org.bson.types.ObjectId
 import org.apache.spark.sql.Column
 import org.apache.spark.sql.functions.udf
 import org.apache.spark.sql.expressions.UserDefinedFunction
-import com.pharbers.ipaas.data.driver.api.work.{PhColArgs, PhMapArgs, PhPluginTrait2, PhWorkArgs}
+import com.pharbers.ipaas.data.driver.api.work.{PhColArgs, PhMapArgs, PhPluginTrait, PhWorkArgs}
 
 /** 根据 MongoDB 的 oid 算法生成字段
   *
@@ -31,8 +31,8 @@ import com.pharbers.ipaas.data.driver.api.work.{PhColArgs, PhMapArgs, PhPluginTr
   */
 case class GenerateObjectIdPlugin(name: String,
                                   defaultArgs: PhMapArgs[PhWorkArgs[Any]],
-                                  subPluginLst: Seq[PhPluginTrait2[Column]])
-        extends PhPluginTrait2[Column] {
+                                  subPluginLst: Seq[PhPluginTrait[Column]])
+        extends PhPluginTrait[Column] {
 
     val generateIdUdf: UserDefinedFunction = udf { () => ObjectId.get().toString }
 

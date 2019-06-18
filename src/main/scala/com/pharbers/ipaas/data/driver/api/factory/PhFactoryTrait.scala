@@ -25,7 +25,7 @@ import com.pharbers.ipaas.data.driver.api.work._
   * @version 0.1
   * @since 2019/06/14 15:26
   */
-trait PhFactoryTrait[T <: PhWorkTrait2[_]] {
+trait PhFactoryTrait[T <: PhWorkTrait[_]] {
     /** 构建运行实例
       *
       * @return _root_.com.pharbers.ipaas.data.driver.api.work.PhWorkTrait[T]

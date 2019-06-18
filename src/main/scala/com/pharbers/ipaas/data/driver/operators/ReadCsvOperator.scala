@@ -30,20 +30,20 @@ import com.pharbers.ipaas.data.driver.libs.spark.PhSparkDriver
   * @example 默认参数例子
   * {{{
   *       path: hdfs:///test.csv //CSV 的路径
-  *       delimiter: , //CSV 的分隔符
+  *       delimiter: "," //CSV 的分隔符，默认为 31.toChar.toString
   * }}}
   */
 case class ReadCsvOperator(name: String,
                            defaultArgs: PhMapArgs[PhWorkArgs[Any]],
-                           pluginLst: Seq[PhPluginTrait2[Any]])
-        extends PhOperatorTrait2[DataFrame] {
+                           pluginLst: Seq[PhPluginTrait[Any]])
+        extends PhOperatorTrait[DataFrame] {
 
     /** CSV 的路径 */
     val path: String = defaultArgs.getAs[PhStringArgs]("path").get.get
-    /** CSV 的分隔符 */
+    /** CSV 的分隔符，默认为 31.toChar.toString */
     val delimiter: String = defaultArgs.getAs[PhStringArgs]("delimiter") match {
         case Some(one) => one.get
-        case _ => ","
+        case _ => 31.toChar.toString
     }
 
     override def perform(pr: PhMapArgs[PhWorkArgs[Any]]): PhWorkArgs[DataFrame] = {

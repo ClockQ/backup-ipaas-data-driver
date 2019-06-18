@@ -4,7 +4,7 @@ import org.apache.spark.sql.{Column, DataFrame}
 import org.scalatest.{BeforeAndAfterAll, FunSuite}
 import com.pharbers.ipaas.data.driver.libs.spark.PhSparkDriver
 import com.pharbers.ipaas.data.driver.operators.AddColumnOperator
-import com.pharbers.ipaas.data.driver.api.work.{PhDFArgs, PhMapArgs, PhOperatorTrait2, PhPluginTrait2, PhStringArgs}
+import com.pharbers.ipaas.data.driver.api.work.{PhDFArgs, PhMapArgs, PhOperatorTrait, PhPluginTrait, PhStringArgs}
 
 class TestExprPlugin extends FunSuite with BeforeAndAfterAll {
     implicit var sd: PhSparkDriver = _

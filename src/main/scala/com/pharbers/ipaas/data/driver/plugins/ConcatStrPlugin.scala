@@ -19,7 +19,7 @@ package com.pharbers.ipaas.data.driver.plugins
 
 import org.apache.spark.sql.Column
 import org.apache.spark.sql.functions.{col, concat, lit}
-import com.pharbers.ipaas.data.driver.api.work.{PhColArgs, PhMapArgs, PhPluginTrait2, PhStringArgs, PhWorkArgs}
+import com.pharbers.ipaas.data.driver.api.work.{PhColArgs, PhMapArgs, PhPluginTrait, PhStringArgs, PhWorkArgs}
 
 /** 按照指定分隔符拼接多列为字符串插件
   *
@@ -34,8 +34,8 @@ import com.pharbers.ipaas.data.driver.api.work.{PhColArgs, PhMapArgs, PhPluginTr
   */
 case class ConcatStrPlugin(name: String,
                            defaultArgs: PhMapArgs[PhWorkArgs[Any]],
-                           subPluginLst: Seq[PhPluginTrait2[Column]])
-        extends PhPluginTrait2[Column] {
+                           subPluginLst: Seq[PhPluginTrait[Column]])
+        extends PhPluginTrait[Column] {
     /** 要拼接的列名列表 */
     val columnList: Array[String] = defaultArgs.getAs[PhStringArgs]("columns").get.get.split("#")
     /** 要拼接的分隔符 */

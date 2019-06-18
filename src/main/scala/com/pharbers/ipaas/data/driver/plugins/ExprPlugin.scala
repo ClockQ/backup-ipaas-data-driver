@@ -33,8 +33,8 @@ import org.apache.spark.sql.functions.expr
   */
 case class ExprPlugin(name: String,
                       defaultArgs: PhMapArgs[PhWorkArgs[Any]],
-                      subPluginLst: Seq[PhPluginTrait2[Column]])
-        extends PhPluginTrait2[Column] {
+                      subPluginLst: Seq[PhPluginTrait[Column]])
+        extends PhPluginTrait[Column] {
     /** expr 表达式 */
     val exprString: String = defaultArgs.getAs[PhStringArgs]("exprString").get.get
 

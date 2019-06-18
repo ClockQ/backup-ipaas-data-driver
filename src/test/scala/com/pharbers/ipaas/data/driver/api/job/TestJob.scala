@@ -30,8 +30,8 @@ class TestJob extends FunSuite with BeforeAndAfterAll {
         sd.stopSpark()
     }
 
-    case class lit(name: String, defaultArgs: PhMapArgs[PhWorkArgs[Any]], subPluginLst: Seq[PhPluginTrait2[Any]])
-            extends PhPluginTrait2[Column] {
+    case class lit(name: String, defaultArgs: PhMapArgs[PhWorkArgs[Any]], subPluginLst: Seq[PhPluginTrait[Any]])
+            extends PhPluginTrait[Column] {
 
         import org.apache.spark.sql.{functions => sf}
 
@@ -40,8 +40,8 @@ class TestJob extends FunSuite with BeforeAndAfterAll {
         def perform(pr: PhMapArgs[PhWorkArgs[Any]]): PhWorkArgs[Column] = PhColArgs(sf.lit(value))
     }
 
-    case class cast(name: String = "cast", defaultArgs: PhMapArgs[PhWorkArgs[Any]], subPluginLst: Seq[PhPluginTrait2[Any]] = Nil)
-            extends PhPluginTrait2[Column] {
+    case class cast(name: String = "cast", defaultArgs: PhMapArgs[PhWorkArgs[Any]], subPluginLst: Seq[PhPluginTrait[Any]] = Nil)
+            extends PhPluginTrait[Column] {
 
         import org.apache.spark.sql.{functions => sf}
 
@@ -51,8 +51,8 @@ class TestJob extends FunSuite with BeforeAndAfterAll {
         def perform(pr: PhMapArgs[PhWorkArgs[Any]]): PhWorkArgs[Column] = PhColArgs(sf.col(col).cast(value))
     }
 
-    case class generateIdUdf(name: String = "udf", defaultArgs: PhMapArgs[PhWorkArgs[Any]], subPluginLst: Seq[PhPluginTrait2[Any]] = Nil)
-            extends PhPluginTrait2[Column] {
+    case class generateIdUdf(name: String = "udf", defaultArgs: PhMapArgs[PhWorkArgs[Any]], subPluginLst: Seq[PhPluginTrait[Any]] = Nil)
+            extends PhPluginTrait[Column] {
 
         import org.apache.spark.sql.expressions.UserDefinedFunction
         import org.apache.spark.sql.{functions => sf}
@@ -63,8 +63,8 @@ class TestJob extends FunSuite with BeforeAndAfterAll {
         def perform(pr: PhMapArgs[PhWorkArgs[Any]]): PhWorkArgs[Column] = PhColArgs(generateIdUdf())
     }
 
-    case class withColumn(name: String, defaultArgs: PhMapArgs[PhWorkArgs[Any]], pluginLst: Seq[PhPluginTrait2[Column]])
-            extends PhOperatorTrait2[DataFrame] {
+    case class withColumn(name: String, defaultArgs: PhMapArgs[PhWorkArgs[Any]], pluginLst: Seq[PhPluginTrait[Column]])
+            extends PhOperatorTrait[DataFrame] {
         val inDFName: String = defaultArgs.getAs[PhStringArgs]("inDFName").get.get
         val newColName: String = defaultArgs.getAs[PhStringArgs]("newColName").get.get
 

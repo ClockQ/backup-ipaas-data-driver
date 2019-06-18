@@ -53,8 +53,8 @@ actions:
       path: hdfs:///repository/sample_hosp/5ca069bceeefcc012918ec72/mz
 
 - name: missHosp
-  reference: com.pharbers.ipaas.data.driver.api.job.PhBaseAction
   factory: com.pharbers.ipaas.data.driver.api.factory.PhActionFactory
+  reference: com.pharbers.ipaas.data.driver.api.job.PhBaseAction
   opers:
   - name: filter
     factory: com.pharbers.ipaas.data.driver.api.factory.PhOperatorFactory
@@ -93,46 +93,42 @@ actions:
       oldColName: HOSPITAL_ID
       newColName: MISS_HOSPITAL_ID
 
-#- name: primalCpa
-#  reference: com.pharbers.ipaas.data.driver.job.PhBaseAction
-#  factory: com.pharbers.ipaas.data.driver.api.factory.PhActionFactory
-#  args:
-#    df: readCpa
-#  opers:
-#  - name: filter
-#    factory: com.pharbers.ipaas.data.driver.api.factory.PhOperatorFactory
-#    reference: com.pharbers.ipaas.data.driver.job.PhFilterOperator
-#    args:
-#      inDFName: df
-#      filter: YM == 201809
-#
-#- name: reducedCpa
-#  reference: com.pharbers.ipaas.data.driver.job.PhBaseAction
-#  factory: com.pharbers.ipaas.data.driver.api.factory.PhActionFactory
-#  args:
-#    df: primalCpa
-#  opers:
-#  - name: join
-#    factory: com.pharbers.ipaas.data.driver.api.factory.PhOperatorFactory
-#    reference: com.pharbers.ipaas.data.driver.operators.JoinOperator
-#    args:
-#      inDFName: df
-#      joinDFName: missHosp
-#      joinExpr: MISS_HOSPITAL_ID == HOSPITAL_ID
-#      joinType: left
-#  - name: filter
-#    factory: com.pharbers.ipaas.data.driver.api.factory.PhOperatorFactory
-#    reference: com.pharbers.ipaas.data.driver.job.PhFilterOperator
-#    args:
-#      inDFName: df
-#      filter: MISS_HOSPITAL_ID IS NULL
-#  - name: drop
-#    factory: com.pharbers.ipaas.data.driver.api.factory.PhOperatorFactory
-#    reference: com.pharbers.ipaas.data.driver.operators.DropOperator
-#    args:
-#      inDFName: df
-#      dropColName: MISS_HOSPITAL_ID
-#
+- name: primalCpa
+  factory: com.pharbers.ipaas.data.driver.api.factory.PhActionFactory
+  reference: com.pharbers.ipaas.data.driver.api.job.PhBaseAction
+  opers:
+  - name: filter
+    factory: com.pharbers.ipaas.data.driver.api.factory.PhOperatorFactory
+    reference: com.pharbers.ipaas.data.driver.operators.ExprFilterOperator
+    args:
+      inDFName: readCpa
+      filter: YM == 201809
+
+- name: reducedCpa
+  factory: com.pharbers.ipaas.data.driver.api.factory.PhActionFactory
+  reference: com.pharbers.ipaas.data.driver.api.job.PhBaseAction
+  opers:
+  - name: join
+    factory: com.pharbers.ipaas.data.driver.api.factory.PhOperatorFactory
+    reference: com.pharbers.ipaas.data.driver.operators.JoinOperator
+    args:
+      inDFName: primalCpa
+      joinDFName: missHosp
+      joinExpr: MISS_HOSPITAL_ID == HOSPITAL_ID
+      joinType: left
+  - name: filter
+    factory: com.pharbers.ipaas.data.driver.api.factory.PhOperatorFactory
+    reference: com.pharbers.ipaas.data.driver.operators.ExprFilterOperator
+    args:
+      inDFName: join
+      filter: MISS_HOSPITAL_ID IS NULL
+  - name: drop
+    factory: com.pharbers.ipaas.data.driver.api.factory.PhOperatorFactory
+    reference: com.pharbers.ipaas.data.driver.operators.DropOperator
+    args:
+      inDFName: filter
+      drops: MISS_HOSPITAL_ID
+
 #- name: cpa
 #  reference: com.pharbers.ipaas.data.driver.job.PhBaseAction
 #  factory: com.pharbers.ipaas.data.driver.api.factory.PhActionFactory

@@ -3,7 +3,7 @@ package com.pharbers.ipaas.data.driver.operators
 import org.apache.spark.sql.DataFrame
 import org.scalatest.{BeforeAndAfterAll, FunSuite}
 import com.pharbers.ipaas.data.driver.libs.spark.PhSparkDriver
-import com.pharbers.ipaas.data.driver.api.work.{PhDFArgs, PhMapArgs, PhOperatorTrait2, PhStringArgs}
+import com.pharbers.ipaas.data.driver.api.work.{PhDFArgs, PhMapArgs, PhOperatorTrait, PhStringArgs}
 
 class TestSelectOperator extends FunSuite with BeforeAndAfterAll {
     implicit var sd: PhSparkDriver = _

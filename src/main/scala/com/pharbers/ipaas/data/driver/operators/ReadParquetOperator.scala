@@ -34,8 +34,8 @@ import com.pharbers.ipaas.data.driver.libs.spark.util.readParquet
   */
 case class ReadParquetOperator(name: String,
                                defaultArgs: PhMapArgs[PhWorkArgs[Any]],
-                               pluginLst: Seq[PhPluginTrait2[Any]])
-        extends PhOperatorTrait2[DataFrame] {
+                               pluginLst: Seq[PhPluginTrait[Any]])
+        extends PhOperatorTrait[DataFrame] {
 
     /** Parquet 的路径 */
     val path: String = defaultArgs.getAs[PhStringArgs]("path").get.get

@@ -2,10 +2,10 @@ package com.pharbers.ipaas.data.driver.operators
 
 import org.scalatest.{BeforeAndAfterAll, FunSuite}
 import com.pharbers.ipaas.data.driver.libs.spark.PhSparkDriver
-import com.pharbers.ipaas.data.driver.api.work.{PhMapArgs, PhOperatorTrait2, PhSparkDriverArgs, PhStringArgs}
+import com.pharbers.ipaas.data.driver.api.work.{PhMapArgs, PhOperatorTrait, PhSparkDriverArgs, PhStringArgs}
 
 class TestReadCsvOperator extends FunSuite with BeforeAndAfterAll {
-    var operator: PhOperatorTrait2[_] = _
+    var operator: PhOperatorTrait[_] = _
 
     val csvPath: String = "hdfs:///data/nhwa/pha_config_repository1809/Nhwa_201809_CPA_20181126.csv"
 

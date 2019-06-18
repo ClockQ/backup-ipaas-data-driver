@@ -36,8 +36,8 @@ import com.pharbers.ipaas.data.driver.api.work._
   */
 case class DistinctByKeyOperator(name: String,
                                  defaultArgs: PhMapArgs[PhWorkArgs[Any]],
-                                 pluginLst: Seq[PhPluginTrait2[Column]])
-        extends PhOperatorTrait2[DataFrame] {
+                                 pluginLst: Seq[PhPluginTrait[Column]])
+        extends PhOperatorTrait[DataFrame] {
     /** 要作用的 DataFrame 名字 */
     val inDFName: String = defaultArgs.getAs[PhStringArgs]("inDFName").get.get
     /** 去重的根据列 */
