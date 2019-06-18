@@ -32,6 +32,7 @@ case class PhJobFactory(job: Job) extends PhFactoryTrait[PhJobTrait] {
                 PhFactory.getMethodMirror(x.getFactory)(x).asInstanceOf[PhActionFactory].inst()
             } catch {
                 case e: PhOperatorException => throw PhOperatorException(e.names :+ job.name, e.exception)
+                case e: Exception => throw e
             }
         }).toList
         val tmp = PhFactory.getMethodMirror(job.getReference)(actions, job.getName)

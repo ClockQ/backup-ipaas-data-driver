@@ -1,6 +1,7 @@
 package com.pharbers.ipaas.data.driver.operators
 
 import com.pharbers.ipaas.data.driver.api.work._
+import org.apache.spark.sql.functions._
 
 /** 功能描述
   * addCol算子

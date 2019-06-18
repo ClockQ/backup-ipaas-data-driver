@@ -1,0 +1,602 @@
+name: panel
+reference: com.pharbers.ipaas.data.driver.job.PhBaseJob
+factory: com.pharbers.ipaas.data.driver.factory.PhJobFactory
+actions:
+  - name: product_match_file
+    reference: com.pharbers.ipaas.data.driver.job.PhBaseAction
+    factory: com.pharbers.ipaas.data.driver.factory.PhActionFactory
+    args:
+      null: null
+    opers:
+      - name: read
+        reference: com.pharbers.ipaas.data.driver.job.PhReadOperator
+        factory: com.pharbers.ipaas.data.driver.factory.PhOperatorFactory
+        args:
+          path: hdfs:///data/pfizer/pha_config_repository1804/Pfizer_ProductMatchTable.csv
+  - name: markets_match
+    reference: com.pharbers.ipaas.data.driver.job.PhBaseAction
+    factory: com.pharbers.ipaas.data.driver.factory.PhActionFactory
+    args:
+      null: null
+    opers:
+      - name: read
+        reference: com.pharbers.ipaas.data.driver.job.PhReadOperator
+        factory: com.pharbers.ipaas.data.driver.factory.PhOperatorFactory
+        args:
+          path: hdfs:///data/pfizer/pha_config_repository1804/Pfizer_MarketMatchTable.csv
+      - name: filter market
+        factory: com.pharbers.ipaas.data.driver.factory.PhOperatorFactory
+        reference: com.pharbers.ipaas.data.driver.job.PhFilterOperator
+        args:
+          inDFName: df
+          filter: MARKET like 'INF'
+      - name: rename
+        factory: com.pharbers.ipaas.data.driver.factory.PhOperatorFactory
+        reference: com.pharbers.ipaas.data.driver.operators.withColumnRenamed
+        args:
+          inDFName: df
+          oldColName: MOLE_NAME
+          newColName: MOLE_NAME_M
+  - name: spilt_markets_product_match
+    reference: com.pharbers.ipaas.data.driver.job.PhBaseAction
+    factory: com.pharbers.ipaas.data.driver.factory.PhActionFactory
+    args:
+      df: product_match_file
+    opers:
+      - name: select
+        factory: com.pharbers.ipaas.data.driver.factory.PhOperatorFactory
+        reference: com.pharbers.ipaas.data.driver.operators.select
+        args:
+          inDFName: df
+          selects: MIN_PRODUCT_UNIT#MIN_PRODUCT_UNIT_STANDARD#MOLE_NAME
+      - name: distinct
+        factory: com.pharbers.ipaas.data.driver.factory.PhOperatorFactory
+        reference: com.pharbers.ipaas.data.driver.operators.DistinctOperator
+        args:
+          inDFName: df
+      - name: join
+        factory: com.pharbers.ipaas.data.driver.factory.PhOperatorFactory
+        reference: com.pharbers.ipaas.data.driver.operators.JoinOperator
+        args:
+          inDFName: df
+          joinDFName: markets_match
+          joinExpr: MOLE_NAME == MOLE_NAME_M
+          joinType: inner
+      #        - name: select
+      #          factory: com.pharbers.ipaas.data.driver.factory.PhOperatorFactory
+      #          reference: com.pharbers.ipaas.data.driver.operators.select
+      #          args:
+      #            inDFName: df
+      #            selects: MIN_PRODUCT_UNIT#MIN_PRODUCT_UNIT_STANDARD
+      - name: distinct
+        factory: com.pharbers.ipaas.data.driver.factory.PhOperatorFactory
+        reference: com.pharbers.ipaas.data.driver.operators.DistinctOperator
+        args:
+          inDFName: df
+  - name: readCpa
+    reference: com.pharbers.ipaas.data.driver.job.PhBaseAction
+    factory: com.pharbers.ipaas.data.driver.factory.PhActionFactory
+    args:
+      null: null
+    opers:
+      - name: read
+        reference: com.pharbers.ipaas.data.driver.job.PhReadOperator
+        factory: com.pharbers.ipaas.data.driver.factory.PhOperatorFactory
+        args:
+          path: hdfs:///data/pfizer/pha_config_repository1804/Pfizer_201804_CPA.csv
+      - name: add PRODUCT_NAME
+        factory: com.pharbers.ipaas.data.driver.factory.PhOperatorFactory
+        reference: com.pharbers.ipaas.data.driver.operators.addColumn
+        args:
+          inDFName: df
+          newColName: PRODUCT_NAME
+        plugin:
+          name: BaseCalcPlugin
+          reference: com.pharbers.ipaas.data.driver.plugin.BaseCalcPlugin
+          factory: com.pharbers.ipaas.data.driver.factory.PhPluginFactory
+          args:
+            exprString: case when PRODUCT_NAME is NULL then MOLE_NAME else PRODUCT_NAME end
+      - name: addYM
+        factory: com.pharbers.ipaas.data.driver.factory.PhOperatorFactory
+        reference: com.pharbers.ipaas.data.driver.operators.addColumn
+        args:
+          inDFName: df
+          newColName: YM
+        plugin:
+          name: addYM
+          factory: com.pharbers.ipaas.data.driver.factory.PhPluginFactory
+          reference: com.pharbers.ipaas.data.driver.plugin.MergeYM
+      - name: trim PRODUCT_NAME
+        factory: com.pharbers.ipaas.data.driver.factory.PhOperatorFactory
+        reference: com.pharbers.ipaas.data.driver.operators.addColumn
+        args:
+          inDFName: df
+          newColName: PRODUCT_NAME
+        plugin:
+          name: BaseCalcPlugin
+          reference: com.pharbers.ipaas.data.driver.plugin.BaseCalcPlugin
+          factory: com.pharbers.ipaas.data.driver.factory.PhPluginFactory
+          args:
+            exprString: trim(PRODUCT_NAME)
+      - name: trim DOSAGE
+        factory: com.pharbers.ipaas.data.driver.factory.PhOperatorFactory
+        reference: com.pharbers.ipaas.data.driver.operators.addColumn
+        args:
+          inDFName: df
+          newColName: DOSAGE
+        plugin:
+          name: BaseCalcPlugin
+          reference: com.pharbers.ipaas.data.driver.plugin.BaseCalcPlugin
+          factory: com.pharbers.ipaas.data.driver.factory.PhPluginFactory
+          args:
+            exprString: trim(DOSAGE)
+      - name: trim PACK_DES
+        factory: com.pharbers.ipaas.data.driver.factory.PhOperatorFactory
+        reference: com.pharbers.ipaas.data.driver.operators.addColumn
+        args:
+          inDFName: df
+          newColName: PACK_DES
+        plugin:
+          name: BaseCalcPlugin
+          reference: com.pharbers.ipaas.data.driver.plugin.BaseCalcPlugin
+          factory: com.pharbers.ipaas.data.driver.factory.PhPluginFactory
+          args:
+            exprString: trim(PACK_DES)
+      - name: trim PACK_NUMBER
+        factory: com.pharbers.ipaas.data.driver.factory.PhOperatorFactory
+        reference: com.pharbers.ipaas.data.driver.operators.addColumn
+        args:
+          inDFName: df
+          newColName: PACK_NUMBER
+        plugin:
+          name: BaseCalcPlugin
+          reference: com.pharbers.ipaas.data.driver.plugin.BaseCalcPlugin
+          factory: com.pharbers.ipaas.data.driver.factory.PhPluginFactory
+          args:
+            exprString: trim(PACK_NUMBER)
+      - name: trim CORP_NAME
+        factory: com.pharbers.ipaas.data.driver.factory.PhOperatorFactory
+        reference: com.pharbers.ipaas.data.driver.operators.addColumn
+        args:
+          inDFName: df
+          newColName: CORP_NAME
+        plugin:
+          name: BaseCalcPlugin
+          reference: com.pharbers.ipaas.data.driver.plugin.BaseCalcPlugin
+          factory: com.pharbers.ipaas.data.driver.factory.PhPluginFactory
+          args:
+            exprString: trim(CORP_NAME)
+      - name: add min1
+        factory: com.pharbers.ipaas.data.driver.factory.PhOperatorFactory
+        reference: com.pharbers.ipaas.data.driver.operators.addColumn
+        args:
+          inDFName: df
+          newColName: min1
+        plugin:
+          name: concat
+          reference: com.pharbers.ipaas.data.driver.plugin.ConcatStrPlugin
+          factory: com.pharbers.ipaas.data.driver.factory.PhPluginFactory
+          args:
+            columns: PRODUCT_NAME,DOSAGE,PACK_DES,PACK_NUMBER,CORP_NAME
+            dilimiter: ""
+      - name: filter
+        factory: com.pharbers.ipaas.data.driver.factory.PhOperatorFactory
+        reference: com.pharbers.ipaas.data.driver.job.PhFilterOperator
+        args:
+          inDFName: df
+          filter: YM == 201804
+  - name: readGycx
+    reference: com.pharbers.ipaas.data.driver.job.PhBaseAction
+    factory: com.pharbers.ipaas.data.driver.factory.PhActionFactory
+    args:
+      null: null
+    opers:
+      - name: read
+        reference: com.pharbers.ipaas.data.driver.job.PhReadOperator
+        factory: com.pharbers.ipaas.data.driver.factory.PhOperatorFactory
+        args:
+          path: hdfs:///data/pfizer/pha_config_repository1804/Pfizer_201804_Gycx.csv
+      - name: add PRODUCT_NAME
+        factory: com.pharbers.ipaas.data.driver.factory.PhOperatorFactory
+        reference: com.pharbers.ipaas.data.driver.operators.addColumn
+        args:
+          inDFName: df
+          newColName: PRODUCT_NAME
+        plugin:
+          name: BaseCalcPlugin
+          reference: com.pharbers.ipaas.data.driver.plugin.BaseCalcPlugin
+          factory: com.pharbers.ipaas.data.driver.factory.PhPluginFactory
+          args:
+            exprString: case when PRODUCT_NAME is NULL then MOLE_NAME else PRODUCT_NAME end
+      - name: addYM
+        factory: com.pharbers.ipaas.data.driver.factory.PhOperatorFactory
+        reference: com.pharbers.ipaas.data.driver.operators.addColumn
+        args:
+          inDFName: df
+          newColName: YM
+        plugin:
+          name: addYM
+          factory: com.pharbers.ipaas.data.driver.factory.PhPluginFactory
+          reference: com.pharbers.ipaas.data.driver.plugin.MergeYM
+      - name: trim PRODUCT_NAME
+        factory: com.pharbers.ipaas.data.driver.factory.PhOperatorFactory
+        reference: com.pharbers.ipaas.data.driver.operators.addColumn
+        args:
+          inDFName: df
+          newColName: PRODUCT_NAME
+        plugin:
+          name: BaseCalcPlugin
+          reference: com.pharbers.ipaas.data.driver.plugin.BaseCalcPlugin
+          factory: com.pharbers.ipaas.data.driver.factory.PhPluginFactory
+          args:
+            exprString: trim(PRODUCT_NAME)
+      - name: trim DOSAGE
+        factory: com.pharbers.ipaas.data.driver.factory.PhOperatorFactory
+        reference: com.pharbers.ipaas.data.driver.operators.addColumn
+        args:
+          inDFName: df
+          newColName: DOSAGE
+        plugin:
+          name: BaseCalcPlugin
+          reference: com.pharbers.ipaas.data.driver.plugin.BaseCalcPlugin
+          factory: com.pharbers.ipaas.data.driver.factory.PhPluginFactory
+          args:
+            exprString: trim(DOSAGE)
+      - name: trim PACK_DES
+        factory: com.pharbers.ipaas.data.driver.factory.PhOperatorFactory
+        reference: com.pharbers.ipaas.data.driver.operators.addColumn
+        args:
+          inDFName: df
+          newColName: PACK_DES
+        plugin:
+          name: BaseCalcPlugin
+          reference: com.pharbers.ipaas.data.driver.plugin.BaseCalcPlugin
+          factory: com.pharbers.ipaas.data.driver.factory.PhPluginFactory
+          args:
+            exprString: trim(PACK_DES)
+      - name: trim PACK_NUMBER
+        factory: com.pharbers.ipaas.data.driver.factory.PhOperatorFactory
+        reference: com.pharbers.ipaas.data.driver.operators.addColumn
+        args:
+          inDFName: df
+          newColName: PACK_NUMBER
+        plugin:
+          name: BaseCalcPlugin
+          reference: com.pharbers.ipaas.data.driver.plugin.BaseCalcPlugin
+          factory: com.pharbers.ipaas.data.driver.factory.PhPluginFactory
+          args:
+            exprString: trim(PACK_NUMBER)
+      - name: trim CORP_NAME
+        factory: com.pharbers.ipaas.data.driver.factory.PhOperatorFactory
+        reference: com.pharbers.ipaas.data.driver.operators.addColumn
+        args:
+          inDFName: df
+          newColName: CORP_NAME
+        plugin:
+          name: BaseCalcPlugin
+          reference: com.pharbers.ipaas.data.driver.plugin.BaseCalcPlugin
+          factory: com.pharbers.ipaas.data.driver.factory.PhPluginFactory
+          args:
+            exprString: trim(CORP_NAME)
+      - name: add min1
+        factory: com.pharbers.ipaas.data.driver.factory.PhOperatorFactory
+        reference: com.pharbers.ipaas.data.driver.operators.addColumn
+        args:
+          inDFName: df
+          newColName: min1
+        plugin:
+          name: concat
+          reference: com.pharbers.ipaas.data.driver.plugin.ConcatStrPlugin
+          factory: com.pharbers.ipaas.data.driver.factory.PhPluginFactory
+          args:
+            columns: PRODUCT_NAME,DOSAGE,PACK_DES,PACK_NUMBER,CORP_NAME
+            dilimiter: ""
+      - name: filter
+        factory: com.pharbers.ipaas.data.driver.factory.PhOperatorFactory
+        reference: com.pharbers.ipaas.data.driver.job.PhFilterOperator
+        args:
+          inDFName: df
+          filter: YM == 201804
+  - name: hosp_ID_file
+    reference: com.pharbers.ipaas.data.driver.job.PhBaseAction
+    factory: com.pharbers.ipaas.data.driver.factory.PhActionFactory
+    args:
+      null: null
+    opers:
+      - name: read
+        reference: com.pharbers.ipaas.data.driver.job.PhReadOperator
+        factory: com.pharbers.ipaas.data.driver.factory.PhOperatorFactory
+        args:
+          path: hdfs:///data/pfizer/pha_config_repository1804/Pfizer_2018_If_panel_all_INF.csv
+  - name: full_hosp_file
+    reference: com.pharbers.ipaas.data.driver.job.PhBaseAction
+    factory: com.pharbers.ipaas.data.driver.factory.PhActionFactory
+    args:
+      null: null
+    opers:
+      - name: read
+        reference: com.pharbers.ipaas.data.driver.job.PhReadOperator
+        factory: com.pharbers.ipaas.data.driver.factory.PhOperatorFactory
+        args:
+          path: hdfs:///data/pfizer/pha_config_repository1804/Pfizer_2018_FullHosp.txt
+          delimiter: "31"
+      - name: add PRODUCT_NAME test
+        factory: com.pharbers.ipaas.data.driver.factory.PhOperatorFactory
+        reference: com.pharbers.ipaas.data.driver.operators.addColumn
+        args:
+          inDFName: df
+          newColName: PRODUCT_NAME
+        plugin:
+          name: BaseCalcPlugin
+          reference: com.pharbers.ipaas.data.driver.plugin.BaseCalcPlugin
+          factory: com.pharbers.ipaas.data.driver.factory.PhPluginFactory
+          args:
+            exprString: case when PRODUCT_NAME is NULL then MOLE_NAME else PRODUCT_NAME end
+      - name: addYM
+        factory: com.pharbers.ipaas.data.driver.factory.PhOperatorFactory
+        reference: com.pharbers.ipaas.data.driver.operators.addColumn
+        args:
+          inDFName: df
+          newColName: YM
+        plugin:
+          name: addYM
+          factory: com.pharbers.ipaas.data.driver.factory.PhPluginFactory
+          reference: com.pharbers.ipaas.data.driver.plugin.MergeYM
+      - name: trim PRODUCT_NAME
+        factory: com.pharbers.ipaas.data.driver.factory.PhOperatorFactory
+        reference: com.pharbers.ipaas.data.driver.operators.addColumn
+        args:
+          inDFName: df
+          newColName: PRODUCT_NAME
+        plugin:
+          name: BaseCalcPlugin
+          reference: com.pharbers.ipaas.data.driver.plugin.BaseCalcPlugin
+          factory: com.pharbers.ipaas.data.driver.factory.PhPluginFactory
+          args:
+            exprString: trim(PRODUCT_NAME)
+      - name: trim DOSAGE
+        factory: com.pharbers.ipaas.data.driver.factory.PhOperatorFactory
+        reference: com.pharbers.ipaas.data.driver.operators.addColumn
+        args:
+          inDFName: df
+          newColName: DOSAGE
+        plugin:
+          name: BaseCalcPlugin
+          reference: com.pharbers.ipaas.data.driver.plugin.BaseCalcPlugin
+          factory: com.pharbers.ipaas.data.driver.factory.PhPluginFactory
+          args:
+            exprString: trim(DOSAGE)
+      - name: trim PACK_DES
+        factory: com.pharbers.ipaas.data.driver.factory.PhOperatorFactory
+        reference: com.pharbers.ipaas.data.driver.operators.addColumn
+        args:
+          inDFName: df
+          newColName: PACK_DES
+        plugin:
+          name: BaseCalcPlugin
+          reference: com.pharbers.ipaas.data.driver.plugin.BaseCalcPlugin
+          factory: com.pharbers.ipaas.data.driver.factory.PhPluginFactory
+          args:
+            exprString: trim(PACK_DES)
+      - name: trim PACK_NUMBER
+        factory: com.pharbers.ipaas.data.driver.factory.PhOperatorFactory
+        reference: com.pharbers.ipaas.data.driver.operators.addColumn
+        args:
+          inDFName: df
+          newColName: PACK_NUMBER
+        plugin:
+          name: BaseCalcPlugin
+          reference: com.pharbers.ipaas.data.driver.plugin.BaseCalcPlugin
+          factory: com.pharbers.ipaas.data.driver.factory.PhPluginFactory
+          args:
+            exprString: trim(PACK_NUMBER)
+      - name: trim CORP_NAME
+        factory: com.pharbers.ipaas.data.driver.factory.PhOperatorFactory
+        reference: com.pharbers.ipaas.data.driver.operators.addColumn
+        args:
+          inDFName: df
+          newColName: CORP_NAME
+        plugin:
+          name: BaseCalcPlugin
+          reference: com.pharbers.ipaas.data.driver.plugin.BaseCalcPlugin
+          factory: com.pharbers.ipaas.data.driver.factory.PhPluginFactory
+          args:
+            exprString: trim(CORP_NAME)
+      - name: add min1
+        factory: com.pharbers.ipaas.data.driver.factory.PhOperatorFactory
+        reference: com.pharbers.ipaas.data.driver.operators.addColumn
+        args:
+          inDFName: df
+          newColName: min1
+        plugin:
+          name: concat
+          reference: com.pharbers.ipaas.data.driver.plugin.ConcatStrPlugin
+          factory: com.pharbers.ipaas.data.driver.factory.PhPluginFactory
+          args:
+            columns: PRODUCT_NAME,DOSAGE,PACK_DES,PACK_NUMBER,CORP_NAME
+            dilimiter: ""
+  - name: not_arrival_hosp
+    reference: com.pharbers.ipaas.data.driver.job.PhBaseAction
+    factory: com.pharbers.ipaas.data.driver.factory.PhActionFactory
+    args:
+      null: null
+    opers:
+      - name: read
+        reference: com.pharbers.ipaas.data.driver.job.PhReadOperator
+        factory: com.pharbers.ipaas.data.driver.factory.PhOperatorFactory
+        args:
+          path: hdfs:///data/pfizer/pha_config_repository1804/missingHospital.csv
+      - name: filter test
+        factory: com.pharbers.ipaas.data.driver.factory.PhOperatorFactory
+        reference: com.pharbers.ipaas.data.driver.job.PhFilterOperator
+        args:
+          inDFName: df
+          filter: "MONTH like '%4%'"
+      - name: select
+        factory: com.pharbers.ipaas.data.driver.factory.PhOperatorFactory
+        reference: com.pharbers.ipaas.data.driver.operators.select
+        args:
+          inDFName: df
+          selects: HOSP_ID as ID
+      - name: distinct
+        factory: com.pharbers.ipaas.data.driver.factory.PhOperatorFactory
+        reference: com.pharbers.ipaas.data.driver.operators.DistinctOperator
+        args:
+          inDFName: df
+  - name: full_hosp
+    reference: com.pharbers.ipaas.data.driver.job.PhBaseAction
+    factory: com.pharbers.ipaas.data.driver.factory.PhActionFactory
+    args:
+      df: full_hosp_file
+    opers:
+      - name: filter
+        factory: com.pharbers.ipaas.data.driver.factory.PhOperatorFactory
+        reference: com.pharbers.ipaas.data.driver.job.PhFilterOperator
+        args:
+          inDFName: df
+          filter: MONTH == 04
+      - name: join
+        factory: com.pharbers.ipaas.data.driver.factory.PhOperatorFactory
+        reference: com.pharbers.ipaas.data.driver.operators.JoinOperator
+        args:
+          inDFName: df
+          joinDFName: not_arrival_hosp
+          joinExpr: ID == HOSP_ID
+          joinType: inner
+      - name: drop
+        factory: com.pharbers.ipaas.data.driver.factory.PhOperatorFactory
+        reference: com.pharbers.ipaas.data.driver.operators.DropOperator
+        args:
+          inDFName: df
+          dropColName: ID
+  - name: filter_cpa_gyc
+    reference: com.pharbers.ipaas.data.driver.job.PhBaseAction
+    factory: com.pharbers.ipaas.data.driver.factory.PhActionFactory
+    args:
+      df: readCpa
+    opers:
+      - name: join
+        factory: com.pharbers.ipaas.data.driver.factory.PhOperatorFactory
+        reference: com.pharbers.ipaas.data.driver.operators.JoinOperator
+        args:
+          inDFName: df
+          joinDFName: not_arrival_hosp
+          joinExpr: HOSP_ID == ID
+          joinType: left
+      - name: filter
+        factory: com.pharbers.ipaas.data.driver.factory.PhOperatorFactory
+        reference: com.pharbers.ipaas.data.driver.job.PhFilterOperator
+        args:
+          inDFName: df
+          filter: ID is NULL
+      - name: drop
+        factory: com.pharbers.ipaas.data.driver.factory.PhOperatorFactory
+        reference: com.pharbers.ipaas.data.driver.operators.DropOperator
+        args:
+          inDFName: df
+          dropColName: ID
+      - name: union
+        factory: com.pharbers.ipaas.data.driver.factory.PhOperatorFactory
+        reference: com.pharbers.ipaas.data.driver.operators.unionOperator
+        args:
+          inDFName: df
+          unionDFName: full_hosp
+      - name: union
+        factory: com.pharbers.ipaas.data.driver.factory.PhOperatorFactory
+        reference: com.pharbers.ipaas.data.driver.operators.unionOperator
+        args:
+          inDFName: df
+          unionDFName: readGycx
+      - name: join
+        factory: com.pharbers.ipaas.data.driver.factory.PhOperatorFactory
+        reference: com.pharbers.ipaas.data.driver.operators.JoinOperator
+        args:
+          inDFName: df
+          joinDFName: markets_match
+          joinExpr: MOLE_NAME == MOLE_NAME_M
+          joinType: inner
+      - name: rename
+        factory: com.pharbers.ipaas.data.driver.factory.PhOperatorFactory
+        reference: com.pharbers.ipaas.data.driver.operators.withColumnRenamed
+        args:
+          inDFName: df
+          oldColName: HOSP_ID
+          newColName: HOSP_ID_cpa_gyc
+  - name: filted_panel
+    reference: com.pharbers.ipaas.data.driver.job.PhBaseAction
+    factory: com.pharbers.ipaas.data.driver.factory.PhActionFactory
+    args:
+      df: hosp_ID_file
+    opers:
+      - name: filter
+        factory: com.pharbers.ipaas.data.driver.factory.PhOperatorFactory
+        reference: com.pharbers.ipaas.data.driver.job.PhFilterOperator
+        args:
+          inDFName: df
+          filter: IF_PANEL_ALL == 1
+      - name: select
+        factory: com.pharbers.ipaas.data.driver.factory.PhOperatorFactory
+        reference: com.pharbers.ipaas.data.driver.operators.select
+        args:
+          inDFName: df
+          selects: "HOSP_ID as ID#PHA_HOSP_NAME as HOSP_NAME#PHA_HOSP_ID as HOSP_ID#MARKET as DOI#MARKET as DOIE"
+      - name: join filter_cpa_gyc
+        factory: com.pharbers.ipaas.data.driver.factory.PhOperatorFactory
+        reference: com.pharbers.ipaas.data.driver.operators.JoinOperator
+        args:
+          inDFName: df
+          joinDFName: filter_cpa_gyc
+          joinExpr: HOSP_ID_cpa_gyc == ID
+          joinType: left
+  - name: panel
+    reference: com.pharbers.ipaas.data.driver.job.PhBaseAction
+    factory: com.pharbers.ipaas.data.driver.factory.PhActionFactory
+    args:
+      df: filted_panel
+    opers:
+      - name: join
+        factory: com.pharbers.ipaas.data.driver.factory.PhOperatorFactory
+        reference: com.pharbers.ipaas.data.driver.operators.JoinOperator
+        args:
+          inDFName: df
+          joinDFName: spilt_markets_product_match
+          joinExpr: min1 == MIN_PRODUCT_UNIT
+          joinType: inner
+      - name: drop
+        factory: com.pharbers.ipaas.data.driver.factory.PhOperatorFactory
+        reference: com.pharbers.ipaas.data.driver.operators.DropOperator
+        args:
+          inDFName: df
+          dropColName: MIN_PRODUCT_UNIT
+      - name: select
+        factory: com.pharbers.ipaas.data.driver.factory.PhOperatorFactory
+        reference: com.pharbers.ipaas.data.driver.operators.select
+        args:
+          inDFName: df
+          selects: "ID#HOSP_NAME as Hosp_name#YM as Date#MIN_PRODUCT_UNIT_STANDARD as Prod_Name#MIN_PRODUCT_UNIT_STANDARD as Prod_CNAME#HOSP_ID#MIN_PRODUCT_UNIT_STANDARD as Strength#DOI#DOIE#STANDARD_UNIT as Units#VALUE as Sales"
+      - name: concant
+        factory: com.pharbers.ipaas.data.driver.factory.PhOperatorFactory
+        reference: com.pharbers.ipaas.data.driver.operators.addColumn
+        args:
+          inDFName: df
+          newColName: GROUP
+        plugin:
+          name: concat
+          reference: com.pharbers.ipaas.data.driver.plugin.ConcatStrPlugin
+          factory: com.pharbers.ipaas.data.driver.factory.PhPluginFactory
+          args:
+            columns: "ID,Hosp_name,Date,Prod_Name,Prod_CNAME,HOSP_ID,Strength,DOI,DOIE"
+            dilimiter: "#"
+      - name: group
+        factory: com.pharbers.ipaas.data.driver.factory.PhOperatorFactory
+        reference: com.pharbers.ipaas.data.driver.operators.groupOperator
+        args:
+          inDFName: df
+          groupCol: GROUP
+          agg: sum(UNITS) as UNITS,sum(SALES) as SALES,first(ID) as ID,first(Hosp_name) as Hosp_name,first(Date) as Date,first(Prod_Name) as Prod_Name,first(Prod_CNAME) as Prod_CNAME,first(HOSP_ID) as HOSP_ID,first(Strength) as Strength,first(DOI) as DOI,first(DOIE) as DOIE,
+      - name: drop
+        factory: com.pharbers.ipaas.data.driver.factory.PhOperatorFactory
+        reference: com.pharbers.ipaas.data.driver.operators.DropOperator
+        args:
+          inDFName: df
+          dropColName: GROUP

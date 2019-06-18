@@ -1,0 +1,141 @@
+name: miss hosp
+reference: com.pharbers.ipaas.data.driver.job.PhBaseJob
+factory: com.pharbers.ipaas.data.driver.factory.PhJobFactory
+actions:
+  - name: readHospitalFile
+    reference: com.pharbers.ipaas.data.driver.job.PhBaseAction
+    factory: com.pharbers.ipaas.data.driver.factory.PhActionFactory
+    args:
+      null: null
+    opers:
+      - name:
+        factory: com.pharbers.ipaas.data.driver.factory.PhOperatorFactory
+        reference: com.pharbers.ipaas.data.driver.job.PhReadParquetOperator
+        args:
+          path: hdfs:///repository/hosp_dis_max
+      - name:
+        factory: com.pharbers.ipaas.data.driver.factory.PhOperatorFactory
+        reference: com.pharbers.ipaas.data.driver.operators.distinctByKey
+        args:
+          inDFName: df
+          keys: PHA_HOSP_ID
+
+  - name: readPhaFile
+    reference: com.pharbers.ipaas.data.driver.job.PhBaseAction
+    factory: com.pharbers.ipaas.data.driver.factory.PhActionFactory
+    args:
+      null: null
+    opers:
+      - name:
+        factory: com.pharbers.ipaas.data.driver.factory.PhOperatorFactory
+        reference: com.pharbers.ipaas.data.driver.job.PhReadParquetOperator
+        args:
+          path: hdfs:///repository/pha
+      - name:
+        factory: com.pharbers.ipaas.data.driver.factory.PhOperatorFactory
+        reference: com.pharbers.ipaas.data.driver.operators.distinctByKey
+        args:
+          inDFName: df
+          keys: cpa
+
+  - name: not_arrival_hosp
+    reference: com.pharbers.ipaas.data.driver.job.PhBaseAction
+    factory: com.pharbers.ipaas.data.driver.factory.PhActionFactory
+    args:
+      null: null
+    opers:
+      - name: read
+        reference: com.pharbers.ipaas.data.driver.job.PhReadOperator
+        factory: com.pharbers.ipaas.data.driver.factory.PhOperatorFactory
+        args:
+          path: hdfs:///data/nhwa/pha_config_repository1809/Missing_Hospital.csv
+      - name: add month
+        factory: com.pharbers.ipaas.data.driver.factory.PhOperatorFactory
+        reference: com.pharbers.ipaas.data.driver.operators.addColumn
+        args:
+          inDFName: df
+          newColName: MONTH
+        plugin:
+          name: Split
+          reference: com.pharbers.ipaas.data.driver.plugin.Split
+          factory: com.pharbers.ipaas.data.driver.factory.PhPluginFactory
+          args:
+            splitColName: MONTH
+            delimit: "、"
+      - name: add year
+        factory: com.pharbers.ipaas.data.driver.factory.PhOperatorFactory
+        reference: com.pharbers.ipaas.data.driver.operators.addColumn
+        args:
+          inDFName: df
+          newColName: YEAR
+        plugin:
+          name: addYM
+          factory: com.pharbers.ipaas.data.driver.factory.PhPluginFactory
+          reference: com.pharbers.ipaas.data.driver.plugin.BaseCalcPlugin
+          args:
+            exprString: 2018
+      - name: add year
+        factory: com.pharbers.ipaas.data.driver.factory.PhOperatorFactory
+        reference: com.pharbers.ipaas.data.driver.operators.addColumn
+        args:
+          inDFName: df
+          newColName: DATE
+        plugin:
+          name: addYM
+          factory: com.pharbers.ipaas.data.driver.factory.PhPluginFactory
+          reference: com.pharbers.ipaas.data.driver.plugin.MergeYM
+      - name: drop
+        factory: com.pharbers.ipaas.data.driver.factory.PhOperatorFactory
+        reference: com.pharbers.ipaas.data.driver.operators.DropOperator
+        args:
+          inDFName: df
+          dropColName: "MONTH,YEAR"
+      - name: join
+        factory: com.pharbers.ipaas.data.driver.factory.PhOperatorFactory
+        reference: com.pharbers.ipaas.data.driver.operators.JoinOperator
+        args:
+          inDFName: df
+          joinDFName: readPhaFile
+          joinExpr: HOSP_ID == CPA
+          joinType: left
+      - name: join
+        factory: com.pharbers.ipaas.data.driver.factory.PhOperatorFactory
+        reference: com.pharbers.ipaas.data.driver.operators.JoinOperator
+        args:
+          inDFName: df
+          joinDFName: readHospitalFile
+          joinExpr: PHA_ID_NEW == PHA_HOSP_ID
+          joinType: left
+      - name: addHospId
+        factory: com.pharbers.ipaas.data.driver.factory.PhOperatorFactory
+        reference: com.pharbers.ipaas.data.driver.operators.addColumn
+        args:
+          inDFName: df
+          newColName: HOSPITAL_ID
+        plugin:
+          name: fillHospId
+          factory: com.pharbers.ipaas.data.driver.factory.PhPluginFactory
+          reference: com.pharbers.ipaas.data.driver.plugin.BaseCalcPlugin
+          args:
+            exprString: case when HOSPITAL_ID is not null then HOSPITAL_ID else concat("other", HOSP_ID) end
+      - name: select
+        factory: com.pharbers.ipaas.data.driver.factory.PhOperatorFactory
+        reference: com.pharbers.ipaas.data.driver.operators.select
+        args:
+          inDFName: df
+          selects: "DATE#HOSPITAL_ID"
+      - name: distinct
+        factory: com.pharbers.ipaas.data.driver.factory.PhOperatorFactory
+        reference: com.pharbers.ipaas.data.driver.operators.DistinctOperator
+        args:
+          inDFName: df
+      - name: addId
+        factory: com.pharbers.ipaas.data.driver.factory.PhOperatorFactory
+        reference: com.pharbers.ipaas.data.driver.operators.addColumn
+        args:
+          inDFName: df
+          newColName: _id
+        plugin:
+          name: _id
+          factory: com.pharbers.ipaas.data.driver.factory.PhPluginFactory
+          reference: com.pharbers.ipaas.data.driver.plugin.generateObjectId

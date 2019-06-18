@@ -2,7 +2,7 @@ package com.pharbers.ipaas.data.driver.operators
 
 import com.pharbers.ipaas.data.driver.api.work.{PhDFArgs, PhMapArgs, PhOperatorTrait, PhPluginTrait, PhStringArgs, PhWorkArgs}
 import org.apache.spark.sql.Column
-import org.apache.spark.sql.functions.expr
+import org.apache.spark.sql.functions._
 
 /** 功能描述
   * 聚合算子

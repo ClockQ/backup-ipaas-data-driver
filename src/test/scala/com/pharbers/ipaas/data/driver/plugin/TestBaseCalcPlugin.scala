@@ -11,13 +11,13 @@ class TestBaseCalcPlugin extends FunSuite {
     import sparkDriver.ss.implicits._
 
     val df: DataFrame = List(
-        ("name1", "prod1", "201801", 1, 2),
-        ("name2", "prod2", "201801", 2, 3),
-        ("name3", "prod1", "201802", 2, 4),
-        ("name4", "prod2", "201802", 3, 5)
+        ("name1", "prod1", "1,2,3", 1, 2),
+        ("name2", "prod2", "1,2,3", 2, 3),
+        ("name3", "prod1", "1,2,3", 2, 4),
+        ("name4", "prod2", "1,2,3", 3, 5)
     ).toDF("NAME", "PROD", "DATE", "VALUE", "VALUE2")
     test("base calc plugin"){
-
+        df.withColumn("test", explode(split(df("DATE"), ","))).show(false)
         val checkDf: DataFrame = List(
             ("name1", "prod1", "201801", 1, 2, -0.5),
             ("name2", "prod2", "201801", 2, 3, 0.5),

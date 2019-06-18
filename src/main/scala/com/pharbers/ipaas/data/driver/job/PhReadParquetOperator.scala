@@ -20,6 +20,7 @@ case class PhReadParquetOperator(plugin: PhPluginTrait, name: String, args: PhWo
             case _ => throw new Exception("参数类型错误")
         }
         implicit val sd: PhSparkDriver = sparkObj
-        PhDFArgs(sd.setUtil(readParquet()).readParquet(tmp.get.getOrElse("path", throw new Exception("配置文件中没有path配置")).asInstanceOf[PhStringArgs].get))
+        val outDF = sd.setUtil(readParquet()).readParquet(tmp.get.getOrElse("path", throw new Exception("配置文件中没有path配置")).asInstanceOf[PhStringArgs].get)
+        PhDFArgs(outDF)
     }
 }
