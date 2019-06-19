@@ -1,0 +1,71 @@
+name: clean coef
+reference: com.pharbers.ipaas.data.driver.job.PhBaseJob
+factory: com.pharbers.ipaas.data.driver.factory.PhJobFactory
+actions:
+  - name: readCoefFile
+    factory: com.pharbers.ipaas.data.driver.factory.PhActionFactory
+    reference: com.pharbers.ipaas.data.driver.job.PhBaseAction
+    args:
+      null: null
+    opers:
+      - name:
+        factory: com.pharbers.ipaas.data.driver.factory.PhOperatorFactory
+        reference: com.pharbers.ipaas.data.driver.job.PhReadOperator
+        args:
+          path: hdfs:///data/pfizer/pha_config_repository1804/Pfizer_CoefForDVP.csv
+
+  - name: readHospitalFile
+    reference: com.pharbers.ipaas.data.driver.job.PhBaseAction
+    factory: com.pharbers.ipaas.data.driver.factory.PhActionFactory
+    args:
+      null: null
+    opers:
+      - name: read hosp
+        factory: com.pharbers.ipaas.data.driver.factory.PhOperatorFactory
+        reference: com.pharbers.ipaas.data.driver.job.PhReadParquetOperator
+        args:
+          path: hdfs:///repository/hosp_dis_max
+      - name: filter
+        factory: com.pharbers.ipaas.data.driver.factory.PhOperatorFactory
+        reference: com.pharbers.ipaas.data.driver.job.PhFilterOperator
+        args:
+          inDFName: df
+          filter: PHA_IS_REPEAT == 0
+      - name: distinct By PHA_HOSP_ID
+        factory: com.pharbers.ipaas.data.driver.factory.PhOperatorFactory
+        reference: com.pharbers.ipaas.data.driver.operators.distinctByKey
+        args:
+          inDFName: df
+          keys: PHA_HOSP_ID
+      - name: add city
+        factory: com.pharbers.ipaas.data.driver.factory.PhOperatorFactory
+        reference: com.pharbers.ipaas.data.driver.operators.addColumn
+        args:
+          inDFName: df
+          newColName: CITY_NAME
+        plugin:
+          name: fillCity
+          factory: com.pharbers.ipaas.data.driver.factory.PhPluginFactory
+          reference: com.pharbers.ipaas.data.driver.plugin.BaseCalcPlugin
+          args:
+            exprString: case when CITY_NAME == '福州市' or CITY_NAME == '厦门市' or CITY_NAME == '泉州市' then '福厦泉市' when  CITY_NAME == '中山市' or CITY_NAME == '珠海市' or CITY_NAME == '东莞市' or CITY_NAME == '佛山市' then '珠三角市' else CITY_NAME end
+  - name: coefMatchHosp
+    reference: com.pharbers.ipaas.data.driver.job.PhBaseAction
+    factory: com.pharbers.ipaas.data.driver.factory.PhActionFactory
+    args:
+      null: null
+    opers:
+      - name: joinPha
+        factory: com.pharbers.ipaas.data.driver.factory.PhOperatorFactory
+        reference: com.pharbers.ipaas.data.driver.operators.JoinOperator
+        args:
+          inDFName: readCoefFile
+          joinDFName: readHospitalFile
+          joinExpr: CITY = CITY_NAME
+          joinType: left
+      - name: select
+        factory: com.pharbers.ipaas.data.driver.factory.PhOperatorFactory
+        reference: com.pharbers.ipaas.data.driver.operators.select
+        args:
+          inDFName: df
+          selects: HOSPITAL_ID#COEF

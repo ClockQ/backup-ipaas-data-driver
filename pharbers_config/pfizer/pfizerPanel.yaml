@@ -8,17 +8,17 @@ actions:
     args:
       null: null
     opers:
-      - name: read
+      - name: read cpa
         reference: com.pharbers.ipaas.data.driver.job.PhReadParquetOperator
         factory: com.pharbers.ipaas.data.driver.factory.PhOperatorFactory
         args:
-          path: hdfs:///test/dcs/Clean/cpa/inf
+          path: hdfs:///test/dcs/Clean/cpa/pfizer
       - name: filter
         factory: com.pharbers.ipaas.data.driver.factory.PhOperatorFactory
         reference: com.pharbers.ipaas.data.driver.job.PhFilterOperator
         args:
           inDFName: df
-          filter: YM == 201804 AND MARKET == 'INF'
+          filter: YM == 201804 AND MARKET == 'CNS_R'
   #      - name: drop
   #        factory: com.pharbers.ipaas.data.driver.factory.PhOperatorFactory
   #        reference: com.pharbers.ipaas.data.driver.operators.DropOperator
@@ -49,7 +49,7 @@ actions:
   #        reference: com.pharbers.ipaas.data.driver.job.PhFilterOperator
   #        args:
   #          inDFName: df
-  #          filter: MARKET == 'INF'
+  #          filter: MARKET == 'CNS_R'
 
 
   - name: readMissHosp
@@ -75,13 +75,13 @@ actions:
         reference: com.pharbers.ipaas.data.driver.job.PhReadParquetOperator
         factory: com.pharbers.ipaas.data.driver.factory.PhOperatorFactory
         args:
-          path: hdfs:///test/dcs/Clean/fullHosp/inf
+          path: hdfs:///test/dcs/Clean/fullHosp/pfizer
       - name: filter
         factory: com.pharbers.ipaas.data.driver.factory.PhOperatorFactory
         reference: com.pharbers.ipaas.data.driver.job.PhFilterOperator
         args:
           inDFName: df
-          filter: YM == 201804 AND MARKET == 'INF'
+          filter: YM == 201804 AND MARKET == 'CNS_R'
 
 
   - name: readCpaSampleHosp
@@ -94,13 +94,13 @@ actions:
         reference: com.pharbers.ipaas.data.driver.job.PhReadParquetOperator
         factory: com.pharbers.ipaas.data.driver.factory.PhOperatorFactory
         args:
-          path: hdfs:///test/dcs/Clean/sampleHosp/pfizer/cpa
+          path: hdfs:///test/dcs/Clean/sampleHosp/pfizer/CNS_R_cpa
       - name: filter
         factory: com.pharbers.ipaas.data.driver.factory.PhOperatorFactory
         reference: com.pharbers.ipaas.data.driver.job.PhFilterOperator
         args:
           inDFName: df
-          filter: "MARKET == 'INF' AND SAMPLE == 1"
+          filter: "MARKET == 'CNS_R' AND SAMPLE == 1"
       - name: rename
         factory: com.pharbers.ipaas.data.driver.factory.PhOperatorFactory
         reference: com.pharbers.ipaas.data.driver.operators.withColumnRenamed
@@ -131,13 +131,13 @@ actions:
         reference: com.pharbers.ipaas.data.driver.job.PhReadParquetOperator
         factory: com.pharbers.ipaas.data.driver.factory.PhOperatorFactory
         args:
-          path: hdfs:///test/dcs/Clean/sampleHosp/pfizer/gycx
+          path: hdfs:///test/dcs/Clean/sampleHosp/pfizer/CNS_R_gycx
       - name: filter
         factory: com.pharbers.ipaas.data.driver.factory.PhOperatorFactory
         reference: com.pharbers.ipaas.data.driver.job.PhFilterOperator
         args:
           inDFName: df
-          filter: "MARKET == 'INF' AND SAMPLE == 1"
+          filter: "MARKET == 'CNS_R' AND SAMPLE == 1"
       - name: rename
         factory: com.pharbers.ipaas.data.driver.factory.PhOperatorFactory
         reference: com.pharbers.ipaas.data.driver.operators.withColumnRenamed
@@ -168,13 +168,13 @@ actions:
         reference: com.pharbers.ipaas.data.driver.job.PhReadParquetOperator
         factory: com.pharbers.ipaas.data.driver.factory.PhOperatorFactory
         args:
-          path: hdfs:///test/dcs/Clean/gycx/inf
+          path: hdfs:///test/dcs/Clean/gycx/pfizer
       - name: filter
         factory: com.pharbers.ipaas.data.driver.factory.PhOperatorFactory
         reference: com.pharbers.ipaas.data.driver.job.PhFilterOperator
         args:
           inDFName: df
-          filter: YM == 201804 AND MARKET == 'INF'
+          filter: YM == 201804 AND MARKET == 'CNS_R'
       - name: join sampleGycxHosp
         factory: com.pharbers.ipaas.data.driver.factory.PhOperatorFactory
         reference: com.pharbers.ipaas.data.driver.operators.JoinOperator
@@ -338,7 +338,7 @@ actions:
   #        reference: com.pharbers.ipaas.data.driver.job.PhFilterOperator
   #        args:
   #          inDFName: df
-  #          filter: "MARKET == 'INF' AND SAMPLE == 1"
+  #          filter: "MARKET == 'CNS_R' AND SAMPLE == 1"
   #      - name: rename
   #        factory: com.pharbers.ipaas.data.driver.factory.PhOperatorFactory
   #        reference: com.pharbers.ipaas.data.driver.operators.withColumnRenamed

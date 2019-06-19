@@ -61,12 +61,6 @@ actions:
         reference: com.pharbers.ipaas.data.driver.job.PhReadParquetOperator
         args:
           path: hdfs:///repository/prod_etc_dis_max/5ca069e2eeefcc012918ec73
-      - name: filter
-        factory: com.pharbers.ipaas.data.driver.factory.PhOperatorFactory
-        reference: com.pharbers.ipaas.data.driver.job.PhFilterOperator
-        args:
-          inDFName: df
-          filter: MARKET == 'INF'
       - name: concant
         factory: com.pharbers.ipaas.data.driver.factory.PhOperatorFactory
         reference: com.pharbers.ipaas.data.driver.operators.addColumn

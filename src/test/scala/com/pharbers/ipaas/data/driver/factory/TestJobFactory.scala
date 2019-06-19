@@ -93,7 +93,58 @@ class TestJobFactory extends FunSuite {
 
     }
 
-    test("test pfizer clean") {
+    test("test pfizer coef clean") {
+        implicit val sd: PhSparkDriver = PhSparkDriver("testSparkDriver")
+
+        val jobs = Config.readJobConfig("pharbers_config/pfizer/cleanCoef.yaml")
+        val phJobs = jobs.map(x => PhFactory.getMethodMirror(x.getFactory)(x).asInstanceOf[PhJobFactory].inst())
+        val result = phJobs.head.perform(PhMapArgs(Map.empty))
+
+        val cleanDF = result.toMapArgs[PhDFArgs].get("coefMatchHosp").get
+
+//        sd.setUtil(save2Parquet()).save2Parquet(cleanDF, "hdfs:///test/dcs/Clean/coef/pfizer")
+        cleanDF.show(false)
+
+        //        println(cleanDF.filter("YM == 201804").select("HOSPITAL_ID", "PRODUCT_ID").distinct().count())
+
+        //        println(cleanTrueDF.agg(sum("UNITS")).first.get(0))
+        //        println(cleanTrueDF.agg(sum("SALES")).first.get(0))
+    }
+
+    test("test pfizer gycx clean") {
+        implicit val sd: PhSparkDriver = PhSparkDriver("testSparkDriver")
+
+        val jobs = Config.readJobConfig("pharbers_config/pfizer/cleanGycx.yaml")
+        val phJobs = jobs.map(x => PhFactory.getMethodMirror(x.getFactory)(x).asInstanceOf[PhJobFactory].inst())
+        val result = phJobs.head.perform(PhMapArgs(Map.empty))
+
+        val cleanDF = result.toMapArgs[PhDFArgs].get("clean").get
+
+//        sd.setUtil(save2Parquet()).save2Parquet(cleanDF, "hdfs:///test/dcs/Clean/gycx/pfizer")
+        //        cleanDF.show(false)
+
+        //        println(cleanDF.filter("YM == 201804").select("HOSPITAL_ID", "PRODUCT_ID").distinct().count())
+
+        //        println(cleanTrueDF.agg(sum("UNITS")).first.get(0))
+        //        println(cleanTrueDF.agg(sum("SALES")).first.get(0))
+    }
+
+    test("test pfizer cpa clean") {
+        implicit val sd: PhSparkDriver = PhSparkDriver("testSparkDriver")
+
+        val jobs = Config.readJobConfig("pharbers_config/pfizer/cleanCpa.yaml")
+        val phJobs = jobs.map(x => PhFactory.getMethodMirror(x.getFactory)(x).asInstanceOf[PhJobFactory].inst())
+        val result = phJobs.head.perform(PhMapArgs(Map.empty))
+
+        val cleanDF = result.toMapArgs[PhDFArgs].get("clean").get
+
+//        sd.setUtil(save2Parquet()).save2Parquet(cleanDF, "hdfs:///test/dcs/Clean/cpa/pfizer")
+
+        //        println(cleanDF.agg(sum("UNITS")).first.get(0))
+        //        println(cleanDF.agg(sum("SALES")).first.get(0))
+    }
+
+    test("test pfizer full hosp clean") {
         implicit val sd: PhSparkDriver = PhSparkDriver("testSparkDriver")
 
         val jobs = Config.readJobConfig("pharbers_config/pfizer/cleanFullHosp.yaml")
@@ -101,20 +152,13 @@ class TestJobFactory extends FunSuite {
         val result = phJobs.head.perform(PhMapArgs(Map.empty))
 
         val cleanDF = result.toMapArgs[PhDFArgs].get("clean").get
-        //        val cleanTrueDF = sd.setUtil(readParquet()).readParquet("hdfs:///workData/Clean/20bfd585-c889-4385-97ec-a8d4c77d71cc")
 
-//        sd.setUtil(save2Parquet()).save2Parquet(cleanDF, "hdfs:///test/dcs/Clean/fullHosp/inf")
-        //        cleanDF.show(false)
-        //        cleanTrueDF.show(false)
+//        sd.setUtil(save2Parquet()).save2Parquet(cleanDF, "hdfs:///test/dcs/Clean/fullHosp/pfizer")
 
-//        println(cleanDF.filter("YM == 201804").select("HOSPITAL_ID", "PRODUCT_ID").distinct().count())
-        //        println(cleanTrueDF.count())
-        //
+        //        println(cleanDF.filter("YM == 201804").select("HOSPITAL_ID", "PRODUCT_ID").distinct().count())
         //        println(cleanDF.agg(sum("UNITS")).first.get(0))
         //        println(cleanDF.agg(sum("SALES")).first.get(0))
-        //
-        //        println(cleanTrueDF.agg(sum("UNITS")).first.get(0))
-        //        println(cleanTrueDF.agg(sum("SALES")).first.get(0))
+
     }
 
     test("test pfizer miss hosp") {
@@ -126,12 +170,26 @@ class TestJobFactory extends FunSuite {
 
         val missHosp = result.toMapArgs[PhDFArgs].get("not_arrival_hosp").get
 
-//        sd.setUtil(save2Parquet()).save2Parquet(missHosp, "hdfs:///test/dcs/Clean/missHosp/pfizer")
+        //        sd.setUtil(save2Parquet()).save2Parquet(missHosp, "hdfs:///test/dcs/Clean/missHosp/pfizer")
         missHosp.show(false)
 
     }
 
-    test("test pfizer sample hosp") {
+    test("test pfizer sample cpa hosp") {
+        implicit val sd: PhSparkDriver = PhSparkDriver("testSparkDriver")
+
+        val jobs = Config.readJobConfig("pharbers_config/pfizer/sampleCpaHosp.yaml")
+        val phJobs = jobs.map(x => PhFactory.getMethodMirror(x.getFactory)(x).asInstanceOf[PhJobFactory].inst())
+        val result = phJobs.head.perform(PhMapArgs(Map.empty))
+
+        val sampleHosp = result.toMapArgs[PhDFArgs].get("sample_hosp").get
+
+//        sd.setUtil(save2Parquet()).save2Parquet(sampleHosp, "hdfs:///test/dcs/Clean/sampleHosp/pfizer/CNS_R_cpa")
+        println(sampleHosp.count())
+
+    }
+
+    test("test pfizer sample gycx hosp") {
         implicit val sd: PhSparkDriver = PhSparkDriver("testSparkDriver")
 
         val jobs = Config.readJobConfig("pharbers_config/pfizer/sampleGycxHosp.yaml")
@@ -140,7 +198,7 @@ class TestJobFactory extends FunSuite {
 
         val sampleHosp = result.toMapArgs[PhDFArgs].get("sample_hosp").get
 
-//        sd.setUtil(save2Parquet()).save2Parquet(sampleHosp, "hdfs:///test/dcs/Clean/sampleHosp/pfizer/gycx")
+//        sd.setUtil(save2Parquet()).save2Parquet(sampleHosp, "hdfs:///test/dcs/Clean/sampleHosp/pfizer/CNS_R_gycx")
         println(sampleHosp.count())
 
     }
@@ -154,9 +212,9 @@ class TestJobFactory extends FunSuite {
 
         val panelERD = result.toMapArgs[PhDFArgs].get("panelERD").get
 
-//        sd.setUtil(save2Parquet()).save2Parquet(panelERD, "hdfs:///test/dcs/Clean/panel/pfizer/INF")
+//        sd.setUtil(save2Parquet()).save2Parquet(panelERD, "hdfs:///test/dcs/Clean/panel/pfizer/CNS_R")
 
-        val panelTrueDF = sd.setUtil(readParquet()).readParquet("hdfs:///workData/Panel/inf_0617")
+        val panelTrueDF = sd.setUtil(readParquet()).readParquet("hdfs:///workData/Panel/0db067e5-c3f2-4112-93be-f447f2fede74")
 
         println(panelERD.select("PRODUCT_ID").distinct().count())
         println(panelTrueDF.select("Prod_Name").distinct().count())
@@ -247,37 +305,49 @@ class TestJobFactory extends FunSuite {
     test("check hosp") {
         implicit val sd: PhSparkDriver = PhSparkDriver("testSparkDriver")
         sd.sc.setLogLevel("error")
+        val prodErd = {
+            sd.setUtil(readParquet())
+                    .readParquet("hdfs:///repository/prod_etc_dis_max/5ca069e2eeefcc012918ec73").filter(col("MARKET") === "INF")
+                    .withColumn("min2", trim(regexp_replace(concat(col("ETC_PRODUCT_NAME"), col("ETC_DOSAGE_NAME"), col("ETC_PACKAGE_DES"), col("ETC_PACKAGE_NUMBER"), col("ETC_CORP_NAME")), " ", "")))
+        }
         val hospErd = {
             sd.setUtil(readParquet())
                     .readParquet("hdfs:///repository/hosp_dis_max")
-//                    .readParquet("hdfs:///repository/hosp")
+                    //                    .readParquet("hdfs:///repository/hosp")
                     .filter("PHA_IS_REPEAT == 0")
                     .dropDuplicates(List("PHA_HOSP_ID"))
         }
-//
-//        hospErd.groupBy("PHA_HOSP_ID").agg(count("HOSPITAL_ID"), collect_list("PHA_IS_REPEAT"))
-//                .filter("count(HOSPITAL_ID) > 1")
-//                .show(false)
+        //
+        //        hospErd.groupBy("PHA_HOSP_ID").agg(count("HOSPITAL_ID"), collect_list("PHA_IS_REPEAT"))
+        //                .filter("count(HOSPITAL_ID) > 1")
+        //                .show(false)
 
         val panelErd = sd.setUtil(readParquet()).readParquet("hdfs:///test/dcs/Clean/panel/pfizer/INF")
         val panelTrueDF = sd.setUtil(readParquet()).readParquet("hdfs:///workData/Panel/d72c8c8b-a8ff-4570-9924-1161cea3f1dd")
-        println(panelErd.selectExpr("HOSPITAL_ID as hosp").distinct().count())
-        println(panelErd.selectExpr("HOSPITAL_ID as hosp").join(hospErd, col("hosp") === col("HOSPITAL_ID"))
-                .select("PHA_HOSP_ID").distinct().count())
-        val a = panelErd.selectExpr("HOSPITAL_ID as hosp").join(hospErd, col("hosp") === col("HOSPITAL_ID"))
-                .select("PHA_HOSP_ID")
-                .join(panelTrueDF, col("PHA_HOSP_ID") === col("HOSP_ID"))
-//                .filter(col("PHA_HOSP_ID").isNull)
+        //        println(panelErd.selectExpr("HOSPITAL_ID as hosp").distinct().count())
+        //        println(panelErd.selectExpr("HOSPITAL_ID as hosp").join(hospErd, col("hosp") === col("HOSPITAL_ID"))
+        //                .select("PHA_HOSP_ID").distinct().count())
+        val a = panelErd.selectExpr("HOSPITAL_ID as hosp", "SALES as VALUE", "PRODUCT_ID")
+                .join(hospErd, col("hosp") === col("HOSPITAL_ID"))
+                .join(prodErd.select("min2", "ETC_PRODUCT_ID"), col("PRODUCT_ID") === col("ETC_PRODUCT_ID"))
+                .select("VALUE","min2","PHA_HOSP_ID")
+                //                .select("PHA_HOSP_ID")
+                .join(panelTrueDF, col("PHA_HOSP_ID") === col("HOSP_ID") && col("min2") === col("Prod_Name"))
+                //                .filter(col("PHA_HOSP_ID").isNull)
                 .drop("PHA_HOSP_ID")
                 .distinct()
-        println(a.select("HOSP_ID").distinct().count())
 
-        println(panelErd.agg(sum("UNITS")).first.get(0))
-        println(panelErd.agg(sum("SALES")).first.get(0))
-        println(a.agg(sum("UNITS")).first.get(0))
-        println(a.agg(sum("SALES")).first.get(0))
+        val res = a.withColumn("check", expr("abs(SALES - VALUE)")).filter("check > 0.01")
+        println(res.count())
+        res.show(false)
+        //        println(a.select("HOSP_ID").distinct().count())
+        //
+        //        println(panelErd.agg(sum("UNITS")).first.get(0))
+        //        println(panelErd.agg(sum("SALES")).first.get(0))
+        //        println(a.agg(sum("UNITS")).first.get(0))
+        //        println(a.agg(sum("SALES")).first.get(0))
 
-//        sd.setUtil(save2Parquet()).save2Parquet(a, "hdfs:///workData/Panel/inf_0617")
+        //        sd.setUtil(save2Parquet()).save2Parquet(a, "hdfs:///workData/Panel/inf_0617")
 
     }
 }
