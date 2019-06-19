@@ -8,7 +8,7 @@ actions:
     args:
         null: null
     opers:
-    -   name: read panel for CNS_R
+    -   name: read panel for DVP
         reference: com.pharbers.ipaas.data.driver.job.PhReadParquetOperator
         factory: com.pharbers.ipaas.data.driver.factory.PhOperatorFactory
         args:

@@ -62,6 +62,12 @@ actions:
             inDFName: df
             oldColName: PRODUCT_ID
             newColName: ETC_PRODUCT_ID
+    -   name:
+        factory: com.pharbers.ipaas.data.driver.factory.PhOperatorFactory
+        reference: com.pharbers.ipaas.data.driver.job.PhFilterOperator
+        args:
+            df: df
+            filter: ETC_PACKAGE_DES like '%粉针剂%' OR ETC_PACKAGE_DES like '%注射剂%'
 
 -   name: universeClean
     reference: com.pharbers.ipaas.data.driver.job.PhBaseAction
@@ -447,7 +453,7 @@ actions:
             reference: com.pharbers.ipaas.data.driver.plugin.BaseCalcPlugin
             factory: com.pharbers.ipaas.data.driver.factory.PhPluginFactory
             args:
-                exprString: case when ETC_PACKAGE_DES == '粉针剂' OR ETC_PACKAGE_DES == '注射剂' THEN Factor1 else Factor2 end
+                exprString: case when ETC_PACKAGE_DES like '%粉针剂%' OR ETC_PACKAGE_DES == '%注射剂%' THEN Factor1 else Factor2 end
     -   name: drop Factor1,Factor2
         factory: com.pharbers.ipaas.data.driver.factory.PhOperatorFactory
         reference: com.pharbers.ipaas.data.driver.operators.DropOperator
@@ -538,24 +544,6 @@ actions:
         args:
             inDFName: df
             dropColName: s_westMedicineIncome
-    #    -   name: addCol flag
-    #        factory: com.pharbers.ipaas.data.driver.factory.PhOperatorFactory
-    #        reference: com.pharbers.ipaas.data.driver.operators.addColumn
-    #        args:
-    #            inDFName: df
-    #            newColName: flag
-    #        plugin:
-    #            name: BaseCalcPlugin
-    #            reference: com.pharbers.ipaas.data.driver.plugin.BaseCalcPlugin
-    #            factory: com.pharbers.ipaas.data.driver.factory.PhPluginFactory
-    #            args:
-    #                exprString: case when IS_PANEL_HOSP == 1 then 1 when f_units == 0 or avg_Units  == 0 then 0 else 1 end
-    #    -   name: filter
-    #        factory: com.pharbers.ipaas.data.driver.factory.PhOperatorFactory
-    #        reference: com.pharbers.ipaas.data.driver.job.PhFilterOperator
-    #        args:
-    #            df: df
-    #            filter: flag == 1 AND IS_PANEL_HOSP == 0
     -   name: filter
         factory: com.pharbers.ipaas.data.driver.factory.PhOperatorFactory
         reference: com.pharbers.ipaas.data.driver.job.PhFilterOperator
@@ -631,7 +619,7 @@ actions:
             reference: com.pharbers.ipaas.data.driver.plugin.BaseCalcPlugin
             factory: com.pharbers.ipaas.data.driver.factory.PhPluginFactory
             args:
-                exprString: case when ETC_PACKAGE_DES == '粉针剂' OR ETC_PACKAGE_DES == '注射剂' THEN Factor1 else Factor2 end
+                exprString: case when ETC_PACKAGE_DES like '%粉针剂%' OR ETC_PACKAGE_DES like '%注射剂%' THEN Factor1 else Factor2 end
     -   name: drop Factor1,Factor2
         factory: com.pharbers.ipaas.data.driver.factory.PhOperatorFactory
         reference: com.pharbers.ipaas.data.driver.operators.DropOperator
