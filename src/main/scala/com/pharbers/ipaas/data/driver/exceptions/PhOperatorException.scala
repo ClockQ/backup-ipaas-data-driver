@@ -32,7 +32,7 @@ case class PhOperatorException(names: Seq[String], exception: Exception) extends
       * @version 0.1
       * @since 2019/6/11 15:54
       */
-    override def getStackTrace: Array[StackTraceElement] =
+    override def getStackTrace: Array[StackTraceElement] = {
         exception.getStackTrace
     }
 /** 功能描述
