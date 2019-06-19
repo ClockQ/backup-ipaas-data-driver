@@ -1,0 +1,77 @@
+[
+  {
+    "name": "job1",
+    "factory": "factory",
+    "reference": "reference",
+    "args": {},
+    "actions": [
+      {
+        "name": "action1",
+        "factory": "factory",
+        "reference": "reference",
+        "args": {
+          "a": "a",
+          "b": "b"
+        },
+        "opers": [
+          {
+            "name": "oper1",
+            "factory": "factory",
+            "reference": "reference",
+            "args": {},
+            "plugin": {
+              "name": "plugin1",
+              "factory": "factory",
+              "reference": "reference",
+              "sub": {
+                "name": "subPlugin1",
+                "factory": "factory",
+                "reference": "reference"
+              }
+            }
+          },
+          {
+            "name": "oper2",
+            "factory": "factory",
+            "reference": "reference"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "name": "job2",
+    "factory": "factory",
+    "reference": "reference",
+    "args": {},
+    "actions": [
+      {
+        "name": "action1",
+        "factory": "factory",
+        "reference": "reference",
+        "args": {
+          "a": "a",
+          "b": "b"
+        },
+        "opers": [
+          {
+            "name": "oper1",
+            "factory": "factory",
+            "reference": "reference",
+            "args": {},
+            "plugin": {
+              "name": "plugin1",
+              "factory": "factory",
+              "reference": "reference"
+            }
+          },
+          {
+            "name": "oper2",
+            "factory": "factory",
+            "reference": "reference"
+          }
+        ]
+      }
+    ]
+  }
+]
