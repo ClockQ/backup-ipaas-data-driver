@@ -1,20 +1,41 @@
-//package com.pharbers.ipaas.data.driver.run
-//
-//import com.pharbers.ipaas.data.driver.api.factory._
-//import com.pharbers.ipaas.data.driver.api.work._
-//import com.pharbers.ipaas.data.driver.libs.spark.PhSparkDriver
-//import com.pharbers.ipaas.data.driver.libs.spark.util.readParquet
-//import env.configObj
-//import org.apache.spark.sql.functions._
-//import org.scalatest.FunSuite
-//
-///**
-//  * @author dcs
-//  * @param $args
-//  * @tparam T
-//  * @note
-//  */
-//class TestNhwaMax2 extends FunSuite {
+package com.pharbers.ipaas.data.driver.run
+
+import org.scalatest.FunSuite
+import org.apache.spark.sql.functions._
+import env.configObj.{inst, readJobConfig}
+import com.pharbers.ipaas.data.driver.api.work._
+import com.pharbers.ipaas.data.driver.libs.spark.PhSparkDriver
+import com.pharbers.ipaas.data.driver.libs.spark.util.readParquet
+import com.pharbers.ipaas.data.driver.libs.log.{PhLogDriver, formatMsg}
+
+class TestPfizerMax extends FunSuite {
+	implicit val sd: PhSparkDriver = PhSparkDriver("test-driver")
+	sd.addJar("target/ipaas-data-driver-0.1.jar")
+	sd.sc.setLogLevel("ERROR")
+
+	test("test pfizer clean") {
+		val phJobs = inst(readJobConfig("max_config/nhwa/clean.yaml"))
+		val result = phJobs.head.perform(PhMapArgs(Map(
+			"sparkDriver" -> PhSparkDriverArgs(sd),
+			"logDriver" -> PhLogDriverArgs(PhLogDriver(formatMsg("test_user", "test_traceID", "test_jobID")))
+		)))
+
+		val cleanDF = result.toMapArgs[PhDFArgs].get("cleanResult").get
+		val cleanTrueDF = sd.setUtil(readParquet()).readParquet("hdfs:///workData/Clean/20bfd585-c889-4385-97ec-a8d4c77d71cc")
+
+		cleanDF.show(false)
+		cleanTrueDF.show(false)
+
+		println(cleanDF.count())
+		println(cleanTrueDF.count())
+
+		println(cleanDF.agg(sum("UNITS")).first.get(0))
+		println(cleanTrueDF.agg(sum("UNITS")).first.get(0))
+
+		println(cleanDF.agg(sum("SALES")).first.get(0))
+		println(cleanTrueDF.agg(sum("SALES")).first.get(0))
+	}
+
 //	test("test nhwa max") {
 //		implicit val sd: PhSparkDriver = PhSparkDriver("testSparkDriver")
 //
@@ -98,17 +119,17 @@
 //		println(cleanTrueDF.agg(sum("SALES")).first.get(0))
 //	}
 //}
-
-	test("test pfizer INF max") {
-		implicit val sd: PhSparkDriver = PhSparkDriver("testSparkDriver")
-
-		val jobs = Config.readJobConfig("pharbers_config/INF_Max.yaml")
-		val phJobs = jobs.map(x => PhFactory.getMethodMirror(x.getFactory)(x).asInstanceOf[PhJobFactory].inst())
-		val result = phJobs.head.perform(PhMapArgs(Map.empty))
-
-		val maxDF = result.toMapArgs[PhDFArgs].get("maxResultDF").get
-		val maxTrueDF = sd.setUtil(readParquet()).readParquet("hdfs:///workData/Max/e7a80161-8b69-4d14-82d5-eb5a988f00e8")
-
+//
+//	test("test pfizer INF max") {
+//		implicit val sd: PhSparkDriver = PhSparkDriver("testSparkDriver")
+//
+//		val jobs = Config.readJobConfig("pharbers_config/INF_Max.yaml")
+//		val phJobs = jobs.map(x => PhFactory.getMethodMirror(x.getFactory)(x).asInstanceOf[PhJobFactory].inst())
+//		val result = phJobs.head.perform(PhMapArgs(Map.empty))
+//
+//		val maxDF = result.toMapArgs[PhDFArgs].get("maxResultDF").get
+//		val maxTrueDF = sd.setUtil(readParquet()).readParquet("hdfs:///workData/Max/e7a80161-8b69-4d14-82d5-eb5a988f00e8")
+//
 //		println(maxDF.count())
 //		println(maxTrueDF.count())
 //
@@ -133,84 +154,61 @@
 //			.join(maxTrueDF.select("Product").distinct(), col("min2") === col("Product"), "left")
 //			.filter(col("Product").isNull)
 //			.show(40, false)
-
-		val hospErd = {
-			sd.setUtil(readParquet())
-				.readParquet("hdfs:///repository/hosp_dis_max")
-				//                    .readParquet("hdfs:///repository/hosp")
-				.filter("PHA_IS_REPEAT == 0")
-				.dropDuplicates(List("PHA_HOSP_ID"))
-		}
-		val a = maxDF.selectExpr("HOSPITAL_ID as hosp").join(hospErd, col("hosp") === col("HOSPITAL_ID"))
-			.select("PHA_HOSP_ID")
-			.join(maxTrueDF, col("PHA_HOSP_ID") === col("Panel_ID"))
-			//                .filter(col("PHA_HOSP_ID").isNull)
-			.drop("PHA_HOSP_ID")
-			.distinct()
-		println(a.agg(sum("f_units")).first.get(0))
-		println(a.agg(sum("f_sales")).first.get(0))
-	}
-
-	test("test pfizer AI_D max") {
-		implicit val sd: PhSparkDriver = PhSparkDriver("testSparkDriver")
-
-		val jobs = Config.readJobConfig("pharbers_config/AI_D_Max.yaml")
-		val phJobs = jobs.map(x => PhFactory.getMethodMirror(x.getFactory)(x).asInstanceOf[PhJobFactory].inst())
-		val result = phJobs.head.perform(PhMapArgs(Map.empty))
-
-		val maxDF = result.toMapArgs[PhDFArgs].get("maxResultDF").get
-		val maxTrueDF = sd.setUtil(readParquet()).readParquet("hdfs:///workData/Max/34345082-4d8e-4625-82c8-95d603c75264")
-
-		println(maxDF.count())
-		println(maxTrueDF.count())
-
-		println(maxDF.agg(sum("f_units")).first.get(0))
-		println(maxDF.agg(sum("f_sales")).first.get(0))
-		maxDF.show(false)
-		println(maxTrueDF.agg(sum("f_units")).first.get(0))
-		println(maxTrueDF.agg(sum("f_sales")).first.get(0))
-	}
-
-	test("test pfizer CNS_R max cleaned") {
-		implicit val sd: PhSparkDriver = PhSparkDriver("testSparkDriver")
-
-		val jobs = Config.readJobConfig("pharbers_config/CNS_R_Max.yaml")
-		val phJobs = jobs.map(x => PhFactory.getMethodMirror(x.getFactory)(x).asInstanceOf[PhJobFactory].inst())
-		val result = phJobs.head.perform(PhMapArgs(Map.empty))
-
-		val maxDF = result.toMapArgs[PhDFArgs].get("maxResultDF").get
-		val maxTrueDF = sd.setUtil(readParquet()).readParquet("hdfs:///workData/Max/1dc050f8-2c49-4da9-ae1c-f8ff4ef2dec4")
-
-		println(maxDF.count())
-		println(maxTrueDF.count())
-
-		println(maxDF.agg(sum("f_units")).first.get(0))
-		println(maxDF.agg(sum("f_sales")).first.get(0))
-		maxDF.show(false)
-		println(maxTrueDF.agg(sum("f_units")).first.get(0))
-		println(maxTrueDF.agg(sum("f_sales")).first.get(0))
-	}
-
-	test("test nhwa clean") {
-		implicit val sd: PhSparkDriver = PhSparkDriver("testSparkDriver")
-
-		val jobs = configObj.readJobConfig("pharbers_config/clean.yaml")
-		val phJobs = jobs.map(x => getMethodMirror(x.getFactory)(x).asInstanceOf[PhJobFactory].inst())
-		val result = phJobs.head.perform(PhMapArgs(Map.empty))
-
-		val cleanDF = result.toMapArgs[PhDFArgs].get("clean").get
-		val cleanTrueDF = sd.setUtil(readParquet()).readParquet("hdfs:///workData/Clean/20bfd585-c889-4385-97ec-a8d4c77d71cc")
-
-		cleanDF.show(false)
-		cleanTrueDF.show(false)
-
-		println(cleanDF.count())
-		println(cleanTrueDF.count())
-
-		println(cleanDF.agg(sum("UNITS")).first.get(0))
-		println(cleanDF.agg(sum("SALES")).first.get(0))
-
-		println(cleanTrueDF.agg(sum("UNITS")).first.get(0))
-		println(cleanTrueDF.agg(sum("SALES")).first.get(0))
-	}
+//
+//		val hospErd = {
+//			sd.setUtil(readParquet())
+//				.readParquet("hdfs:///repository/hosp_dis_max")
+//				//                    .readParquet("hdfs:///repository/hosp")
+//				.filter("PHA_IS_REPEAT == 0")
+//				.dropDuplicates(List("PHA_HOSP_ID"))
+//		}
+//		val a = maxDF.selectExpr("HOSPITAL_ID as hosp").join(hospErd, col("hosp") === col("HOSPITAL_ID"))
+//			.select("PHA_HOSP_ID")
+//			.join(maxTrueDF, col("PHA_HOSP_ID") === col("Panel_ID"))
+//			//                .filter(col("PHA_HOSP_ID").isNull)
+//			.drop("PHA_HOSP_ID")
+//			.distinct()
+//		println(a.agg(sum("f_units")).first.get(0))
+//		println(a.agg(sum("f_sales")).first.get(0))
+//	}
+//
+//	test("test pfizer AI_D max") {
+//		implicit val sd: PhSparkDriver = PhSparkDriver("testSparkDriver")
+//
+//		val jobs = Config.readJobConfig("pharbers_config/AI_D_Max.yaml")
+//		val phJobs = jobs.map(x => PhFactory.getMethodMirror(x.getFactory)(x).asInstanceOf[PhJobFactory].inst())
+//		val result = phJobs.head.perform(PhMapArgs(Map.empty))
+//
+//		val maxDF = result.toMapArgs[PhDFArgs].get("maxResultDF").get
+//		val maxTrueDF = sd.setUtil(readParquet()).readParquet("hdfs:///workData/Max/34345082-4d8e-4625-82c8-95d603c75264")
+//
+//		println(maxDF.count())
+//		println(maxTrueDF.count())
+//
+//		println(maxDF.agg(sum("f_units")).first.get(0))
+//		println(maxDF.agg(sum("f_sales")).first.get(0))
+//		maxDF.show(false)
+//		println(maxTrueDF.agg(sum("f_units")).first.get(0))
+//		println(maxTrueDF.agg(sum("f_sales")).first.get(0))
+//	}
+//
+//	test("test pfizer CNS_R max cleaned") {
+//		implicit val sd: PhSparkDriver = PhSparkDriver("testSparkDriver")
+//
+//		val jobs = Config.readJobConfig("pharbers_config/CNS_R_Max.yaml")
+//		val phJobs = jobs.map(x => PhFactory.getMethodMirror(x.getFactory)(x).asInstanceOf[PhJobFactory].inst())
+//		val result = phJobs.head.perform(PhMapArgs(Map.empty))
+//
+//		val maxDF = result.toMapArgs[PhDFArgs].get("maxResultDF").get
+//		val maxTrueDF = sd.setUtil(readParquet()).readParquet("hdfs:///workData/Max/1dc050f8-2c49-4da9-ae1c-f8ff4ef2dec4")
+//
+//		println(maxDF.count())
+//		println(maxTrueDF.count())
+//
+//		println(maxDF.agg(sum("f_units")).first.get(0))
+//		println(maxDF.agg(sum("f_sales")).first.get(0))
+//		maxDF.show(false)
+//		println(maxTrueDF.agg(sum("f_units")).first.get(0))
+//		println(maxTrueDF.agg(sum("f_sales")).first.get(0))
+//	}
 }
