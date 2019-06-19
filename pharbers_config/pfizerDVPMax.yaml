@@ -1,15 +1,15 @@
 name: pfizerDVPMax
-reference: com.pharbers.ipaas.data.driver.job.PhBaseJob
+reference: com.pharbers.ipaas.data.driver.api.job.PhBaseJob
 factory: com.pharbers.ipaas.data.driver.factory.PhJobFactory
 actions:
 -   name: panelDF
-    reference: com.pharbers.ipaas.data.driver.job.PhBaseAction
+    reference: com.pharbers.ipaas.data.driver.api.job.PhBaseAction
     factory: com.pharbers.ipaas.data.driver.factory.PhActionFactory
     args:
         null: null
     opers:
     -   name: read panel for CNS_R
-        reference: com.pharbers.ipaas.data.driver.job.PhReadParquetOperator
+        reference: com.pharbers.ipaas.data.driver.operators.PhReadParquetOperator
         factory: com.pharbers.ipaas.data.driver.factory.PhOperatorFactory
         args:
             path: hdfs:///workData/Panel/af10188b-7608-499a-908f-b5db28c91111
@@ -21,13 +21,13 @@ actions:
             selects: Date#Prod_Name#HOSP_ID#Sales#Units
 
 -   name: universeDF
-    reference: com.pharbers.ipaas.data.driver.job.PhBaseAction
+    reference: com.pharbers.ipaas.data.driver.api.job.PhBaseAction
     factory: com.pharbers.ipaas.data.driver.factory.PhActionFactory
     args:
         null: null
     opers:
     -   name: read universe for DVP
-        reference: com.pharbers.ipaas.data.driver.job.PhReadOperator
+        reference: com.pharbers.ipaas.data.driver.operators.PhReadOperator
         factory: com.pharbers.ipaas.data.driver.factory.PhOperatorFactory
         args:
             path: hdfs:///data/pfizer/pha_config_repository1804/Pfizer_Universe_DVP.csv
@@ -53,13 +53,13 @@ actions:
             selects: Province#City#PHA_HOSP_ID#MARKET
 
 -   name: coefDF
-    reference: com.pharbers.ipaas.data.driver.job.PhBaseAction
+    reference: com.pharbers.ipaas.data.driver.api.job.PhBaseAction
     factory: com.pharbers.ipaas.data.driver.factory.PhActionFactory
     args:
         null: null
     opers:
     -   name: read coefDF for DVP
-        reference: com.pharbers.ipaas.data.driver.job.PhReadOperator
+        reference: com.pharbers.ipaas.data.driver.operators.PhReadOperator
         factory: com.pharbers.ipaas.data.driver.factory.PhOperatorFactory
         args:
             path: hdfs:///data/pfizer/pha_config_repository1804/Pfizer_CoefForDVP.csv
@@ -72,7 +72,7 @@ actions:
             newColName: coefCity
 
 -   name: maxResultDF
-    reference: com.pharbers.ipaas.data.driver.job.PhBaseAction
+    reference: com.pharbers.ipaas.data.driver.api.job.PhBaseAction
     factory: com.pharbers.ipaas.data.driver.factory.PhActionFactory
     args:
         df: panelDF

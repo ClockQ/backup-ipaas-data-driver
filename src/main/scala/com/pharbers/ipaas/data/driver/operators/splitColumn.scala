@@ -17,7 +17,7 @@ case class splitColumn() extends PhOperatorTrait{
 		val splitFunc: UserDefinedFunction = udf { str: String => str.split(delimiter)}
 		val splitedDF = df.withColumn(splitedColName, splitFunc(col(splitColName)))
 		val replaceMap = PhMapArgs(prMapArgs.get ++ Map("df" -> PhDFArgs(splitedDF)))
-		val pluginResultDF = prMapArgs.getAs[PhFuncArgs]("plugin").get.get(replaceMap).asInstanceOf[PhDFArgs]
+		val pluginResultDF = prMapArgs.getAs[PhFuncArgs[Any, Any]]("plugin").get.get(replaceMap).asInstanceOf[PhDFArgs]
 		pluginResultDF
 	}
 }
