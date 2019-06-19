@@ -66,17 +66,16 @@ class TestNhwaMax extends FunSuite {
             "logDriver" -> PhLogDriverArgs(PhLogDriver(formatMsg("test_user", "test_traceID", "test_jobID")))
         )))
 
-		val maxDF = result.toMapArgs[PhDFArgs].get("joinData").get
-        maxDF.show(false)
-//		val maxTrueDF = sd.setUtil(readParquet()).readParquet("hdfs:///test/qi/qi/new_max_true")
-//
-//		println(maxDF.count())
-//		println(maxTrueDF.count())
-//
-//		println(maxDF.agg(sum("f_units")).first.get(0))
-//        println(maxTrueDF.agg(sum("f_units")).first.get(0))
-//
-//        println(maxDF.agg(sum("f_sales")).first.get(0))
-//        println(maxTrueDF.agg(sum("f_sales")).first.get(0))
+		val maxDF = result.toMapArgs[PhDFArgs].get("maxResult").get
+		val maxTrueDF = sd.setUtil(readParquet()).readParquet("hdfs:///test/qi/qi/new_max_true")
+
+		println(maxDF.count())
+		println(maxTrueDF.count())
+
+		println(maxDF.agg(sum("f_units")).first.get(0))
+        println(maxTrueDF.agg(sum("f_units")).first.get(0))
+
+        println(maxDF.agg(sum("f_sales")).first.get(0))
+        println(maxTrueDF.agg(sum("f_sales")).first.get(0))
     }
 }
