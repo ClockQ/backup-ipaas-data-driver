@@ -25,12 +25,12 @@ import env.configObj.{inst, readJobConfig}
 import org.apache.spark.sql.functions._
 import org.scalatest.FunSuite
 
-class TestBmsMax extends FunSuite {
+class TestTqMax extends FunSuite {
 	implicit val sd: PhSparkDriver = PhSparkDriver("test-driver")
 	sd.addJar("target/ipaas-data-driver-0.1.jar")
 	sd.sc.setLogLevel("ERROR")
 
-	test("test bms max") {
+	test("test tq rp max") { //TODO 未通过
 		val phJobs = inst(readJobConfig("max_config/common/max.yaml"))
 		val result = phJobs.head.perform(PhMapArgs(Map(
 			"sparkDriver" -> PhSparkDriverArgs(sd),
@@ -38,7 +38,37 @@ class TestBmsMax extends FunSuite {
 		)))
 
 		val maxDF = result.toMapArgs[PhDFArgs].get("maxResult").get
-		val maxTrueDF = sd.setUtil(readCsv()).readCsv("hdfs:///data/BMS/pha_config_repository1809/BMS_201809_Offline_MaxResult_20190107.csv")
+		val maxTrueDF = sd.setUtil(readCsv()).readCsv("hdfs:///data/TQ/TQ_201806_Offline_MaxResult_20181126.csv")
+//		val maxTrueDF = sd.setUtil(readCsv()).readCsv("hdfs:///data/TQ/TQ_201806_Offline_MaxResult_20181126.csv")
+
+		maxDF.show(false)
+		maxTrueDF.show(false)
+
+		val offlineResult = maxTrueDF.filter(col("CATEGORY") === "ALL").collect().head
+		val offlineUnits = offlineResult.getString(8).toDouble
+		val offlineSales = offlineResult.getString(7).toDouble
+
+		val maxDFUnits = maxDF.agg(sum("f_units")).first.get(0).toString.toDouble
+		val maxDFSales = maxDF.agg(sum("f_sales")).first.get(0).toString.toDouble
+
+		println(maxDFUnits)
+		println(offlineUnits)
+		assert(Math.abs(maxDFUnits - offlineUnits) < offlineUnits * 0.01)
+
+		println(maxDFSales)
+		println(offlineSales)
+		assert(Math.abs(maxDFSales - offlineSales) < offlineSales * 0.01)
+	}
+
+	test("test tq sa max") {
+		val phJobs = inst(readJobConfig("max_config/common/max.yaml"))
+		val result = phJobs.head.perform(PhMapArgs(Map(
+			"sparkDriver" -> PhSparkDriverArgs(sd),
+			"logDriver" -> PhLogDriverArgs(PhLogDriver(formatMsg("test_user", "test_traceID", "test_jobID")))
+		)))
+
+		val maxDF = result.toMapArgs[PhDFArgs].get("maxResult").get
+		val maxTrueDF = sd.setUtil(readCsv()).readCsv("hdfs:///data/TQ/TQ_201806_Offline_MaxResult_20181126.csv")
 
 		maxDF.show(false)
 		maxTrueDF.show(false)
