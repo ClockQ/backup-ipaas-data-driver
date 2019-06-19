@@ -38,7 +38,7 @@ class TestClean extends FunSuite {
 		)))
 
 		val panelERD = result.toMapArgs[PhDFArgs].get("panelERD").get
-		val panelDF = sd.setUtil(readCsv()).readCsv("hdfs:///data/BMS/pha_config_repository1809/Beite_Panel 201809.csv")
+		val panelDF = sd.setUtil(readCsv()).readCsv("hdfs:///data/BMS/pha_config_repository1809/Chemo_Panel 201809.csv")
 
 		panelERD.show(false)
 		panelDF.show(false)
@@ -61,7 +61,7 @@ class TestClean extends FunSuite {
 		println(panelDFSales)
 		assert(Math.abs(panelERDSales - panelDFSales) < (panelDFSales * 0.01))
 
-//		sd.setUtil(save2Parquet()).save2Parquet(panelERD, "hdfs:///workData/Panel/bt/201809")
+		sd.setUtil(save2Parquet()).save2Parquet(panelERD, "hdfs:///workData/Panel/bms/chemo/201809")
 	}
 
 	test("clean universe") {
@@ -72,7 +72,7 @@ class TestClean extends FunSuite {
 		)))
 
 		val universeERD = result.toMapArgs[PhDFArgs].get("universeERD").get
-		val universeDF = sd.setUtil(readCsv()).readCsv("hdfs:///data/BMS/pha_config_repository1809/Beite_Universe_Beite_20190107.csv")
+		val universeDF = sd.setUtil(readCsv()).readCsv("hdfs:///data/BMS/pha_config_repository1809/BMS_Universe_Chemo_20190107.csv")
 
 		universeERD.filter(!col("HOSPITAL_ID").startsWith("other")).show(false)
 
@@ -97,6 +97,6 @@ class TestClean extends FunSuite {
 		println(universeDFWEST_MEDICINE_INCOME)
 //		assert(Math.abs(universeERDWEST_MEDICINE_INCOME - universeDFWEST_MEDICINE_INCOME) < (universeDFWEST_MEDICINE_INCOME * 0.01))
 
-		sd.setUtil(save2Parquet()).save2Parquet(universeERD, "hdfs:///repository/universe_hosp/bt/bt")
+		sd.setUtil(save2Parquet()).save2Parquet(universeERD, "hdfs:///repository/universe_hosp/bms/chemo")
 	}
 }

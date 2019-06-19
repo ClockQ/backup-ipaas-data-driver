@@ -11,7 +11,8 @@ actions:
     reference: com.pharbers.ipaas.data.driver.operators.ReadCsvOperator
     args:
 #      path: hdfs:///data/xlt/XLT_Panel 201806.csv
-      path: hdfs:///data/BMS/pha_config_repository1809/Beite_Panel 201809.csv
+#      path: hdfs:///data/BMS/pha_config_repository1809/Beite_Panel 201809.csv
+      path: hdfs:///data/BMS/pha_config_repository1809/Chemo_Panel 201809.csv
       delimiter: ","
 
 - name: phaERD

@@ -11,7 +11,8 @@ actions:
     reference: com.pharbers.ipaas.data.driver.operators.ReadCsvOperator
     args:
 #      path: hdfs:///data/xlt/XLT_Universe_XLT_20181115.csv
-      path: hdfs:///data/BMS/pha_config_repository1809/Beite_Universe_Beite_20190107.csv
+#      path: hdfs:///data/BMS/pha_config_repository1809/Beite_Universe_Beite_20190107.csv
+      path: hdfs:///data/BMS/pha_config_repository1809/BMS_Universe_Chemo_20190107.csv
       delimiter: ","
   - name: WithColumnRenamedPHA_ID_OLD
     factory: com.pharbers.ipaas.data.driver.api.factory.PhOperatorFactory
