@@ -10,7 +10,8 @@ actions:
     factory: com.pharbers.ipaas.data.driver.api.factory.PhOperatorFactory
     reference: com.pharbers.ipaas.data.driver.operators.ReadParquetOperator
     args:
-      path: hdfs:///workData/Panel/6e57dff1-2cf0-439f-a8f7-4625439d8a8e
+#      path: hdfs:///workData/Panel/6e57dff1-2cf0-439f-a8f7-4625439d8a8e #nhwa#mz
+      path: hdfs:///workData/Panel/xlt/201806 #xlt#xlt#201806
 
 - name: universeData
   factory: com.pharbers.ipaas.data.driver.api.factory.PhActionFactory
@@ -20,7 +21,8 @@ actions:
     factory: com.pharbers.ipaas.data.driver.api.factory.PhOperatorFactory
     reference: com.pharbers.ipaas.data.driver.operators.ReadParquetOperator
     args:
-      path: hdfs:///repository/universe_hosp/5ca069bceeefcc012918ec72/mz
+#      path: hdfs:///repository/universe_hosp/5ca069bceeefcc012918ec72/mz #nhew#mz#201809
+      path: hdfs:///repository/universe_hosp/xlt/xlt #xlt#xlt#201806
 
 - name: universeDF
   factory: com.pharbers.ipaas.data.driver.api.factory.PhActionFactory

@@ -23,7 +23,7 @@ import env.configObj.{inst, readJobConfig}
 import com.pharbers.ipaas.data.driver.api.work._
 import com.pharbers.ipaas.data.driver.libs.log.{PhLogDriver, formatMsg}
 import com.pharbers.ipaas.data.driver.libs.spark.PhSparkDriver
-import com.pharbers.ipaas.data.driver.libs.spark.util.readParquet
+import com.pharbers.ipaas.data.driver.libs.spark.util.{readCsv, readParquet}
 
 class TestXltMax extends FunSuite {
 	implicit val sd: PhSparkDriver = PhSparkDriver("test-driver")
@@ -31,25 +31,31 @@ class TestXltMax extends FunSuite {
 	sd.sc.setLogLevel("ERROR")
 
 	test("test xlt max") {
-		val phJobs = inst(readJobConfig("max_config/nhwa/clean.yaml"))
+		val phJobs = inst(readJobConfig("max_config/common/max.yaml"))
 		val result = phJobs.head.perform(PhMapArgs(Map(
 			"sparkDriver" -> PhSparkDriverArgs(sd),
 			"logDriver" -> PhLogDriverArgs(PhLogDriver(formatMsg("test_user", "test_traceID", "test_jobID")))
 		)))
 
-		val cleanDF = result.toMapArgs[PhDFArgs].get("cleanResult").get
-		val cleanTrueDF = sd.setUtil(readParquet()).readParquet("hdfs:///workData/Clean/20bfd585-c889-4385-97ec-a8d4c77d71cc")
+		val maxDF = result.toMapArgs[PhDFArgs].get("maxResult").get
+		val maxTrueDF = sd.setUtil(readCsv()).readCsv("hdfs:///data/xlt/XLT_201806_Offline_MaxResult_20181115.csv")
 
-		cleanDF.show(false)
-		cleanTrueDF.show(false)
+		maxDF.show(false)
+		maxTrueDF.show(false)
 
-		println(cleanDF.count())
-		println(cleanTrueDF.count())
+		val offlineResult = maxTrueDF.filter(col("CATEGORY") === "ALL").collect().head
+		val offlineUnits = offlineResult.getString(8).toDouble
+		val offlineSales = offlineResult.getString(7).toDouble
 
-		println(cleanDF.agg(sum("UNITS")).first.get(0))
-		println(cleanTrueDF.agg(sum("UNITS")).first.get(0))
+		val maxDFUnits = maxDF.agg(sum("f_units")).first.get(0).toString.toDouble
+		val maxDFSales = maxDF.agg(sum("f_sales")).first.get(0).toString.toDouble
 
-		println(cleanDF.agg(sum("SALES")).first.get(0))
-		println(cleanTrueDF.agg(sum("SALES")).first.get(0))
+		println(maxDFUnits)
+		println(offlineUnits)
+		assert(Math.abs(maxDFUnits - offlineUnits) < offlineUnits * 0.01)
+
+		println(maxDFSales)
+		println(offlineSales)
+		assert(Math.abs(maxDFSales - offlineSales) < offlineSales * 0.01)
 	}
 }

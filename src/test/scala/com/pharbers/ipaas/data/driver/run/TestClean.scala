@@ -20,7 +20,7 @@ package com.pharbers.ipaas.data.driver.run
 import com.pharbers.ipaas.data.driver.api.work._
 import com.pharbers.ipaas.data.driver.libs.log.{PhLogDriver, formatMsg}
 import com.pharbers.ipaas.data.driver.libs.spark.PhSparkDriver
-import com.pharbers.ipaas.data.driver.libs.spark.util.readCsv
+import com.pharbers.ipaas.data.driver.libs.spark.util.{readCsv, save2Parquet}
 import env.configObj.{inst, readJobConfig}
 import org.apache.spark.sql.functions._
 import org.scalatest.FunSuite
@@ -60,6 +60,8 @@ class TestClean extends FunSuite {
 		println(panelERDSales)
 		println(panelDFSales)
 		assert(Math.abs(panelERDSales - panelDFSales) < (panelDFSales * 0.01))
+
+//		sd.setUtil(save2Parquet()).save2Parquet(panelERD, "hdfs:///workData/Panel/xlt/201806")
 	}
 
 	test("clean universe") {
@@ -94,5 +96,7 @@ class TestClean extends FunSuite {
 		println(universeERDWEST_MEDICINE_INCOME)
 		println(universeDFWEST_MEDICINE_INCOME)
 //		assert(Math.abs(universeERDWEST_MEDICINE_INCOME - universeDFWEST_MEDICINE_INCOME) < (universeDFWEST_MEDICINE_INCOME * 0.01))
+
+//		sd.setUtil(save2Parquet()).save2Parquet(universeERD, "hdfs:///repository/universe_hosp/xlt/xlt")
 	}
 }
