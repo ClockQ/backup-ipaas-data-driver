@@ -2,8 +2,8 @@ name: cleanPanel
 factory: com.pharbers.ipaas.data.driver.api.factory.PhJobFactory
 reference: com.pharbers.ipaas.data.driver.api.job.PhBaseJob
 args:
-  panel: &panel hdfs:///data/TQ/RP_Panel 201806.csv
-  companyID: &companyID "'TQ'"
+  panel: &panel hdfs:///data/bayer/test20181106/AHP_Panel+201806.csv
+  companyID: &companyID "'bayer'"
 actions:
 - name: panelDF
   factory: com.pharbers.ipaas.data.driver.api.factory.PhActionFactory

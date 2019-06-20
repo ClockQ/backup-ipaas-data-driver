@@ -1,0 +1,147 @@
+name: cleanPanel
+factory: com.pharbers.ipaas.data.driver.api.factory.PhJobFactory
+reference: com.pharbers.ipaas.data.driver.api.job.PhBaseJob
+args:
+  panel: &panel hdfs:///data/bayer/test20181106/STH_Panel+201806.csv
+  companyID: &companyID "'bayer'"
+actions:
+- name: panelDF
+  factory: com.pharbers.ipaas.data.driver.api.factory.PhActionFactory
+  reference: com.pharbers.ipaas.data.driver.api.job.PhBaseAction
+  opers:
+  - name: panelDF
+    factory: com.pharbers.ipaas.data.driver.api.factory.PhOperatorFactory
+    reference: com.pharbers.ipaas.data.driver.operators.ReadCsvOperator
+    args:
+      path: *panel
+      delimiter: ","
+
+- name: phaERD
+  factory: com.pharbers.ipaas.data.driver.api.factory.PhActionFactory
+  reference: com.pharbers.ipaas.data.driver.api.job.PhBaseAction
+  opers:
+  - name: readPha
+    factory: com.pharbers.ipaas.data.driver.api.factory.PhOperatorFactory
+    reference: com.pharbers.ipaas.data.driver.operators.ReadParquetOperator
+    args:
+      path: /repository/pha
+  - name: distinctByKey
+    factory: com.pharbers.ipaas.data.driver.api.factory.PhOperatorFactory
+    reference: com.pharbers.ipaas.data.driver.operators.DistinctByKeyOperator
+    args:
+      inDFName: readPha
+      keys: PHA_ID
+
+- name: hospDIS
+  factory: com.pharbers.ipaas.data.driver.api.factory.PhActionFactory
+  reference: com.pharbers.ipaas.data.driver.api.job.PhBaseAction
+  opers:
+  - name: readHosp
+    factory: com.pharbers.ipaas.data.driver.api.factory.PhOperatorFactory
+    reference: com.pharbers.ipaas.data.driver.operators.ReadParquetOperator
+    args:
+      path: /repository/hosp_dis_max
+  - name: select
+    factory: com.pharbers.ipaas.data.driver.api.factory.PhOperatorFactory
+    reference: com.pharbers.ipaas.data.driver.operators.SelectOperator
+    args:
+      inDFName: readHosp
+      selects: HOSPITAL_ID#PHA_HOSP_ID
+  - name: distinctByKey
+    factory: com.pharbers.ipaas.data.driver.api.factory.PhOperatorFactory
+    reference: com.pharbers.ipaas.data.driver.operators.DistinctByKeyOperator
+    args:
+      inDFName: select
+      keys: PHA_HOSP_ID
+
+- name: joinHosp
+  factory: com.pharbers.ipaas.data.driver.api.factory.PhActionFactory
+  reference: com.pharbers.ipaas.data.driver.api.job.PhBaseAction
+  opers:
+  - name: joinPha
+    factory: com.pharbers.ipaas.data.driver.api.factory.PhOperatorFactory
+    reference: com.pharbers.ipaas.data.driver.operators.JoinOperator
+    args:
+      inDFName: panelDF
+      joinDFName: phaERD
+      joinExpr: HOSP_ID = PHA_ID
+      joinType: left
+  - name: joinHosp
+    factory: com.pharbers.ipaas.data.driver.api.factory.PhOperatorFactory
+    reference: com.pharbers.ipaas.data.driver.operators.JoinOperator
+    args:
+      inDFName: joinPha
+      joinDFName: hospDIS
+      joinExpr: PHA_ID_NEW = PHA_HOSP_ID
+      joinType: left
+
+- name: panelERD
+  factory: com.pharbers.ipaas.data.driver.api.factory.PhActionFactory
+  reference: com.pharbers.ipaas.data.driver.api.job.PhBaseAction
+  opers:
+  - name: addPRODUCT_ID
+    factory: com.pharbers.ipaas.data.driver.api.factory.PhOperatorFactory
+    reference: com.pharbers.ipaas.data.driver.operators.AddColumnOperator
+    args:
+      inDFName: joinHosp
+      newColName: PRODUCT_ID
+    plugin:
+      name: ExprPlugin
+      factory: com.pharbers.ipaas.data.driver.api.factory.PhPluginFactory
+      reference: com.pharbers.ipaas.data.driver.plugins.ExprPlugin
+      args:
+        exprString: "Prod_Name"
+  - name: addUNITS
+    factory: com.pharbers.ipaas.data.driver.api.factory.PhOperatorFactory
+    reference: com.pharbers.ipaas.data.driver.operators.AddColumnOperator
+    args:
+      inDFName: addPRODUCT_ID
+      newColName: UNITS
+    plugin:
+      name: ExprPlugin
+      factory: com.pharbers.ipaas.data.driver.api.factory.PhPluginFactory
+      reference: com.pharbers.ipaas.data.driver.plugins.ExprPlugin
+      args:
+        exprString: "Units"
+  - name: addSALES
+    factory: com.pharbers.ipaas.data.driver.api.factory.PhOperatorFactory
+    reference: com.pharbers.ipaas.data.driver.operators.AddColumnOperator
+    args:
+      inDFName: addUNITS
+      newColName: SALES
+    plugin:
+      name: ExprPlugin
+      factory: com.pharbers.ipaas.data.driver.api.factory.PhPluginFactory
+      reference: com.pharbers.ipaas.data.driver.plugins.ExprPlugin
+      args:
+        exprString: "Sales"
+  - name: addYM
+    factory: com.pharbers.ipaas.data.driver.api.factory.PhOperatorFactory
+    reference: com.pharbers.ipaas.data.driver.operators.AddColumnOperator
+    args:
+      inDFName: addSALES
+      newColName: YM
+    plugin:
+      name: ExprPlugin
+      factory: com.pharbers.ipaas.data.driver.api.factory.PhPluginFactory
+      reference: com.pharbers.ipaas.data.driver.plugins.ExprPlugin
+      args:
+        exprString: "Date"
+  - name: addCOMPANY_ID
+    factory: com.pharbers.ipaas.data.driver.api.factory.PhOperatorFactory
+    reference: com.pharbers.ipaas.data.driver.operators.AddColumnOperator
+    args:
+      inDFName: addYM
+      newColName: COMPANY_ID
+    plugin:
+      name: ExprPlugin
+      factory: com.pharbers.ipaas.data.driver.api.factory.PhPluginFactory
+      reference: com.pharbers.ipaas.data.driver.plugins.ExprPlugin
+      args:
+        exprString: *companyID
+  - name: select
+    factory: com.pharbers.ipaas.data.driver.api.factory.PhOperatorFactory
+    reference: com.pharbers.ipaas.data.driver.operators.SelectOperator
+    args:
+      inDFName: addCOMPANY_ID
+      selects: COMPANY_ID#YM#HOSPITAL_ID#PRODUCT_ID#UNITS#SALES

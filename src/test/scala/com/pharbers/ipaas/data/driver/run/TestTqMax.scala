@@ -98,7 +98,7 @@ class TestTqMax extends FunSuite {
 //		sd.setUtil(save2Parquet()).save2Parquet(universeERD, "hdfs:///repository/universe_hosp/tq/rp")
 	}
 
-	test("test tq RP max") { //TODO 未通过
+	test("test tq RP max") { //TODO 未通过 1204754.1215082705 was not less than 781630.2493716801
 		val phJobs = inst(readJobConfig("max_config/tq/RPmax.yaml"))
 		val result = phJobs.head.perform(PhMapArgs(Map(
 			"sparkDriver" -> PhSparkDriverArgs(sd),
@@ -195,7 +195,7 @@ class TestTqMax extends FunSuite {
 //		sd.setUtil(save2Parquet()).save2Parquet(universeERD, "hdfs:///repository/universe_hosp/tq/sa")
 	}
 
-	test("test tq SA max") {  //TODO 未通过
+	test("test tq SA max") {  //TODO 未通过 2457787.8921049237 was not less than 1426896.4538054299
 		val phJobs = inst(readJobConfig("max_config/tq/SAmax.yaml"))
 		val result = phJobs.head.perform(PhMapArgs(Map(
 			"sparkDriver" -> PhSparkDriverArgs(sd),
