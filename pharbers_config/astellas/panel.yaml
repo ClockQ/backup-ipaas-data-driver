@@ -1,4 +1,4 @@
-name: panel
+name: astellas panel
 reference: com.pharbers.ipaas.data.driver.job.PhBaseJob
 factory: com.pharbers.ipaas.data.driver.factory.PhJobFactory
 actions:
