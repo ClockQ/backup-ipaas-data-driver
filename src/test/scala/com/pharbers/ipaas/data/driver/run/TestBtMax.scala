@@ -98,7 +98,7 @@ class TestBtMax extends FunSuite {
 //		sd.setUtil(save2Parquet()).save2Parquet(universeERD, "hdfs:///repository/universe_hosp/bt/bt")
 	}
 
-	test("test bt max") {
+	test("test bt BT max") {
 		val phJobs = inst(readJobConfig("max_config/bt/BTmax.yaml"))
 		val result = phJobs.head.perform(PhMapArgs(Map(
 			"sparkDriver" -> PhSparkDriverArgs(sd),

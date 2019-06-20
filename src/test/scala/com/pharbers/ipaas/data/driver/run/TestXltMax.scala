@@ -98,7 +98,7 @@ class TestXltMax extends FunSuite {
 //		sd.setUtil(save2Parquet()).save2Parquet(universeERD, "hdfs:///repository/universe_hosp/xlt/xlt")
 	}
 
-	test("test xlt max") {
+	test("test xlt XLT max") {
 		val phJobs = inst(readJobConfig("max_config/xlt/XLTmax.yaml"))
 		val result = phJobs.head.perform(PhMapArgs(Map(
 			"sparkDriver" -> PhSparkDriverArgs(sd),
