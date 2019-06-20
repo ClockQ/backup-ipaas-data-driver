@@ -1,6 +1,13 @@
 name: cleanUniverse
 factory: com.pharbers.ipaas.data.driver.api.factory.PhJobFactory
 reference: com.pharbers.ipaas.data.driver.api.job.PhBaseJob
+args:
+#  universe: &universe hdfs:///data/xlt/XLT_Universe_XLT_20181115.csv
+#  universe: &universe hdfs:///data/BMS/pha_config_repository1809/Beite_Universe_Beite_20190107.csv
+#  universe: &universe hdfs:///data/BMS/pha_config_repository1809/BMS_Universe_Chemo_20190107.csv
+#  universe: &universe hdfs:///data/TQ/TQ_Universe_RP_20181126.csv
+#  universe: &universe hdfs:///data/TQ/TQ_Universe_SA_20181126.csv
+  universe: &universe hdfs:///data/bayer/test20181106/Bayer_Universe_WH_20181106.csv
 actions:
 - name: universeDF
   factory: com.pharbers.ipaas.data.driver.api.factory.PhActionFactory
@@ -10,11 +17,7 @@ actions:
     factory: com.pharbers.ipaas.data.driver.api.factory.PhOperatorFactory
     reference: com.pharbers.ipaas.data.driver.operators.ReadCsvOperator
     args:
-#      path: hdfs:///data/xlt/XLT_Universe_XLT_20181115.csv
-#      path: hdfs:///data/BMS/pha_config_repository1809/Beite_Universe_Beite_20190107.csv
-#      path: hdfs:///data/BMS/pha_config_repository1809/BMS_Universe_Chemo_20190107.csv
-#      path: hdfs:///data/TQ/TQ_Universe_RP_20181126.csv
-      path: hdfs:///data/TQ/TQ_Universe_SA_20181126.csv
+      path: *universe
       delimiter: ","
   - name: WithColumnRenamedPHA_ID_OLD
     factory: com.pharbers.ipaas.data.driver.api.factory.PhOperatorFactory

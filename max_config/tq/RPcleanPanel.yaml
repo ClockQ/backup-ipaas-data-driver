@@ -2,13 +2,8 @@ name: cleanPanel
 factory: com.pharbers.ipaas.data.driver.api.factory.PhJobFactory
 reference: com.pharbers.ipaas.data.driver.api.job.PhBaseJob
 args:
-#  panel: &panel hdfs:///data/xlt/XLT_Panel 201806.csv
-#  panel: &panel hdfs:///data/BMS/pha_config_repository1809/Beite_Panel 201809.csv
-#  panel: &panel hdfs:///data/BMS/pha_config_repository1809/Chemo_Panel 201809.csv
-#  panel: &panel hdfs:///data/TQ/RP_Panel 201806.csv
-#  panel: &panel hdfs:///data/TQ/SA_Panel 201806.csv
-  panel: &panel hdfs:///data/bayer/test20181106/WH_Panel+201806.csv
-  companyID: &companyID "'bayer'"
+  panel: &panel hdfs:///data/TQ/RP_Panel 201806.csv
+  companyID: &companyID "'TQ'"
 actions:
 - name: panelDF
   factory: com.pharbers.ipaas.data.driver.api.factory.PhActionFactory
