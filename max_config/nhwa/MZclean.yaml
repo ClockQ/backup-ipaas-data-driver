@@ -1,6 +1,9 @@
 name: clean
 reference: com.pharbers.ipaas.data.driver.api.job.PhBaseJob
 factory: com.pharbers.ipaas.data.driver.api.factory.PhJobFactory
+args:
+  companyId: &companyId "'5ca069bceeefcc012918ec72'"
+  cpa: &cpa hdfs:///data/nhwa/pha_config_repository1809/Nhwa_201809_CPA_20181126.csv
 actions:
 - name: readCpaFile
   factory: com.pharbers.ipaas.data.driver.api.factory.PhActionFactory
@@ -10,7 +13,7 @@ actions:
     factory: com.pharbers.ipaas.data.driver.api.factory.PhOperatorFactory
     reference: com.pharbers.ipaas.data.driver.operators.ReadCsvOperator
     args:
-      path: hdfs:///data/nhwa/pha_config_repository1809/Nhwa_201809_CPA_20181126.csv
+      path: *cpa
       delimiter: ","
   - name: hospIdCastInt
     factory: com.pharbers.ipaas.data.driver.api.factory.PhOperatorFactory
@@ -222,7 +225,7 @@ actions:
       factory: com.pharbers.ipaas.data.driver.api.factory.PhPluginFactory
       reference: com.pharbers.ipaas.data.driver.plugins.ExprPlugin
       args:
-        exprString: "'5ca069bceeefcc012918ec72'"
+        exprString: *companyId
   - name: litSOURCE
     factory: com.pharbers.ipaas.data.driver.api.factory.PhOperatorFactory
     reference: com.pharbers.ipaas.data.driver.operators.AddColumnOperator

@@ -13,8 +13,8 @@ class TestNhwaMax extends FunSuite {
     sd.addJar("target/ipaas-data-driver-0.1.jar")
     sd.sc.setLogLevel("ERROR")
 
-    test("test nhwa clean") {
-        val phJobs = inst(readJobConfig("max_config/nhwa/clean.yaml"))
+    test("test nhwa MZ clean") {
+        val phJobs = inst(readJobConfig("max_config/nhwa/MZclean.yaml"))
         val result = phJobs.head.perform(PhMapArgs(Map(
             "sparkDriver" -> PhSparkDriverArgs(sd),
             "logDriver" -> PhLogDriverArgs(PhLogDriver(formatMsg("test_user", "test_traceID", "test_jobID")))
@@ -36,8 +36,8 @@ class TestNhwaMax extends FunSuite {
         println(cleanTrueDF.agg(sum("SALES")).first.get(0))
     }
 
-    test("test nhwa panel") {
-        val phJobs = inst(readJobConfig("max_config/common/panelByCpa.yaml"))
+    test("test nhwa MZ panel") {
+        val phJobs = inst(readJobConfig("max_config/nhwa/MZpanelByCpa.yaml"))
         val result = phJobs.head.perform(PhMapArgs(Map(
             "sparkDriver" -> PhSparkDriverArgs(sd),
             "logDriver" -> PhLogDriverArgs(PhLogDriver(formatMsg("test_user", "test_traceID", "test_jobID")))
@@ -59,8 +59,8 @@ class TestNhwaMax extends FunSuite {
 		println(panelTrueDF.agg(sum("Sales")).first.get(0))
     }
 
-	test("test nhwa max") {
-        val phJobs = inst(readJobConfig("max_config/common/max.yaml"))
+	test("test nhwa MZ max") {
+        val phJobs = inst(readJobConfig("max_config/nhwa/MZmax.yaml"))
         val result = phJobs.head.perform(PhMapArgs(Map(
             "sparkDriver" -> PhSparkDriverArgs(sd),
             "logDriver" -> PhLogDriverArgs(PhLogDriver(formatMsg("test_user", "test_traceID", "test_jobID")))

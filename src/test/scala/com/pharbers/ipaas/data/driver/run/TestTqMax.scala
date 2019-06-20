@@ -30,7 +30,7 @@ class TestTqMax extends FunSuite {
 	sd.addJar("target/ipaas-data-driver-0.1.jar")
 	sd.sc.setLogLevel("ERROR")
 
-	test("test tq rp max") { //TODO 未通过
+	test("test tq RP max") { //TODO 未通过
 		val phJobs = inst(readJobConfig("max_config/tq/RPmax.yaml"))
 		val result = phJobs.head.perform(PhMapArgs(Map(
 			"sparkDriver" -> PhSparkDriverArgs(sd),
@@ -59,7 +59,7 @@ class TestTqMax extends FunSuite {
 		assert(Math.abs(maxDFSales - offlineSales) < offlineSales * 0.01)
 	}
 
-	test("test tq sa max") {  //TODO 未通过
+	test("test tq SA max") {  //TODO 未通过
 		val phJobs = inst(readJobConfig("max_config/tq/SAmax.yaml"))
 		val result = phJobs.head.perform(PhMapArgs(Map(
 			"sparkDriver" -> PhSparkDriverArgs(sd),
