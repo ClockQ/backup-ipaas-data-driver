@@ -31,7 +31,7 @@ class TestTqMax extends FunSuite {
 	sd.sc.setLogLevel("ERROR")
 
 	test("test tq rp max") { //TODO 未通过
-		val phJobs = inst(readJobConfig("max_config/common/max.yaml"))
+		val phJobs = inst(readJobConfig("max_config/tq/RPmax.yaml"))
 		val result = phJobs.head.perform(PhMapArgs(Map(
 			"sparkDriver" -> PhSparkDriverArgs(sd),
 			"logDriver" -> PhLogDriverArgs(PhLogDriver(formatMsg("test_user", "test_traceID", "test_jobID")))
@@ -39,12 +39,11 @@ class TestTqMax extends FunSuite {
 
 		val maxDF = result.toMapArgs[PhDFArgs].get("maxResult").get
 		val maxTrueDF = sd.setUtil(readCsv()).readCsv("hdfs:///data/TQ/TQ_201806_Offline_MaxResult_20181126.csv")
-//		val maxTrueDF = sd.setUtil(readCsv()).readCsv("hdfs:///data/TQ/TQ_201806_Offline_MaxResult_20181126.csv")
 
 		maxDF.show(false)
 		maxTrueDF.show(false)
 
-		val offlineResult = maxTrueDF.filter(col("CATEGORY") === "ALL").collect().head
+		val offlineResult = maxTrueDF.filter(col("CATEGORY") === "ALL" && col("MKT") === "RP").collect().head
 		val offlineUnits = offlineResult.getString(8).toDouble
 		val offlineSales = offlineResult.getString(7).toDouble
 
@@ -60,8 +59,8 @@ class TestTqMax extends FunSuite {
 		assert(Math.abs(maxDFSales - offlineSales) < offlineSales * 0.01)
 	}
 
-	test("test tq sa max") {
-		val phJobs = inst(readJobConfig("max_config/common/max.yaml"))
+	test("test tq sa max") {  //TODO 未通过
+		val phJobs = inst(readJobConfig("max_config/tq/SAmax.yaml"))
 		val result = phJobs.head.perform(PhMapArgs(Map(
 			"sparkDriver" -> PhSparkDriverArgs(sd),
 			"logDriver" -> PhLogDriverArgs(PhLogDriver(formatMsg("test_user", "test_traceID", "test_jobID")))
@@ -73,7 +72,7 @@ class TestTqMax extends FunSuite {
 		maxDF.show(false)
 		maxTrueDF.show(false)
 
-		val offlineResult = maxTrueDF.filter(col("CATEGORY") === "ALL").collect().head
+		val offlineResult = maxTrueDF.filter(col("CATEGORY") === "ALL" && col("MKT") === "SA").collect().head
 		val offlineUnits = offlineResult.getString(8).toDouble
 		val offlineSales = offlineResult.getString(7).toDouble
 
