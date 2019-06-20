@@ -3,6 +3,7 @@ factory: com.pharbers.ipaas.data.driver.api.factory.PhJobFactory
 reference: com.pharbers.ipaas.data.driver.api.job.PhBaseJob
 args:
 #  universe: &universe hdfs:///data/xlt/XLT_Universe_XLT_20181115.csv
+#  universe: &universe hdfs:///data/BMS/pha_config_repository1809/Beite_201809_Offline_MaxResult_20190107.csv
 #  universe: &universe hdfs:///data/BMS/pha_config_repository1809/Beite_Universe_Beite_20190107.csv
 #  universe: &universe hdfs:///data/BMS/pha_config_repository1809/BMS_Universe_Chemo_20190107.csv
 #  universe: &universe hdfs:///data/TQ/TQ_Universe_RP_20181126.csv

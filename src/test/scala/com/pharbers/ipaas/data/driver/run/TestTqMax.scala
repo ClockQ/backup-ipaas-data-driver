@@ -74,8 +74,6 @@ class TestTqMax extends FunSuite {
 		val universeERD = result.toMapArgs[PhDFArgs].get("universeERD").get
 		val universeDF = sd.setUtil(readCsv()).readCsv("hdfs:///data/TQ/TQ_Universe_RP_20181126.csv")
 
-		universeERD.filter(!col("HOSPITAL_ID").startsWith("other")).show(false)
-
 		universeERD.show(false)
 		universeDF.show(false)
 
@@ -172,8 +170,6 @@ class TestTqMax extends FunSuite {
 
 		val universeERD = result.toMapArgs[PhDFArgs].get("universeERD").get
 		val universeDF = sd.setUtil(readCsv()).readCsv("hdfs:///data/TQ/TQ_Universe_SA_20181126.csv")
-
-		universeERD.filter(!col("HOSPITAL_ID").startsWith("other")).show(false)
 
 		universeERD.show(false)
 		universeDF.show(false)

@@ -74,8 +74,6 @@ class TestXltMax extends FunSuite {
 		val universeERD = result.toMapArgs[PhDFArgs].get("universeERD").get
 		val universeDF = sd.setUtil(readCsv()).readCsv("hdfs:///data/xlt/XLT_Universe_XLT_20181115.csv")
 
-		universeERD.filter(!col("HOSPITAL_ID").startsWith("other")).show(false)
-
 		universeERD.show(false)
 		universeDF.show(false)
 
