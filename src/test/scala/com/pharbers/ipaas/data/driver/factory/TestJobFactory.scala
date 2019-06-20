@@ -155,23 +155,50 @@ class TestJobFactory extends FunSuite {
 		val result = phJobs.head.perform(PhMapArgs(Map.empty))
 
 		val maxDF = result.toMapArgs[PhDFArgs].get("maxResultDF").get
-		val maxTrueDF = sd.setUtil(readParquet()).readParquet("hdfs:///workData/Max/1dc050f8-2c49-4da9-ae1c-f8ff4ef2dec4")
+//		val maxTrueDF = sd.setUtil(readParquet()).readParquet("hdfs:///workData/Max/1dc050f8-2c49-4da9-ae1c-f8ff4ef2dec4")
 
-		println("config医院数量： " + maxDF.select("HOSPITAL_ID").distinct().count().toString)
-		println("config产品数量： " + maxDF.select("PRODUCT_ID").distinct().count().toString)
+//		println("config医院数量： " + maxDF.select("HOSPITAL_ID").distinct().count().toString)
+//		println("config产品数量： " + maxDF.select("PRODUCT_ID").distinct().count().toString)
+//
+//		println("对照医院数量： " + maxTrueDF.select("Panel_ID").distinct().count().toString)
+//		println("对照产品数量： " + maxTrueDF.select("Product").distinct().count().toString)
 
-		println("对照医院数量： " + maxTrueDF.select("Panel_ID").distinct().count().toString)
-		println("对照产品数量： " + maxTrueDF.select("Product").distinct().count().toString)
 
-
-		println(maxDF.count())
-		println(maxTrueDF.count())
+//		println(maxDF.count())
+//		println(maxTrueDF.count())
 
 		println(maxDF.agg(sum("f_units")).first.get(0))
 		println(maxDF.agg(sum("f_sales")).first.get(0))
+//		maxDF.show(false)
+//		println(maxTrueDF.agg(sum("f_units")).first.get(0))
+//		println(maxTrueDF.agg(sum("f_sales")).first.get(0))
+	}
+
+	test("test pfizer DVP max cleaned") {
+		implicit val sd: PhSparkDriver = PhSparkDriver("testSparkDriver")
+
+		val jobs = Config.readJobConfig("pharbers_config/DVP_MAX.yaml")
+		val phJobs = jobs.map(x => PhFactory.getMethodMirror(x.getFactory)(x).asInstanceOf[PhJobFactory].inst())
+		val result = phJobs.head.perform(PhMapArgs(Map.empty))
+
+		val maxDF = result.toMapArgs[PhDFArgs].get("maxResultDF").get
+		//		val maxTrueDF = sd.setUtil(readParquet()).readParquet("hdfs:///workData/Max/1dc050f8-2c49-4da9-ae1c-f8ff4ef2dec4")
+
+		//		println("config医院数量： " + maxDF.select("HOSPITAL_ID").distinct().count().toString)
+		//		println("config产品数量： " + maxDF.select("PRODUCT_ID").distinct().count().toString)
+		//
+		//		println("对照医院数量： " + maxTrueDF.select("Panel_ID").distinct().count().toString)
+		//		println("对照产品数量： " + maxTrueDF.select("Product").distinct().count().toString)
+
+
+		//		println(maxDF.count())
+		//		println(maxTrueDF.count())
 		maxDF.show(false)
-		println(maxTrueDF.agg(sum("f_units")).first.get(0))
-		println(maxTrueDF.agg(sum("f_sales")).first.get(0))
+		println(maxDF.agg(sum("f_units")).first.get(0))
+		println(maxDF.agg(sum("f_sales")).first.get(0))
+		//		maxDF.show(false)
+		//		println(maxTrueDF.agg(sum("f_units")).first.get(0))
+		//		println(maxTrueDF.agg(sum("f_sales")).first.get(0))
 	}
 
 	test("test nhwa clean") {

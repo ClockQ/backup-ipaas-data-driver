@@ -612,7 +612,7 @@ actions:
         reference: com.pharbers.ipaas.data.driver.job.PhFilterOperator
         args:
             df: df
-            filter: IS_PANEL_HOSP == 0 AND (f_units != 0.0 AND f_sales != 0.0)
+            filter: IS_PANEL_HOSP == 0 AND (f_units != 0.0 OR f_sales != 0.0)
     -   name: cast String to Int
         factory: com.pharbers.ipaas.data.driver.factory.PhOperatorFactory
         reference: com.pharbers.ipaas.data.driver.operators.addColumn
