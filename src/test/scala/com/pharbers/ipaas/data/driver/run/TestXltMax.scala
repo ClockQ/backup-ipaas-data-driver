@@ -30,8 +30,78 @@ class TestXltMax extends FunSuite {
 	sd.addJar("target/ipaas-data-driver-0.1.jar")
 	sd.sc.setLogLevel("ERROR")
 
+	test("clean xlt XLT panel") {
+		val phJobs = inst(readJobConfig("max_config/xlt/XLTcleanPanel.yaml"))
+		val result = phJobs.head.perform(PhMapArgs(Map(
+			"sparkDriver" -> PhSparkDriverArgs(sd),
+			"logDriver" -> PhLogDriverArgs(PhLogDriver(formatMsg("test_user", "test_traceID", "test_jobID")))
+		)))
+
+		val panelERD = result.toMapArgs[PhDFArgs].get("panelERD").get
+		val panelDF = sd.setUtil(readCsv()).readCsv("hdfs:///data/xlt/XLT_Panel 201806.csv")
+
+		panelERD.show(false)
+		panelDF.show(false)
+
+		val panelERDCount = panelERD.count()
+		val panelDFCount = panelDF.count()
+		println(panelERDCount)
+		println(panelDFCount)
+		assert(panelERDCount == panelDFCount)
+
+		val panelERDUnits = panelERD.agg(sum("UNITS")).first.get(0).toString.toDouble
+		val panelDFUnits = panelDF.agg(sum("Units")).first.get(0).toString.toDouble
+		println(panelERDUnits)
+		println(panelDFUnits)
+		assert(Math.abs(panelERDUnits - panelDFUnits) < (panelDFUnits * 0.01))
+
+		val panelERDSales = panelERD.agg(sum("SALES")).first.get(0).toString.toDouble
+		val panelDFSales = panelDF.agg(sum("Sales")).first.get(0).toString.toDouble
+		println(panelERDSales)
+		println(panelDFSales)
+		assert(Math.abs(panelERDSales - panelDFSales) < (panelDFSales * 0.01))
+
+//		sd.setUtil(save2Parquet()).save2Parquet(panelERD, "hdfs:///workData/Panel/xlt/xlt/201806")
+	}
+
+	test("clean xlt XLT universe") {
+		val phJobs = inst(readJobConfig("max_config/xlt/XLTcleanUniverse.yaml"))
+		val result = phJobs.head.perform(PhMapArgs(Map(
+			"sparkDriver" -> PhSparkDriverArgs(sd),
+			"logDriver" -> PhLogDriverArgs(PhLogDriver(formatMsg("test_user", "test_traceID", "test_jobID")))
+		)))
+
+		val universeERD = result.toMapArgs[PhDFArgs].get("universeERD").get
+		val universeDF = sd.setUtil(readCsv()).readCsv("hdfs:///data/xlt/XLT_Universe_XLT_20181115.csv")
+
+		universeERD.filter(!col("HOSPITAL_ID").startsWith("other")).show(false)
+
+		universeERD.show(false)
+		universeDF.show(false)
+
+		val universeERDCount = universeERD.count()
+		val universeDFCount = universeDF.count()
+		println(universeERDCount)
+		println(universeDFCount)
+//		assert(universeERDCount == universeDFCount) // 可能不相等，因为新旧 PHA_ID 问题
+
+		val universeERDFACTOR = universeERD.agg(sum("FACTOR")).first.get(0).toString.toDouble
+		val universeDFFACTOR = universeDF.agg(sum("FACTOR")).first.get(0).toString.toDouble
+		println(universeERDFACTOR)
+		println(universeDFFACTOR)
+//		assert(Math.abs(universeERDFACTOR - universeDFFACTOR) < (universeDFFACTOR * 0.01))
+
+		val universeERDWEST_MEDICINE_INCOME = universeERD.agg(sum("WEST_MEDICINE_INCOME")).first.get(0).toString.toDouble
+		val universeDFWEST_MEDICINE_INCOME = universeDF.agg(sum("WEST_MEDICINE_INCOME")).first.get(0).toString.toDouble
+		println(universeERDWEST_MEDICINE_INCOME)
+		println(universeDFWEST_MEDICINE_INCOME)
+//		assert(Math.abs(universeERDWEST_MEDICINE_INCOME - universeDFWEST_MEDICINE_INCOME) < (universeDFWEST_MEDICINE_INCOME * 0.01))
+
+//		sd.setUtil(save2Parquet()).save2Parquet(universeERD, "hdfs:///repository/universe_hosp/xlt/xlt")
+	}
+
 	test("test xlt max") {
-		val phJobs = inst(readJobConfig("max_config/common/max.yaml"))
+		val phJobs = inst(readJobConfig("max_config/xlt/XLTmax.yaml"))
 		val result = phJobs.head.perform(PhMapArgs(Map(
 			"sparkDriver" -> PhSparkDriverArgs(sd),
 			"logDriver" -> PhLogDriverArgs(PhLogDriver(formatMsg("test_user", "test_traceID", "test_jobID")))
