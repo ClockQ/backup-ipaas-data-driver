@@ -26,14 +26,24 @@ class TestNhwaMax extends FunSuite {
         cleanDF.show(false)
         cleanTrueDF.show(false)
 
-        println(cleanDF.count())
-        println(cleanTrueDF.count())
+        val cleanDFCount = cleanDF.count()
+        val cleanTrueDFCount = cleanTrueDF.count()
+        println(cleanDFCount)
+        println(cleanTrueDFCount)
+        assert(cleanDFCount == cleanTrueDFCount)
 
-        println(cleanDF.agg(sum("UNITS")).first.get(0))
-        println(cleanTrueDF.agg(sum("UNITS")).first.get(0))
+        val cleanDFUnits = cleanDF.agg(sum("UNITS")).first.get(0).toString.toDouble
+        val cleanTrueDFUnits = cleanTrueDF.agg(sum("UNITS")).first.get(0).toString.toDouble
+        println(cleanDFUnits)
+        println(cleanTrueDFUnits)
+        assert(cleanDFUnits == cleanTrueDFUnits)
 
-        println(cleanDF.agg(sum("SALES")).first.get(0))
-        println(cleanTrueDF.agg(sum("SALES")).first.get(0))
+        val cleanDFSales = cleanDF.agg(sum("SALES")).first.get(0).toString.toDouble
+        val cleanTrueDFSales = cleanTrueDF.agg(sum("SALES")).first.get(0).toString.toDouble
+        println(cleanDFSales)
+        println(cleanTrueDFSales)
+        assert(cleanDFSales == cleanTrueDFSales)
+
     }
 
     test("test nhwa MZ panel") {
@@ -49,14 +59,22 @@ class TestNhwaMax extends FunSuite {
         panelDF.show(false)
 		panelTrueDF.show(false)
 
-        println(panelDF.count())
-		println(panelTrueDF.count())
+        val panelDFCount = panelDF.count()
+        val panelTrueDFCount = panelTrueDF.count()
+        println(panelDFCount)
+        println(panelTrueDFCount)
 
-        println(panelDF.agg(sum("UNITS")).first.get(0))
-		println(panelTrueDF.agg(sum("Units")).first.get(0))
+        val panelDFUnits = panelDF.agg(sum("UNITS")).first.get(0).toString.toDouble
+        val panelTrueDFUnits = panelTrueDF.agg(sum("Units")).first.get(0).toString.toDouble
+        println(panelDFUnits)
+        println(panelTrueDFUnits)
+        assert(panelDFUnits == panelTrueDFUnits)
 
-        println(panelDF.agg(sum("SALES")).first.get(0))
-		println(panelTrueDF.agg(sum("Sales")).first.get(0))
+        val panelDFSales = panelDF.agg(sum("SALES")).first.get(0).toString.toDouble
+        val panelTrueDFSales = panelTrueDF.agg(sum("Sales")).first.get(0).toString.toDouble
+        println(panelDFSales)
+        println(panelTrueDFSales)
+        assert(panelDFSales == panelTrueDFSales)
     }
 
 	test("test nhwa MZ max") {
@@ -69,13 +87,25 @@ class TestNhwaMax extends FunSuite {
 		val maxDF = result.toMapArgs[PhDFArgs].get("maxResult").get
 		val maxTrueDF = sd.setUtil(readParquet()).readParquet("hdfs:///test/qi/qi/new_max_true")
 
-		println(maxDF.count())
-		println(maxTrueDF.count())
+        maxDF.show(false)
+        maxTrueDF.show(false)
 
-		println(maxDF.agg(sum("f_units")).first.get(0))
-        println(maxTrueDF.agg(sum("f_units")).first.get(0))
+        val maxDFCount = maxDF.count()
+        val maxTrueDFCount = maxTrueDF.count()
+        println(maxDFCount)
+        println(maxTrueDFCount)
+        assert(maxDFCount == maxTrueDFCount)
 
-        println(maxDF.agg(sum("f_sales")).first.get(0))
-        println(maxTrueDF.agg(sum("f_sales")).first.get(0))
+        val maxDFUnits = maxDF.agg(sum("f_units")).first.get(0).toString.toDouble
+        val maxTrueDFUnits = maxTrueDF.agg(sum("f_units")).first.get(0).toString.toDouble
+        println(maxDFUnits)
+        println(maxTrueDFUnits)
+        assert(Math.abs(maxDFUnits - maxTrueDFUnits) < maxTrueDFUnits * 0.01)
+
+        val maxDFSales = maxDF.agg(sum("f_sales")).first.get(0).toString.toDouble
+        val maxTrueDFSales = maxTrueDF.agg(sum("f_sales")).first.get(0).toString.toDouble
+        println(maxDFSales)
+        println(maxTrueDFSales)
+        assert(Math.abs(maxDFSales - maxTrueDFSales) < maxTrueDFSales * 0.01)
     }
 }
