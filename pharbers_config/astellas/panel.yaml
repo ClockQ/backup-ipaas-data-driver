@@ -13,7 +13,7 @@ actions:
         reference: com.pharbers.ipaas.data.driver.job.PhReadParquetOperator
         factory: com.pharbers.ipaas.data.driver.factory.PhOperatorFactory
         args:
-          path: hdfs:///test/dcs/Clean/sampleHosp/astellas/ALKP_gycx
+          path: hdfs:///test/dcs/Clean/sampleHosp/astellas/ALKP_cpa
       - name: filter
         factory: com.pharbers.ipaas.data.driver.factory.PhOperatorFactory
         reference: com.pharbers.ipaas.data.driver.job.PhFilterOperator
@@ -50,7 +50,7 @@ actions:
         reference: com.pharbers.ipaas.data.driver.job.PhReadParquetOperator
         factory: com.pharbers.ipaas.data.driver.factory.PhOperatorFactory
         args:
-          path: hdfs:///test/dcs/Clean/sampleHosp/astellas/ALKP_cpa
+          path: hdfs:///test/dcs/Clean/sampleHosp/astellas/ALKP_gycx
       - name: filter
         factory: com.pharbers.ipaas.data.driver.factory.PhOperatorFactory
         reference: com.pharbers.ipaas.data.driver.job.PhFilterOperator
@@ -113,7 +113,7 @@ actions:
           inDFName: df
           selects: "HOSPITAL_ID as HOSPITAL_ID_SOURCE#STANDARD_ID as STANDARD_ID_SOURCE"
   #cpa
-  - name: cpa
+  - name: readCpa
     reference: com.pharbers.ipaas.data.driver.job.PhBaseAction
     factory: com.pharbers.ipaas.data.driver.factory.PhActionFactory
     args:
@@ -130,7 +130,13 @@ actions:
         args:
           inDFName: df
           filter: YM == 201804 AND MARKET == 'Allelock'
-      - name: join sampleHosp
+  - name: cpa
+    reference: com.pharbers.ipaas.data.driver.job.PhBaseAction
+    factory: com.pharbers.ipaas.data.driver.factory.PhActionFactory
+    args:
+      df: readCpa
+    opers:
+      - name: cpa join sampleHosp
         factory: com.pharbers.ipaas.data.driver.factory.PhOperatorFactory
         reference: com.pharbers.ipaas.data.driver.operators.JoinOperator
         args:
@@ -144,7 +150,7 @@ actions:
         args:
           inDFName: df
           dropColName: SAMPLE_HOSPITAL_ID
-      - name: join three
+      - name: join three cpa
         factory: com.pharbers.ipaas.data.driver.factory.PhOperatorFactory
         reference: com.pharbers.ipaas.data.driver.operators.JoinOperator
         args:
@@ -152,6 +158,8 @@ actions:
           joinDFName: readCpaSource
           joinExpr: HOSPITAL_ID == HOSPITAL_ID_SOURCE
           joinType: inner
+
+
   #gycx
   - name: gycx
     reference: com.pharbers.ipaas.data.driver.job.PhBaseAction
@@ -184,7 +192,7 @@ actions:
         args:
           inDFName: df
           dropColName: SAMPLE_HOSPITAL_ID
-      - name: join three
+      - name: join three gycx
         factory: com.pharbers.ipaas.data.driver.factory.PhOperatorFactory
         reference: com.pharbers.ipaas.data.driver.operators.JoinOperator
         args:
@@ -197,8 +205,16 @@ actions:
     reference: com.pharbers.ipaas.data.driver.job.PhBaseAction
     factory: com.pharbers.ipaas.data.driver.factory.PhActionFactory
     args:
-      df: cpa
+      df: readCpa
     opers:
+      - name: join three cpa
+        factory: com.pharbers.ipaas.data.driver.factory.PhOperatorFactory
+        reference: com.pharbers.ipaas.data.driver.operators.JoinOperator
+        args:
+          inDFName: df
+          joinDFName: readCpaSource
+          joinExpr: HOSPITAL_ID == HOSPITAL_ID_SOURCE
+          joinType: inner
       - name: select
         factory: com.pharbers.ipaas.data.driver.factory.PhOperatorFactory
         reference: com.pharbers.ipaas.data.driver.operators.select
@@ -218,8 +234,14 @@ actions:
         args:
           inDFName: df
           joinDFName: cpa STANDARD_ID
-          joinExpr: STANDARD_ID_SOURCE != STANDARD_ID_SOURCE_CPA
-          joinType: inner
+          joinExpr: STANDARD_ID_SOURCE == STANDARD_ID_SOURCE_CPA
+          joinType: left
+      - name: filter
+        factory: com.pharbers.ipaas.data.driver.factory.PhOperatorFactory
+        reference: com.pharbers.ipaas.data.driver.job.PhFilterOperator
+        args:
+          inDFName: df
+          filter: "STANDARD_ID_SOURCE_CPA is null"
       - name: drop
         factory: com.pharbers.ipaas.data.driver.factory.PhOperatorFactory
         reference: com.pharbers.ipaas.data.driver.operators.DropOperator

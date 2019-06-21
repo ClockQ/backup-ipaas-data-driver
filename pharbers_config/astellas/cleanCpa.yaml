@@ -176,6 +176,12 @@ actions:
         args:
           inDFName: df
           selects: regexp_replace(MIN_PRODUCT_UNIT, " ", "") as MIN_PRODUCT_UNIT#regexp_replace(MIN_PRODUCT_UNIT_STANDARD, " ", "") as MIN_PRODUCT_UNIT_STANDARD
+      - name:
+        factory: com.pharbers.ipaas.data.driver.factory.PhOperatorFactory
+        reference: com.pharbers.ipaas.data.driver.operators.distinctByKey
+        args:
+          inDFName: df
+          keys: MIN_PRODUCT_UNIT
 
   - name: distinctHosp
     reference: com.pharbers.ipaas.data.driver.job.PhBaseAction

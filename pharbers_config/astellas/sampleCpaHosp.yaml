@@ -55,7 +55,7 @@ actions:
         factory: com.pharbers.ipaas.data.driver.factory.PhOperatorFactory
         args:
           path: hdfs:///data/astellas/pha_config_repository1804/Astellas_2018_If_panel_all_Allelock_20180703.csv
-      - name: filter
+      - name: filter IF_PANEL_ALL
         factory: com.pharbers.ipaas.data.driver.factory.PhOperatorFactory
         reference: com.pharbers.ipaas.data.driver.job.PhFilterOperator
         args:
@@ -68,7 +68,7 @@ actions:
           inDFName: df
           oldColName: PHA_HOSP_ID
           newColName: PHA_HOSP_ID_S
-      - name: join
+      - name: join cpa
         factory: com.pharbers.ipaas.data.driver.factory.PhOperatorFactory
         reference: com.pharbers.ipaas.data.driver.operators.JoinOperator
         args:
@@ -76,7 +76,7 @@ actions:
           joinDFName: readPhaFile
           joinExpr: HOSP_ID == CPA
           joinType: inner
-      - name: join
+      - name: join hosp
         factory: com.pharbers.ipaas.data.driver.factory.PhOperatorFactory
         reference: com.pharbers.ipaas.data.driver.operators.JoinOperator
         args:
@@ -110,7 +110,7 @@ actions:
           keys: "HOSPITAL_ID#SAMPLE"
           chooseBy: "HOSPITAL_ID"
           chooseFun: min
-      - name: addId
+      - name: fillid
         factory: com.pharbers.ipaas.data.driver.factory.PhOperatorFactory
         reference: com.pharbers.ipaas.data.driver.operators.addColumn
         args:

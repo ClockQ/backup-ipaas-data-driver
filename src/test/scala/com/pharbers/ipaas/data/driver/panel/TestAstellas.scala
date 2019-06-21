@@ -22,6 +22,7 @@ import com.pharbers.ipaas.data.driver.config.Config
 import com.pharbers.ipaas.data.driver.factory.{PhFactory, PhJobFactory}
 import com.pharbers.ipaas.data.driver.libs.spark.PhSparkDriver
 import com.pharbers.ipaas.data.driver.libs.spark.util.{readParquet, save2Parquet}
+import org.apache.spark.sql.SaveMode
 import org.apache.spark.sql.functions._
 import org.scalatest.FunSuite
 
@@ -46,7 +47,7 @@ class TestAstellas extends FunSuite {
         cleanDF.show(false)
         println(cleanDF.count())
 
-        sd.setUtil(save2Parquet()).save2Parquet(cleanDF, "hdfs:///test/dcs/Clean/gycx/astellas")
+        sd.setUtil(save2Parquet()).save2Parquet(cleanDF, "hdfs:///test/dcs/Clean/gycx/astellas", SaveMode.Overwrite)
     }
 
     test("test astellas cpa clean") {
@@ -61,7 +62,7 @@ class TestAstellas extends FunSuite {
         cleanDF.show(false)
         println(cleanDF.count())
 
-        sd.setUtil(save2Parquet()).save2Parquet(cleanDF, "hdfs:///test/dcs/Clean/cpa/astellas")
+        sd.setUtil(save2Parquet()).save2Parquet(cleanDF, "hdfs:///test/dcs/Clean/cpa/astellas", SaveMode.Overwrite)
 
         //        println(cleanDF.agg(sum("UNITS")).first.get(0))
         //        println(cleanDF.agg(sum("SALES")).first.get(0))
@@ -76,7 +77,7 @@ class TestAstellas extends FunSuite {
 
         val sampleHosp = result.toMapArgs[PhDFArgs].get("sample_hosp").get
 
-        sd.setUtil(save2Parquet()).save2Parquet(sampleHosp, "hdfs:///test/dcs/Clean/sampleHosp/astellas/ALKP_cpa")
+        sd.setUtil(save2Parquet()).save2Parquet(sampleHosp, "hdfs:///test/dcs/Clean/sampleHosp/astellas/ALKP_cpa", SaveMode.Overwrite)
         println(sampleHosp.count())
         sampleHosp.show(false)
 
@@ -91,7 +92,7 @@ class TestAstellas extends FunSuite {
 
         val sampleHosp = result.toMapArgs[PhDFArgs].get("sample_hosp").get
 
-        sd.setUtil(save2Parquet()).save2Parquet(sampleHosp, "hdfs:///test/dcs/Clean/sampleHosp/astellas/ALKP_gycx")
+        sd.setUtil(save2Parquet()).save2Parquet(sampleHosp, "hdfs:///test/dcs/Clean/sampleHosp/astellas/ALKP_gycx", SaveMode.Overwrite)
         println(sampleHosp.count())
         sampleHosp.show(false)
 
@@ -135,7 +136,7 @@ class TestAstellas extends FunSuite {
 
         val panelERD = result.toMapArgs[PhDFArgs].get("panelERD").get
 
-        //        sd.setUtil(save2Parquet()).save2Parquet(panelERD, "hdfs:///test/dcs/Clean/panel/astellas/ALKP")
+        sd.setUtil(save2Parquet()).save2Parquet(panelERD, "hdfs:///test/dcs/Clean/panel/astellas/ALKP", SaveMode.Overwrite)
 
         val panelTrueDF = sd.setUtil(readParquet()).readParquet("hdfs:///workData/Panel/5eec5688-f3e6-4249-a468-c4276e79cf2e")
 
@@ -161,5 +162,53 @@ class TestAstellas extends FunSuite {
         //                .selectExpr("PHA_HOSP_ID as PHA_HOSP_ID_M")
         //                .join(panelTrueDF, col("PHA_HOSP_ID_M") === col("HOSP_ID"))
         //        println(a.count())
+    }
+
+    test("check panel") {
+        implicit val sd: PhSparkDriver = PhSparkDriver("testSparkDriver")
+        sd.sc.setLogLevel("error")
+        val prodErd = {
+            sd.setUtil(readParquet())
+                    .readParquet("hdfs:///repository/prod_etc_dis_max/astellas").filter(col("MARKET") === "Allelock")
+                    .withColumn("min2", trim(regexp_replace(concat(col("ETC_PRODUCT_NAME"), col("ETC_DOSAGE_NAME"), col("ETC_PACKAGE_DES"), col("ETC_PACKAGE_NUMBER"), col("ETC_CORP_NAME")), " ", "")))
+        }
+        val hospErd = {
+            sd.setUtil(readParquet())
+                    .readParquet("hdfs:///repository/hosp_dis_max")
+                    .filter("PHA_IS_REPEAT == 0")
+                    .dropDuplicates(List("PHA_HOSP_ID"))
+        }
+
+
+        val panelErd = sd.setUtil(readParquet()).readParquet("hdfs:///test/dcs/Clean/panel/astellas/ALKP")
+
+        val panelTrueDF = sd.setUtil(readParquet()).readParquet("hdfs:///workData/Panel/5eec5688-f3e6-4249-a468-c4276e79cf2e")
+
+        val all = panelErd.selectExpr("HOSPITAL_ID as hosp", "SALES as VALUE", "PRODUCT_ID")
+                .join(hospErd, col("hosp") === col("HOSPITAL_ID"))
+                .join(prodErd.select("min2", "_id"), col("PRODUCT_ID") === col("_id"))
+
+
+//        all.filter("PHA_HOSP_ID == 'PHA0013881'").show(false)
+
+        val a = panelErd.selectExpr("HOSPITAL_ID as hosp", "SALES as VALUE", "PRODUCT_ID")
+                .join(hospErd, col("hosp") === col("HOSPITAL_ID"))
+                .join(prodErd.select("min2", "_id"), col("PRODUCT_ID") === col("_id"))
+                .select("VALUE","min2","PHA_HOSP_ID")
+//                .join(panelTrueDF, col("PHA_HOSP_ID") === col("HOSP_ID") && col("min2") === regexp_replace(col("Prod_Name"), "\\|", ""))
+                .join(panelTrueDF, col("PHA_HOSP_ID") === col("HOSP_ID") && col("min2") === regexp_replace(col("Prod_Name"), "\\|", ""), "left")
+//                .drop("PHA_HOSP_ID")
+//                .distinct()
+
+//        a.withColumn("count", lit(0)).groupBy(a.columns.head, a.columns.tail:_*).agg(count("count")).filter("count(count) > 1").show(false)
+        a.filter("HOSP_ID is null").show(false)
+//        a.filter("HOSP_ID is null").select("PHA_HOSP_ID").distinct().count()
+        val res = a.withColumn("check", expr("abs(SALES - VALUE)")).filter("check > 0.01")
+        println(panelErd.count())
+        println(a.count())
+        println(res.count())
+        res.show(false)
+
+
     }
 }

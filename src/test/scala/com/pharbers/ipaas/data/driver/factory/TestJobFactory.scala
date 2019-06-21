@@ -340,10 +340,10 @@ class TestJobFactory extends FunSuite {
 
     }
 
-    test("test pfizer CNS_R max") {
+    test("test service max") {
         implicit val sd: PhSparkDriver = PhSparkDriver("testSparkDriver")
 
-        val jobs = Config.readJobConfig("pharbers_config/pfizer/CNS_R_MAX.yaml")
+        val jobs = Config.readJobConfig("pharbers_config/service/servier_Max.yaml")
         val phJobs = jobs.map(x => PhFactory.getMethodMirror(x.getFactory)(x).asInstanceOf[PhJobFactory].inst())
         val result = phJobs.head.perform(PhMapArgs(Map.empty))
 
@@ -352,11 +352,11 @@ class TestJobFactory extends FunSuite {
 
 //        val maxTrueDF = sd.setUtil(readParquet()).readParquet("hdfs:///workData/Max/41ce8fe8-a402-4d5d-88f1-ffcb62117532")
 //
-//        println(maxDF.count())
+        println(maxDF.count())
 //        println(maxTrueDF.count())
 //
-//        println(maxDF.agg(sum("f_units")).first.get(0))
-//        println(maxDF.agg(sum("f_sales")).first.get(0))
+        println(maxDF.agg(sum("f_units")).first.get(0))
+        println(maxDF.agg(sum("f_sales")).first.get(0))
 //
 //        println(maxTrueDF.agg(sum("f_units")).first.get(0))
 //        println(maxTrueDF.agg(sum("f_sales")).first.get(0))
