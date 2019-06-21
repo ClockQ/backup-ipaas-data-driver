@@ -2,8 +2,8 @@ name: max
 factory: com.pharbers.ipaas.data.driver.api.factory.PhJobFactory
 reference: com.pharbers.ipaas.data.driver.api.job.PhBaseJob
 args:
-  panel: &panel hdfs:///workData/Panel/tq/sa/201806
-  universe: &universe hdfs:///repository/universe_hosp/tq/sa
+  panel: &panel hdfs:///workData/Panel/ql/10/201809
+  universe: &universe hdfs:///repository/universe_hosp/ql/10
 actions:
 - name: panelData
   factory: com.pharbers.ipaas.data.driver.api.factory.PhActionFactory
@@ -13,12 +13,6 @@ actions:
     factory: com.pharbers.ipaas.data.driver.api.factory.PhOperatorFactory
     reference: com.pharbers.ipaas.data.driver.operators.ReadParquetOperator
     args:
-#      path: hdfs:///workData/Panel/6e57dff1-2cf0-439f-a8f7-4625439d8a8e #nhwa#mz
-#      path: hdfs:///workData/Panel/xlt/201806 #xlt#xlt#201806
-#      path: hdfs:///workData/Panel/bt/201809 #xlt#xlt#201809
-#      path: hdfs:///workData/Panel/bms/chemo/201809 #bms#chemo#201809
-#      path: hdfs:///workData/Panel/tq/rp/201806 #tq#rp#201806
-#      path: hdfs:///workData/Panel/tq/sa/201806 #tq#sa#201806
       path: *panel
 - name: universeData
   factory: com.pharbers.ipaas.data.driver.api.factory.PhActionFactory
@@ -28,12 +22,6 @@ actions:
     factory: com.pharbers.ipaas.data.driver.api.factory.PhOperatorFactory
     reference: com.pharbers.ipaas.data.driver.operators.ReadParquetOperator
     args:
-#      path: hdfs:///repository/universe_hosp/5ca069bceeefcc012918ec72/mz #nhew#mz#201809
-#      path: hdfs:///repository/universe_hosp/xlt/xlt #xlt#xlt#201806
-#      path: hdfs:///repository/universe_hosp/bt/bt #xlt#xlt#201809
-#      path: hdfs:///repository/universe_hosp/bms/chemo #bms#chemo#201809
-#      path: hdfs:///repository/universe_hosp/tq/rp #tq#rp#201806
-#      path: hdfs:///repository/universe_hosp/tq/sa #tq#sa#201806
       path: *universe
 - name: universeDF
   factory: com.pharbers.ipaas.data.driver.api.factory.PhActionFactory

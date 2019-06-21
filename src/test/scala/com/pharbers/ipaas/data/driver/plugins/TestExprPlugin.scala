@@ -26,7 +26,7 @@ class TestExprPlugin extends FunSuite with BeforeAndAfterAll {
         require(testDF != null)
     }
 
-    test("add column by expr") {
+    test("add column by expr, cast old column as double") {
         val plugin = ExprPlugin(
             "ExprPlugin",
             PhMapArgs(Map(
@@ -44,7 +44,33 @@ class TestExprPlugin extends FunSuite with BeforeAndAfterAll {
             Seq(plugin)
         )
         val result = operator.perform(PhMapArgs(Map("inDFName" -> PhDFArgs(testDF))))
-        result.toDFArgs.get.show(false)
-        assert(result.toDFArgs.get.columns.contains("newColName"))
+
+        val df = result.toDFArgs.get
+        df.show(false)
+        assert(df.columns.contains("newColName"))
+    }
+
+    test("add column by expr, add lit value") {
+        val plugin = ExprPlugin(
+            "ExprPlugin",
+            PhMapArgs(Map(
+                "exprString" -> PhStringArgs("'a'")
+            )),
+            Seq.empty
+        )
+
+        val operator = AddColumnOperator(
+            "AddColumnOperator",
+            PhMapArgs(Map(
+                "inDFName" -> PhStringArgs("inDFName"),
+                "newColName" -> PhStringArgs("newColName")
+            )),
+            Seq(plugin)
+        )
+        val result = operator.perform(PhMapArgs(Map("inDFName" -> PhDFArgs(testDF))))
+
+        val df = result.toDFArgs.get
+        df.show(false)
+        assert(df.columns.contains("newColName"))
     }
 }
