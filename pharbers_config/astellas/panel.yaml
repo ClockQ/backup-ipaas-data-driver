@@ -13,13 +13,13 @@ actions:
         reference: com.pharbers.ipaas.data.driver.job.PhReadParquetOperator
         factory: com.pharbers.ipaas.data.driver.factory.PhOperatorFactory
         args:
-          path: hdfs:///test/dcs/Clean/sampleHosp/pfizer/CNS_R_cpa
+          path: hdfs:///test/dcs/Clean/sampleHosp/astellas/ALKP_gycx
       - name: filter
         factory: com.pharbers.ipaas.data.driver.factory.PhOperatorFactory
         reference: com.pharbers.ipaas.data.driver.job.PhFilterOperator
         args:
           inDFName: df
-          filter: "MARKET == 'CNS_R' AND SAMPLE == 1"
+          filter: "MARKET == 'Allelock' AND SAMPLE == 1"
       - name: rename
         factory: com.pharbers.ipaas.data.driver.factory.PhOperatorFactory
         reference: com.pharbers.ipaas.data.driver.operators.withColumnRenamed
@@ -50,13 +50,13 @@ actions:
         reference: com.pharbers.ipaas.data.driver.job.PhReadParquetOperator
         factory: com.pharbers.ipaas.data.driver.factory.PhOperatorFactory
         args:
-          path: hdfs:///test/dcs/Clean/sampleHosp/pfizer/CNS_R_gycx
+          path: hdfs:///test/dcs/Clean/sampleHosp/astellas/ALKP_cpa
       - name: filter
         factory: com.pharbers.ipaas.data.driver.factory.PhOperatorFactory
         reference: com.pharbers.ipaas.data.driver.job.PhFilterOperator
         args:
           inDFName: df
-          filter: "MARKET == 'CNS_R' AND SAMPLE == 1"
+          filter: "MARKET == 'Allelock' AND SAMPLE == 1"
       - name: rename
         factory: com.pharbers.ipaas.data.driver.factory.PhOperatorFactory
         reference: com.pharbers.ipaas.data.driver.operators.withColumnRenamed
@@ -87,13 +87,13 @@ actions:
         reference: com.pharbers.ipaas.data.driver.job.PhReadParquetOperator
         factory: com.pharbers.ipaas.data.driver.factory.PhOperatorFactory
         args:
-          path: hdfs:///test/dcs/Clean/treeSource/astellas/cpa
+          path: hdfs:///test/dcs/Clean/treeSource/astellas/gycx
       - name: select
         factory: com.pharbers.ipaas.data.driver.factory.PhOperatorFactory
         reference: com.pharbers.ipaas.data.driver.operators.select
         args:
           inDFName: df
-          selects: "HOSPITAL_ID as HOSPITAL_ID_GYCX#STANDARD_ID as STANDARD_ID_GYCX"
+          selects: "HOSPITAL_ID as HOSPITAL_ID_SOURCE#STANDARD_ID as STANDARD_ID_SOURCE"
   #cpa 三元匹配表
   - name: readCpaSource
     reference: com.pharbers.ipaas.data.driver.job.PhBaseAction
@@ -111,7 +111,7 @@ actions:
         reference: com.pharbers.ipaas.data.driver.operators.select
         args:
           inDFName: df
-          selects: "HOSPITAL_ID as HOSPITAL_ID_CPA#STANDARD_ID as STANDARD_ID_CPA"
+          selects: "HOSPITAL_ID as HOSPITAL_ID_SOURCE#STANDARD_ID as STANDARD_ID_SOURCE"
   #cpa
   - name: cpa
     reference: com.pharbers.ipaas.data.driver.job.PhBaseAction
@@ -123,13 +123,13 @@ actions:
         reference: com.pharbers.ipaas.data.driver.job.PhReadParquetOperator
         factory: com.pharbers.ipaas.data.driver.factory.PhOperatorFactory
         args:
-          path: hdfs:///test/dcs/Clean/cpa/pfizer
+          path: hdfs:///test/dcs/Clean/cpa/astellas
       - name: filter
         factory: com.pharbers.ipaas.data.driver.factory.PhOperatorFactory
         reference: com.pharbers.ipaas.data.driver.job.PhFilterOperator
         args:
           inDFName: df
-          filter: YM == 201804 AND MARKET == 'CNS_R'
+          filter: YM == 201804 AND MARKET == 'Allelock'
       - name: join sampleHosp
         factory: com.pharbers.ipaas.data.driver.factory.PhOperatorFactory
         reference: com.pharbers.ipaas.data.driver.operators.JoinOperator
@@ -138,13 +138,19 @@ actions:
           joinDFName: readCpaSampleHosp
           joinExpr: SAMPLE_HOSPITAL_ID == HOSPITAL_ID
           joinType: inner
+      - name: drop
+        factory: com.pharbers.ipaas.data.driver.factory.PhOperatorFactory
+        reference: com.pharbers.ipaas.data.driver.operators.DropOperator
+        args:
+          inDFName: df
+          dropColName: SAMPLE_HOSPITAL_ID
       - name: join three
         factory: com.pharbers.ipaas.data.driver.factory.PhOperatorFactory
         reference: com.pharbers.ipaas.data.driver.operators.JoinOperator
         args:
           inDFName: df
           joinDFName: readCpaSource
-          joinExpr: HOSPITAL_ID == HOSPITAL_ID_CPA
+          joinExpr: HOSPITAL_ID == HOSPITAL_ID_SOURCE
           joinType: inner
   #gycx
   - name: gycx
@@ -157,13 +163,13 @@ actions:
         reference: com.pharbers.ipaas.data.driver.job.PhReadParquetOperator
         factory: com.pharbers.ipaas.data.driver.factory.PhOperatorFactory
         args:
-          path: hdfs:///test/dcs/Clean/gycx/pfizer
+          path: hdfs:///test/dcs/Clean/gycx/astellas
       - name: filter
         factory: com.pharbers.ipaas.data.driver.factory.PhOperatorFactory
         reference: com.pharbers.ipaas.data.driver.job.PhFilterOperator
         args:
           inDFName: df
-          filter: YM == 201804 AND MARKET == 'CNS_R'
+          filter: YM == 201804 AND MARKET == 'Allelock'
       - name: join sampleGycxHosp
         factory: com.pharbers.ipaas.data.driver.factory.PhOperatorFactory
         reference: com.pharbers.ipaas.data.driver.operators.JoinOperator
@@ -183,8 +189,8 @@ actions:
         reference: com.pharbers.ipaas.data.driver.operators.JoinOperator
         args:
           inDFName: df
-          joinDFName: readCpaSource
-          joinExpr: HOSPITAL_ID == HOSPITAL_ID_GYCX
+          joinDFName: readGycxSource
+          joinExpr: HOSPITAL_ID == HOSPITAL_ID_SOURCE
           joinType: inner
 
   - name: cpa STANDARD_ID
@@ -198,7 +204,7 @@ actions:
         reference: com.pharbers.ipaas.data.driver.operators.select
         args:
           inDFName: df
-          selects: "STANDARD_ID_CPA"
+          selects: "STANDARD_ID_SOURCE as STANDARD_ID_SOURCE_CPA"
 
   - name: gycx distinct
     reference: com.pharbers.ipaas.data.driver.job.PhBaseAction
@@ -212,20 +218,15 @@ actions:
         args:
           inDFName: df
           joinDFName: cpa STANDARD_ID
-          joinExpr: STANDARD_ID_GYCX != STANDARD_ID_CPA
+          joinExpr: STANDARD_ID_SOURCE != STANDARD_ID_SOURCE_CPA
           joinType: inner
       - name: drop
         factory: com.pharbers.ipaas.data.driver.factory.PhOperatorFactory
         reference: com.pharbers.ipaas.data.driver.operators.DropOperator
         args:
           inDFName: df
-          dropColName: STANDARD_ID_GYCX
-      - name: drop
-        factory: com.pharbers.ipaas.data.driver.factory.PhOperatorFactory
-        reference: com.pharbers.ipaas.data.driver.operators.DropOperator
-        args:
-          inDFName: df
-          dropColName: HOSPITAL_ID_GYCX
+          dropColName: STANDARD_ID_SOURCE_CPA
+
 
   - name: panelERD
     reference: com.pharbers.ipaas.data.driver.job.PhBaseAction

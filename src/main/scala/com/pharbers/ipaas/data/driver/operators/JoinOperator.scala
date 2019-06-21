@@ -37,7 +37,7 @@ case class JoinOperator(plugin: PhPluginTrait, name: String, defaultArgs: PhWork
 
         val inDF = prMapArgs.getAs[PhDFArgs](inDFName).get.get
         val joinDF = prMapArgs.getAs[PhDFArgs](joinDFName).get.get
-        val outDF = inDF.join(joinDF, expr(joinExpr), joinType).cache()
+        val outDF = inDF.join(joinDF, expr(joinExpr), joinType)
 
         PhDFArgs(outDF)
     }

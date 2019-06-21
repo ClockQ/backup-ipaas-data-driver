@@ -54,7 +54,7 @@ actions:
         reference: com.pharbers.ipaas.data.driver.job.PhReadOperator
         factory: com.pharbers.ipaas.data.driver.factory.PhOperatorFactory
         args:
-          path: hdfs:///data/pfizer/pha_config_repository1804/Pfizer_2018_If_panel_all_CNS_R.csv
+          path: hdfs:///data/astellas/pha_config_repository1804/Astellas_2018_If_panel_all_Allelock_20180703.csv
       - name: filter
         factory: com.pharbers.ipaas.data.driver.factory.PhOperatorFactory
         reference: com.pharbers.ipaas.data.driver.job.PhFilterOperator

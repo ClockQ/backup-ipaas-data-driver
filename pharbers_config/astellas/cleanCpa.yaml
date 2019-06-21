@@ -127,13 +127,13 @@ actions:
           factory: com.pharbers.ipaas.data.driver.factory.PhPluginFactory
           args:
             columns: ETC_PRODUCT_NAME,ETC_DOSAGE_NAME,ETC_PACKAGE_DES,ETC_PACKAGE_NUMBER,ETC_CORP_NAME
-            dilimiter: ""
+            dilimiter: "|"
       - name: productSelect
         factory: com.pharbers.ipaas.data.driver.factory.PhOperatorFactory
         reference: com.pharbers.ipaas.data.driver.operators.select
         args:
           inDFName: df
-          selects: ETC_PRODUCT_ID as PRODUCT_ID#regexp_replace(min2, " ", "") as min2#MARKET
+          selects: _id as PRODUCT_ID#regexp_replace(min2, " ", "") as min2#MARKET
       - name:
         factory: com.pharbers.ipaas.data.driver.factory.PhOperatorFactory
         reference: com.pharbers.ipaas.data.driver.operators.distinctByKey
@@ -280,7 +280,7 @@ actions:
           factory: com.pharbers.ipaas.data.driver.factory.PhPluginFactory
           args:
             columns: PRODUCT_NAME,DOSAGE,PACK_DES,PACK_NUMBER,CORP_NAME
-            dilimiter: ""
+            dilimiter: "|"
       - name: regexpReplaceMin1
         factory: com.pharbers.ipaas.data.driver.factory.PhOperatorFactory
         reference: com.pharbers.ipaas.data.driver.operators.addColumn
@@ -308,7 +308,7 @@ actions:
           inDFName: df
           joinDFName: readProductFile
           joinExpr: MIN_PRODUCT_UNIT_STANDARD = min2
-          joinType: left
+          joinType: inner
 
   - name: clean
     reference: com.pharbers.ipaas.data.driver.job.PhBaseAction
@@ -327,7 +327,7 @@ actions:
           factory: com.pharbers.ipaas.data.driver.factory.PhPluginFactory
           reference: com.pharbers.ipaas.data.driver.plugin.BaseCalcPlugin
           args:
-            exprString: "'5ca069e2eeefcc012918ec73'"
+            exprString: "'astellas'"
       - name: litSOURCE
         factory: com.pharbers.ipaas.data.driver.factory.PhOperatorFactory
         reference: com.pharbers.ipaas.data.driver.operators.addColumn

@@ -47,7 +47,7 @@ actions:
         factory: com.pharbers.ipaas.data.driver.factory.PhOperatorFactory
         reference: com.pharbers.ipaas.data.driver.operators.select
         args:
-          inDFName: readHospitalFile
+          inDFName: df
           selects: HOSPITAL_ID#PHA_HOSP_ID
       - name: distinct By PHA_HOSP_ID
         factory: com.pharbers.ipaas.data.driver.factory.PhOperatorFactory
@@ -71,7 +71,7 @@ actions:
         factory: com.pharbers.ipaas.data.driver.factory.PhOperatorFactory
         reference: com.pharbers.ipaas.data.driver.operators.select
         args:
-          inDFName: readPhaFile
+          inDFName: df
           selects: CPA#PHA_ID_NEW
       - name: hospIdCastInt
         factory: com.pharbers.ipaas.data.driver.factory.PhOperatorFactory
@@ -84,7 +84,7 @@ actions:
           factory: com.pharbers.ipaas.data.driver.factory.PhPluginFactory
           reference: com.pharbers.ipaas.data.driver.plugin.BaseCalcPlugin
           args:
-            exprString: cast(CPA as int)`
+            exprString: cast(CPA as int)
       - name:
         factory: com.pharbers.ipaas.data.driver.factory.PhOperatorFactory
         reference: com.pharbers.ipaas.data.driver.operators.distinctByKey
@@ -92,7 +92,7 @@ actions:
           inDFName: df
           keys: CPA
 
-  - name: matchHosp
+  - name: result
     reference: com.pharbers.ipaas.data.driver.job.PhBaseAction
     factory: com.pharbers.ipaas.data.driver.factory.PhActionFactory
     args:
@@ -111,7 +111,7 @@ actions:
         reference: com.pharbers.ipaas.data.driver.operators.JoinOperator
         args:
           inDFName: df
-          joinDFName: distinctHosp
+          joinDFName: readHospitalFile
           joinExpr: PHA_ID_NEW = PHA_HOSP_ID
           joinType: left
       - name: addHospId
