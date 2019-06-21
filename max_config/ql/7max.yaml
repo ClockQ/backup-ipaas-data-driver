@@ -2,8 +2,8 @@ name: max
 factory: com.pharbers.ipaas.data.driver.api.factory.PhJobFactory
 reference: com.pharbers.ipaas.data.driver.api.job.PhBaseJob
 args:
-  panel: &panel hdfs:///workData/Panel/bayer/PAI/201806
-  universe: &universe hdfs:///repository/universe_hosp/bayer/PAI
+  panel: &panel hdfs:///workData/Panel/ql/7/201809
+  universe: &universe hdfs:///repository/universe_hosp/ql/7
 actions:
 - name: panelData
   factory: com.pharbers.ipaas.data.driver.api.factory.PhActionFactory
