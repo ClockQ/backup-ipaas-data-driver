@@ -54,7 +54,7 @@ actions:
         factory: com.pharbers.ipaas.data.driver.factory.PhOperatorFactory
         reference: com.pharbers.ipaas.data.driver.job.PhReadOperator
         args:
-            path: hdfs:///data/pfizer/pha_config_repository1804/Pfizer_Universe_INF.csv
+            path: hdfs:///data/servier/201806_all_correct/Servier_Universe_IHD_20181119.csv
     -   name: rename PHA_HOSP_ID to PHA_ID_OLD
         factory: com.pharbers.ipaas.data.driver.factory.PhOperatorFactory
         reference: com.pharbers.ipaas.data.driver.operators.withColumnRenamed
@@ -141,10 +141,12 @@ actions:
         reference: com.pharbers.ipaas.data.driver.operators.select
         args:
             inDFName: df
-            selects: HOSPITAL_ID#Factor#IS_PANEL_HOSP#NEED_MAX_HOSP#SEGMENT#+
+            selects: HOSPITAL_ID#Factor#IS_PANEL_HOSP#NEED_MAX_HOSP#SEGMENT#MARKET#WEST_MEDICINE_INCOME
     -   name:
         factory: com.pharbers.ipaas.data.driver.factory.PhOperatorFactory
         reference: com.pharbers.ipaas.data.driver.operators.DistinctOperator
+        args:
+            inDFName: df
 
 -   name: panelData
     reference: com.pharbers.ipaas.data.driver.job.PhBaseAction
@@ -154,9 +156,9 @@ actions:
     opers:
     -   name: readParquet
         factory: com.pharbers.ipaas.data.driver.factory.PhOperatorFactory
-        reference: com.pharbers.ipaas.data.driver.job.PhReadParquetOperator
+        reference: com.pharbers.ipaas.data.driver.job.PhReadOperator
         args:
-            path: hdfs:///test/dcs/Clean/panel/pfizer/INF
+            path: hdfs:///data/servier/201806_all_correct/IHD_Panel 201806.csv
     -   name: rename Date to YM
         factory: com.pharbers.ipaas.data.driver.factory.PhOperatorFactory
         reference: com.pharbers.ipaas.data.driver.operators.withColumnRenamed
