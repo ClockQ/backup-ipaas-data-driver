@@ -14,7 +14,6 @@ actions:
         reference: com.pharbers.ipaas.data.driver.operators.ReadCsvOperator
         args:
           path: *fullHospPath
-          delimiter: ','
       - name: hospIdCastInt
         factory: com.pharbers.ipaas.data.driver.api.factory.PhOperatorFactory
         reference: com.pharbers.ipaas.data.driver.operators.AddColumnOperator

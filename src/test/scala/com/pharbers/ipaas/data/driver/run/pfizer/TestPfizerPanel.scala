@@ -96,16 +96,16 @@ class TestPfizerPanel extends FunSuite {
     }
 
     test("test pfizer full hosp clean") {
-        val checkDF = sd.setUtil(readCsv()).readCsv("hdfs:///data/pfizer/pha_config_repository1804/Pfizer_201804_CPA.csv")
-        val resultDF = cleanCpa(
+        val checkDF = sd.setUtil(readCsv()).readCsv("hdfs:///data/pfizer/pha_config_repository1804/Pfizer_2018_FullHosp.txt", 31.toChar.toString)
+        val resultDF = cleanHullHosp(
             false,
             "pfizerCpaTest",
-            "hdfs:///data/pfizer/pha_config_repository1804/Pfizer_201804_CPA.csv",
+            "hdfs:///data/pfizer/pha_config_repository1804/Pfizer_2018_FullHosp.txt",
             "hdfs:///data/pfizer/pha_config_repository1901/Pfizer_ProductMatchTable_20190403.csv",
             "hdfs:///repository/prod_etc_dis_max/5ca069e2eeefcc012918ec73",
             "hdfs:///repository/hosp_dis_max",
             "hdfs:///repository/pha",
-            "hdfs:///test/dcs/Clean/cpa/pfizer")
+            "hdfs:///test/dcs/Clean/fullHosp/pfizer")
 
         val checkUnits = checkDF.agg(sum("STANDARD_UNIT")).first.get(0).toString.toDouble
         val cleanUnits = resultDF.agg(sum("UNITS")).first.get(0).toString.toDouble
@@ -147,6 +147,29 @@ class TestPfizerPanel extends FunSuite {
         val templatePath = "src/test/maxConfig/template/pfizerCleanCpa.yaml"
         val yamlPath = buildYaml(templatePath,
             Map("cpaPath" -> cpaPath,
+                "hospERDPath" -> hospERDPath,
+                "productERDPath" -> ProductERDPath,
+                "phaERDPAth" -> PhaPath,
+                "ProductMatchPath" -> ProductMatchPath),
+            name)
+        val phJobs = inst(readJobConfig(yamlPath))
+        val result = phJobs.head.perform(PhMapArgs(Map(
+            "sparkDriver" -> PhSparkDriverArgs(sd),
+            "logDriver" -> PhLogDriverArgs(PhLogDriver(formatMsg("test_user", "test_traceID", "test_jobID")))
+        )))
+
+        val cleanDF = result.toMapArgs[PhDFArgs].get("clean").get
+
+        if (shouldSave) {
+            sd.setUtil(save2Parquet()).save2Parquet(cleanDF, savePath, SaveMode.Overwrite)
+        }
+        cleanDF
+    }
+
+    def cleanHullHosp(shouldSave: Boolean, name: String, fullHospPath: String, ProductMatchPath: String, ProductERDPath: String, hospERDPath: String, PhaPath: String, savePath: String): DataFrame = {
+        val templatePath = "src/test/maxConfig/template/pfizerCleanFullHosp.yaml"
+        val yamlPath = buildYaml(templatePath,
+            Map("fullHospPath" -> fullHospPath,
                 "hospERDPath" -> hospERDPath,
                 "productERDPath" -> ProductERDPath,
                 "phaERDPAth" -> PhaPath,
