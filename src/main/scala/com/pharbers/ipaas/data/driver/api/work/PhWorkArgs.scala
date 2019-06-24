@@ -1,8 +1,26 @@
+/*
+ * This file is part of com.pharbers.ipaas-data-driver.
+ *
+ * com.pharbers.ipaas-data-driver is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * com.pharbers.ipaas-data-driver is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with Foobar.  If not, see <https://www.gnu.org/licenses/>.
+ */
+
 package com.pharbers.ipaas.data.driver.api.work
 
 import scala.reflect.ClassTag
 import org.apache.spark.rdd.RDD
 import org.apache.spark.sql.{Column, DataFrame}
+import com.pharbers.ipaas.data.driver.libs.log.PhLogDriver
 import com.pharbers.ipaas.data.driver.libs.spark.PhSparkDriver
 
 /** iPaas Driver 的统一参数包装类，是所有包装类的父类，相当于Any
@@ -232,6 +250,29 @@ final case class PhSparkDriverArgs(args: PhSparkDriver) extends PhWorkArgs[PhSpa
       * @since 2019/6/15 17:34
       */
     def get: PhSparkDriver = args
+
+    override def isEmpty = true
+}
+
+/** iPaas Driver 的 PhLogDriver 参数包装类
+  *
+  * @param args 实际包装的 PhLogDriver 参数，没有默认值
+  * @author clock
+  * @version 0.1
+  * @since 2019/6/18 17:31
+  * @note 包装的运行环境
+  */
+final case class PhLogDriverArgs(args: PhLogDriver) extends PhWorkArgs[PhLogDriver] {
+    /** 获取实际包装的 PhLogDriver 参数
+      *
+      * @return PhSparkDriver 返回包装的 PhLogDriver
+      * @author clock
+      * @version 0.1
+      * @since 2019/6/18 17:34
+      */
+    def get: PhLogDriver = args
+
+    override def isEmpty = true
 }
 
 /** iPaas Driver 的Nothing参数包装类, 是所有包装类的子类，相当于Nothing
@@ -242,22 +283,15 @@ final case class PhSparkDriverArgs(args: PhSparkDriver) extends PhWorkArgs[PhSpa
   * @note 用法相当于Scala的Nothing或者List的Nil
   */
 case object PhNoneArgs extends PhWorkArgs[Nothing] {
-    /** PhNoneArgs类无法get，没有意义
+
+    /** PhNoneArgs 类无法get，没有意义
       *
-      * @return Nothing
-      * @throws NoSuchElementException ("PhNoneArgs.get")
+      * @return NoSuchElementException("if PhNoneArgs call get method")
       * @author clock
       * @version 0.1
       * @since 2019/6/11 15:03
       */
     def get: Nothing = throw new NoSuchElementException("PhNoneArgs.get")
 
-    /** 判断包装的参数是否为空
-      *
-      * @return Boolean 未包装任何参数则返回true
-      * @author clock
-      * @version 0.1
-      * @since 2019/6/11 15:05
-      */
     override def isEmpty = true
 }

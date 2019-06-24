@@ -5,6 +5,7 @@ import org.scalatest.{BeforeAndAfterAll, FunSuite}
 import org.apache.spark.sql.{Column, DataFrame, Row}
 import com.pharbers.ipaas.data.driver.libs.spark.PhSparkDriver
 import com.pharbers.ipaas.data.driver.api.job.{PhBaseAction, PhBaseJob}
+import com.pharbers.ipaas.data.driver.libs.log.{PhLogDriver, formatMsg}
 
 class TestPhWorkTrait extends FunSuite with BeforeAndAfterAll {
     implicit var sd: PhSparkDriver = _
@@ -36,8 +37,8 @@ class TestPhWorkTrait extends FunSuite with BeforeAndAfterAll {
 
     test("PhWorkTrait-DataFrame") {
 
-        case class lit(name: String, defaultArgs: PhMapArgs[PhWorkArgs[Any]], subPluginLst: Seq[PhPluginTrait2[Any]])
-                extends PhPluginTrait2[Column] {
+        case class lit(name: String, defaultArgs: PhMapArgs[PhWorkArgs[Any]], subPluginLst: Seq[PhPluginTrait[Any]])
+                extends PhPluginTrait[Column] {
 
             import org.apache.spark.sql.{functions => sf}
 
@@ -46,8 +47,8 @@ class TestPhWorkTrait extends FunSuite with BeforeAndAfterAll {
             def perform(pr: PhMapArgs[PhWorkArgs[Any]]): PhWorkArgs[Column] = PhColArgs(sf.lit(value))
         }
 
-        case class cast(name: String = "cast", defaultArgs: PhMapArgs[PhWorkArgs[Any]], subPluginLst: Seq[PhPluginTrait2[Any]] = Nil)
-                extends PhPluginTrait2[Column] {
+        case class cast(name: String = "cast", defaultArgs: PhMapArgs[PhWorkArgs[Any]], subPluginLst: Seq[PhPluginTrait[Any]] = Nil)
+                extends PhPluginTrait[Column] {
 
             import org.apache.spark.sql.{functions => sf}
 
@@ -57,8 +58,8 @@ class TestPhWorkTrait extends FunSuite with BeforeAndAfterAll {
             def perform(pr: PhMapArgs[PhWorkArgs[Any]]): PhWorkArgs[Column] = PhColArgs(sf.col(col).cast(value))
         }
 
-        case class generateIdUdf(name: String = "udf", defaultArgs: PhMapArgs[PhWorkArgs[Any]], subPluginLst: Seq[PhPluginTrait2[Any]] = Nil)
-                extends PhPluginTrait2[Column] {
+        case class generateIdUdf(name: String = "udf", defaultArgs: PhMapArgs[PhWorkArgs[Any]], subPluginLst: Seq[PhPluginTrait[Any]] = Nil)
+                extends PhPluginTrait[Column] {
 
             import org.bson.types.ObjectId
             import org.apache.spark.sql.{functions => sf}
@@ -69,8 +70,8 @@ class TestPhWorkTrait extends FunSuite with BeforeAndAfterAll {
             def perform(pr: PhMapArgs[PhWorkArgs[Any]]): PhWorkArgs[Column] = PhColArgs(generateIdUdf())
         }
 
-        case class withColumn(name: String, defaultArgs: PhMapArgs[PhWorkArgs[Any]], pluginLst: Seq[PhPluginTrait2[Column]])
-                extends PhOperatorTrait2[DataFrame] {
+        case class withColumn(name: String, defaultArgs: PhMapArgs[PhWorkArgs[Any]], pluginLst: Seq[PhPluginTrait[Column]])
+                extends PhOperatorTrait[DataFrame] {
             val inDFName: String = defaultArgs.getAs[PhStringArgs]("inDFName").get.get
             val newColName: String = defaultArgs.getAs[PhStringArgs]("newColName").get.get
 
@@ -113,23 +114,29 @@ class TestPhWorkTrait extends FunSuite with BeforeAndAfterAll {
 
 
         val job1 = PhBaseJob("testJob", PhMapArgs(), List(action1, action2))
-        val result = job1.perform(PhMapArgs(Map("df" -> PhDFArgs(testDF))))
+        val result = job1.perform(PhMapArgs(Map(
+            "df" -> PhDFArgs(testDF),
+            "sparkDriver" -> PhSparkDriverArgs(sd),
+            "logDriver" -> PhLogDriverArgs(PhLogDriver(formatMsg("test_user", "test_traceID", "test_jobID")))
+        )))
 
         println(result)
         result.toMapArgs.getAs[PhDFArgs]("testAction1").get.get.show(false)
         result.toMapArgs.getAs[PhDFArgs]("testAction2").get.get.show(false)
-        assert(result.toMapArgs.get.size === 3)
+        assert(result.toMapArgs.get.size == 5)
+        assert(result.toMapArgs.getAs[PhDFArgs]("testAction1").get.get.columns.length == 7)
+        assert(result.toMapArgs.getAs[PhDFArgs]("testAction2").get.get.columns.length == 10)
     }
 
     test("PhWorkTrait-RDD") {
 
-        case class addOne(name: String, defaultArgs: PhMapArgs[PhWorkArgs[Any]], subPluginLst: Seq[PhPluginTrait2[Any]])
-                extends PhPluginTrait2[Any => Any] {
+        case class addOne(name: String, defaultArgs: PhMapArgs[PhWorkArgs[Any]], subPluginLst: Seq[PhPluginTrait[Any]])
+                extends PhPluginTrait[Any => Any] {
             def perform(pr: PhMapArgs[PhWorkArgs[Any]]): PhWorkArgs[Any => Any] = PhFuncArgs((x: Any) => x)
         }
 
-        case class map(name: String, defaultArgs: PhMapArgs[PhWorkArgs[Any]], pluginLst: Seq[PhPluginTrait2[Any => Any]])
-                extends PhOperatorTrait2[RDD[_]] {
+        case class map(name: String, defaultArgs: PhMapArgs[PhWorkArgs[Any]], pluginLst: Seq[PhPluginTrait[Any => Any]])
+                extends PhOperatorTrait[RDD[_]] {
             val inRDDName: String = defaultArgs.getAs[PhStringArgs]("inRDDName").get.get
 
             def perform(pr: PhMapArgs[PhWorkArgs[Any]]): PhWorkArgs[RDD[_]] = {
@@ -170,9 +177,13 @@ class TestPhWorkTrait extends FunSuite with BeforeAndAfterAll {
         ))
 
         val job1 = PhBaseJob("testJob", PhMapArgs(), List(action1, action2))
-        val result = job1.perform(PhMapArgs(Map("rdd" -> PhRDDArgs(testDF.rdd))))
+        val result = job1.perform(PhMapArgs(Map(
+            "rdd" -> PhRDDArgs(testDF.rdd),
+            "sparkDriver" -> PhSparkDriverArgs(sd),
+            "logDriver" -> PhLogDriverArgs(PhLogDriver(formatMsg("test_user", "test_traceID", "test_jobID")))
+        )))
 
         println(result)
-        assert(result.toMapArgs.get.size === 3)
+        assert(result.toMapArgs.get.size == 5)
     }
 }

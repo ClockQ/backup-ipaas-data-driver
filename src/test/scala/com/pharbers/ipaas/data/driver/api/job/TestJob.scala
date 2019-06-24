@@ -2,6 +2,7 @@ package com.pharbers.ipaas.data.driver.api.job
 
 import org.apache.spark.sql.{Column, DataFrame}
 import com.pharbers.ipaas.data.driver.api.work._
+import com.pharbers.ipaas.data.driver.libs.log.{PhLogDriver, formatMsg}
 import org.scalatest.{BeforeAndAfterAll, FunSuite}
 import com.pharbers.ipaas.data.driver.libs.spark.PhSparkDriver
 
@@ -29,8 +30,8 @@ class TestJob extends FunSuite with BeforeAndAfterAll {
         sd.stopSpark()
     }
 
-    case class lit(name: String, defaultArgs: PhMapArgs[PhWorkArgs[Any]], subPluginLst: Seq[PhPluginTrait2[Any]])
-            extends PhPluginTrait2[Column] {
+    case class lit(name: String, defaultArgs: PhMapArgs[PhWorkArgs[Any]], subPluginLst: Seq[PhPluginTrait[Any]])
+            extends PhPluginTrait[Column] {
 
         import org.apache.spark.sql.{functions => sf}
 
@@ -39,8 +40,8 @@ class TestJob extends FunSuite with BeforeAndAfterAll {
         def perform(pr: PhMapArgs[PhWorkArgs[Any]]): PhWorkArgs[Column] = PhColArgs(sf.lit(value))
     }
 
-    case class cast(name: String = "cast", defaultArgs: PhMapArgs[PhWorkArgs[Any]], subPluginLst: Seq[PhPluginTrait2[Any]] = Nil)
-            extends PhPluginTrait2[Column] {
+    case class cast(name: String = "cast", defaultArgs: PhMapArgs[PhWorkArgs[Any]], subPluginLst: Seq[PhPluginTrait[Any]] = Nil)
+            extends PhPluginTrait[Column] {
 
         import org.apache.spark.sql.{functions => sf}
 
@@ -50,8 +51,8 @@ class TestJob extends FunSuite with BeforeAndAfterAll {
         def perform(pr: PhMapArgs[PhWorkArgs[Any]]): PhWorkArgs[Column] = PhColArgs(sf.col(col).cast(value))
     }
 
-    case class generateIdUdf(name: String = "udf", defaultArgs: PhMapArgs[PhWorkArgs[Any]], subPluginLst: Seq[PhPluginTrait2[Any]] = Nil)
-            extends PhPluginTrait2[Column] {
+    case class generateIdUdf(name: String = "udf", defaultArgs: PhMapArgs[PhWorkArgs[Any]], subPluginLst: Seq[PhPluginTrait[Any]] = Nil)
+            extends PhPluginTrait[Column] {
 
         import org.apache.spark.sql.expressions.UserDefinedFunction
         import org.apache.spark.sql.{functions => sf}
@@ -62,8 +63,8 @@ class TestJob extends FunSuite with BeforeAndAfterAll {
         def perform(pr: PhMapArgs[PhWorkArgs[Any]]): PhWorkArgs[Column] = PhColArgs(generateIdUdf())
     }
 
-    case class withColumn(name: String, defaultArgs: PhMapArgs[PhWorkArgs[Any]], pluginLst: Seq[PhPluginTrait2[Column]])
-            extends PhOperatorTrait2[DataFrame] {
+    case class withColumn(name: String, defaultArgs: PhMapArgs[PhWorkArgs[Any]], pluginLst: Seq[PhPluginTrait[Column]])
+            extends PhOperatorTrait[DataFrame] {
         val inDFName: String = defaultArgs.getAs[PhStringArgs]("inDFName").get.get
         val newColName: String = defaultArgs.getAs[PhStringArgs]("newColName").get.get
 
@@ -92,10 +93,15 @@ class TestJob extends FunSuite with BeforeAndAfterAll {
             )
         ))
 
-        val result = action1.perform(PhMapArgs(Map("df" -> PhDFArgs(testDF))))
+        val result = action1.perform(PhMapArgs(Map(
+            "df" -> PhDFArgs(testDF),
+            "sparkDriver" -> PhSparkDriverArgs(sd),
+            "logDriver" -> PhLogDriverArgs(PhLogDriver(formatMsg("test_user", "test_traceID", "test_jobID")))
+        )))
 
         println(result)
         result.toDFArgs.get.show(false)
+        assert(result.toDFArgs.get.columns.length == 7)
     }
 
     test("PhBaseJob") {
@@ -130,13 +136,17 @@ class TestJob extends FunSuite with BeforeAndAfterAll {
             )
         ))
 
-
         val job1 = PhBaseJob("testJob", PhMapArgs(), List(action1, action2))
-        val result = job1.perform(PhMapArgs(Map("df" -> PhDFArgs(testDF))))
+        val result = job1.perform(PhMapArgs(Map(
+            "df" -> PhDFArgs(testDF),
+            "sparkDriver" -> PhSparkDriverArgs(sd),
+            "logDriver" -> PhLogDriverArgs(PhLogDriver(formatMsg("test_user", "test_traceID", "test_jobID")))
+        )))
 
         println(result)
         result.toMapArgs.getAs[PhDFArgs]("testAction1").get.get.show(false)
         result.toMapArgs.getAs[PhDFArgs]("testAction2").get.get.show(false)
-        assert(result.toMapArgs.get.size === 3)
+        assert(result.toMapArgs.getAs[PhDFArgs]("testAction1").get.get.columns.length == 7)
+        assert(result.toMapArgs.getAs[PhDFArgs]("testAction2").get.get.columns.length == 10)
     }
 }
