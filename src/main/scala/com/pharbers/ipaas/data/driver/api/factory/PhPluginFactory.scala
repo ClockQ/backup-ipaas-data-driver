@@ -17,8 +17,11 @@
 
 package com.pharbers.ipaas.data.driver.api.factory
 
+import java.lang.reflect.InvocationTargetException
+
 import com.pharbers.ipaas.data.driver.api.model.Plugin
-import com.pharbers.ipaas.data.driver.api.work.{PhMapArgs, PhStringArgs, PhPluginTrait}
+import com.pharbers.ipaas.data.driver.api.work.{PhMapArgs, PhPluginTrait, PhStringArgs}
+import com.pharbers.ipaas.data.driver.exceptions.PhBuildJobException
 
 /** Plugin实体工厂
   *
@@ -37,16 +40,20 @@ case class PhPluginFactory(plugin: Plugin) extends PhFactoryTrait[PhPluginTrait[
             case null => Map[String, PhStringArgs]().empty
             case one => one.asScala.map(x => (x._1, PhStringArgs(x._2))).toMap
         }
-
-        val sub = plugin.getSub match {
-            case null => Seq()
-            case one: Plugin => Seq(getMethodMirror(one.getFactory)(one).asInstanceOf[PhFactoryTrait[PhPluginTrait[Any]]].inst())
+        try {
+            val sub = plugin.getSub match {
+                case null => Seq()
+                case one: Plugin => Seq(getMethodMirror(one.getFactory)(one).asInstanceOf[PhFactoryTrait[PhPluginTrait[Any]]].inst())
+            }
+            getMethodMirror(plugin.getReference)(
+                plugin.getName,
+                PhMapArgs(args),
+                sub
+            ).asInstanceOf[PhPluginTrait[Any]]
+        } catch {
+            case e: InvocationTargetException =>
+                throw PhBuildJobException(List(plugin.name + ":" + args.mkString(",")), e.getCause)
+            case e: Exception => throw e
         }
-
-        getMethodMirror(plugin.getReference)(
-            plugin.getName,
-            PhMapArgs(args),
-            sub
-        ).asInstanceOf[PhPluginTrait[Any]]
     }
 }

@@ -85,13 +85,13 @@ actions:
   opers:
   - name: select
     factory: com.pharbers.ipaas.data.driver.api.factory.PhOperatorFactory
-    reference: com.pharbers.ipaas.data.driver.operators.SelectOperator
+    reference: com.pharbers.ipaas.data.driver.operators.SelectOperatorOperator
     args:
       inDFName: panelData
       selects: YM#PRODUCT_ID
   - name: distinctByKey
     factory: com.pharbers.ipaas.data.driver.api.factory.PhOperatorFactory
-    reference: com.pharbers.ipaas.data.driver.operators.DistinctByKeyOperator
+    reference: com.pharbers.ipaas.data.driver.operators.DistinctByKeyOperatorOperator
     args:
       inDFName: select
       keys: YM#PRODUCT_ID
@@ -373,7 +373,7 @@ actions:
         exprString: YM as Int
   - name: select
     factory: com.pharbers.ipaas.data.driver.api.factory.PhOperatorFactory
-    reference: com.pharbers.ipaas.data.driver.operators.SelectOperator
+    reference: com.pharbers.ipaas.data.driver.operators.SelectOperatorOperator
     args:
       inDFName: cast String to Int
       selects: Date#HOSPITAL_ID#PRODUCT_ID#f_units#f_sales
@@ -425,7 +425,7 @@ actions:
       newColName: f_units
   - name: select
     factory: com.pharbers.ipaas.data.driver.api.factory.PhOperatorFactory
-    reference: com.pharbers.ipaas.data.driver.operators.SelectOperator
+    reference: com.pharbers.ipaas.data.driver.operators.SelectOperatorOperator
     args:
       inDFName: WithColumnRenamedf_units
       selects: Date#HOSPITAL_ID#PRODUCT_ID#f_units#f_sales
