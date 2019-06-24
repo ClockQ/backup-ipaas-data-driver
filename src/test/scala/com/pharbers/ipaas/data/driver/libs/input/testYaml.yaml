@@ -1,0 +1,71 @@
+name: job1
+reference: reference
+factory: factory
+actions:
+  - name: action1
+    reference: reference
+    factory: factory
+    opers:
+      - name: oper1
+        reference: reference
+        factory: factory
+        plugin:
+          name: plugin1
+          reference: reference
+          factory: factory
+          sub:
+            name: subPlugin1
+            reference: reference
+            factory: factory
+  - name: action2
+    reference: reference
+    factory: factory
+    opers:
+      - name: oper1
+        reference: reference
+        factory: factory
+        plugin:
+          name: plugin1
+          reference: reference
+          factory: factory
+          sub:
+            name: subPlugin1
+            reference: reference
+            factory: factory
+
+---
+
+name: job2
+reference: reference
+factory: factory
+actions:
+  - name: action1
+    reference: reference
+    factory: factory
+    opers:
+      - name: oper1
+        reference: reference
+        factory: factory
+        plugin:
+          name: plugin1
+          reference: reference
+          factory: factory
+          sub:
+            name: subPlugin1
+            reference: reference
+            factory: factory
+  - name: action2
+    reference: reference
+    factory: factory
+    opers:
+      - name: oper1
+        reference: reference
+        factory: factory
+        plugin:
+          name: plugin1
+          reference: reference
+          factory: factory
+          sub:
+            name: subPlugin1
+            reference: reference
+            factory: factory

@@ -1,0 +1,442 @@
+name: max
+factory: com.pharbers.ipaas.data.driver.api.factory.PhJobFactory
+reference: com.pharbers.ipaas.data.driver.api.job.PhBaseJob
+args:
+  panel: &panel hdfs:///workData/Panel/ql/2/201809
+  universe: &universe hdfs:///repository/universe_hosp/ql/2
+actions:
+- name: panelData
+  factory: com.pharbers.ipaas.data.driver.api.factory.PhActionFactory
+  reference: com.pharbers.ipaas.data.driver.api.job.PhBaseAction
+  opers:
+  - name: readParquet
+    factory: com.pharbers.ipaas.data.driver.api.factory.PhOperatorFactory
+    reference: com.pharbers.ipaas.data.driver.operators.ReadParquetOperator
+    args:
+      path: *panel
+- name: universeData
+  factory: com.pharbers.ipaas.data.driver.api.factory.PhActionFactory
+  reference: com.pharbers.ipaas.data.driver.api.job.PhBaseAction
+  opers:
+  - name: readCsv
+    factory: com.pharbers.ipaas.data.driver.api.factory.PhOperatorFactory
+    reference: com.pharbers.ipaas.data.driver.operators.ReadParquetOperator
+    args:
+      path: *universe
+- name: universeDF
+  factory: com.pharbers.ipaas.data.driver.api.factory.PhActionFactory
+  reference: com.pharbers.ipaas.data.driver.api.job.PhBaseAction
+  opers:
+  - name: dropId
+    factory: com.pharbers.ipaas.data.driver.api.factory.PhOperatorFactory
+    reference: com.pharbers.ipaas.data.driver.operators.DropOperator
+    args:
+      inDFName: universeData
+      drops: _id
+  - name: withColumnRenamedIS_PANEL_HOSP
+    factory: com.pharbers.ipaas.data.driver.api.factory.PhOperatorFactory
+    reference: com.pharbers.ipaas.data.driver.operators.WithColumnRenamedOperator
+    args:
+      inDFName: dropId
+      oldColName: IF_PANEL_ALL
+      newColName: IS_PANEL_HOSP
+  - name: withColumnRenamedNEED_MAX_HOSP
+    factory: com.pharbers.ipaas.data.driver.api.factory.PhOperatorFactory
+    reference: com.pharbers.ipaas.data.driver.operators.WithColumnRenamedOperator
+    args:
+      inDFName: withColumnRenamedIS_PANEL_HOSP
+      oldColName: IF_PANEL_TO_USE
+      newColName: NEED_MAX_HOSP
+
+- name: panelSummed
+  factory: com.pharbers.ipaas.data.driver.api.factory.PhActionFactory
+  reference: com.pharbers.ipaas.data.driver.api.job.PhBaseAction
+  opers:
+  - name: concant
+    factory: com.pharbers.ipaas.data.driver.api.factory.PhOperatorFactory
+    reference: com.pharbers.ipaas.data.driver.operators.AddColumnOperator
+    args:
+      inDFName: panelData
+      newColName: GROUP
+    plugin:
+      name: concat
+      factory: com.pharbers.ipaas.data.driver.api.factory.PhPluginFactory
+      reference: com.pharbers.ipaas.data.driver.plugins.ConcatStrPlugin
+      args:
+        columns: YM#HOSPITAL_ID#PRODUCT_ID
+        dilimiter: +
+  - name:  group
+    factory: com.pharbers.ipaas.data.driver.api.factory.PhOperatorFactory
+    reference: com.pharbers.ipaas.data.driver.operators.GroupOperator
+    args:
+      inDFName: concant
+      groups: GROUP
+      aggExprs: sum(UNITS) as sumUnits#sum(SALES) as sumSales#first(YM) as P_YM#first(HOSPITAL_ID) as P_HOSPITAL_ID#first(PRODUCT_ID) as P_PRODUCT_ID
+  - name: drop
+    factory: com.pharbers.ipaas.data.driver.api.factory.PhOperatorFactory
+    reference: com.pharbers.ipaas.data.driver.operators.DropOperator
+    args:
+      inDFName: group
+      drops: GROUP
+
+- name: joinDataWithEmptyValue
+  factory: com.pharbers.ipaas.data.driver.api.factory.PhActionFactory
+  reference: com.pharbers.ipaas.data.driver.api.job.PhBaseAction
+  opers:
+  - name: select
+    factory: com.pharbers.ipaas.data.driver.api.factory.PhOperatorFactory
+    reference: com.pharbers.ipaas.data.driver.operators.SelectOperator
+    args:
+      inDFName: panelData
+      selects: YM#PRODUCT_ID
+  - name: distinctByKey
+    factory: com.pharbers.ipaas.data.driver.api.factory.PhOperatorFactory
+    reference: com.pharbers.ipaas.data.driver.operators.DistinctByKeyOperator
+    args:
+      inDFName: select
+      keys: YM#PRODUCT_ID
+  - name: cross
+    factory: com.pharbers.ipaas.data.driver.api.factory.PhOperatorFactory
+    reference: com.pharbers.ipaas.data.driver.operators.JoinOperator
+    args:
+      inDFName: distinctByKey
+      joinDFName: universeDF
+      joinExpr: TRUE
+      joinType: cross
+
+- name: joinData
+  reference: com.pharbers.ipaas.data.driver.api.job.PhBaseAction
+  factory: com.pharbers.ipaas.data.driver.api.factory.PhActionFactory
+  opers:
+  - name: JoinOperator
+    factory: com.pharbers.ipaas.data.driver.api.factory.PhOperatorFactory
+    reference: com.pharbers.ipaas.data.driver.operators.JoinOperator
+    args:
+      inDFName: joinDataWithEmptyValue
+      joinDFName: panelSummed
+      joinExpr: HOSPITAL_ID == P_HOSPITAL_ID AND YM == P_YM AND PRODUCT_ID == P_PRODUCT_ID
+      joinType: left
+  - name: fillNullSales
+    factory: com.pharbers.ipaas.data.driver.api.factory.PhOperatorFactory
+    reference: com.pharbers.ipaas.data.driver.operators.AddColumnOperator
+    args:
+      inDFName: JoinOperator
+      newColName: j_sumSales
+    plugin:
+      name: FillColumnPlugin
+      factory: com.pharbers.ipaas.data.driver.api.factory.PhPluginFactory
+      reference: com.pharbers.ipaas.data.driver.plugins.WhenPlugin
+      args:
+        condition: "sumSales IS NULL"
+        value: 0.0
+      sub:
+        name: FillColumnPlugin
+        factory: com.pharbers.ipaas.data.driver.api.factory.PhPluginFactory
+        reference: com.pharbers.ipaas.data.driver.plugins.ExprPlugin
+        args:
+          exprString: "sumSales"
+  - name: fillNullUnits
+    factory: com.pharbers.ipaas.data.driver.api.factory.PhOperatorFactory
+    reference: com.pharbers.ipaas.data.driver.operators.AddColumnOperator
+    args:
+      inDFName: fillNullSales
+      newColName: j_sumUnits
+    plugin:
+      name: FillColumnPlugin
+      factory: com.pharbers.ipaas.data.driver.api.factory.PhPluginFactory
+      reference: com.pharbers.ipaas.data.driver.plugins.WhenPlugin
+      args:
+        condition: "sumUnits IS NULL"
+        value: 0.0
+      sub:
+        name: FillColumnPlugin
+        factory: com.pharbers.ipaas.data.driver.api.factory.PhPluginFactory
+        reference: com.pharbers.ipaas.data.driver.plugins.ExprPlugin
+        args:
+          exprString: "sumUnits"
+  - name: drop sumSales,sumUnits
+    factory: com.pharbers.ipaas.data.driver.api.factory.PhOperatorFactory
+    reference: com.pharbers.ipaas.data.driver.operators.DropOperator
+    args:
+      inDFName: fillNullUnits
+      drops: sumSales#sumUnits
+  - name: withColumnRenamedSumSales
+    factory: com.pharbers.ipaas.data.driver.api.factory.PhOperatorFactory
+    reference: com.pharbers.ipaas.data.driver.operators.WithColumnRenamedOperator
+    args:
+      inDFName: drop sumSales,sumUnits
+      oldColName: j_sumSales
+      newColName: sumSales
+  - name: withColumnRenamedSumUnits
+    factory: com.pharbers.ipaas.data.driver.api.factory.PhOperatorFactory
+    reference: com.pharbers.ipaas.data.driver.operators.WithColumnRenamedOperator
+    args:
+      inDFName: withColumnRenamedSumSales
+      oldColName: j_sumUnits
+      newColName: sumUnits
+
+- name: segmentDF
+  factory: com.pharbers.ipaas.data.driver.api.factory.PhActionFactory
+  reference: com.pharbers.ipaas.data.driver.api.job.PhBaseAction
+  opers:
+  - name: filtered
+    factory: com.pharbers.ipaas.data.driver.api.factory.PhOperatorFactory
+    reference: com.pharbers.ipaas.data.driver.operators.ExprFilterOperator
+    args:
+      inDFName: joinData
+      filter: NEED_MAX_HOSP == 1
+  - name: concant
+    factory: com.pharbers.ipaas.data.driver.api.factory.PhOperatorFactory
+    reference: com.pharbers.ipaas.data.driver.operators.AddColumnOperator
+    args:
+      inDFName: filtered
+      newColName: GROUP
+    plugin:
+      name: concat
+      factory: com.pharbers.ipaas.data.driver.api.factory.PhPluginFactory
+      reference: com.pharbers.ipaas.data.driver.plugins.ConcatStrPlugin
+      args:
+        columns: SEGMENT#PRODUCT_ID#YM
+        dilimiter: +
+  - name: group
+    factory: com.pharbers.ipaas.data.driver.api.factory.PhOperatorFactory
+    reference: com.pharbers.ipaas.data.driver.operators.GroupOperator
+    args:
+      inDFName: concant
+      groups: GROUP
+      aggExprs: sum(sumSales) as s_sumSales#sum(sumUnits) as s_sumUnits#sum(WEST_MEDICINE_INCOME) as s_westMedicineIncome#first(SEGMENT) as SEGMENT#first(PRODUCT_ID) as PRODUCT_ID#first(YM) as YM
+  - name: drop
+    factory: com.pharbers.ipaas.data.driver.api.factory.PhOperatorFactory
+    reference: com.pharbers.ipaas.data.driver.operators.DropOperator
+    args:
+      inDFName: group
+      drops: GROUP
+  - name: withColumnRenameds_SEGMENT
+    factory: com.pharbers.ipaas.data.driver.api.factory.PhOperatorFactory
+    reference: com.pharbers.ipaas.data.driver.operators.WithColumnRenamedOperator
+    args:
+      inDFName: drop
+      oldColName: SEGMENT
+      newColName: s_SEGMENT
+  - name: withColumnRenameds_PRODUCT_ID
+    factory: com.pharbers.ipaas.data.driver.api.factory.PhOperatorFactory
+    reference: com.pharbers.ipaas.data.driver.operators.WithColumnRenamedOperator
+    args:
+      inDFName: withColumnRenameds_SEGMENT
+      oldColName: PRODUCT_ID
+      newColName: s_PRODUCT_ID
+  - name: withColumnRenameds_YM
+    factory: com.pharbers.ipaas.data.driver.api.factory.PhOperatorFactory
+    reference: com.pharbers.ipaas.data.driver.operators.WithColumnRenamedOperator
+    args:
+      inDFName: withColumnRenameds_PRODUCT_ID
+      oldColName: YM
+      newColName: s_YM
+  - name: avg_Sales
+    factory: com.pharbers.ipaas.data.driver.api.factory.PhOperatorFactory
+    reference: com.pharbers.ipaas.data.driver.operators.AddColumnOperator
+    args:
+      inDFName: withColumnRenameds_YM
+      newColName: avg_Sales
+    plugin:
+      name: BaseCalcPlugin
+      factory: com.pharbers.ipaas.data.driver.api.factory.PhPluginFactory
+      reference: com.pharbers.ipaas.data.driver.plugins.ExprPlugin
+      args:
+        exprString: s_sumSales / s_westMedicineIncome
+  - name: avg_Units
+    factory: com.pharbers.ipaas.data.driver.api.factory.PhOperatorFactory
+    reference: com.pharbers.ipaas.data.driver.operators.AddColumnOperator
+    args:
+      inDFName: avg_Sales
+      newColName: avg_Units
+    plugin:
+      name: BaseCalcPlugin
+      factory: com.pharbers.ipaas.data.driver.api.factory.PhPluginFactory
+      reference: com.pharbers.ipaas.data.driver.plugins.ExprPlugin
+      args:
+        exprString: s_sumUnits / s_westMedicineIncome
+  - name: drop s_sumSales,s_sumUnits,s_westMedicineIncome
+    factory: com.pharbers.ipaas.data.driver.api.factory.PhOperatorFactory
+    reference: com.pharbers.ipaas.data.driver.operators.DropOperator
+    args:
+      inDFName: avg_Units
+      drops: s_sumSales#s_sumUnits#s_westMedicineIncome
+
+- name: enlargedDF
+  factory: com.pharbers.ipaas.data.driver.api.factory.PhActionFactory
+  reference: com.pharbers.ipaas.data.driver.api.job.PhBaseAction
+  opers:
+  - name: join
+    factory: com.pharbers.ipaas.data.driver.api.factory.PhOperatorFactory
+    reference: com.pharbers.ipaas.data.driver.operators.JoinOperator
+    args:
+      inDFName: joinData
+      joinDFName: segmentDF
+      joinExpr: SEGMENT == s_SEGMENT AND PRODUCT_ID == s_PRODUCT_ID AND YM == s_YM
+      joinType: inner
+  - name: drop s_SEGMENT,s_PRODUCT_ID,s_YM
+    factory: com.pharbers.ipaas.data.driver.api.factory.PhOperatorFactory
+    reference: com.pharbers.ipaas.data.driver.operators.DropOperator
+    args:
+      inDFName: join
+      drops: s_SEGMENT,s_PRODUCT_ID,s_YM
+  - name: cast String to Int
+    factory: com.pharbers.ipaas.data.driver.api.factory.PhOperatorFactory
+    reference: com.pharbers.ipaas.data.driver.operators.AddColumnOperator
+    args:
+      inDFName: drop s_SEGMENT,s_PRODUCT_ID,s_YM
+      newColName: Factor
+    plugin:
+      name: BaseCalcPlugin
+      factory: com.pharbers.ipaas.data.driver.api.factory.PhPluginFactory
+      reference: com.pharbers.ipaas.data.driver.plugins.ExprPlugin
+      args:
+        exprString: Factor as Double
+  - name: filter factor
+    factory: com.pharbers.ipaas.data.driver.api.factory.PhOperatorFactory
+    reference: com.pharbers.ipaas.data.driver.operators.ExprFilterOperator
+    args:
+      inDFName: cast String to Int
+      filter: Factor > 0.0
+  - name: addCol f_sales
+    factory: com.pharbers.ipaas.data.driver.api.factory.PhOperatorFactory
+    reference: com.pharbers.ipaas.data.driver.operators.AddColumnOperator
+    args:
+      inDFName: filter factor
+      newColName: f_sales
+    plugin:
+      name: BaseCalcPlugin
+      factory: com.pharbers.ipaas.data.driver.api.factory.PhPluginFactory
+      reference: com.pharbers.ipaas.data.driver.plugins.ExprPlugin
+      args:
+        exprString: case when IS_PANEL_HOSP == 1 then sumSales when avg_Sales <= 0.0 or avg_Units  <= 0.0 then 0.0 else WEST_MEDICINE_INCOME * Factor * avg_Sales  end
+  - name: cast String to Double
+    factory: com.pharbers.ipaas.data.driver.api.factory.PhOperatorFactory
+    reference: com.pharbers.ipaas.data.driver.operators.AddColumnOperator
+    args:
+      inDFName: addCol f_sales
+      newColName: f_sales
+    plugin:
+      name: BaseCalcPlugin
+      factory: com.pharbers.ipaas.data.driver.api.factory.PhPluginFactory
+      reference: com.pharbers.ipaas.data.driver.plugins.ExprPlugin
+      args:
+        exprString: f_sales as Double
+  - name: addCol f_units
+    factory: com.pharbers.ipaas.data.driver.api.factory.PhOperatorFactory
+    reference: com.pharbers.ipaas.data.driver.operators.AddColumnOperator
+    args:
+      inDFName: cast String to Double
+      newColName: f_units
+    plugin:
+      name: BaseCalcPlugin
+      factory: com.pharbers.ipaas.data.driver.api.factory.PhPluginFactory
+      reference: com.pharbers.ipaas.data.driver.plugins.ExprPlugin
+      args:
+        exprString: case when IS_PANEL_HOSP == 1 then sumUnits when avg_Sales <= 0.0 or avg_Units  <= 0.0 then 0.0 else WEST_MEDICINE_INCOME * avg_Units * Factor end
+  - name: cast String to Double
+    factory: com.pharbers.ipaas.data.driver.api.factory.PhOperatorFactory
+    reference: com.pharbers.ipaas.data.driver.operators.AddColumnOperator
+    args:
+      inDFName: addCol f_units
+      newColName: f_units
+    plugin:
+      name: BaseCalcPlugin
+      factory: com.pharbers.ipaas.data.driver.api.factory.PhPluginFactory
+      reference: com.pharbers.ipaas.data.driver.plugins.ExprPlugin
+      args:
+        exprString: f_units as Double
+  - name: drop s_sumSales,s_sumUnits,s_westMedicineIncome
+    factory: com.pharbers.ipaas.data.driver.api.factory.PhOperatorFactory
+    reference: com.pharbers.ipaas.data.driver.operators.DropOperator
+    args:
+      inDFName: cast String to Double
+      drops: s_sumSales,s_sumUnits,s_westMedicineIncome
+  - name: filter IS_PANEL_HOSP
+    factory: com.pharbers.ipaas.data.driver.api.factory.PhOperatorFactory
+    reference: com.pharbers.ipaas.data.driver.operators.ExprFilterOperator
+    args:
+      inDFName: drop s_sumSales,s_sumUnits,s_westMedicineIncome
+      filter: IS_PANEL_HOSP == 0 AND (f_units != 0.0 AND f_sales != 0.0)
+  - name: cast String to Int
+    factory: com.pharbers.ipaas.data.driver.api.factory.PhOperatorFactory
+    reference: com.pharbers.ipaas.data.driver.operators.AddColumnOperator
+    args:
+      inDFName: filter IS_PANEL_HOSP
+      newColName: Date
+    plugin:
+      name: BaseCalcPlugin
+      factory: com.pharbers.ipaas.data.driver.api.factory.PhPluginFactory
+      reference: com.pharbers.ipaas.data.driver.plugins.ExprPlugin
+      args:
+        exprString: YM as Int
+  - name: select
+    factory: com.pharbers.ipaas.data.driver.api.factory.PhOperatorFactory
+    reference: com.pharbers.ipaas.data.driver.operators.SelectOperator
+    args:
+      inDFName: cast String to Int
+      selects: Date#HOSPITAL_ID#PRODUCT_ID#f_units#f_sales
+
+- name: backfillDF
+  factory: com.pharbers.ipaas.data.driver.api.factory.PhActionFactory
+  reference: com.pharbers.ipaas.data.driver.api.job.PhBaseAction
+  opers:
+  - name: WithColumnRenamedP_HOSPITAL_ID
+    factory: com.pharbers.ipaas.data.driver.api.factory.PhOperatorFactory
+    reference: com.pharbers.ipaas.data.driver.operators.WithColumnRenamedOperator
+    args:
+      inDFName: panelData
+      oldColName: HOSPITAL_ID
+      newColName: P_HOSPITAL_ID
+  - name: join
+    factory: com.pharbers.ipaas.data.driver.api.factory.PhOperatorFactory
+    reference: com.pharbers.ipaas.data.driver.operators.JoinOperator
+    args:
+      inDFName: WithColumnRenamedP_HOSPITAL_ID
+      joinDFName: universeDF
+      joinExpr: P_HOSPITAL_ID == HOSPITAL_ID
+      joinType: inner
+  - name: addColumn
+    factory: com.pharbers.ipaas.data.driver.api.factory.PhOperatorFactory
+    reference: com.pharbers.ipaas.data.driver.operators.AddColumnOperator
+    args:
+      inDFName: join
+      newColName: Date
+    plugin:
+      name: BaseCalcPlugin
+      factory: com.pharbers.ipaas.data.driver.api.factory.PhPluginFactory
+      reference: com.pharbers.ipaas.data.driver.plugins.ExprPlugin
+      args:
+        exprString: YM as Int
+  - name: WithColumnRenamedf_sales
+    factory: com.pharbers.ipaas.data.driver.api.factory.PhOperatorFactory
+    reference: com.pharbers.ipaas.data.driver.operators.WithColumnRenamedOperator
+    args:
+      inDFName: addColumn
+      oldColName: Sales
+      newColName: f_sales
+  - name: WithColumnRenamedf_units
+    factory: com.pharbers.ipaas.data.driver.api.factory.PhOperatorFactory
+    reference: com.pharbers.ipaas.data.driver.operators.WithColumnRenamedOperator
+    args:
+      inDFName: WithColumnRenamedf_sales
+      oldColName: Units
+      newColName: f_units
+  - name: select
+    factory: com.pharbers.ipaas.data.driver.api.factory.PhOperatorFactory
+    reference: com.pharbers.ipaas.data.driver.operators.SelectOperator
+    args:
+      inDFName: WithColumnRenamedf_units
+      selects: Date#HOSPITAL_ID#PRODUCT_ID#f_units#f_sales
+
+- name: maxResult
+  factory: com.pharbers.ipaas.data.driver.api.factory.PhActionFactory
+  reference: com.pharbers.ipaas.data.driver.api.job.PhBaseAction
+  opers:
+  - name: union
+    factory: com.pharbers.ipaas.data.driver.api.factory.PhOperatorFactory
+    reference: com.pharbers.ipaas.data.driver.operators.UnionOperator
+    args:
+      inDFName: backfillDF
+      unionDFName: enlargedDF

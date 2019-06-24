@@ -1,0 +1,114 @@
+name: cleanUniverse
+factory: com.pharbers.ipaas.data.driver.api.factory.PhJobFactory
+reference: com.pharbers.ipaas.data.driver.api.job.PhBaseJob
+args:
+  universe: &universe hdfs:///data/xlt/XLT_Universe_XLT_20181115.csv
+actions:
+- name: universeDF
+  factory: com.pharbers.ipaas.data.driver.api.factory.PhActionFactory
+  reference: com.pharbers.ipaas.data.driver.api.job.PhBaseAction
+  opers:
+  - name: universeDF
+    factory: com.pharbers.ipaas.data.driver.api.factory.PhOperatorFactory
+    reference: com.pharbers.ipaas.data.driver.operators.ReadCsvOperator
+    args:
+      path: *universe
+      delimiter: ","
+  - name: WithColumnRenamedPHA_ID_OLD
+    factory: com.pharbers.ipaas.data.driver.api.factory.PhOperatorFactory
+    reference: com.pharbers.ipaas.data.driver.operators.WithColumnRenamedOperator
+    args:
+      inDFName: universeDF
+      oldColName: PHA_HOSP_ID
+      newColName: PHA_ID_OLD
+
+- name: phaERD
+  factory: com.pharbers.ipaas.data.driver.api.factory.PhActionFactory
+  reference: com.pharbers.ipaas.data.driver.api.job.PhBaseAction
+  opers:
+  - name: readPha
+    factory: com.pharbers.ipaas.data.driver.api.factory.PhOperatorFactory
+    reference: com.pharbers.ipaas.data.driver.operators.ReadParquetOperator
+    args:
+      path: /repository/pha
+  - name: distinctByKey
+    factory: com.pharbers.ipaas.data.driver.api.factory.PhOperatorFactory
+    reference: com.pharbers.ipaas.data.driver.operators.DistinctByKeyOperator
+    args:
+      inDFName: readPha
+      keys: PHA_ID
+
+- name: hospDIS
+  factory: com.pharbers.ipaas.data.driver.api.factory.PhActionFactory
+  reference: com.pharbers.ipaas.data.driver.api.job.PhBaseAction
+  opers:
+  - name: readHosp
+    factory: com.pharbers.ipaas.data.driver.api.factory.PhOperatorFactory
+    reference: com.pharbers.ipaas.data.driver.operators.ReadParquetOperator
+    args:
+      path: /repository/hosp_dis_max
+  - name: select
+    factory: com.pharbers.ipaas.data.driver.api.factory.PhOperatorFactory
+    reference: com.pharbers.ipaas.data.driver.operators.SelectOperator
+    args:
+      inDFName: readHosp
+      selects: HOSPITAL_ID#PHA_HOSP_ID
+  - name: distinctByKey
+    factory: com.pharbers.ipaas.data.driver.api.factory.PhOperatorFactory
+    reference: com.pharbers.ipaas.data.driver.operators.DistinctByKeyOperator
+    args:
+      inDFName: select
+      keys: PHA_HOSP_ID
+
+- name: joinHosp
+  factory: com.pharbers.ipaas.data.driver.api.factory.PhActionFactory
+  reference: com.pharbers.ipaas.data.driver.api.job.PhBaseAction
+  opers:
+  - name: joinPha
+    factory: com.pharbers.ipaas.data.driver.api.factory.PhOperatorFactory
+    reference: com.pharbers.ipaas.data.driver.operators.JoinOperator
+    args:
+      inDFName: universeDF
+      joinDFName: phaERD
+      joinExpr: PHA_ID_OLD = PHA_ID
+      joinType: left
+  - name: joinHosp
+    factory: com.pharbers.ipaas.data.driver.api.factory.PhOperatorFactory
+    reference: com.pharbers.ipaas.data.driver.operators.JoinOperator
+    args:
+      inDFName: joinPha
+      joinDFName: hospDIS
+      joinExpr: PHA_ID_NEW = PHA_HOSP_ID
+      joinType: left
+
+- name: universeERD
+  factory: com.pharbers.ipaas.data.driver.api.factory.PhActionFactory
+  reference: com.pharbers.ipaas.data.driver.api.job.PhBaseAction
+  opers:
+  - name: addColumnHOSPITAL_ID
+    factory: com.pharbers.ipaas.data.driver.api.factory.PhOperatorFactory
+    reference: com.pharbers.ipaas.data.driver.operators.AddColumnOperator
+    args:
+      inDFName: joinHosp
+      newColName: HOSPITAL_ID
+    plugin:
+      name: HOSPITAL_ID IS NULL
+      factory: com.pharbers.ipaas.data.driver.api.factory.PhPluginFactory
+      reference: com.pharbers.ipaas.data.driver.plugins.WhenPlugin
+      args:
+        condition: HOSPITAL_ID IS NULL
+        value: concat('other', PHA_ID)
+      sub:
+        name: HOSPITAL_ID NOT NULL
+        factory: com.pharbers.ipaas.data.driver.api.factory.PhPluginFactory
+        reference: com.pharbers.ipaas.data.driver.plugins.ExprPlugin
+        args:
+          exprString: HOSPITAL_ID
+  - name: distinctByKey
+    factory: com.pharbers.ipaas.data.driver.api.factory.PhOperatorFactory
+    reference: com.pharbers.ipaas.data.driver.operators.DistinctByKeyOperator
+    args:
+      inDFName: addColumnHOSPITAL_ID
+      keys: HOSPITAL_ID
+      chooseBy: IF_PANEL_TO_USE
+      chooseFun: max
