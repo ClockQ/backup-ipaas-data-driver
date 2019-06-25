@@ -17,44 +17,36 @@
 
 package com.pharbers.ipaas.data.driver.operators
 
-import com.pharbers.ipaas.data.driver.api.work.{PhDFArgs, PhMapArgs, PhOperatorTrait, PhPluginTrait, PhStringArgs, PhWorkArgs}
 import org.apache.spark.sql.{Column, DataFrame}
-import org.apache.spark.sql.functions._
+import org.apache.spark.sql.functions.expr
+import com.pharbers.ipaas.data.driver.api.work._
 
-/** 功能描述
-  * 聚合算子
-  * @param plugin 插件
-  * @param name 算子 name
-  * @param defaultArgs 配置参数 "inDFName"-> pr中的df名， "groupCol" -> 分组列， "agg" -> 聚合表达式
-  * @author dcs
-  * @version 0.0
-  * @since 2019/6/11 16:50
-  * @note 一些值得注意的地方
+/** 利用GroupBy对数据集去重（稳定去重算法）
+  *
+  * @author clock
+  * @version 0.1
+  * @since 2019-05-28 17:21
+  * @example 默认参数例子
+  * {{{
+  * inDFName: actionName // 要作用的 DataFrame 名字
+  * groups: col_1#col_2 // group 的列集合，用`#`号分割
+  * aggExprs: sum(UNITS) as UNITS // group 的 聚合操作集合，用`#`号分割
+  * }}}
   */
-case class groupOperator(name: String,
+case class GroupOperator(name: String,
                          defaultArgs: PhMapArgs[PhWorkArgs[Any]],
-                         pluginLst: Seq[PhPluginTrait[Column]]) extends PhOperatorTrait[DataFrame]  {
-    val defaultMapArgs: PhMapArgs[PhWorkArgs[_]] = defaultArgs.toMapArgs[PhWorkArgs[_]]
-    val inDFName: String = defaultMapArgs.getAs[PhStringArgs]("inDFName").get.get
-    val groupCol: String = defaultMapArgs.getAs[PhStringArgs]("groupCol").get.get
-    val agg: Array[Column] = defaultMapArgs.getAs[PhStringArgs]("agg").get.get.split("#").map(x => expr(x))
+                         pluginLst: Seq[PhPluginTrait[Column]])
+        extends PhOperatorTrait[DataFrame] {
+    /** 要作用的 DataFrame 名字 */
+    val inDFName: String = defaultArgs.getAs[PhStringArgs]("inDFName").get.get
+    /** group 的列集合，用`#`号分割 */
+    val groups: Array[String] = defaultArgs.getAs[PhStringArgs]("groups").get.get.split("#")
+    /** group 的 聚合操作集合，用`#`号分割 */
+    val aggExprs: Array[Column] = defaultArgs.getAs[PhStringArgs]("aggExprs").get.get.split("#").map(x => expr(x))
 
-    /** 功能描述
-      *聚合
-
-      * @param pr 运行时储存之前action和算子所在action之前算子的结果
-      * @return _root_.com.pharbers.ipaas.data.driver.api.work.PhWorkArgs[_]
-      * @author EDZ
-      * @version 0.0
-      * @since 2019/6/11 17:14
-      * @note 一些值得注意的地方
-      * @example {{{这是一个例子}}}
-      */
     override def perform(pr: PhMapArgs[PhWorkArgs[Any]]): PhWorkArgs[DataFrame] = {
-
-        val prMapArgs = pr.toMapArgs[PhWorkArgs[_]]
-        val inDF = prMapArgs.getAs[PhDFArgs](inDFName).get.get
-        val outDF = inDF.groupBy(groupCol).agg(agg.head ,agg.tail: _*)
+        val inDF = pr.getAs[PhDFArgs](inDFName).get.get
+        val outDF = inDF.groupBy(groups.head, groups.tail: _*).agg(aggExprs.head ,aggExprs.tail: _*)
         PhDFArgs(outDF)
     }
 }
