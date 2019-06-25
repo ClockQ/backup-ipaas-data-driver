@@ -17,38 +17,35 @@
 
 package com.pharbers.ipaas.data.driver.plugins
 
-import com.pharbers.ipaas.data.driver.api.work._
+import com.pharbers.ipaas.data.driver.api.work.{PhColArgs, PhListArgs, PhMapArgs, PhNoneArgs, PhOperatorTrait, PhPluginTrait, PhStringArgs, PhWorkArgs}
 import org.apache.spark.sql.Column
 import org.apache.spark.sql.expressions.Window
-import org.apache.spark.sql.functions.{col, first}
-import org.apache.spark.sql.types.IntegerType
+import org.apache.spark.sql.functions._
 
-/** 计算同比
-  * 同比 （当月 - 去年当月） / 去年当月
+/** 计算占比
   *
   * @author dcs
   * @version 0.1
   * @since 2019/6/24 15:16
-  * @example df.CalcYearGrowth("$name", CalcMat().CalcRankByWindow(PhMapArgs).get)
-  *          {{{
-  *                valueColumnName: String 值所在列名
-  *                dateColName: String 日期所在列名
-  *                partitionColumnNames: List[String] 需要分组列的集合
-  *          }}}
+  * @example df.CalcShare("$name", CalcMat().CalcRankByWindow(PhMapArgs).get)
+  * @note 环比 = （当月 - 上月） / 上月
+  * {{{
+  *       valueColumnName: String 值所在列名
+  *       partitionColumnNames: List[String] 需要分组列的集合
+  * }}}
   */
-case class CalcYearGrowth(name: String,
-                          defaultArgs: PhMapArgs[PhWorkArgs[Any]],
-                          subPluginLst: Seq[PhPluginTrait[Column]])
+
+case class CalcSharePlugin(name: String,
+                           defaultArgs: PhMapArgs[PhWorkArgs[Any]],
+                           subPluginLst: Seq[PhPluginTrait[Column]])
 	extends PhPluginTrait[Column] {
-	//	值所在列名
+	/**	值所在列名 */
 	val valueColumnName: String = defaultArgs.getAs[PhStringArgs]("valueColumnName").get.get
-	//	日期所在列名
-	val dateColName: String = defaultArgs.getAs[PhStringArgs]("dateColName").get.get
-	//	需要分组列的集合
+	/**	需要分组列的集合 */
 	val partitionColumnNames: List[String] = defaultArgs.getAs[PhListArgs[String]]("partitionColumnNames").get.get
 
 	override def perform(pr: PhMapArgs[PhWorkArgs[Any]]): PhWorkArgs[Column] = {
-		val windowYearOnYear = Window.partitionBy(partitionColumnNames.map(x => col(x)): _*).orderBy(col(dateColName).cast(IntegerType)).rangeBetween(-100, -100)
-		PhColArgs((col(valueColumnName) - first(col(valueColumnName)).over(windowYearOnYear)) / first(col(valueColumnName)).over(windowYearOnYear))
+		val windowYearOnYear = Window.partitionBy(partitionColumnNames.map(x => col(x)): _*).rowsBetween(Window.unboundedPreceding, Window.unboundedFollowing)
+		PhColArgs(col(valueColumnName) / sum(col(valueColumnName)).over(windowYearOnYear))
 	}
 }

@@ -17,27 +17,33 @@
 
 package com.pharbers.ipaas.data.driver.plugins
 
-import com.pharbers.ipaas.data.driver.api.work.{PhColArgs, PhListArgs, PhMapArgs, PhNoneArgs, PhPluginTrait, PhStringArgs, PhWorkArgs}
+import com.pharbers.ipaas.data.driver.api.work.{PhColArgs, PhListArgs, PhMapArgs, PhPluginTrait, PhStringArgs, PhWorkArgs}
 import org.apache.spark.sql.Column
+import org.apache.spark.sql.expressions.Window
 import org.apache.spark.sql.functions._
 
-/** 功能描述
+/** 排序
   *
+  * @author dcs
   * @version 0.1
   * @since 2019/6/24 15:16
-  * @example
+  * @example 默认参数例子
   * {{{
-  *      oidColName: String oid所在列名
+  *      valueColumnName: String 值所在列名
+  *      partitionColumnNames: List[String] 需要分组列的集合
   * }}}
   */
-case class Oid2Id(name: String,
-                  defaultArgs: PhMapArgs[PhWorkArgs[Any]],
-                  subPluginLst: Seq[PhPluginTrait[Column]])
+case class CalcRankByWindowPlugin(name: String,
+                                  defaultArgs: PhMapArgs[PhWorkArgs[Any]],
+                                  subPluginLst: Seq[PhPluginTrait[Column]])
 	extends PhPluginTrait[Column] {
-
-	val oidColName: String = defaultArgs.getAs[String]("oidColName").get
+	/** 值所在列名 */
+	val valueColumnName: String = defaultArgs.getAs[PhStringArgs]("valueColumnName").get.get
+	/**	需要分组列的集合 */
+	val partitionColumnNames: List[String] = defaultArgs.getAs[PhListArgs[String]]("partitionColumnNames").get.get
 
 	override def perform(pr: PhMapArgs[PhWorkArgs[Any]]): PhWorkArgs[Column] = {
-        PhColArgs(lit(col(oidColName)("oid")))
-    }
+		val windowYearOnYear = Window.partitionBy(partitionColumnNames.map(x => col(x)): _*).orderBy(col(valueColumnName).desc)
+		PhColArgs(rank().over(windowYearOnYear))
+	}
 }

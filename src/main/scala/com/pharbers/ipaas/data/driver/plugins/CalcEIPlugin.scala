@@ -23,27 +23,28 @@ import org.apache.spark.sql.expressions.Window
 import org.apache.spark.sql.functions._
 import org.apache.spark.sql.types.IntegerType
 
-/** 计算EI（今年的share/去年同期的share）
+/** 计算EI
   *
   * @author dcs
   * @version 0.1
   * @since 2019/6/24 15:16
   * @example 默认参数例子
+  * @note EI : 今年的share / 去年同期的share
   * {{{
   *     valueColumnName: String 值所在列名
   *     dateColName: String 日期所在列名
   *     partitionColumnNames: List[String] 需要分组列的集合
   * }}}
   */
-case class CalcEI(name: String,
-                  defaultArgs: PhMapArgs[PhWorkArgs[Any]],
-                  subPluginLst: Seq[PhPluginTrait[Column]])
+case class CalcEIPlugin(name: String,
+                        defaultArgs: PhMapArgs[PhWorkArgs[Any]],
+                        subPluginLst: Seq[PhPluginTrait[Column]])
 	extends PhPluginTrait[Column] {
-//	值所在列名
+    /** 值所在列名 */
 	val valueColumnName: String = defaultArgs.getAs[PhStringArgs]("valueColumnName").get.get
-//	日期所在列名
+	/** 日期所在列名 */
 	val dateColName: String = defaultArgs.getAs[PhStringArgs]("dateColName").get.get
-//	需要分组列的集合
+	/** 需要分组列的集合 */
 	val partitionColumnNames: List[String] = defaultArgs.getAs[PhListArgs[String]]("partitionColumnNames").get.get
     override def perform(pr: PhMapArgs[PhWorkArgs[Any]]): PhWorkArgs[Column] = {
         val windowYearOnYear = Window.partitionBy(partitionColumnNames.map(x => col(x)): _*).orderBy(col(dateColName).cast(IntegerType)).rangeBetween(-100, -100)

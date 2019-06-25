@@ -36,7 +36,7 @@ case class SplitPlugin(name: String,
                        defaultArgs: PhMapArgs[PhWorkArgs[Any]],
                        subPluginLst: Seq[PhPluginTrait[Column]])
 	extends PhPluginTrait[Column] {
-//	要转换的列名
+	/** 要转换的列名 */
 	val splitedColName: String = defaultArgs.getAs[PhStringArgs]("splitedColName").get.get
 
 	override def perform(pr: PhMapArgs[PhWorkArgs[Any]]): PhWorkArgs[Column] = {

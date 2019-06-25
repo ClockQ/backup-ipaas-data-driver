@@ -35,11 +35,11 @@ import org.apache.spark.sql.functions._
   *      idColName: String id在列名
   * }}}
   */
-case class Id2Oid(name: String,
+case class Id2OidPlugin(name: String,
                   defaultArgs: PhMapArgs[PhWorkArgs[Any]],
                   subPluginLst: Seq[PhPluginTrait[Column]])
 	extends PhPluginTrait[Column] {
-//	id所在列名
+	/** id所在列名 */
 	val idColName: String = defaultArgs.getAs[PhStringArgs]("idColName").get.get
     val trimOIdUdf: UserDefinedFunction = udf(oidSchema)
 
