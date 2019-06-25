@@ -174,7 +174,7 @@ actions:
                 dilimiter: +
         -   name:  group
             factory: com.pharbers.ipaas.data.driver.api.factory.PhOperatorFactory
-            reference: com.pharbers.ipaas.data.driver.operators.groupOperator
+            reference: com.pharbers.ipaas.data.driver.operators.GroupOperator
             args:
               inDFName: df
               groupCol: GROUP
@@ -307,7 +307,7 @@ actions:
                 dilimiter: +
         -   name:  group
             factory: com.pharbers.ipaas.data.driver.api.factory.PhOperatorFactory
-            reference: com.pharbers.ipaas.data.driver.operators.groupOperator
+            reference: com.pharbers.ipaas.data.driver.operators.GroupOperator
             args:
               inDFName: df
               groupCol: GROUP
@@ -600,7 +600,7 @@ actions:
       opers:
         -   name: union
             factory: com.pharbers.ipaas.data.driver.api.factory.PhOperatorFactory
-            reference: com.pharbers.ipaas.data.driver.operators.unionOperator
+            reference: com.pharbers.ipaas.data.driver.operators.UnionOperator
             args:
               inDFName: df
               unionDFName: enlargedDF

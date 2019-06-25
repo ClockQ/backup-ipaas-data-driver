@@ -24,7 +24,7 @@ import org.scalatest.FunSuite
 import com.pharbers.ipaas.data.driver.api.work.{PhDFArgs, PhLogDriverArgs, PhMapArgs, PhSparkDriverArgs}
 import com.pharbers.ipaas.data.driver.libs.log.{PhLogDriver, formatMsg}
 import com.pharbers.ipaas.data.driver.libs.spark.PhSparkDriver
-import com.pharbers.ipaas.data.driver.libs.spark.util.{readCsv, save2Parquet}
+import com.pharbers.ipaas.data.driver.libs.spark.util.{readCsv, readParquet, save2Parquet}
 import env.configObj.{inst, readJobConfig}
 import org.apache.spark.sql.functions.sum
 import org.apache.spark.sql.{DataFrame, SaveMode}
@@ -334,10 +334,34 @@ class TestPfizerPanel extends FunSuite {
             cleanDF
         }
 
-        val markets = List("CNS_R", "CNS_Z", "DVP", "ELIQUIS", "Specialty_other", "Specialty_champix", "Urology_other", "Urology_viagra", "AI_R_other", "AI_R_zith"
-            , "AI_S", "AI_W", "HTN", "INF", "LD", "ONC_other", "ONC_aml", "PAIN_other", "PAIN_lyrica", "AI_D", "ZYVOX", "PAIN_C", "HTN2")
+        val markets = Map(
+            "a3531d93-830b-4d8a-ac0a-c40a2e738199" -> "CNS_R",
+            "6b48e296-8891-4ae2-807b-9da316ee3402" -> "CNS_Z",
+            "b8521218-c6ca-411d-81f4-0dbf8bb67f5f" -> "DVP",
+            "1b1693b1-3330-4c50-979a-1b8560f05ecd" -> "ELIQUIS",
+            "51ee5bc3-9cdc-46b9-a60f-c586209c587c" -> "Specialty_other",
+            "f72ff47b-2e7e-4168-8947-00958413755e" -> "Specialty_champix",
+            "495a1446-2365-4608-9321-0092b2f59262" -> "Urology_other",
+            "6190e088-634e-460a-b228-0b012f9b02cb" -> "Urology_viagra",
+            "3444edaf-941f-4976-a229-7a4f5c26aad0" -> "AI_R_other",
+            "00e606aa-daab-42ec-821d-bfc6fb55ae5f" -> "AI_R_zith",
+            "00174647-cc98-416e-bbb6-2f97417c86aa" -> "AI_S",
+            "490ac3b6-914f-47d5-801f-5052d75ede9b" -> "AI_W",
+            "68f07d7b-1749-4584-8045-fde03625abf6" -> "HTN",
+            "977456bf-7c5a-4efe-85dc-7d25f27c3d63" -> "INF",
+            "21018518-5cba-46ef-8d68-197d2dc8c326" -> "LD",
+            "800681de-0fc1-4a51-9f14-70c05cea1177" -> "ONC_other",
+            "fbc94be1-7052-41d4-9574-9768701510f6" -> "ONC_aml",
+            "9ef2f709-896f-4a61-b612-af400ffbf801" -> "PAIN_other",
+            "2452c268-c9a6-4b23-ba2f-d57d794ab734" -> "PAIN_lyrica",
+            "4a3c58a9-2c34-4c3e-a8ea-d011d0dd4807" -> "AI_D",
+            "03657729-379a-4554-94f4-eaa645b4a214" -> "ZYVOX",
+            "4d9bf83f-c2fe-41e6-b2bb-d52f11043b09" -> "PAIN_C",
+            "546c538b-3495-41fe-b609-c97e1eab1ca5" -> "HTN2"
+        )
         markets.foreach(x => {
-            val checkDF = sd.setUtil(readCsv()).readCsv(s"hdfs:///data/pfizer/pha_config_repository1804/Pfizer_2018_If_panel_all_$x.csv")
+            println(x._2)
+            val checkDF = sd.setUtil(readParquet()).readParquet(s"hdfs:///workData/Panel/${x._1}")
             val resultDF = panel(
                 true,
                 "pfizerSampleGycxHospTest",
@@ -345,16 +369,22 @@ class TestPfizerPanel extends FunSuite {
                 "hdfs:///test/dcs/Clean/cpa/pfizer",
                 "hdfs:///test/dcs/Clean/missHosp/pfizer",
                 "hdfs:///test/dcs/Clean/fullHosp/pfizer",
-                s"hdfs:///test/dcs/Clean/sampleHosp/pfizer/$x" + "_cpa",
-                s"hdfs:///test/dcs/Clean/sampleHosp/pfizer/$x" + "_gycx",
+                s"hdfs:///test/dcs/Clean/sampleHosp/pfizer/${x._2}" + "_cpa",
+                s"hdfs:///test/dcs/Clean/sampleHosp/pfizer/${x._2}" + "_gycx",
                 s"hdfs:///test/dcs/Clean/panel/pfizer/$x"
             )
-            val checkCount = checkDF.count()
-            val cleanCount = resultDF.count()
-            println(checkCount)
-            println(cleanCount)
 
-            assert(cleanCount > 20)
+            val checkUnits = checkDF.agg(sum("UNITS")).first.get(0).toString.toDouble
+            val cleanUnits = resultDF.agg(sum("UNITS")).first.get(0).toString.toDouble
+            println(checkUnits)
+            println(cleanUnits)
+            assert(Math.abs(checkUnits - cleanUnits) < (cleanUnits * 0.1))
+
+            val checkSales = checkDF.agg(sum("SALES")).first.get(0).toString.toDouble
+            val resultSales = resultDF.agg(sum("SALES")).first.get(0).toString.toDouble
+            println(checkSales)
+            println(resultSales)
+            assert(Math.abs(checkSales - resultSales) < (resultSales * 0.1))
         })
     }
 

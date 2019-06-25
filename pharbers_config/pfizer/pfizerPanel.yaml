@@ -262,7 +262,7 @@ actions:
           dropColName: MISS_HOSPITAL_ID
       - name: union
         factory: com.pharbers.ipaas.data.driver.api.factory.PhOperatorFactory
-        reference: com.pharbers.ipaas.data.driver.operators.unionOperator
+        reference: com.pharbers.ipaas.data.driver.operators.UnionOperator
         args:
           inDFName: df
           unionDFName: reducedCpa
@@ -289,7 +289,7 @@ actions:
           dropColName: SAMPLE_HOSPITAL_ID
       - name: union gycx
         factory: com.pharbers.ipaas.data.driver.api.factory.PhOperatorFactory
-        reference: com.pharbers.ipaas.data.driver.operators.unionOperator
+        reference: com.pharbers.ipaas.data.driver.operators.UnionOperator
         args:
           inDFName: df
           unionDFName: readGycx
@@ -308,7 +308,7 @@ actions:
             dilimiter: "#"
       - name: group panel
         factory: com.pharbers.ipaas.data.driver.api.factory.PhOperatorFactory
-        reference: com.pharbers.ipaas.data.driver.operators.groupOperator
+        reference: com.pharbers.ipaas.data.driver.operators.GroupOperator
         args:
           inDFName: df
           groupCol: GROUP
