@@ -1,34 +1,53 @@
-//package com.pharbers.ipaas.data.driver.plugins
-//
-//import com.pharbers.ipaas.data.driver.api.work._
-//import org.apache.spark.sql.expressions.Window
-//import org.apache.spark.sql.functions._
-//import org.apache.spark.sql.types.IntegerType
-//
-///** 计算MAT插件
-//  * @author dcs
-//  * @note
-//  */
-//case class CalcMat() extends PhOperatorTrait{
-//    override val name: String = "calc mat"
-//    override val defaultArgs: PhWorkArgs[_] = PhNoneArgs
-//
-//    /**  MAT 当月前推11个月共12个月的和
-//      *   @param   pr   实际类型PhMapArgs. valueColumnName -> 需要计算的列名，dateColName -> 时间列名，partitionColumnNames -> List(用来分区的列名)
-//      *   @return  PhColArgs
-//      *   @throws  Exception 传入map中没有规定key时抛出异常
-//      *   @example df.withColumn("$name", CalcMat().perform(PhMapArgs).get)
-//      *   @note
-//      *   @history
-//      */
-//    override def perform(pr: PhWorkArgs[_]): PhWorkArgs[_] = {
-//        val args = pr.toMapArgs[PhWorkArgs[_]]
-//        val valueColumnName: String = args.get.getOrElse("valueColumnName",throw new Exception("not found valueColumnName")).get.asInstanceOf[String]
-//        val dateColName: String = args.get.getOrElse("dateColName",throw new Exception("not found dateColName")).get.asInstanceOf[String]
-//        val partitionColumnNames: List[String] = args.get.getOrElse("partitionColumnNames",throw new Exception("not found partitionColumnNames"))
-//                .get.asInstanceOf[List[PhStringArgs]].map(x => x.get)
-//        val windowYearOnYear = Window.partitionBy(partitionColumnNames.map(x => col(x)): _*).orderBy(col(dateColName).cast(IntegerType)).rangeBetween(-99, 0)
-//
-//        PhColArgs(sum(col(valueColumnName)).over(windowYearOnYear))
-//    }
-//}
+/*
+ * This file is part of com.pharbers.ipaas-data-driver.
+ *
+ * com.pharbers.ipaas-data-driver is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * com.pharbers.ipaas-data-driver is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with Foobar.  If not, see <https://www.gnu.org/licenses/>.
+ */
+
+package com.pharbers.ipaas.data.driver.plugins
+
+import com.pharbers.ipaas.data.driver.api.work._
+import org.apache.spark.sql.Column
+import org.apache.spark.sql.expressions.Window
+import org.apache.spark.sql.functions._
+import org.apache.spark.sql.types.IntegerType
+
+/** 计算MAT（移动年总和，即从当月前推11个月共12个月的总和）
+  *
+  * @author dcs
+  * @version 0.1
+  * @since 2019/6/24 15:16
+  * @example 默认参数例子
+  * {{{
+  *      valueColumnName: String 值所在列名
+  *      dateColName: String 日期所在列名
+  *      partitionColumnNames: List[String] 需要分组列的集合
+  * }}}
+  */
+case class CalcMat(name: String,
+                   defaultArgs: PhMapArgs[PhWorkArgs[Any]],
+                   subPluginLst: Seq[PhPluginTrait[Column]])
+	extends PhPluginTrait[Column] {
+	//	值所在列名
+	val valueColumnName: String = defaultArgs.getAs[PhStringArgs]("valueColumnName").get.get
+	//	日期所在列名
+	val dateColName: String = defaultArgs.getAs[PhStringArgs]("dateColName").get.get
+	//	需要分组列的集合
+	val partitionColumnNames: List[String] = defaultArgs.getAs[PhListArgs[String]]("partitionColumnNames").get.get
+
+	override def perform(pr: PhMapArgs[PhWorkArgs[Any]]): PhWorkArgs[Column] = {
+		val windowYearOnYear = Window.partitionBy(partitionColumnNames.map(x => col(x)): _*).orderBy(col(dateColName).cast(IntegerType)).rangeBetween(-99, 0)
+		PhColArgs(sum(col(valueColumnName)).over(windowYearOnYear))
+	}
+}
