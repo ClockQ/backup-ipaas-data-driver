@@ -33,14 +33,14 @@ actions:
             path: hdfs:///data/pfizer/pha_config_repository1804/Pfizer_Universe_DVP.csv
     -   name: rename
         factory: com.pharbers.ipaas.data.driver.api.factory.PhOperatorFactory
-        reference: com.pharbers.ipaas.data.driver.operators.withColumnRenamed
+        reference: com.pharbers.ipaas.data.driver.operators.WithColumnRenamedOperator
         args:
             inDFName: df
             oldColName: PREFECTURE
             newColName: City
     -   name: rename
         factory: com.pharbers.ipaas.data.driver.api.factory.PhOperatorFactory
-        reference: com.pharbers.ipaas.data.driver.operators.withColumnRenamed
+        reference: com.pharbers.ipaas.data.driver.operators.WithColumnRenamedOperator
         args:
             inDFName: df
             oldColName: HOSP_ID
@@ -65,7 +65,7 @@ actions:
             path: hdfs:///data/pfizer/pha_config_repository1804/Pfizer_CoefForDVP.csv
     -   name: rename
         factory: com.pharbers.ipaas.data.driver.api.factory.PhOperatorFactory
-        reference: com.pharbers.ipaas.data.driver.operators.withColumnRenamed
+        reference: com.pharbers.ipaas.data.driver.operators.WithColumnRenamedOperator
         args:
             inDFName: df
             oldColName: CITY
@@ -193,7 +193,7 @@ actions:
             dropColName: GROUP
     -   name: rename Product
         factory: com.pharbers.ipaas.data.driver.api.factory.PhOperatorFactory
-        reference: com.pharbers.ipaas.data.driver.operators.withColumnRenamed
+        reference: com.pharbers.ipaas.data.driver.operators.WithColumnRenamedOperator
         args:
             inDFName: df
             oldColName: Prod_Name

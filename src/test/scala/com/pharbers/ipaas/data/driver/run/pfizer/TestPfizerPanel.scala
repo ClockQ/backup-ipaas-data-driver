@@ -220,17 +220,16 @@ class TestPfizerPanel extends FunSuite {
         println(checkCount)
         println(cleanCount)
 
-        assert(Math.abs(checkCount - cleanCount) > -1)
+        assert(cleanCount - checkCount > -1)
     }
 
-    test("test pfizer miss hosp clean") {
-        def cleanMissHosp(shouldSave: Boolean, name: String, missHospPath: String, hospERDPath: String, PhaPath: String, year: String, savePath: String): DataFrame = {
-            val templatePath = "src/test/maxConfig/template/pfizerCleanMissHosp.yaml"
+    test("test pfizer sample cpa hosp clean") {
+        def cleanSampleCpaHosp(shouldSave: Boolean, name: String, sampleHospPath: String, hospERDPath: String, PhaPath: String, savePath: String): DataFrame = {
+            val templatePath = "src/test/maxConfig/template/pfizerCleanSampleCpaHosp.yaml"
             val yamlPath = buildYaml(templatePath,
-                Map("missHospPath" -> missHospPath,
+                Map("sampleHospPath" -> sampleHospPath,
                     "hospERDPath" -> hospERDPath,
-                    "phaERDPath" -> PhaPath,
-                    "year" -> year),
+                    "phaERDPath" -> PhaPath),
                 name)
             val phJobs = inst(readJobConfig(yamlPath))
             val result = phJobs.head.perform(PhMapArgs(Map(
@@ -238,7 +237,7 @@ class TestPfizerPanel extends FunSuite {
                 "logDriver" -> PhLogDriverArgs(PhLogDriver(formatMsg("test_user", "test_traceID", "test_jobID")))
             )))
 
-            val cleanDF = result.toMapArgs[PhDFArgs].get("not_arrival_hosp").get
+            val cleanDF = result.toMapArgs[PhDFArgs].get("sample_hosp").get
 
             if (shouldSave) {
                 sd.setUtil(save2Parquet()).save2Parquet(cleanDF, savePath, SaveMode.Overwrite)
@@ -246,23 +245,117 @@ class TestPfizerPanel extends FunSuite {
             cleanDF
         }
 
-        val checkDF = sd.setUtil(readCsv()).readCsv("hdfs:///data/pfizer/pha_config_repository1804/missingHospital.csv")
-        val resultDF = cleanMissHosp(
-            false,
-            "pfizerMissHospTest",
-            "hdfs:///data/pfizer/pha_config_repository1804/missingHospital.csv",
-            "hdfs:///repository/hosp_dis_max",
-            "hdfs:///repository/pha",
-            "2018",
-            "hdfs:///test/dcs/Clean/MissHosp/pfizer"
-        )
+        val markets = List("CNS_R", "CNS_Z", "DVP", "ELIQUIS", "Specialty_other", "Specialty_champix", "Urology_other", "Urology_viagra", "AI_R_other", "AI_R_zith"
+            , "AI_S", "AI_W", "HTN", "INF", "LD", "ONC_other", "ONC_aml", "PAIN_other", "PAIN_lyrica", "AI_D", "ZYVOX", "PAIN_C", "HTN2")
+        markets.foreach(x => {
+            val checkDF = sd.setUtil(readCsv()).readCsv(s"hdfs:///data/pfizer/pha_config_repository1804/Pfizer_2018_If_panel_all_$x.csv")
+            val resultDF = cleanSampleCpaHosp(
+                true,
+                "pfizerSampleCpaHospTest",
+                s"hdfs:///data/pfizer/pha_config_repository1804/Pfizer_2018_If_panel_all_$x.csv",
+                "hdfs:///repository/hosp_dis_max",
+                "hdfs:///repository/pha",
+                s"hdfs:///test/dcs/Clean/sampleHosp/pfizer/$x" + "_cpa"
+            )
+            val checkCount = checkDF.filter("HOSP_ID IS NOT NULL AND IF_PANEL_ALL != 0").count()
+            val cleanCount = resultDF.count()
+            println(checkCount)
+            println(cleanCount)
 
-        val checkCount = checkDF.count()
-        val cleanCount = resultDF.count()
-        println(checkCount)
-        println(cleanCount)
+            assert(cleanCount > 20)
+        })
+    }
 
-        assert(Math.abs(checkCount - cleanCount) > -1)
+    test("test pfizer sample gycx hosp clean") {
+        def cleanSampleGycxHosp(shouldSave: Boolean, name: String, sampleHospPath: String, hospERDPath: String, PhaPath: String, savePath: String): DataFrame = {
+            val templatePath = "src/test/maxConfig/template/pfizerCleanSampleGycxHosp.yaml"
+            val yamlPath = buildYaml(templatePath,
+                Map("sampleHospPath" -> sampleHospPath,
+                    "hospERDPath" -> hospERDPath,
+                    "phaERDPath" -> PhaPath),
+                name)
+            val phJobs = inst(readJobConfig(yamlPath))
+            val result = phJobs.head.perform(PhMapArgs(Map(
+                "sparkDriver" -> PhSparkDriverArgs(sd),
+                "logDriver" -> PhLogDriverArgs(PhLogDriver(formatMsg("test_user", "test_traceID", "test_jobID")))
+            )))
+
+            val cleanDF = result.toMapArgs[PhDFArgs].get("sample_hosp").get
+
+            if (shouldSave) {
+                sd.setUtil(save2Parquet()).save2Parquet(cleanDF, savePath, SaveMode.Overwrite)
+            }
+            cleanDF
+        }
+
+        val markets = List("CNS_R", "CNS_Z", "DVP", "ELIQUIS", "Specialty_other", "Specialty_champix", "Urology_other", "Urology_viagra", "AI_R_other", "AI_R_zith"
+            , "AI_S", "AI_W", "HTN", "INF", "LD", "ONC_other", "ONC_aml", "PAIN_other", "PAIN_lyrica", "AI_D", "ZYVOX", "PAIN_C", "HTN2")
+        markets.foreach(x => {
+            val checkDF = sd.setUtil(readCsv()).readCsv(s"hdfs:///data/pfizer/pha_config_repository1804/Pfizer_2018_If_panel_all_$x.csv")
+            val resultDF = cleanSampleGycxHosp(
+                true,
+                "pfizerSampleGycxHospTest",
+                s"hdfs:///data/pfizer/pha_config_repository1804/Pfizer_2018_If_panel_all_$x.csv",
+                "hdfs:///repository/hosp_dis_max",
+                "hdfs:///repository/pha",
+                s"hdfs:///test/dcs/Clean/sampleHosp/pfizer/$x" + "_gycx"
+            )
+            val checkCount = checkDF.filter("HOSP_ID IS NOT NULL AND IF_PANEL_ALL != 0").count()
+            val cleanCount = resultDF.count()
+            println(checkCount)
+            println(cleanCount)
+
+            assert(cleanCount > 20)
+        })
+    }
+
+    test("test pfizer panel") {
+        def panel(shouldSave: Boolean, name: String, gycxERDPath: String, cpaERDPath: String, missHospERDPath: String, fullHospERDPath: String, cpaSampleHospERDPath: String, gycxSampleHospERDPath: String, savePath: String): DataFrame = {
+            val templatePath = "src/test/maxConfig/template/pfizerPanel.yaml"
+            val yamlPath = buildYaml(templatePath,
+                Map("gycxERDPath" -> gycxERDPath,
+                    "cpaERDPath" -> cpaERDPath,
+                    "missHospERDPath" -> missHospERDPath,
+                    "fullHospERDPath" -> fullHospERDPath,
+                    "cpaSampleHospERDPath" -> cpaSampleHospERDPath,
+                    "gycxSampleHospERDPath" -> gycxSampleHospERDPath),
+                name)
+            val phJobs = inst(readJobConfig(yamlPath))
+            val result = phJobs.head.perform(PhMapArgs(Map(
+                "sparkDriver" -> PhSparkDriverArgs(sd),
+                "logDriver" -> PhLogDriverArgs(PhLogDriver(formatMsg("test_user", "test_traceID", "test_jobID")))
+            )))
+
+            val cleanDF = result.toMapArgs[PhDFArgs].get("panelERD").get
+
+            if (shouldSave) {
+                sd.setUtil(save2Parquet()).save2Parquet(cleanDF, savePath, SaveMode.Overwrite)
+            }
+            cleanDF
+        }
+
+        val markets = List("CNS_R", "CNS_Z", "DVP", "ELIQUIS", "Specialty_other", "Specialty_champix", "Urology_other", "Urology_viagra", "AI_R_other", "AI_R_zith"
+            , "AI_S", "AI_W", "HTN", "INF", "LD", "ONC_other", "ONC_aml", "PAIN_other", "PAIN_lyrica", "AI_D", "ZYVOX", "PAIN_C", "HTN2")
+        markets.foreach(x => {
+            val checkDF = sd.setUtil(readCsv()).readCsv(s"hdfs:///data/pfizer/pha_config_repository1804/Pfizer_2018_If_panel_all_$x.csv")
+            val resultDF = panel(
+                true,
+                "pfizerSampleGycxHospTest",
+                "hdfs:///test/dcs/Clean/gycx/pfizer",
+                "hdfs:///test/dcs/Clean/cpa/pfizer",
+                "hdfs:///test/dcs/Clean/missHosp/pfizer",
+                "hdfs:///test/dcs/Clean/fullHosp/pfizer",
+                s"hdfs:///test/dcs/Clean/sampleHosp/pfizer/$x" + "_cpa",
+                s"hdfs:///test/dcs/Clean/sampleHosp/pfizer/$x" + "_gycx",
+                s"hdfs:///test/dcs/Clean/panel/pfizer/$x"
+            )
+            val checkCount = checkDF.count()
+            val cleanCount = resultDF.count()
+            println(checkCount)
+            println(cleanCount)
+
+            assert(cleanCount > 20)
+        })
     }
 
     def buildYaml(templatePath: String, argsMap: Map[String, String], name: String): String = {

@@ -57,7 +57,7 @@ actions:
             path: hdfs:///repository/prod_etc_dis_max/5ca069e2eeefcc012918ec73
     -   name: rename PHA_HOSP_ID to PHA_ID_OLD
         factory: com.pharbers.ipaas.data.driver.api.factory.PhOperatorFactory
-        reference: com.pharbers.ipaas.data.driver.operators.withColumnRenamed
+        reference: com.pharbers.ipaas.data.driver.operators.WithColumnRenamedOperator
         args:
             inDFName: df
             oldColName: PRODUCT_ID
@@ -76,7 +76,7 @@ actions:
             path: hdfs:///data/pfizer/pha_config_repository1804/Pfizer_Universe_CNS_R.csv
     -   name: rename PHA_HOSP_ID to PHA_ID_OLD
         factory: com.pharbers.ipaas.data.driver.api.factory.PhOperatorFactory
-        reference: com.pharbers.ipaas.data.driver.operators.withColumnRenamed
+        reference: com.pharbers.ipaas.data.driver.operators.WithColumnRenamedOperator
         args:
             inDFName: df
             oldColName: PHA_HOSP_ID
@@ -136,14 +136,14 @@ actions:
     opers:
     -   name: withColumnRenamed
         factory: com.pharbers.ipaas.data.driver.api.factory.PhOperatorFactory
-        reference: com.pharbers.ipaas.data.driver.operators.withColumnRenamed
+        reference: com.pharbers.ipaas.data.driver.operators.WithColumnRenamedOperator
         args:
             inDFName: df
             oldColName: IF_PANEL_ALL
             newColName: IS_PANEL_HOSP
     -   name:
         factory: com.pharbers.ipaas.data.driver.api.factory.PhOperatorFactory
-        reference: com.pharbers.ipaas.data.driver.operators.withColumnRenamed
+        reference: com.pharbers.ipaas.data.driver.operators.WithColumnRenamedOperator
         args:
             inDFName: df
             oldColName: IF_PANEL_TO_USE
@@ -291,14 +291,14 @@ actions:
             dropColName: sumUnits
     -   name: withColumnRenamed
         factory: com.pharbers.ipaas.data.driver.api.factory.PhOperatorFactory
-        reference: com.pharbers.ipaas.data.driver.operators.withColumnRenamed
+        reference: com.pharbers.ipaas.data.driver.operators.WithColumnRenamedOperator
         args:
             inDFName: df
             oldColName: j_sumSales
             newColName: sumSales
     -   name: withColumnRenamed
         factory: com.pharbers.ipaas.data.driver.api.factory.PhOperatorFactory
-        reference: com.pharbers.ipaas.data.driver.operators.withColumnRenamed
+        reference: com.pharbers.ipaas.data.driver.operators.WithColumnRenamedOperator
         args:
             inDFName: df
             oldColName: j_sumUnits
@@ -343,21 +343,21 @@ actions:
             dropColName: GROUP
     -   name: withColumnRenamed
         factory: com.pharbers.ipaas.data.driver.api.factory.PhOperatorFactory
-        reference: com.pharbers.ipaas.data.driver.operators.withColumnRenamed
+        reference: com.pharbers.ipaas.data.driver.operators.WithColumnRenamedOperator
         args:
             inDFName: df
             oldColName: SEGMENT
             newColName: s_SEGMENT
     -   name: withColumnRenamed
         factory: com.pharbers.ipaas.data.driver.api.factory.PhOperatorFactory
-        reference: com.pharbers.ipaas.data.driver.operators.withColumnRenamed
+        reference: com.pharbers.ipaas.data.driver.operators.WithColumnRenamedOperator
         args:
             inDFName: df
             oldColName: PRODUCT_ID
             newColName: s_PRODUCT_ID
     -   name: withColumnRenamed
         factory: com.pharbers.ipaas.data.driver.api.factory.PhOperatorFactory
-        reference: com.pharbers.ipaas.data.driver.operators.withColumnRenamed
+        reference: com.pharbers.ipaas.data.driver.operators.WithColumnRenamedOperator
         args:
             inDFName: df
             oldColName: YM
@@ -588,7 +588,7 @@ actions:
     opers:
     -   name:
         factory: com.pharbers.ipaas.data.driver.api.factory.PhOperatorFactory
-        reference: com.pharbers.ipaas.data.driver.operators.withColumnRenamed
+        reference: com.pharbers.ipaas.data.driver.operators.WithColumnRenamedOperator
         args:
             inDFName: df
             oldColName: HOSPITAL_ID
@@ -615,7 +615,7 @@ actions:
                 exprString: YM as Int
     -   name:
         factory: com.pharbers.ipaas.data.driver.api.factory.PhOperatorFactory
-        reference: com.pharbers.ipaas.data.driver.operators.withColumnRenamed
+        reference: com.pharbers.ipaas.data.driver.operators.WithColumnRenamedOperator
         args:
             inDFName: df
             oldColName: Sales
@@ -640,7 +640,7 @@ actions:
             dropColName: Factor1,Factor2
     -   name:
         factory: com.pharbers.ipaas.data.driver.api.factory.PhOperatorFactory
-        reference: com.pharbers.ipaas.data.driver.operators.withColumnRenamed
+        reference: com.pharbers.ipaas.data.driver.operators.WithColumnRenamedOperator
         args:
             inDFName: df
             oldColName: Units

@@ -136,7 +136,7 @@ actions:
       null: null
   - name: rename
     factory: com.pharbers.ipaas.data.driver.api.factory.PhOperatorFactory
-    reference: com.pharbers.ipaas.data.driver.operators.withColumnRenamed
+    reference: com.pharbers.ipaas.data.driver.operators.WithColumnRenamedOperator
     args:
       inDFName: df
       oldColName: HOSPITAL_ID
@@ -249,7 +249,7 @@ actions:
       filter: "MARKET == 'DVP' AND SAMPLE == 1"
   - name: rename
     factory: com.pharbers.ipaas.data.driver.api.factory.PhOperatorFactory
-    reference: com.pharbers.ipaas.data.driver.operators.withColumnRenamed
+    reference: com.pharbers.ipaas.data.driver.operators.WithColumnRenamedOperator
     args:
       inDFName: df
       oldColName: HOSPITAL_ID
