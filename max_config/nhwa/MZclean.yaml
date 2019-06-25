@@ -60,7 +60,7 @@ actions:
         dilimiter: ""
   - name: productSelect
     factory: com.pharbers.ipaas.data.driver.api.factory.PhOperatorFactory
-    reference: com.pharbers.ipaas.data.driver.operators.SelectOperator
+    reference: com.pharbers.ipaas.data.driver.operators.SelectOperatorOperator
     args:
       inDFName: concantMin2
       selects: DEV_PRODUCT_ID as PRODUCT_ID#regexp_replace(min2, " ", "") as min2
@@ -85,7 +85,7 @@ actions:
       delimiter: ","
   - name: productMatchSelect
     factory: com.pharbers.ipaas.data.driver.api.factory.PhOperatorFactory
-    reference: com.pharbers.ipaas.data.driver.operators.SelectOperator
+    reference: com.pharbers.ipaas.data.driver.operators.SelectOperatorOperator
     args:
       inDFName: loadProductMatchFile
       selects: regexp_replace(MIN_PRODUCT_UNIT, " ", "") as MIN_PRODUCT_UNIT#regexp_replace(MIN_PRODUCT_UNIT_STANDARD, " ", "") as MIN_PRODUCT_UNIT_STANDARD
@@ -95,13 +95,13 @@ actions:
   opers:
   - name: hospitalSelect
     factory: com.pharbers.ipaas.data.driver.api.factory.PhOperatorFactory
-    reference: com.pharbers.ipaas.data.driver.operators.SelectOperator
+    reference: com.pharbers.ipaas.data.driver.operators.SelectOperatorOperator
     args:
       inDFName: readHospitalFile
       selects: HOSPITAL_ID#PHA_HOSP_ID
   - name: distinctByKey
     factory: com.pharbers.ipaas.data.driver.api.factory.PhOperatorFactory
-    reference: com.pharbers.ipaas.data.driver.operators.DistinctByKeyOperator
+    reference: com.pharbers.ipaas.data.driver.operators.DistinctByKeyOperatorOperator
     args:
       inDFName: hospitalSelect
       keys: PHA_HOSP_ID
@@ -111,7 +111,7 @@ actions:
   opers:
   - name: phaSelect
     factory: com.pharbers.ipaas.data.driver.api.factory.PhOperatorFactory
-    reference: com.pharbers.ipaas.data.driver.operators.SelectOperator
+    reference: com.pharbers.ipaas.data.driver.operators.SelectOperatorOperator
     args:
       inDFName: readPhaFile
       selects: CPA#PHA_ID_NEW
@@ -129,7 +129,7 @@ actions:
         exprString: cast(CPA as int)
   - name: DistinctByCpa
     factory: com.pharbers.ipaas.data.driver.api.factory.PhOperatorFactory
-    reference: com.pharbers.ipaas.data.driver.operators.DistinctByKeyOperator
+    reference: com.pharbers.ipaas.data.driver.operators.DistinctByKeyOperatorOperator
     args:
       inDFName: hospIdCastInt
       keys: CPA
@@ -265,7 +265,7 @@ actions:
         monthColName: MONTH
   - name: SelectKeepCol
     factory: com.pharbers.ipaas.data.driver.api.factory.PhOperatorFactory
-    reference: com.pharbers.ipaas.data.driver.operators.SelectOperator
+    reference: com.pharbers.ipaas.data.driver.operators.SelectOperatorOperator
     args:
       inDFName: addYM
       selects: COMPANY_ID#SOURCE#YM#HOSPITAL_ID#PRODUCT_ID#cast(VALUE as double) as SALES#cast(STANDARD_UNIT as double) as UNITS#PRODUCT_NAME_NOTE

@@ -27,7 +27,7 @@ actions:
       path: /repository/pha
   - name: distinctByKey
     factory: com.pharbers.ipaas.data.driver.api.factory.PhOperatorFactory
-    reference: com.pharbers.ipaas.data.driver.operators.DistinctByKeyOperator
+    reference: com.pharbers.ipaas.data.driver.operators.DistinctByKeyOperatorOperator
     args:
       inDFName: readPha
       keys: PHA_ID
@@ -43,13 +43,13 @@ actions:
       path: /repository/hosp_dis_max
   - name: select
     factory: com.pharbers.ipaas.data.driver.api.factory.PhOperatorFactory
-    reference: com.pharbers.ipaas.data.driver.operators.SelectOperator
+    reference: com.pharbers.ipaas.data.driver.operators.SelectOperatorOperator
     args:
       inDFName: readHosp
       selects: HOSPITAL_ID#PHA_HOSP_ID
   - name: distinctByKey
     factory: com.pharbers.ipaas.data.driver.api.factory.PhOperatorFactory
-    reference: com.pharbers.ipaas.data.driver.operators.DistinctByKeyOperator
+    reference: com.pharbers.ipaas.data.driver.operators.DistinctByKeyOperatorOperator
     args:
       inDFName: select
       keys: PHA_HOSP_ID
@@ -141,7 +141,7 @@ actions:
         exprString: *companyID
   - name: select
     factory: com.pharbers.ipaas.data.driver.api.factory.PhOperatorFactory
-    reference: com.pharbers.ipaas.data.driver.operators.SelectOperator
+    reference: com.pharbers.ipaas.data.driver.operators.SelectOperatorOperator
     args:
       inDFName: addCOMPANY_ID
       selects: COMPANY_ID#YM#HOSPITAL_ID#PRODUCT_ID#UNITS#SALES

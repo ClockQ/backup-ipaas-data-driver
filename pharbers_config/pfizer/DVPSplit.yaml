@@ -1,0 +1,81 @@
+name: no split
+reference: com.pharbers.ipaas.data.driver.api.job.PhBaseJob
+factory: com.pharbers.ipaas.data.driver.api.factory.PhJobFactory
+actions:
+  - name: product_match_file
+    reference: com.pharbers.ipaas.data.driver.api.job.PhBaseAction
+    factory: com.pharbers.ipaas.data.driver.api.factory.PhActionFactory
+    args:
+      null: null
+    opers:
+      - name: read
+        reference: com.pharbers.ipaas.data.driver.operators.ReadCsvOperator
+        factory: com.pharbers.ipaas.data.driver.api.factory.PhOperatorFactory
+        args:
+          path:
+  - name: markets_match
+      reference: com.pharbers.ipaas.data.driver.api.job.PhBaseAction
+      factory: com.pharbers.ipaas.data.driver.api.factory.PhActionFactory
+      args:
+        null: null
+      opers:
+        - name: read
+          reference: com.pharbers.ipaas.data.driver.operators.ReadCsvOperator
+          factory: com.pharbers.ipaas.data.driver.api.factory.PhOperatorFactory
+          args:
+            path:
+        - name: filter market
+            factory: com.pharbers.ipaas.data.driver.api.factory.PhOperatorFactory
+            reference: com.pharbers.ipaas.data.driver.operators.ExprFilterOperator
+            args:
+              inDFName: df
+              filter: MARKET like 'DVP'
+        - name: rename
+          factory: com.pharbers.ipaas.data.driver.api.factory.PhOperatorFactory
+          reference: com.pharbers.ipaas.data.driver.operators.withColumnRenamed
+          args:
+            inDFName: df
+            oldColName: MOLE_NAME
+            newColName: MOLE_NAME_M
+  - name: spilt_markets_product_match
+      reference: com.pharbers.ipaas.data.driver.api.job.PhBaseAction
+      factory: com.pharbers.ipaas.data.driver.api.factory.PhActionFactory
+      args:
+        df: product_match_file
+      opers:
+        - name: select
+          factory: com.pharbers.ipaas.data.driver.api.factory.PhOperatorFactory
+          reference: com.pharbers.ipaas.data.driver.operators.SelectOperator
+          args:
+            inDFName: df
+            selects: MIN_PRODUCT_UNIT#MIN_PRODUCT_UNIT_STANDARD#MOLE_NAME
+        - name: distinct
+          factory: com.pharbers.ipaas.data.driver.api.factory.PhOperatorFactory
+          reference: com.pharbers.ipaas.data.driver.operators.DistinctOperator
+          args:
+            inDFName: df
+        - name: filter dvp
+          factory: com.pharbers.ipaas.data.driver.api.factory.PhOperatorFactory
+          reference: com.pharbers.ipaas.data.driver.operators.ExprFilterOperator
+          args:
+            inDFName: df
+            filter: MIN_PRODUCT_UNIT_STANDARD like 得妥%
+        - name: join
+          factory: com.pharbers.ipaas.data.driver.api.factory.PhOperatorFactory
+          reference: com.pharbers.ipaas.data.driver.operators.JoinOperator
+          args:
+            inDFName: df
+            joinDFName: markets_match
+            joinExpr: MOLE_NAME == MOLE_NAME_M
+            joinType: inner
+        #        - name: select
+        #          factory: com.pharbers.ipaas.data.driver.api.factory.PhOperatorFactory
+        #          reference: com.pharbers.ipaas.data.driver.operators.SelectOperator
+        #          args:
+        #            inDFName: df
+        #            selects: MIN_PRODUCT_UNIT#MIN_PRODUCT_UNIT_STANDARD
+        - name: distinct
+          factory: com.pharbers.ipaas.data.driver.api.factory.PhOperatorFactory
+          reference: com.pharbers.ipaas.data.driver.operators.DistinctOperator
+          args:
+            inDFName: df

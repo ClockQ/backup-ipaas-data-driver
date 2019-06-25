@@ -18,7 +18,7 @@
 package com.pharbers.ipaas.data.driver.api.factory
 
 import com.pharbers.ipaas.data.driver.api.model.Action
-import com.pharbers.ipaas.data.driver.exceptions.PhOperatorException
+import com.pharbers.ipaas.data.driver.exceptions.{PhBuildJobException, PhOperatorException}
 import com.pharbers.ipaas.data.driver.api.work.{PhActionTrait, PhMapArgs, PhOperatorTrait, PhStringArgs}
 
 /** Action 实体工厂
@@ -45,7 +45,8 @@ case class PhActionFactory(action: Action) extends PhFactoryTrait[PhActionTrait]
                 try {
                     getMethodMirror(oper.getFactory)(oper).asInstanceOf[PhFactoryTrait[PhOperatorTrait[Any]]].inst()
                 } catch {
-                    case e: PhOperatorException => throw PhOperatorException(e.names :+ action.name, e.exception)
+                    case e: PhBuildJobException => throw PhBuildJobException(e.configs ++ List(action.name + ":" + action.args.asScala.mkString(",")), e.exception)
+                    case e: Exception => throw e
                 }
             }
         }

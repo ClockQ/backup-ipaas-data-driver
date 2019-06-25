@@ -17,8 +17,10 @@
 
 package com.pharbers.ipaas.data.driver.api.factory
 
+import java.lang.reflect.InvocationTargetException
+
 import com.pharbers.ipaas.data.driver.api.model.{Operator, Plugin}
-import com.pharbers.ipaas.data.driver.exceptions.PhOperatorException
+import com.pharbers.ipaas.data.driver.exceptions.{PhBuildJobException, PhOperatorException}
 import com.pharbers.ipaas.data.driver.api.work.{PhMapArgs, PhOperatorTrait, PhPluginTrait, PhStringArgs}
 
 /** Operator实体工厂
@@ -33,7 +35,7 @@ case class PhOperatorFactory(operator: Operator) extends PhFactoryTrait[PhOperat
     /** 构建 Operator 运行实例
       *
       * @throws com.pharbers.ipaas.data.driver.exceptions.PhOperatorException 构建算子时的异常
-      **/
+      * */
     override def inst(): PhOperatorTrait[Any] = {
         import scala.collection.JavaConverters.mapAsScalaMapConverter
 
@@ -42,19 +44,26 @@ case class PhOperatorFactory(operator: Operator) extends PhFactoryTrait[PhOperat
             case one => one.asScala.map(x => (x._1, PhStringArgs(x._2))).toMap
         }
 
-        try {
-            val plugin = operator.getPlugin match {
-                case null => Seq()
-                case one: Plugin => Seq(getMethodMirror(one.getFactory)(one).asInstanceOf[PhFactoryTrait[PhPluginTrait[Any]]].inst())
-            }
 
+        val plugin = operator.getPlugin match {
+            case null => Seq()
+            case one: Plugin => try {
+                Seq(getMethodMirror(one.getFactory)(one).asInstanceOf[PhFactoryTrait[PhPluginTrait[Any]]].inst())
+            }catch {
+                case e: PhBuildJobException =>
+                    throw PhBuildJobException(e.configs ++ List(operator.name + ":" + operator.args.asScala.mkString(",")), e.exception)
+                case e: Exception => throw e
+            }
+        }
+        try {
             getMethodMirror(operator.getReference)(
                 operator.getName,
                 PhMapArgs(args),
                 plugin
             ).asInstanceOf[PhOperatorTrait[Any]]
         } catch {
-            case e: Exception => throw PhOperatorException(List(operator.name), e)
+            case e: InvocationTargetException => throw PhBuildJobException(List(operator.name + ":" + operator.args.asScala.mkString("\n")), e)
+            case e: Exception => throw e
         }
     }
 }

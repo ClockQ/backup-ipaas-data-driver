@@ -1,0 +1,290 @@
+name: astellas panel
+reference: com.pharbers.ipaas.data.driver.api.job.PhBaseJob
+factory: com.pharbers.ipaas.data.driver.api.factory.PhJobFactory
+actions:
+  #cpa if panel all
+  - name: readCpaSampleHosp
+    reference: com.pharbers.ipaas.data.driver.api.job.PhBaseAction
+    factory: com.pharbers.ipaas.data.driver.api.factory.PhActionFactory
+    args:
+      null: null
+    opers:
+      - name: read Cpa Sample Hosp
+        reference: com.pharbers.ipaas.data.driver.operators.ReadParquetOperator
+        factory: com.pharbers.ipaas.data.driver.api.factory.PhOperatorFactory
+        args:
+          path: hdfs:///test/dcs/Clean/sampleHosp/astellas/ALKP_cpa
+      - name: filter
+        factory: com.pharbers.ipaas.data.driver.api.factory.PhOperatorFactory
+        reference: com.pharbers.ipaas.data.driver.operators.ExprFilterOperator
+        args:
+          inDFName: df
+          filter: "MARKET == 'Allelock' AND SAMPLE == 1"
+      - name: rename
+        factory: com.pharbers.ipaas.data.driver.api.factory.PhOperatorFactory
+        reference: com.pharbers.ipaas.data.driver.operators.withColumnRenamed
+        args:
+          inDFName: df
+          oldColName: HOSPITAL_ID
+          newColName: SAMPLE_HOSPITAL_ID
+      - name: drop sampleHosp
+        factory: com.pharbers.ipaas.data.driver.api.factory.PhOperatorFactory
+        reference: com.pharbers.ipaas.data.driver.operators.DropOperator
+        args:
+          inDFName: df
+          dropColName: MARKET
+      - name: drop sampleHosp
+        factory: com.pharbers.ipaas.data.driver.api.factory.PhOperatorFactory
+        reference: com.pharbers.ipaas.data.driver.operators.DropOperator
+        args:
+          inDFName: df
+          dropColName: _id
+  #gycx if panel all
+  - name: readGycxSampleHosp
+    reference: com.pharbers.ipaas.data.driver.api.job.PhBaseAction
+    factory: com.pharbers.ipaas.data.driver.api.factory.PhActionFactory
+    args:
+      null: null
+    opers:
+      - name: readGycxSampleHosp
+        reference: com.pharbers.ipaas.data.driver.operators.ReadParquetOperator
+        factory: com.pharbers.ipaas.data.driver.api.factory.PhOperatorFactory
+        args:
+          path: hdfs:///test/dcs/Clean/sampleHosp/astellas/ALKP_gycx
+      - name: filter
+        factory: com.pharbers.ipaas.data.driver.api.factory.PhOperatorFactory
+        reference: com.pharbers.ipaas.data.driver.operators.ExprFilterOperator
+        args:
+          inDFName: df
+          filter: "MARKET == 'Allelock' AND SAMPLE == 1"
+      - name: rename
+        factory: com.pharbers.ipaas.data.driver.api.factory.PhOperatorFactory
+        reference: com.pharbers.ipaas.data.driver.operators.withColumnRenamed
+        args:
+          inDFName: df
+          oldColName: HOSPITAL_ID
+          newColName: SAMPLE_HOSPITAL_ID
+      - name: drop sampleHosp
+        factory: com.pharbers.ipaas.data.driver.api.factory.PhOperatorFactory
+        reference: com.pharbers.ipaas.data.driver.operators.DropOperator
+        args:
+          inDFName: df
+          dropColName: MARKET
+      - name: drop sampleHosp
+        factory: com.pharbers.ipaas.data.driver.api.factory.PhOperatorFactory
+        reference: com.pharbers.ipaas.data.driver.operators.DropOperator
+        args:
+          inDFName: df
+          dropColName: _id
+  #gycx 三元匹配表
+  - name: readGycxSource
+    reference: com.pharbers.ipaas.data.driver.api.job.PhBaseAction
+    factory: com.pharbers.ipaas.data.driver.api.factory.PhActionFactory
+    args:
+      null: null
+    opers:
+      - name: read
+        reference: com.pharbers.ipaas.data.driver.operators.ReadParquetOperator
+        factory: com.pharbers.ipaas.data.driver.api.factory.PhOperatorFactory
+        args:
+          path: hdfs:///test/dcs/Clean/treeSource/astellas/gycx
+      - name: select
+        factory: com.pharbers.ipaas.data.driver.api.factory.PhOperatorFactory
+        reference: com.pharbers.ipaas.data.driver.operators.SelectOperator
+        args:
+          inDFName: df
+          selects: "HOSPITAL_ID as HOSPITAL_ID_SOURCE#STANDARD_ID as STANDARD_ID_SOURCE"
+  #cpa 三元匹配表
+  - name: readCpaSource
+    reference: com.pharbers.ipaas.data.driver.api.job.PhBaseAction
+    factory: com.pharbers.ipaas.data.driver.api.factory.PhActionFactory
+    args:
+      null: null
+    opers:
+      - name: read
+        reference: com.pharbers.ipaas.data.driver.operators.ReadParquetOperator
+        factory: com.pharbers.ipaas.data.driver.api.factory.PhOperatorFactory
+        args:
+          path: hdfs:///test/dcs/Clean/treeSource/astellas/cpa
+      - name: select
+        factory: com.pharbers.ipaas.data.driver.api.factory.PhOperatorFactory
+        reference: com.pharbers.ipaas.data.driver.operators.SelectOperator
+        args:
+          inDFName: df
+          selects: "HOSPITAL_ID as HOSPITAL_ID_SOURCE#STANDARD_ID as STANDARD_ID_SOURCE"
+  #cpa
+  - name: readCpa
+    reference: com.pharbers.ipaas.data.driver.api.job.PhBaseAction
+    factory: com.pharbers.ipaas.data.driver.api.factory.PhActionFactory
+    args:
+      null: null
+    opers:
+      - name: read cpa
+        reference: com.pharbers.ipaas.data.driver.operators.ReadParquetOperator
+        factory: com.pharbers.ipaas.data.driver.api.factory.PhOperatorFactory
+        args:
+          path: hdfs:///test/dcs/Clean/cpa/astellas
+      - name: filter
+        factory: com.pharbers.ipaas.data.driver.api.factory.PhOperatorFactory
+        reference: com.pharbers.ipaas.data.driver.operators.ExprFilterOperator
+        args:
+          inDFName: df
+          filter: YM == 201804 AND MARKET == 'Allelock'
+  - name: cpa
+    reference: com.pharbers.ipaas.data.driver.api.job.PhBaseAction
+    factory: com.pharbers.ipaas.data.driver.api.factory.PhActionFactory
+    args:
+      df: readCpa
+    opers:
+      - name: cpa join sampleHosp
+        factory: com.pharbers.ipaas.data.driver.api.factory.PhOperatorFactory
+        reference: com.pharbers.ipaas.data.driver.operators.JoinOperator
+        args:
+          inDFName: df
+          joinDFName: readCpaSampleHosp
+          joinExpr: SAMPLE_HOSPITAL_ID == HOSPITAL_ID
+          joinType: inner
+      - name: drop
+        factory: com.pharbers.ipaas.data.driver.api.factory.PhOperatorFactory
+        reference: com.pharbers.ipaas.data.driver.operators.DropOperator
+        args:
+          inDFName: df
+          dropColName: SAMPLE_HOSPITAL_ID
+      - name: join three cpa
+        factory: com.pharbers.ipaas.data.driver.api.factory.PhOperatorFactory
+        reference: com.pharbers.ipaas.data.driver.operators.JoinOperator
+        args:
+          inDFName: df
+          joinDFName: readCpaSource
+          joinExpr: HOSPITAL_ID == HOSPITAL_ID_SOURCE
+          joinType: inner
+
+
+  #gycx
+  - name: gycx
+    reference: com.pharbers.ipaas.data.driver.api.job.PhBaseAction
+    factory: com.pharbers.ipaas.data.driver.api.factory.PhActionFactory
+    args:
+      null: null
+    opers:
+      - name: read
+        reference: com.pharbers.ipaas.data.driver.operators.ReadParquetOperator
+        factory: com.pharbers.ipaas.data.driver.api.factory.PhOperatorFactory
+        args:
+          path: hdfs:///test/dcs/Clean/gycx/astellas
+      - name: filter
+        factory: com.pharbers.ipaas.data.driver.api.factory.PhOperatorFactory
+        reference: com.pharbers.ipaas.data.driver.operators.ExprFilterOperator
+        args:
+          inDFName: df
+          filter: YM == 201804 AND MARKET == 'Allelock'
+      - name: join sampleGycxHosp
+        factory: com.pharbers.ipaas.data.driver.api.factory.PhOperatorFactory
+        reference: com.pharbers.ipaas.data.driver.operators.JoinOperator
+        args:
+          inDFName: df
+          joinDFName: readGycxSampleHosp
+          joinExpr: SAMPLE_HOSPITAL_ID == HOSPITAL_ID
+          joinType: inner
+      - name: drop
+        factory: com.pharbers.ipaas.data.driver.api.factory.PhOperatorFactory
+        reference: com.pharbers.ipaas.data.driver.operators.DropOperator
+        args:
+          inDFName: df
+          dropColName: SAMPLE_HOSPITAL_ID
+      - name: join three gycx
+        factory: com.pharbers.ipaas.data.driver.api.factory.PhOperatorFactory
+        reference: com.pharbers.ipaas.data.driver.operators.JoinOperator
+        args:
+          inDFName: df
+          joinDFName: readGycxSource
+          joinExpr: HOSPITAL_ID == HOSPITAL_ID_SOURCE
+          joinType: inner
+
+  - name: cpa STANDARD_ID
+    reference: com.pharbers.ipaas.data.driver.api.job.PhBaseAction
+    factory: com.pharbers.ipaas.data.driver.api.factory.PhActionFactory
+    args:
+      df: readCpa
+    opers:
+      - name: join three cpa
+        factory: com.pharbers.ipaas.data.driver.api.factory.PhOperatorFactory
+        reference: com.pharbers.ipaas.data.driver.operators.JoinOperator
+        args:
+          inDFName: df
+          joinDFName: readCpaSource
+          joinExpr: HOSPITAL_ID == HOSPITAL_ID_SOURCE
+          joinType: inner
+      - name: select
+        factory: com.pharbers.ipaas.data.driver.api.factory.PhOperatorFactory
+        reference: com.pharbers.ipaas.data.driver.operators.SelectOperator
+        args:
+          inDFName: df
+          selects: "STANDARD_ID_SOURCE as STANDARD_ID_SOURCE_CPA"
+
+  - name: gycx distinct
+    reference: com.pharbers.ipaas.data.driver.api.job.PhBaseAction
+    factory: com.pharbers.ipaas.data.driver.api.factory.PhActionFactory
+    args:
+      df: gycx
+    opers:
+      - name: join cpa STANDARD_ID
+        factory: com.pharbers.ipaas.data.driver.api.factory.PhOperatorFactory
+        reference: com.pharbers.ipaas.data.driver.operators.JoinOperator
+        args:
+          inDFName: df
+          joinDFName: cpa STANDARD_ID
+          joinExpr: STANDARD_ID_SOURCE == STANDARD_ID_SOURCE_CPA
+          joinType: left
+      - name: filter
+        factory: com.pharbers.ipaas.data.driver.api.factory.PhOperatorFactory
+        reference: com.pharbers.ipaas.data.driver.operators.ExprFilterOperator
+        args:
+          inDFName: df
+          filter: "STANDARD_ID_SOURCE_CPA is null"
+      - name: drop
+        factory: com.pharbers.ipaas.data.driver.api.factory.PhOperatorFactory
+        reference: com.pharbers.ipaas.data.driver.operators.DropOperator
+        args:
+          inDFName: df
+          dropColName: STANDARD_ID_SOURCE_CPA
+
+
+  - name: panelERD
+    reference: com.pharbers.ipaas.data.driver.api.job.PhBaseAction
+    factory: com.pharbers.ipaas.data.driver.api.factory.PhActionFactory
+    args:
+      df: cpa
+    opers:
+      - name: union gycx
+        factory: com.pharbers.ipaas.data.driver.api.factory.PhOperatorFactory
+        reference: com.pharbers.ipaas.data.driver.operators.unionOperator
+        args:
+          inDFName: df
+          unionDFName: gycx distinct
+      - name: concant
+        factory: com.pharbers.ipaas.data.driver.api.factory.PhOperatorFactory
+        reference: com.pharbers.ipaas.data.driver.operators.AddColumnOperator
+        args:
+          inDFName: df
+          newColName: GROUP
+        plugin:
+          name: concat
+          reference: com.pharbers.ipaas.data.driver.plugins.ConcatStrPlugin
+          factory: com.pharbers.ipaas.data.driver.api.factory.PhPluginFactory
+          args:
+            columns: COMPANY_ID,YM,HOSPITAL_ID,PRODUCT_ID
+            dilimiter: "#"
+      - name: group panel
+        factory: com.pharbers.ipaas.data.driver.api.factory.PhOperatorFactory
+        reference: com.pharbers.ipaas.data.driver.operators.groupOperator
+        args:
+          inDFName: df
+          groupCol: GROUP
+          agg: sum(UNITS) as UNITS,sum(SALES) as SALES,first(COMPANY_ID) as COMPANY_ID,first(YM) as YM,first(HOSPITAL_ID) as HOSPITAL_ID,first(PRODUCT_ID) as PRODUCT_ID,
+      - name: drop
+        factory: com.pharbers.ipaas.data.driver.api.factory.PhOperatorFactory
+        reference: com.pharbers.ipaas.data.driver.operators.DropOperator
+        args:
+          inDFName: df
+          dropColName: GROUP

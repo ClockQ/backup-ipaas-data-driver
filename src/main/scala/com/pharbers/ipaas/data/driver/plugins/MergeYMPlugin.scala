@@ -37,9 +37,9 @@ case class MergeYMPlugin(name: String,
                          subPluginLst: Seq[PhPluginTrait[Column]])
         extends PhPluginTrait[Column] {
     /** 年列名 */
-    val yearColName: String = defaultArgs.getAs[PhStringArgs]("yearColName").get.get
+    val yearColName: String = defaultArgs.getAs[PhStringArgs]("yearColName").getOrElse(throw new Exception("key yearColName not found")).get
     /** 月列名 */
-    val monthColName: String = defaultArgs.getAs[PhStringArgs]("monthColName").get.get
+    val monthColName: String = defaultArgs.getAs[PhStringArgs]("monthColName").getOrElse(throw new Exception("key monthColName not found")).get
 
     override def perform(pr: PhMapArgs[PhWorkArgs[Any]]): PhWorkArgs[Column] = {
         PhColArgs(
