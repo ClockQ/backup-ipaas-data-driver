@@ -1,0 +1,361 @@
+#gycxPath,hospERDPath,productERDPath,phaERDPath,ProductMatchPath
+name: clean gycx
+reference: com.pharbers.ipaas.data.driver.api.job.PhBaseJob
+factory: com.pharbers.ipaas.data.driver.api.factory.PhJobFactory
+actions:
+  - name: readGycxFile
+    factory: com.pharbers.ipaas.data.driver.api.factory.PhActionFactory
+    reference: com.pharbers.ipaas.data.driver.api.job.PhBaseAction
+    args:
+      null: null
+    opers:
+      - name: read
+        factory: com.pharbers.ipaas.data.driver.api.factory.PhOperatorFactory
+        reference: com.pharbers.ipaas.data.driver.operators.ReadCsvOperator
+        args:
+          path: *gycxPath
+          delimiter: ','
+      - name: hospIdCastInt
+        factory: com.pharbers.ipaas.data.driver.api.factory.PhOperatorFactory
+        reference: com.pharbers.ipaas.data.driver.operators.AddColumnOperator
+        args:
+          inDFName: read
+          newColName: HOSP_ID
+        plugin:
+          name: castInt
+          factory: com.pharbers.ipaas.data.driver.api.factory.PhPluginFactory
+          reference: com.pharbers.ipaas.data.driver.plugins.ExprPlugin
+          args:
+            exprString: cast(HOSP_ID as int)
+      - name: clean prod name
+        factory: com.pharbers.ipaas.data.driver.api.factory.PhOperatorFactory
+        reference: com.pharbers.ipaas.data.driver.operators.AddColumnOperator
+        args:
+          inDFName: hospIdCastInt
+          newColName: PRODUCT_NAME
+        plugin:
+          name: ExprPlugin
+          factory: com.pharbers.ipaas.data.driver.api.factory.PhPluginFactory
+          reference: com.pharbers.ipaas.data.driver.plugins.ExprPlugin
+          args:
+            exprString: "case when PRODUCT_NAME is null then MOLE_NAME else PRODUCT_NAME end"
+      - name: clean value
+        factory: com.pharbers.ipaas.data.driver.api.factory.PhOperatorFactory
+        reference: com.pharbers.ipaas.data.driver.operators.AddColumnOperator
+        args:
+          inDFName: clean prod name
+          newColName: VALUE
+        plugin:
+          name: ExprPlugin
+          factory: com.pharbers.ipaas.data.driver.api.factory.PhPluginFactory
+          reference: com.pharbers.ipaas.data.driver.plugins.ExprPlugin
+          args:
+            exprString: "case when STANDARD_UNIT == 0 then 0 else VALUE end"
+      - name: clean STANDARD_UNIT
+        factory: com.pharbers.ipaas.data.driver.api.factory.PhOperatorFactory
+        reference: com.pharbers.ipaas.data.driver.operators.AddColumnOperator
+        args:
+          inDFName: clean value
+          newColName: STANDARD_UNIT
+        plugin:
+          name: ExprPlugin
+          factory: com.pharbers.ipaas.data.driver.api.factory.PhPluginFactory
+          reference: com.pharbers.ipaas.data.driver.plugins.ExprPlugin
+          args:
+            exprString: "case when value == 0 then 0 else STANDARD_UNIT end"
+
+  - name: readHospitalFile
+    reference: com.pharbers.ipaas.data.driver.api.job.PhBaseAction
+    factory: com.pharbers.ipaas.data.driver.api.factory.PhActionFactory
+    args:
+      null: null
+    opers:
+      - name: read
+        factory: com.pharbers.ipaas.data.driver.api.factory.PhOperatorFactory
+        reference: com.pharbers.ipaas.data.driver.operators.ReadParquetOperator
+        args:
+          path: *hospERDPath
+      - name: filter
+        factory: com.pharbers.ipaas.data.driver.api.factory.PhOperatorFactory
+        reference: com.pharbers.ipaas.data.driver.operators.ExprFilterOperator
+        args:
+          inDFName: read
+          filter: PHA_IS_REPEAT == 0
+      - name: DistinctByKeyOperator
+        factory: com.pharbers.ipaas.data.driver.api.factory.PhOperatorFactory
+        reference: com.pharbers.ipaas.data.driver.operators.DistinctByKeyOperator
+        args:
+          inDFName: filter
+          keys: PHA_HOSP_ID
+
+  - name: readProductFile
+    reference: com.pharbers.ipaas.data.driver.api.job.PhBaseAction
+    factory: com.pharbers.ipaas.data.driver.api.factory.PhActionFactory
+    args:
+      null: null
+    opers:
+      - name: read
+        factory: com.pharbers.ipaas.data.driver.api.factory.PhOperatorFactory
+        reference: com.pharbers.ipaas.data.driver.operators.ReadParquetOperator
+        args:
+          path: *productERDPath
+      - name: concant
+        factory: com.pharbers.ipaas.data.driver.api.factory.PhOperatorFactory
+        reference: com.pharbers.ipaas.data.driver.operators.AddColumnOperator
+        args:
+          inDFName: read
+          newColName: min2
+        plugin:
+          name: concatMin2
+          reference: com.pharbers.ipaas.data.driver.plugins.ConcatStrPlugin
+          factory: com.pharbers.ipaas.data.driver.api.factory.PhPluginFactory
+          args:
+            columns: ETC_PRODUCT_NAME#ETC_DOSAGE_NAME#ETC_PACKAGE_DES#ETC_PACKAGE_NUMBER#ETC_CORP_NAME
+            dilimiter: "|"
+      - name: productSelect
+        factory: com.pharbers.ipaas.data.driver.api.factory.PhOperatorFactory
+        reference: com.pharbers.ipaas.data.driver.operators.SelectOperator
+        args:
+          inDFName: concant
+          selects: _id as PRODUCT_ID#regexp_replace(min2, " ", "") as min2#MARKET
+      - name: DistinctByKeyOperator
+        factory: com.pharbers.ipaas.data.driver.api.factory.PhOperatorFactory
+        reference: com.pharbers.ipaas.data.driver.operators.DistinctByKeyOperator
+        args:
+          inDFName: productSelect
+          keys: min2
+
+  - name: readPhaFile
+    reference: com.pharbers.ipaas.data.driver.api.job.PhBaseAction
+    factory: com.pharbers.ipaas.data.driver.api.factory.PhActionFactory
+    args:
+      null: null
+    opers:
+      - name: read
+        factory: com.pharbers.ipaas.data.driver.api.factory.PhOperatorFactory
+        reference: com.pharbers.ipaas.data.driver.operators.ReadParquetOperator
+        args:
+          path: *phaERDPath
+      - name: DistinctByKeyOperator
+        factory: com.pharbers.ipaas.data.driver.api.factory.PhOperatorFactory
+        reference: com.pharbers.ipaas.data.driver.operators.DistinctByKeyOperator
+        args:
+          inDFName: read
+          keys: GYC
+
+  - name: readProductMatchFile
+    reference: com.pharbers.ipaas.data.driver.api.job.PhBaseAction
+    factory: com.pharbers.ipaas.data.driver.api.factory.PhActionFactory
+    args:
+      null: null
+    opers:
+      - name: read
+        factory: com.pharbers.ipaas.data.driver.api.factory.PhOperatorFactory
+        reference: com.pharbers.ipaas.data.driver.operators.ReadCsvOperator
+        args:
+          path: *ProductMatchPath
+          delimiter: ','
+      - name: productMatchSelect
+        factory: com.pharbers.ipaas.data.driver.api.factory.PhOperatorFactory
+        reference: com.pharbers.ipaas.data.driver.operators.SelectOperator
+        args:
+          inDFName: read
+          selects: regexp_replace(MIN_PRODUCT_UNIT, " ", "") as MIN_PRODUCT_UNIT#regexp_replace(MIN_PRODUCT_UNIT_STANDARD, " ", "") as MIN_PRODUCT_UNIT_STANDARD
+      - name: DistinctByKeyOperator
+        factory: com.pharbers.ipaas.data.driver.api.factory.PhOperatorFactory
+        reference: com.pharbers.ipaas.data.driver.operators.DistinctByKeyOperator
+        args:
+          inDFName: productMatchSelect
+          keys: MIN_PRODUCT_UNIT
+
+  - name: distinctHosp
+    reference: com.pharbers.ipaas.data.driver.api.job.PhBaseAction
+    factory: com.pharbers.ipaas.data.driver.api.factory.PhActionFactory
+    args:
+      null: null
+    opers:
+      - name: hospitalSelect
+        factory: com.pharbers.ipaas.data.driver.api.factory.PhOperatorFactory
+        reference: com.pharbers.ipaas.data.driver.operators.SelectOperator
+        args:
+          inDFName: readHospitalFile
+          selects: HOSPITAL_ID#PHA_HOSP_ID
+      - name: DistinctByKey
+        factory: com.pharbers.ipaas.data.driver.api.factory.PhOperatorFactory
+        reference: com.pharbers.ipaas.data.driver.operators.DistinctByKeyOperator
+        args:
+          inDFName: hospitalSelect
+          keys: PHA_HOSP_ID
+
+  - name: distinctPha
+    reference: com.pharbers.ipaas.data.driver.api.job.PhBaseAction
+    factory: com.pharbers.ipaas.data.driver.api.factory.PhActionFactory
+    args:
+      null: null
+    opers:
+      - name: phaSelect
+        factory: com.pharbers.ipaas.data.driver.api.factory.PhOperatorFactory
+        reference: com.pharbers.ipaas.data.driver.operators.SelectOperator
+        args:
+          inDFName: readPhaFile
+          selects: GYC#PHA_ID_NEW
+      - name: hospIdCastInt
+        factory: com.pharbers.ipaas.data.driver.api.factory.PhOperatorFactory
+        reference: com.pharbers.ipaas.data.driver.operators.AddColumnOperator
+        args:
+          inDFName: phaSelect
+          newColName: GYC
+        plugin:
+          name: castInt
+          factory: com.pharbers.ipaas.data.driver.api.factory.PhPluginFactory
+          reference: com.pharbers.ipaas.data.driver.plugins.ExprPlugin
+          args:
+            exprString: cast(GYC as int)
+      - name: DistinctByKey
+        factory: com.pharbers.ipaas.data.driver.api.factory.PhOperatorFactory
+        reference: com.pharbers.ipaas.data.driver.operators.DistinctByKeyOperator
+        args:
+          inDFName: hospIdCastInt
+          keys: GYC
+
+  - name: gycxMatchHosp
+    reference: com.pharbers.ipaas.data.driver.api.job.PhBaseAction
+    factory: com.pharbers.ipaas.data.driver.api.factory.PhActionFactory
+    args:
+      null: null
+    opers:
+      - name: joinPha
+        factory: com.pharbers.ipaas.data.driver.api.factory.PhOperatorFactory
+        reference: com.pharbers.ipaas.data.driver.operators.JoinOperator
+        args:
+          inDFName: readGycxFile
+          joinDFName: distinctPha
+          joinExpr: HOSP_ID = GYC
+          joinType: left
+      - name: joinHosp
+        factory: com.pharbers.ipaas.data.driver.api.factory.PhOperatorFactory
+        reference: com.pharbers.ipaas.data.driver.operators.JoinOperator
+        args:
+          inDFName: joinPha
+          joinDFName: distinctHosp
+          joinExpr: PHA_ID_NEW = PHA_HOSP_ID
+          joinType: left
+      - name: addHospId
+        factory: com.pharbers.ipaas.data.driver.api.factory.PhOperatorFactory
+        reference: com.pharbers.ipaas.data.driver.operators.AddColumnOperator
+        args:
+          inDFName: joinHosp
+          newColName: HOSPITAL_ID
+        plugin:
+          name: fillHospId
+          factory: com.pharbers.ipaas.data.driver.api.factory.PhPluginFactory
+          reference: com.pharbers.ipaas.data.driver.plugins.ExprPlugin
+          args:
+            exprString: case when HOSPITAL_ID is not null then HOSPITAL_ID else concat("other", HOSP_ID) end
+
+  - name: gycxMatchProduct
+    reference: com.pharbers.ipaas.data.driver.api.job.PhBaseAction
+    factory: com.pharbers.ipaas.data.driver.api.factory.PhActionFactory
+    args:
+      null: null
+    opers:
+      - name: concant
+        factory: com.pharbers.ipaas.data.driver.api.factory.PhOperatorFactory
+        reference: com.pharbers.ipaas.data.driver.operators.AddColumnOperator
+        args:
+          inDFName: gycxMatchHosp
+          newColName: min1
+        plugin:
+          name: concatMin1
+          reference: com.pharbers.ipaas.data.driver.plugins.ConcatStrPlugin
+          factory: com.pharbers.ipaas.data.driver.api.factory.PhPluginFactory
+          args:
+            columns: PRODUCT_NAME#DOSAGE#PACK_DES#PACK_NUMBER#CORP_NAME
+            dilimiter: "|"
+      - name: regexpReplaceMin1
+        factory: com.pharbers.ipaas.data.driver.api.factory.PhOperatorFactory
+        reference: com.pharbers.ipaas.data.driver.operators.AddColumnOperator
+        args:
+          inDFName: concant
+          newColName: min1
+        plugin:
+          name: regexpReplaceMin1
+          factory: com.pharbers.ipaas.data.driver.api.factory.PhPluginFactory
+          reference: com.pharbers.ipaas.data.driver.plugins.ExprPlugin
+          args:
+            exprString: regexp_replace(min1, " ", "")
+      - name: joinProductMatch
+        factory: com.pharbers.ipaas.data.driver.api.factory.PhOperatorFactory
+        reference: com.pharbers.ipaas.data.driver.operators.JoinOperator
+        args:
+          inDFName: regexpReplaceMin1
+          joinDFName: readProductMatchFile
+          joinExpr: min1 = MIN_PRODUCT_UNIT
+          joinType: left
+      - name: joinProduct
+        factory: com.pharbers.ipaas.data.driver.api.factory.PhOperatorFactory
+        reference: com.pharbers.ipaas.data.driver.operators.JoinOperator
+        args:
+          inDFName: joinProductMatch
+          joinDFName: readProductFile
+          joinExpr: MIN_PRODUCT_UNIT_STANDARD = min2
+          joinType: inner
+
+  - name: clean
+    reference: com.pharbers.ipaas.data.driver.api.job.PhBaseAction
+    factory: com.pharbers.ipaas.data.driver.api.factory.PhActionFactory
+    args:
+      null: null
+    opers:
+      - name: litCompanyId
+        factory: com.pharbers.ipaas.data.driver.api.factory.PhOperatorFactory
+        reference: com.pharbers.ipaas.data.driver.operators.AddColumnOperator
+        args:
+          inDFName: gycxMatchProduct
+          newColName: COMPANY_ID
+        plugin:
+          name: litCompanyId
+          factory: com.pharbers.ipaas.data.driver.api.factory.PhPluginFactory
+          reference: com.pharbers.ipaas.data.driver.plugins.ExprPlugin
+          args:
+            exprString: "'astellas'"
+      - name: litSOURCE
+        factory: com.pharbers.ipaas.data.driver.api.factory.PhOperatorFactory
+        reference: com.pharbers.ipaas.data.driver.operators.AddColumnOperator
+        args:
+          inDFName: litCompanyId
+          newColName: SOURCE
+        plugin:
+          name: litSOURCE
+          factory: com.pharbers.ipaas.data.driver.api.factory.PhPluginFactory
+          reference: com.pharbers.ipaas.data.driver.plugins.ExprPlugin
+          args:
+            exprString: "'gyc'"
+      - name: litProductNameNote
+        factory: com.pharbers.ipaas.data.driver.api.factory.PhOperatorFactory
+        reference: com.pharbers.ipaas.data.driver.operators.AddColumnOperator
+        args:
+          inDFName: litSOURCE
+          newColName: PRODUCT_NAME_NOTE
+        plugin:
+          name: litProductNameNote
+          factory: com.pharbers.ipaas.data.driver.api.factory.PhPluginFactory
+          reference: com.pharbers.ipaas.data.driver.plugins.ExprPlugin
+          args:
+            exprString: "''"
+      - name: select
+        factory: com.pharbers.ipaas.data.driver.api.factory.PhOperatorFactory
+        reference: com.pharbers.ipaas.data.driver.operators.SelectOperator
+        args:
+          inDFName: litProductNameNote
+          selects: COMPANY_ID#SOURCE#YM#HOSPITAL_ID#PRODUCT_ID#cast(VALUE as double) as SALES#cast(STANDARD_UNIT as double) as UNITS#PRODUCT_NAME_NOTE#MARKET
+      - name: generateObjectId
+        factory: com.pharbers.ipaas.data.driver.api.factory.PhOperatorFactory
+        reference: com.pharbers.ipaas.data.driver.operators.AddColumnOperator
+        args:
+          inDFName: select
+          newColName: _id
+        plugin:
+          name: generateObjectId
+          factory: com.pharbers.ipaas.data.driver.api.factory.PhPluginFactory
+          reference: com.pharbers.ipaas.data.driver.plugins.GenerateObjectIdPlugin
