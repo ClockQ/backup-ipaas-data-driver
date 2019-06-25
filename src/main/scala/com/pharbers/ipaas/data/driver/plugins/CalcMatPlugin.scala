@@ -33,7 +33,7 @@ import org.apache.spark.sql.types.IntegerType
   * {{{
   *      valueColumnName: String 值所在列名
   *      dateColName: String 日期所在列名
-  *      partitionColumnNames: List[String] 需要分组列的集合
+  *      partitionColumnNames: String 需要分组列的集合，使用"#"分隔
   * }}}
   */
 case class CalcMatPlugin(name: String,
@@ -44,8 +44,8 @@ case class CalcMatPlugin(name: String,
 	val valueColumnName: String = defaultArgs.getAs[PhStringArgs]("valueColumnName").get.get
 	/**	日期所在列名 */
 	val dateColName: String = defaultArgs.getAs[PhStringArgs]("dateColName").get.get
-	/**	需要分组列的集合 */
-	val partitionColumnNames: List[String] = defaultArgs.getAs[PhListArgs[String]]("partitionColumnNames").get.get
+	/**	需要分组列的集合，使用"#"分隔 */
+	val partitionColumnNames: List[String] = defaultArgs.getAs[PhStringArgs]("partitionColumnNames").get.get.split("#").toList
 
 	override def perform(pr: PhMapArgs[PhWorkArgs[Any]]): PhWorkArgs[Column] = {
 		val windowYearOnYear = Window.partitionBy(partitionColumnNames.map(x => col(x)): _*).orderBy(col(dateColName).cast(IntegerType)).rangeBetween(-99, 0)
