@@ -28,8 +28,8 @@ import com.pharbers.ipaas.data.driver.api.work._
   * @since 2019/6/12 18:25
   * @example 默认参数例子
   * {{{
-  * condition: "VALUE % 2 == 1" // when 条件
-  * value: "VALUE + 1" // 符合条件的结果
+  *         condition: "VALUE % 2 == 1" // when 条件
+  *         value: "VALUE + 1" // 符合条件的结果
   * }}}
   */
 case class WhenPlugin(name: String,
