@@ -17,15 +17,16 @@
 
 package com.pharbers.ipaas.data.driver.libs
 
-/** work包实例
+/** 全局常量定义
   *
   * @author clock
   * @version 0.1
-  * @since 2019/06/18 15:41
-  * @note 常用 log 工具
+  * @since 2019/06/25 16:17
   */
-package object log {
-    def formatMsg(user: String, traceID: String, jobID: String)(msgs: Seq[Any]): String = {
-        s"""host: ${PhConstant.LOCALHOST_NAME}, user: $user, traceID: $traceID, jobID: $jobID, ${msgs.map(_.toString).mkString(", ")}"""
-    }
+object PhConstant {
+    val LOCALHOST_NAME: String = java.net.InetAddress.getLocalHost.getHostName
+
+//    val SPARK_CONF_DIR: String = sys.env("PH_DRIVER_SPARK_CONF")
+//
+//    val TEST_CONF_DIR: String = sys.env("PH_DRIVER_TEST_CONF")
 }
