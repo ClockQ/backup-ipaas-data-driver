@@ -1,3 +1,4 @@
+#missHospPath,hospERDPath,phaERDPath,year
 name: miss hosp
 reference: com.pharbers.ipaas.data.driver.api.job.PhBaseJob
 factory: com.pharbers.ipaas.data.driver.api.factory.PhJobFactory
@@ -8,22 +9,22 @@ actions:
     args:
       null: null
     opers:
-      - name:
+      - name: read
         factory: com.pharbers.ipaas.data.driver.api.factory.PhOperatorFactory
         reference: com.pharbers.ipaas.data.driver.operators.ReadParquetOperator
         args:
-          path: hdfs:///repository/hosp_dis_max
+          path: *hospERDPath
       - name: filter
         factory: com.pharbers.ipaas.data.driver.api.factory.PhOperatorFactory
         reference: com.pharbers.ipaas.data.driver.operators.ExprFilterOperator
         args:
-          inDFName: df
+          inDFName: read
           filter: PHA_IS_REPEAT == 0
-      - name:
+      - name: Distinct
         factory: com.pharbers.ipaas.data.driver.api.factory.PhOperatorFactory
         reference: com.pharbers.ipaas.data.driver.operators.DistinctByKeyOperator
         args:
-          inDFName: df
+          inDFName: filter
           keys: PHA_HOSP_ID
 
   - name: readPhaFile
@@ -32,16 +33,16 @@ actions:
     args:
       null: null
     opers:
-      - name:
+      - name: read
         factory: com.pharbers.ipaas.data.driver.api.factory.PhOperatorFactory
         reference: com.pharbers.ipaas.data.driver.operators.ReadParquetOperator
         args:
-          path: hdfs:///repository/pha
-      - name:
+          path: *phaERDPath
+      - name: Distinct
         factory: com.pharbers.ipaas.data.driver.api.factory.PhOperatorFactory
         reference: com.pharbers.ipaas.data.driver.operators.DistinctByKeyOperator
         args:
-          inDFName: df
+          inDFName: read
           keys: CPA
 
   - name: not_arrival_hosp
@@ -54,12 +55,13 @@ actions:
         reference: com.pharbers.ipaas.data.driver.operators.ReadCsvOperator
         factory: com.pharbers.ipaas.data.driver.api.factory.PhOperatorFactory
         args:
-          path: hdfs:///data/pfizer/pha_config_repository1804/missingHospital.csv
+          path: *missHospPath
+          delimiter: ','
       - name: add month
         factory: com.pharbers.ipaas.data.driver.api.factory.PhOperatorFactory
         reference: com.pharbers.ipaas.data.driver.operators.AddColumnOperator
         args:
-          inDFName: df
+          inDFName: read
           newColName: MONTH
         plugin:
           name: Split
@@ -72,43 +74,46 @@ actions:
         factory: com.pharbers.ipaas.data.driver.api.factory.PhOperatorFactory
         reference: com.pharbers.ipaas.data.driver.operators.AddColumnOperator
         args:
-          inDFName: df
+          inDFName: add month
           newColName: YEAR
         plugin:
           name: addYM
           factory: com.pharbers.ipaas.data.driver.api.factory.PhPluginFactory
           reference: com.pharbers.ipaas.data.driver.plugins.ExprPlugin
           args:
-            exprString: 2018
-      - name: add year
+            exprString: *year
+      - name: add date
         factory: com.pharbers.ipaas.data.driver.api.factory.PhOperatorFactory
         reference: com.pharbers.ipaas.data.driver.operators.AddColumnOperator
         args:
-          inDFName: df
+          inDFName: add year
           newColName: DATE
         plugin:
           name: addYM
           factory: com.pharbers.ipaas.data.driver.api.factory.PhPluginFactory
           reference: com.pharbers.ipaas.data.driver.plugins.MergeYMPlugin
+          args:
+            yearColName: YEAR
+            monthColName: MONTH
       - name: drop
         factory: com.pharbers.ipaas.data.driver.api.factory.PhOperatorFactory
         reference: com.pharbers.ipaas.data.driver.operators.DropOperator
         args:
-          inDFName: df
-          dropColName: "MONTH,YEAR"
-      - name: join
+          inDFName: add date
+          drops: "MONTH#YEAR"
+      - name: join cpa
         factory: com.pharbers.ipaas.data.driver.api.factory.PhOperatorFactory
         reference: com.pharbers.ipaas.data.driver.operators.JoinOperator
         args:
-          inDFName: df
+          inDFName: drop
           joinDFName: readPhaFile
           joinExpr: HOSP_ID == CPA
           joinType: left
-      - name: join
+      - name: join hosp
         factory: com.pharbers.ipaas.data.driver.api.factory.PhOperatorFactory
         reference: com.pharbers.ipaas.data.driver.operators.JoinOperator
         args:
-          inDFName: df
+          inDFName: join cpa
           joinDFName: readHospitalFile
           joinExpr: PHA_ID_NEW == PHA_HOSP_ID
           joinType: left
@@ -116,7 +121,7 @@ actions:
         factory: com.pharbers.ipaas.data.driver.api.factory.PhOperatorFactory
         reference: com.pharbers.ipaas.data.driver.operators.AddColumnOperator
         args:
-          inDFName: df
+          inDFName: join hosp
           newColName: HOSPITAL_ID
         plugin:
           name: fillHospId
@@ -128,18 +133,18 @@ actions:
         factory: com.pharbers.ipaas.data.driver.api.factory.PhOperatorFactory
         reference: com.pharbers.ipaas.data.driver.operators.SelectOperator
         args:
-          inDFName: df
+          inDFName: addHospId
           selects: "DATE#HOSPITAL_ID"
       - name: distinct
         factory: com.pharbers.ipaas.data.driver.api.factory.PhOperatorFactory
         reference: com.pharbers.ipaas.data.driver.operators.DistinctOperator
         args:
-          inDFName: df
+          inDFName: select
       - name: addId
         factory: com.pharbers.ipaas.data.driver.api.factory.PhOperatorFactory
         reference: com.pharbers.ipaas.data.driver.operators.AddColumnOperator
         args:
-          inDFName: df
+          inDFName: distinct
           newColName: _id
         plugin:
           name: _id

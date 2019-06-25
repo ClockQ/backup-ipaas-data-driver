@@ -1,4 +1,4 @@
-#fullHospPath,hospERDPath,productERDPath,phaERDPAth,ProductMatchPath
+#fullHospPath,hospERDPath,productERDPath,phaERDPath,ProductMatchPath
 name: clean gycx
 reference: com.pharbers.ipaas.data.driver.api.job.PhBaseJob
 factory: com.pharbers.ipaas.data.driver.api.factory.PhJobFactory
@@ -98,7 +98,7 @@ actions:
         factory: com.pharbers.ipaas.data.driver.api.factory.PhOperatorFactory
         reference: com.pharbers.ipaas.data.driver.operators.ReadParquetOperator
         args:
-          path: *phaERDPAth
+          path: *phaERDPath
       - name: Distinct
         factory: com.pharbers.ipaas.data.driver.api.factory.PhOperatorFactory
         reference: com.pharbers.ipaas.data.driver.operators.DistinctByKeyOperator

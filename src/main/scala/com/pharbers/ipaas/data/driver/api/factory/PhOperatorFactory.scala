@@ -62,7 +62,7 @@ case class PhOperatorFactory(operator: Operator) extends PhFactoryTrait[PhOperat
                 plugin
             ).asInstanceOf[PhOperatorTrait[Any]]
         } catch {
-            case e: InvocationTargetException => throw PhBuildJobException(List(operator.name + ":" + operator.args.asScala.mkString("\n")), e)
+            case e: InvocationTargetException => throw PhBuildJobException(List(operator.name + ":" + operator.args.asScala.mkString("\n")), e.getCause)
             case e: Exception => throw e
         }
     }

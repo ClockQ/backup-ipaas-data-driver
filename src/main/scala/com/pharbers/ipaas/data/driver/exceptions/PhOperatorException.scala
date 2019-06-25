@@ -58,6 +58,6 @@ case class PhOperatorException(names: Seq[String], exception: Exception) extends
   * @example {{{这是一个例子}}}
   */
     override def getMessage: String = {
-        (names ++ List(exception.toString + "\n") ++ exception.getStackTrace.map(x => x.toString)).mkString("\n")
+        (List(names.mkString(",")) ++ List(exception.toString + "\n") ++ exception.getStackTrace.map(x => x.toString)).mkString("\n")
     }
 }

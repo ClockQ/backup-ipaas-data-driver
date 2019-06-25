@@ -1,9 +1,16 @@
-#cpaPath,hospERDPath,productERDPath,phaERDPath,ProductMatchPath
+args:
+  phaERDPath: &phaERDPath hdfs:///repository/pha
+  ProductMatchPath: &ProductMatchPath hdfs:///data/pfizer/pha_config_repository1901/Pfizer_ProductMatchTable_20190403.csv
+  productERDPath: &productERDPath hdfs:///repository/prod_etc_dis_max/5ca069e2eeefcc012918ec73
+  hospERDPath: &hospERDPath hdfs:///repository/hosp_dis_max
+  gycxPath: &gycxPath hdfs:///data/pfizer/pha_config_repository1804/Pfizer_201804_Gycx.csv
+
+#gycxPath,hospERDPath,productERDPath,phaERDPath,ProductMatchPath
 name: clean gycx
 reference: com.pharbers.ipaas.data.driver.api.job.PhBaseJob
 factory: com.pharbers.ipaas.data.driver.api.factory.PhJobFactory
 actions:
-  - name: readCpaFile
+  - name: readGycxFile
     factory: com.pharbers.ipaas.data.driver.api.factory.PhActionFactory
     reference: com.pharbers.ipaas.data.driver.api.job.PhBaseAction
     args:
@@ -13,7 +20,7 @@ actions:
         factory: com.pharbers.ipaas.data.driver.api.factory.PhOperatorFactory
         reference: com.pharbers.ipaas.data.driver.operators.ReadCsvOperator
         args:
-          path: *cpaPath
+          path: *gycxPath
           delimiter: ','
       - name: hospIdCastInt
         factory: com.pharbers.ipaas.data.driver.api.factory.PhOperatorFactory
@@ -105,7 +112,7 @@ actions:
         reference: com.pharbers.ipaas.data.driver.operators.DistinctByKeyOperator
         args:
           inDFName: read
-          keys: CPA
+          keys: GYC
 
   - name: readProductMatchFile
     reference: com.pharbers.ipaas.data.driver.api.job.PhBaseAction
@@ -156,27 +163,27 @@ actions:
         reference: com.pharbers.ipaas.data.driver.operators.SelectOperator
         args:
           inDFName: readPhaFile
-          selects: CPA#PHA_ID_NEW
+          selects: GYC#PHA_ID_NEW
       - name: hospIdCastInt
         factory: com.pharbers.ipaas.data.driver.api.factory.PhOperatorFactory
         reference: com.pharbers.ipaas.data.driver.operators.AddColumnOperator
         args:
           inDFName: phaSelect
-          newColName: CPA
+          newColName: GYC
         plugin:
           name: castInt
           factory: com.pharbers.ipaas.data.driver.api.factory.PhPluginFactory
           reference: com.pharbers.ipaas.data.driver.plugins.ExprPlugin
           args:
-            exprString: cast(CPA as int)
+            exprString: cast(GYC as int)
       - name: Distinct
         factory: com.pharbers.ipaas.data.driver.api.factory.PhOperatorFactory
         reference: com.pharbers.ipaas.data.driver.operators.DistinctByKeyOperator
         args:
           inDFName: hospIdCastInt
-          keys: CPA
+          keys: GYC
 
-  - name: cpaMatchHosp
+  - name: gycxMatchHosp
     reference: com.pharbers.ipaas.data.driver.api.job.PhBaseAction
     factory: com.pharbers.ipaas.data.driver.api.factory.PhActionFactory
     args:
@@ -186,9 +193,9 @@ actions:
         factory: com.pharbers.ipaas.data.driver.api.factory.PhOperatorFactory
         reference: com.pharbers.ipaas.data.driver.operators.JoinOperator
         args:
-          inDFName: readCpaFile
+          inDFName: readGycxFile
           joinDFName: distinctPha
-          joinExpr: HOSP_ID = CPA
+          joinExpr: HOSP_ID = GYC
           joinType: left
       - name: joinHosp
         factory: com.pharbers.ipaas.data.driver.api.factory.PhOperatorFactory
@@ -211,7 +218,7 @@ actions:
           args:
             exprString: case when HOSPITAL_ID is not null then HOSPITAL_ID else concat("other", HOSP_ID) end
 
-  - name: cpaMatchProduct
+  - name: gycxMatchProduct
     reference: com.pharbers.ipaas.data.driver.api.job.PhBaseAction
     factory: com.pharbers.ipaas.data.driver.api.factory.PhActionFactory
     args:
@@ -221,7 +228,7 @@ actions:
         factory: com.pharbers.ipaas.data.driver.api.factory.PhOperatorFactory
         reference: com.pharbers.ipaas.data.driver.operators.AddColumnOperator
         args:
-          inDFName: cpaMatchHosp
+          inDFName: gycxMatchHosp
           newColName: min1
         plugin:
           name: concatMin1
@@ -269,7 +276,7 @@ actions:
         factory: com.pharbers.ipaas.data.driver.api.factory.PhOperatorFactory
         reference: com.pharbers.ipaas.data.driver.operators.AddColumnOperator
         args:
-          inDFName: cpaMatchProduct
+          inDFName: gycxMatchProduct
           newColName: COMPANY_ID
         plugin:
           name: litCompanyId
@@ -288,7 +295,7 @@ actions:
           factory: com.pharbers.ipaas.data.driver.api.factory.PhPluginFactory
           reference: com.pharbers.ipaas.data.driver.plugins.ExprPlugin
           args:
-            exprString: "'cpa'"
+            exprString: "'gyc'"
       - name: litProductNameNote
         factory: com.pharbers.ipaas.data.driver.api.factory.PhOperatorFactory
         reference: com.pharbers.ipaas.data.driver.operators.AddColumnOperator

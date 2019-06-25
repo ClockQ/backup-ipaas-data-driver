@@ -57,7 +57,7 @@ actions:
           newColName: MONTH
         plugin:
           name: Split
-          reference: com.pharbers.ipaas.data.driver.plugin.Split
+          reference: com.pharbers.ipaas.data.driver.plugins.SplitColumnPlugin
           factory: com.pharbers.ipaas.data.driver.api.factory.PhPluginFactory
           args:
             splitColName: MONTH

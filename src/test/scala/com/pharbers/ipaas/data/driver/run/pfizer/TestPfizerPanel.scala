@@ -32,20 +32,35 @@ import org.yaml.snakeyaml.Yaml
 
 import scala.io.Source
 
-/** 功能描述
-  *
-  * @param args 构造参数
-  * @tparam T 构造泛型参数
-  * @author EDZ
-  * @version 0.0
-  * @since 2019/06/24 10:56
-  * @note 一些值得注意的地方
-  */
+
 class TestPfizerPanel extends FunSuite {
     implicit val sd: PhSparkDriver = PhSparkDriver("test-driver")
     sd.addJar("target/ipaas-data-driver-0.1.jar")
     sd.sc.setLogLevel("ERROR")
     test("test pfizer gycx clean") {
+        def cleanGycx(shouldSave: Boolean, name: String, gycxPath: String, ProductMatchPath: String, ProductERDPath: String, hospERDPath: String, PhaPath: String, savePath: String): DataFrame = {
+            val templatePath = "src/test/maxConfig/template/pfizerCleanGycx.yaml"
+            val yamlPath = buildYaml(templatePath,
+                Map("gycxPath" -> gycxPath,
+                    "hospERDPath" -> hospERDPath,
+                    "productERDPath" -> ProductERDPath,
+                    "phaERDPath" -> PhaPath,
+                    "ProductMatchPath" -> ProductMatchPath),
+                name)
+            val phJobs = inst(readJobConfig(yamlPath))
+            val result = phJobs.head.perform(PhMapArgs(Map(
+                "sparkDriver" -> PhSparkDriverArgs(sd),
+                "logDriver" -> PhLogDriverArgs(PhLogDriver(formatMsg("test_user", "test_traceID", "test_jobID")))
+            )))
+
+            val cleanDF = result.toMapArgs[PhDFArgs].get("clean").get
+
+            if (shouldSave) {
+                sd.setUtil(save2Parquet()).save2Parquet(cleanDF, savePath, SaveMode.Overwrite)
+            }
+            cleanDF
+        }
+
         val checkDF = sd.setUtil(readCsv()).readCsv("hdfs:///data/pfizer/pha_config_repository1804/Pfizer_201804_Gycx.csv")
         val resultDF = cleanGycx(
             false,
@@ -71,6 +86,29 @@ class TestPfizerPanel extends FunSuite {
     }
 
     test("test pfizer cpa clean") {
+        def cleanCpa(shouldSave: Boolean, name: String, cpaPath: String, ProductMatchPath: String, ProductERDPath: String, hospERDPath: String, PhaPath: String, savePath: String): DataFrame = {
+            val templatePath = "src/test/maxConfig/template/pfizerCleanCpa.yaml"
+            val yamlPath = buildYaml(templatePath,
+                Map("cpaPath" -> cpaPath,
+                    "hospERDPath" -> hospERDPath,
+                    "productERDPath" -> ProductERDPath,
+                    "phaERDPath" -> PhaPath,
+                    "ProductMatchPath" -> ProductMatchPath),
+                name)
+            val phJobs = inst(readJobConfig(yamlPath))
+            val result = phJobs.head.perform(PhMapArgs(Map(
+                "sparkDriver" -> PhSparkDriverArgs(sd),
+                "logDriver" -> PhLogDriverArgs(PhLogDriver(formatMsg("test_user", "test_traceID", "test_jobID")))
+            )))
+
+            val cleanDF = result.toMapArgs[PhDFArgs].get("clean").get
+
+            if (shouldSave) {
+                sd.setUtil(save2Parquet()).save2Parquet(cleanDF, savePath, SaveMode.Overwrite)
+            }
+            cleanDF
+        }
+
         val checkDF = sd.setUtil(readCsv()).readCsv("hdfs:///data/pfizer/pha_config_repository1804/Pfizer_201804_CPA.csv")
         val resultDF = cleanCpa(
             false,
@@ -96,10 +134,33 @@ class TestPfizerPanel extends FunSuite {
     }
 
     test("test pfizer full hosp clean") {
+        def cleanHullHosp(shouldSave: Boolean, name: String, fullHospPath: String, ProductMatchPath: String, ProductERDPath: String, hospERDPath: String, PhaPath: String, savePath: String): DataFrame = {
+            val templatePath = "src/test/maxConfig/template/pfizerCleanFullHosp.yaml"
+            val yamlPath = buildYaml(templatePath,
+                Map("fullHospPath" -> fullHospPath,
+                    "hospERDPath" -> hospERDPath,
+                    "productERDPath" -> ProductERDPath,
+                    "phaERDPath" -> PhaPath,
+                    "ProductMatchPath" -> ProductMatchPath),
+                name)
+            val phJobs = inst(readJobConfig(yamlPath))
+            val result = phJobs.head.perform(PhMapArgs(Map(
+                "sparkDriver" -> PhSparkDriverArgs(sd),
+                "logDriver" -> PhLogDriverArgs(PhLogDriver(formatMsg("test_user", "test_traceID", "test_jobID")))
+            )))
+
+            val cleanDF = result.toMapArgs[PhDFArgs].get("clean").get
+
+            if (shouldSave) {
+                sd.setUtil(save2Parquet()).save2Parquet(cleanDF, savePath, SaveMode.Overwrite)
+            }
+            cleanDF
+        }
+
         val checkDF = sd.setUtil(readCsv()).readCsv("hdfs:///data/pfizer/pha_config_repository1804/Pfizer_2018_FullHosp.txt", 31.toChar.toString)
         val resultDF = cleanHullHosp(
             false,
-            "pfizerCpaTest",
+            "pfizerFullHospTest",
             "hdfs:///data/pfizer/pha_config_repository1804/Pfizer_2018_FullHosp.txt",
             "hdfs:///data/pfizer/pha_config_repository1901/Pfizer_ProductMatchTable_20190403.csv",
             "hdfs:///repository/prod_etc_dis_max/5ca069e2eeefcc012918ec73",
@@ -120,75 +181,89 @@ class TestPfizerPanel extends FunSuite {
         assert(Math.abs(checkSales - resultSales) < (resultSales * 0.01))
     }
 
-    def cleanGycx(shouldSave: Boolean, name: String, gycxPath: String, ProductMatchPath: String, ProductERDPath: String, hospERDPath: String, PhaPath: String, savePath: String): DataFrame = {
-        val templatePath = "src/test/maxConfig/template/pfizerCleanGycx.yaml"
-        val yamlPath = buildYaml(templatePath,
-            Map("gycxPath" -> gycxPath,
-                "hospERDPath" -> hospERDPath,
-                "productERDPath" -> ProductERDPath,
-                "phaERDPAth" -> PhaPath,
-                "ProductMatchPath" -> ProductMatchPath),
-            name)
-        val phJobs = inst(readJobConfig(yamlPath))
-        val result = phJobs.head.perform(PhMapArgs(Map(
-            "sparkDriver" -> PhSparkDriverArgs(sd),
-            "logDriver" -> PhLogDriverArgs(PhLogDriver(formatMsg("test_user", "test_traceID", "test_jobID")))
-        )))
+    test("test pfizer miss hosp clean") {
+        def cleanMissHosp(shouldSave: Boolean, name: String, missHospPath: String, hospERDPath: String, PhaPath: String, year: String, savePath: String): DataFrame = {
+            val templatePath = "src/test/maxConfig/template/pfizerCleanMissHosp.yaml"
+            val yamlPath = buildYaml(templatePath,
+                Map("missHospPath" -> missHospPath,
+                    "hospERDPath" -> hospERDPath,
+                    "phaERDPath" -> PhaPath,
+                    "year" -> year),
+                name)
+            val phJobs = inst(readJobConfig(yamlPath))
+            val result = phJobs.head.perform(PhMapArgs(Map(
+                "sparkDriver" -> PhSparkDriverArgs(sd),
+                "logDriver" -> PhLogDriverArgs(PhLogDriver(formatMsg("test_user", "test_traceID", "test_jobID")))
+            )))
 
-        val cleanDF = result.toMapArgs[PhDFArgs].get("clean").get
+            val cleanDF = result.toMapArgs[PhDFArgs].get("not_arrival_hosp").get
 
-        if (shouldSave) {
-            sd.setUtil(save2Parquet()).save2Parquet(cleanDF, savePath, SaveMode.Overwrite)
+            if (shouldSave) {
+                sd.setUtil(save2Parquet()).save2Parquet(cleanDF, savePath, SaveMode.Overwrite)
+            }
+            cleanDF
         }
-        cleanDF
+
+        val checkDF = sd.setUtil(readCsv()).readCsv("hdfs:///data/pfizer/pha_config_repository1804/missingHospital.csv")
+        val resultDF = cleanMissHosp(
+            false,
+            "pfizerMissHospTest",
+            "hdfs:///data/pfizer/pha_config_repository1804/missingHospital.csv",
+            "hdfs:///repository/hosp_dis_max",
+            "hdfs:///repository/pha",
+            "2018",
+            "hdfs:///test/dcs/Clean/MissHosp/pfizer"
+        )
+
+        val checkCount = checkDF.count()
+        val cleanCount = resultDF.count()
+        println(checkCount)
+        println(cleanCount)
+
+        assert(Math.abs(checkCount - cleanCount) > -1)
     }
 
-    def cleanCpa(shouldSave: Boolean, name: String, cpaPath: String, ProductMatchPath: String, ProductERDPath: String, hospERDPath: String, PhaPath: String, savePath: String): DataFrame = {
-        val templatePath = "src/test/maxConfig/template/pfizerCleanCpa.yaml"
-        val yamlPath = buildYaml(templatePath,
-            Map("cpaPath" -> cpaPath,
-                "hospERDPath" -> hospERDPath,
-                "productERDPath" -> ProductERDPath,
-                "phaERDPAth" -> PhaPath,
-                "ProductMatchPath" -> ProductMatchPath),
-            name)
-        val phJobs = inst(readJobConfig(yamlPath))
-        val result = phJobs.head.perform(PhMapArgs(Map(
-            "sparkDriver" -> PhSparkDriverArgs(sd),
-            "logDriver" -> PhLogDriverArgs(PhLogDriver(formatMsg("test_user", "test_traceID", "test_jobID")))
-        )))
+    test("test pfizer miss hosp clean") {
+        def cleanMissHosp(shouldSave: Boolean, name: String, missHospPath: String, hospERDPath: String, PhaPath: String, year: String, savePath: String): DataFrame = {
+            val templatePath = "src/test/maxConfig/template/pfizerCleanMissHosp.yaml"
+            val yamlPath = buildYaml(templatePath,
+                Map("missHospPath" -> missHospPath,
+                    "hospERDPath" -> hospERDPath,
+                    "phaERDPath" -> PhaPath,
+                    "year" -> year),
+                name)
+            val phJobs = inst(readJobConfig(yamlPath))
+            val result = phJobs.head.perform(PhMapArgs(Map(
+                "sparkDriver" -> PhSparkDriverArgs(sd),
+                "logDriver" -> PhLogDriverArgs(PhLogDriver(formatMsg("test_user", "test_traceID", "test_jobID")))
+            )))
 
-        val cleanDF = result.toMapArgs[PhDFArgs].get("clean").get
+            val cleanDF = result.toMapArgs[PhDFArgs].get("not_arrival_hosp").get
 
-        if (shouldSave) {
-            sd.setUtil(save2Parquet()).save2Parquet(cleanDF, savePath, SaveMode.Overwrite)
+            if (shouldSave) {
+                sd.setUtil(save2Parquet()).save2Parquet(cleanDF, savePath, SaveMode.Overwrite)
+            }
+            cleanDF
         }
-        cleanDF
+
+        val checkDF = sd.setUtil(readCsv()).readCsv("hdfs:///data/pfizer/pha_config_repository1804/missingHospital.csv")
+        val resultDF = cleanMissHosp(
+            false,
+            "pfizerMissHospTest",
+            "hdfs:///data/pfizer/pha_config_repository1804/missingHospital.csv",
+            "hdfs:///repository/hosp_dis_max",
+            "hdfs:///repository/pha",
+            "2018",
+            "hdfs:///test/dcs/Clean/MissHosp/pfizer"
+        )
+
+        val checkCount = checkDF.count()
+        val cleanCount = resultDF.count()
+        println(checkCount)
+        println(cleanCount)
+
+        assert(Math.abs(checkCount - cleanCount) > -1)
     }
-
-    def cleanHullHosp(shouldSave: Boolean, name: String, fullHospPath: String, ProductMatchPath: String, ProductERDPath: String, hospERDPath: String, PhaPath: String, savePath: String): DataFrame = {
-        val templatePath = "src/test/maxConfig/template/pfizerCleanFullHosp.yaml"
-        val yamlPath = buildYaml(templatePath,
-            Map("fullHospPath" -> fullHospPath,
-                "hospERDPath" -> hospERDPath,
-                "productERDPath" -> ProductERDPath,
-                "phaERDPAth" -> PhaPath,
-                "ProductMatchPath" -> ProductMatchPath),
-            name)
-        val phJobs = inst(readJobConfig(yamlPath))
-        val result = phJobs.head.perform(PhMapArgs(Map(
-            "sparkDriver" -> PhSparkDriverArgs(sd),
-            "logDriver" -> PhLogDriverArgs(PhLogDriver(formatMsg("test_user", "test_traceID", "test_jobID")))
-        )))
-
-        val cleanDF = result.toMapArgs[PhDFArgs].get("clean").get
-
-        if (shouldSave) {
-            sd.setUtil(save2Parquet()).save2Parquet(cleanDF, savePath, SaveMode.Overwrite)
-        }
-        cleanDF
-    }
-
 
     def buildYaml(templatePath: String, argsMap: Map[String, String], name: String): String = {
         import scala.collection.JavaConversions._
