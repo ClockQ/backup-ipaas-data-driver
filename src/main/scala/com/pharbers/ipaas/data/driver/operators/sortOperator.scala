@@ -15,17 +15,17 @@
  * along with Foobar.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package com.pharbers.ipaas.data.driver.plugins
+package com.pharbers.ipaas.data.driver.operators
 
-import com.pharbers.ipaas.data.driver.api.work.{PhDFArgs, PhListArgs, PhMapArgs, PhNoneArgs, PhPluginTrait, PhStringArgs, PhWorkArgs}
-import org.apache.spark.sql.{Column, DataFrame}
+import com.pharbers.ipaas.data.driver.api.work.{PhDFArgs, PhMapArgs, PhOperatorTrait, PhPluginTrait, PhStringArgs, PhWorkArgs}
 import org.apache.spark.sql.functions.col
+import org.apache.spark.sql.{Column, DataFrame}
 
-/** 按照某一列排序
+/** 给DataFrame排序
   *
   * @author cui
   * @version 0.1
-  * @since 2019/6/24 15:16
+  * @since 2019/6/26 14:48
   * @example 默认参数例子
   * {{{
   *     inDF: DataFrame 要排序的DataFrame
@@ -33,10 +33,10 @@ import org.apache.spark.sql.functions.col
   *     sortList: List[String] 需要分组列的集合，使用#分隔
   * }}}
   */
-case class SortPlugin(name: String,
-                      defaultArgs: PhMapArgs[PhWorkArgs[Any]],
-                      subPluginLst: Seq[PhPluginTrait[Column]])
-	extends PhPluginTrait[DataFrame] {
+case class sortOperator(name: String,
+                        defaultArgs: PhMapArgs[PhWorkArgs[Any]],
+                        pluginLst: Seq[PhPluginTrait[Column]])
+	extends PhOperatorTrait[DataFrame] {
 	/** 要排序的DataFrame */
 	val inDF: DataFrame = defaultArgs.getAs[PhDFArgs]("inDF").get.get
 	/** 排序方式 升序降序 asc  desc */

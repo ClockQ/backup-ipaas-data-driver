@@ -45,7 +45,7 @@ case class PhActionFactory(action: Action) extends PhFactoryTrait[PhActionTrait]
                 try {
                     getMethodMirror(oper.getFactory)(oper).asInstanceOf[PhFactoryTrait[PhOperatorTrait[Any]]].inst()
                 } catch {
-                    case e: PhBuildJobException => throw PhBuildJobException(e.configs ++ List(action.name + ":" + action.args.asScala.mkString(",")), e.exception)
+                    case e: PhBuildJobException => throw PhBuildJobException(e.configs ++ List(action.name + ":" + args.map(x => (x._1, x._2.get)).mkString(",")), e.exception)
                     case e: Exception => throw e
                 }
             }

@@ -28,8 +28,8 @@ import org.apache.spark.sql.types.IntegerType
   * @author dcs
   * @version 0.1
   * @since 2019/6/24 15:16
-  * @example 默认参数例子
   * @note MAT : 移动年总和，即从当月前推11个月共12个月的总和
+  * @example 默认参数例子
   * {{{
   *      valueColumnName: String 值所在列名
   *      dateColName: String 日期所在列名

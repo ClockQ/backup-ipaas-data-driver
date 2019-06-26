@@ -163,10 +163,11 @@ actions:
         reference: com.pharbers.ipaas.data.driver.job.PhReadParquetOperator
         factory: com.pharbers.ipaas.data.driver.factory.PhOperatorFactory
         args:
-            path: hdfs:///data/pfizer/pha_config_repository1804/Pfizer_CoefForDVP.csv
-    -   name: rename
-        factory: com.pharbers.ipaas.data.driver.api.factory.PhOperatorFactory
-        reference: com.pharbers.ipaas.data.driver.operators.WithColumnRenamedOperator
+#            path: hdfs:///data/pfizer/pha_config_repository1804/Pfizer_CoefForDVP.csv
+            path: hdfs:///test/dcs/Clean/coef/pfizer
+    -   name: rename HOSPITAL_ID to COEF_HOSPITAL_ID
+        factory: com.pharbers.ipaas.data.driver.factory.PhOperatorFactory
+        reference: com.pharbers.ipaas.data.driver.operators.withColumnRenamed
         args:
             inDFName: df
             oldColName: HOSPITAL_ID

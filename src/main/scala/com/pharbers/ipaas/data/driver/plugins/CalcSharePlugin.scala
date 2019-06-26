@@ -27,8 +27,8 @@ import org.apache.spark.sql.functions._
   * @author dcs
   * @version 0.1
   * @since 2019/6/24 15:16
-  * @example df.CalcShare("$name", CalcMat().CalcRankByWindow(PhMapArgs).get)
   * @note 环比 = （当月 - 上月） / 上月
+  * @example df.CalcShare("$name", CalcMat().CalcRankByWindow(PhMapArgs).get)
   * {{{
   *       valueColumnName: String 值所在列名
   *       partitionColumnNames: String 需要分组列的集合，使用"#"分隔

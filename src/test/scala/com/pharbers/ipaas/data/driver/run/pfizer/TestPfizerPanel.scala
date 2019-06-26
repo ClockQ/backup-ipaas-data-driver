@@ -390,6 +390,99 @@ class TestPfizerPanel extends FunSuite {
         })
     }
 
+    test("test pfizer universe clean") {
+        def cleanUniverse(shouldSave: Boolean, name: String, universePath: String, hospERDPath: String, PhaPath: String, savePath: String): DataFrame = {
+            val templatePath = "src/test/maxConfig/template/pfizerCleanUniverse.yaml"
+            val yamlPath = buildYaml(templatePath,
+                Map("universePath" -> universePath,
+                    "hospERDPath" -> hospERDPath,
+                    "phaERDPath" -> PhaPath),
+                name)
+            val phJobs = inst(readJobConfig(yamlPath))
+            val result = phJobs.head.perform(PhMapArgs(Map(
+                "sparkDriver" -> PhSparkDriverArgs(sd),
+                "logDriver" -> PhLogDriverArgs(PhLogDriver(formatMsg("test_user", "test_traceID", "test_jobID")))
+            )))
+
+            val cleanDF = result.toMapArgs[PhDFArgs].get("universeDF").get
+
+            if (shouldSave) {
+                sd.setUtil(save2Parquet()).save2Parquet(cleanDF, savePath, SaveMode.Overwrite)
+            }
+            cleanDF
+        }
+
+        val markets = List("CNS_R", "CNS_Z", "DVP", "ELIQUIS", "Specialty_other", "Specialty_champix", "Urology_other", "Urology_viagra", "AI_R_other", "AI_R_zith"
+            , "AI_S", "AI_W", "HTN", "INF", "LD", "ONC_other", "ONC_aml", "PAIN_other", "PAIN_lyrica", "AI_D", "ZYVOX", "PAIN_C", "HTN2")
+        markets.foreach(x => {
+            val checkDF = sd.setUtil(readCsv()).readCsv(s"hdfs:///data/pfizer/pha_config_repository1804/Pfizer_Universe_$x.csv")
+            val resultDF = cleanUniverse(
+                false,
+                "pfizerUniverseTest",
+                s"hdfs:///data/pfizer/pha_config_repository1804/Pfizer_Universe_$x.csv",
+                "hdfs:///repository/hosp_dis_max",
+                "hdfs:///repository/pha",
+                s"hdfs:///test/dcs/Clean/universe/pfizer/$x"
+            )
+            val checkCount = checkDF.count()
+            val cleanCount = resultDF.count()
+            println(checkCount)
+            println(cleanCount)
+
+            assert(Math.abs(cleanCount - checkCount) < checkCount * 0.1)
+        })
+    }
+
+    test("test pfizer max") {
+        def max(shouldSave: Boolean, name: String, panelERDPath: String, universeERDPath: String, savePath: String): DataFrame = {
+            val templatePath = "src/test/maxConfig/template/commonMax.yaml"
+            val yamlPath = buildYaml(templatePath,
+                Map("panelERDPath" -> panelERDPath,
+                    "universeERDPath" -> universeERDPath),
+                name)
+            val phJobs = inst(readJobConfig(yamlPath))
+            val result = phJobs.head.perform(PhMapArgs(Map(
+                "sparkDriver" -> PhSparkDriverArgs(sd),
+                "logDriver" -> PhLogDriverArgs(PhLogDriver(formatMsg("test_user", "test_traceID", "test_jobID")))
+            )))
+
+            val cleanDF = result.toMapArgs[PhDFArgs].get("maxResultDF").get
+
+            if (shouldSave) {
+                sd.setUtil(save2Parquet()).save2Parquet(cleanDF, savePath, SaveMode.Overwrite)
+            }
+            cleanDF
+        }
+
+        val markets = Map(
+            "71f06a1f-97e5-4238-a324-7ad2c0765a71" -> "AI_D"
+        )
+        markets.foreach(x => {
+            println(x._2)
+            val checkDF = sd.setUtil(readParquet()).readParquet(s"/workData/Max/${x._1}")
+            val resultDF = max(
+                false,
+                s"astellas${x._2}MaxTest",
+                s"hdfs:///test/dcs/Clean/panel/pfizer/${x._2}",
+                s"hdfs:///test/dcs/Clean/universe/pfizer/${x._2}",
+                s"hdfs:///test/dcs/Clean/max/astellas/${x._2}"
+            )
+
+            val checkUnits = checkDF.agg(sum("f_units")).first.get(0).toString.toDouble
+            val cleanUnits = resultDF.agg(sum("f_units")).first.get(0).toString.toDouble
+            println(checkUnits)
+            println(cleanUnits)
+            assert(Math.abs(checkUnits - cleanUnits) < (checkUnits * 0.1))
+
+            val checkSales = checkDF.agg(sum("f_sales")).first.get(0).toString.toDouble
+            val resultSales = resultDF.agg(sum("f_sales")).first.get(0).toString.toDouble
+            println(checkSales)
+            println(resultSales)
+            assert(Math.abs(checkSales - resultSales) < (checkSales * 0.1))
+        })
+    }
+
+
     def buildYaml(templatePath: String, argsMap: Map[String, String], name: String): String = {
         import scala.collection.JavaConversions._
         val data: java.util.Map[String, java.util.Map[String, String]] = new util.HashMap()
