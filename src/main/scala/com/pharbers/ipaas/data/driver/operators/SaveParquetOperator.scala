@@ -1,41 +1,35 @@
-//package com.pharbers.ipaas.data.driver.operators
-//
-//import com.pharbers.ipaas.data.driver.api.work.{PhDFArgs, PhMapArgs, PhNoneArgs, PhOperatorTrait, PhPluginTrait, PhStringArgs, PhWorkArgs}
-//import com.pharbers.ipaas.data.driver.libs.spark.PhSparkDriver
-//import com.pharbers.ipaas.data.driver.libs.spark.util.{readCsv, save2Parquet}
-//import env.sparkObj2
-//
-///** 功能描述
-//  * 存Parquet算子
-//  * @param plugin 插件
-//  * @param name 算子 name
-//  * @param defaultArgs 配置参数 "inDFName"-> pr中的df名, "path" -> 路径
-//  * @author dcs
-//  * @version 0.0
-//  * @since 2019/6/11 16:50
-//  * @note 一些值得注意的地方
-//  */
-//case class SaveParquetOperator(plugin: PhPluginTrait, name: String, defaultArgs: PhWorkArgs[_]) extends PhOperatorTrait{
-//    val defaultMapArgs: PhMapArgs[PhWorkArgs[_]] = defaultArgs.toMapArgs[PhWorkArgs[_]]
-//    val inDFName: String = defaultMapArgs.getAs[PhStringArgs]("inDFName").get.get
-//    val path: String = defaultMapArgs.getAs[PhStringArgs]("path").get.get
-//
-//    /** 功能描述
-//      *存Parquet
-//
-//      * @param pr 运行时储存之前action和算子所在action之前算子的结果
-//      * @return _root_.com.pharbers.ipaas.data.driver.api.work.PhWorkArgs[_]
-//      * @author EDZ
-//      * @version 0.0
-//      * @since 2019/6/11 17:14
-//      * @note 一些值得注意的地方
-//      * @example {{{这是一个例子}}}
-//      */
-//    override def perform(pr: PhWorkArgs[_]): PhWorkArgs[_] = {
-//        val prMapArgs = pr.toMapArgs[PhWorkArgs[_]]
-//        val inDF = prMapArgs.getAs[PhDFArgs](inDFName).get.get
-//        implicit val sd: PhSparkDriver = sparkObj2
-//        sd.setUtil(save2Parquet()).save2Parquet(inDF, path)
-//        PhDFArgs(inDF)
-//    }
-//}
+package com.pharbers.ipaas.data.driver.operators
+
+import com.pharbers.ipaas.data.driver.api.work.{PhDFArgs, PhMapArgs, PhOperatorTrait, PhPluginTrait, PhSparkDriverArgs, PhStringArgs, PhWorkArgs}
+import com.pharbers.ipaas.data.driver.libs.spark.PhSparkDriver
+import com.pharbers.ipaas.data.driver.libs.spark.util.save2Parquet
+import org.apache.spark.sql.{Column, DataFrame}
+
+/** 将DataFrame1以parquet的格式保存到一个路径地址
+  *
+  * @author EDZ
+  * @version 0.1
+  * @since 2019/6/11 16:50
+  * @example 默认参数例子
+  * {{{
+  *     inDFName: String // 要保存的 DataFrame 名字
+  *     path: String // 要保存的路径地址
+  * }}}
+  */
+case class SaveParquetOperator(name: String,
+                               defaultArgs: PhMapArgs[PhWorkArgs[Any]],
+                               pluginLst: Seq[PhPluginTrait[Column]])
+    extends PhOperatorTrait[DataFrame] {
+	/** 要保存的 DataFrame 名字 */
+    val inDFName: String = defaultArgs.getAs[PhStringArgs]("inDFName").get.get
+	/** 要保存的路径地址 */
+    val path: String = defaultArgs.getAs[PhStringArgs]("path").get.get
+
+    override def perform(pr: PhMapArgs[PhWorkArgs[Any]]): PhWorkArgs[DataFrame] = {
+        val prMapArgs = pr.toMapArgs[PhWorkArgs[_]]
+        val inDF = prMapArgs.getAs[PhDFArgs](inDFName).get.get
+        implicit val sd: PhSparkDriver = prMapArgs.getAs[PhSparkDriverArgs]("sparkDriver").get.get
+        sd.setUtil(save2Parquet()).save2Parquet(inDF, path)
+        PhDFArgs(inDF)
+    }
+}
