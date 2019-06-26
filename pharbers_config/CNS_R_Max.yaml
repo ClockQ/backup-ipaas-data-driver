@@ -62,6 +62,18 @@ actions:
             inDFName: df
             oldColName: PRODUCT_ID
             newColName: ETC_PRODUCT_ID
+    -   name:
+        factory: com.pharbers.ipaas.data.driver.factory.PhOperatorFactory
+        reference: com.pharbers.ipaas.data.driver.job.PhFilterOperator
+        args:
+            df: df
+            filter: MARKET == 'CNS_R'
+    -   name:
+        factory: com.pharbers.ipaas.data.driver.factory.PhOperatorFactory
+        reference: com.pharbers.ipaas.data.driver.job.PhFilterOperator
+        args:
+            df: df
+            filter: ETC_DOSAGE_NAME like '%粉针剂%' OR ETC_DOSAGE_NAME like '%注射剂%'
 
 -   name: universeClean
     reference: com.pharbers.ipaas.data.driver.api.job.PhBaseAction
@@ -173,7 +185,7 @@ actions:
         reference: com.pharbers.ipaas.data.driver.operators.SelectOperator
         args:
             inDFName: df
-            selects: YM#PRODUCT_ID#HOSPITAL_ID#SALES#UNITS#ETC_PACKAGE_DES
+            selects: YM#PRODUCT_ID#HOSPITAL_ID#SALES#UNITS#ETC_DOSAGE_NAME
 
 
 -   name: panelSummed
@@ -201,7 +213,7 @@ actions:
         args:
             inDFName: df
             groupCol: GROUP
-            agg: sum(UNITS) as sumUnits,sum(SALES) as sumSales, first(YM) as P_YM, first(HOSPITAL_ID) as P_HOSPITAL_ID, first(PRODUCT_ID) as P_PRODUCT_ID,first(ETC_PACKAGE_DES) as ETC_PACKAGE_DES
+            agg: sum(UNITS) as sumUnits,sum(SALES) as sumSales, first(YM) as P_YM, first(HOSPITAL_ID) as P_HOSPITAL_ID, first(PRODUCT_ID) as P_PRODUCT_ID,first(ETC_DOSAGE_NAME) as ETC_DOSAGE_NAME
     -   name: drop
         factory: com.pharbers.ipaas.data.driver.api.factory.PhOperatorFactory
         reference: com.pharbers.ipaas.data.driver.operators.DropOperator
@@ -447,7 +459,7 @@ actions:
             reference: com.pharbers.ipaas.data.driver.plugins.ExprPlugin
             factory: com.pharbers.ipaas.data.driver.api.factory.PhPluginFactory
             args:
-                exprString: case when ETC_PACKAGE_DES == '粉针剂' OR ETC_PACKAGE_DES == '注射剂' THEN Factor1 else Factor2 end
+                exprString: case when ETC_DOSAGE_NAME like '%粉针剂%' OR ETC_DOSAGE_NAME like '%注射剂%' THEN Factor1 else Factor2 end
     -   name: drop Factor1,Factor2
         factory: com.pharbers.ipaas.data.driver.api.factory.PhOperatorFactory
         reference: com.pharbers.ipaas.data.driver.operators.DropOperator
@@ -538,30 +550,12 @@ actions:
         args:
             inDFName: df
             dropColName: s_westMedicineIncome
-    #    -   name: addCol flag
-    #        factory: com.pharbers.ipaas.data.driver.api.factory.PhOperatorFactory
-    #        reference: com.pharbers.ipaas.data.driver.operators.AddColumnOperator
-    #        args:
-    #            inDFName: df
-    #            newColName: flag
-    #        plugin:
-    #            name: BaseCalcPlugin
-    #            reference: com.pharbers.ipaas.data.driver.plugins.ExprPlugin
-    #            factory: com.pharbers.ipaas.data.driver.api.factory.PhPluginFactory
-    #            args:
-    #                exprString: case when IS_PANEL_HOSP == 1 then 1 when f_units == 0 or avg_Units  == 0 then 0 else 1 end
-    #    -   name: filter
-    #        factory: com.pharbers.ipaas.data.driver.api.factory.PhOperatorFactory
-    #        reference: com.pharbers.ipaas.data.driver.operators.ExprFilterOperator
-    #        args:
-    #            df: df
-    #            filter: flag == 1 AND IS_PANEL_HOSP == 0
     -   name: filter
         factory: com.pharbers.ipaas.data.driver.api.factory.PhOperatorFactory
         reference: com.pharbers.ipaas.data.driver.operators.ExprFilterOperator
         args:
             df: df
-            filter: IS_PANEL_HOSP == 0 AND (f_units != 0.0 AND f_sales != 0.0)
+            filter: IS_PANEL_HOSP == 0 AND (f_units != 0.0 OR f_sales != 0.0)
     -   name: cast String to Int
         factory: com.pharbers.ipaas.data.driver.api.factory.PhOperatorFactory
         reference: com.pharbers.ipaas.data.driver.operators.AddColumnOperator
@@ -631,7 +625,7 @@ actions:
             reference: com.pharbers.ipaas.data.driver.plugins.ExprPlugin
             factory: com.pharbers.ipaas.data.driver.api.factory.PhPluginFactory
             args:
-                exprString: case when ETC_PACKAGE_DES == '粉针剂' OR ETC_PACKAGE_DES == '注射剂' THEN Factor1 else Factor2 end
+                exprString: case when ETC_DOSAGE_NAME like '%粉针剂%' OR ETC_DOSAGE_NAME like '%注射剂%' THEN Factor1 else Factor2 end
     -   name: drop Factor1,Factor2
         factory: com.pharbers.ipaas.data.driver.api.factory.PhOperatorFactory
         reference: com.pharbers.ipaas.data.driver.operators.DropOperator

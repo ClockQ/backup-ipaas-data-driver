@@ -485,24 +485,6 @@ actions:
         args:
             inDFName: df
             dropColName: s_westMedicineIncome
-    #    -   name: addCol flag
-    #        factory: com.pharbers.ipaas.data.driver.api.factory.PhOperatorFactory
-    #        reference: com.pharbers.ipaas.data.driver.operators.AddColumnOperator
-    #        args:
-    #            inDFName: df
-    #            newColName: flag
-    #        plugin:
-    #            name: BaseCalcPlugin
-    #            reference: com.pharbers.ipaas.data.driver.plugins.ExprPlugin
-    #            factory: com.pharbers.ipaas.data.driver.api.factory.PhPluginFactory
-    #            args:
-    #                exprString: case when IS_PANEL_HOSP == 1 then 1 when f_units == 0 or avg_Units  == 0 then 0 else 1 end
-    #    -   name: filter
-    #        factory: com.pharbers.ipaas.data.driver.api.factory.PhOperatorFactory
-    #        reference: com.pharbers.ipaas.data.driver.operators.ExprFilterOperator
-    #        args:
-    #            df: df
-    #            filter: flag == 1 AND IS_PANEL_HOSP == 0
     -   name: filter
         factory: com.pharbers.ipaas.data.driver.api.factory.PhOperatorFactory
         reference: com.pharbers.ipaas.data.driver.operators.ExprFilterOperator

@@ -1,7 +1,8 @@
-//package com.pharbers.ipaas.data.driver.plugin
+//package com.pharbers.ipaas.data.driver.plugins
 //
 //import com.pharbers.ipaas.data.driver.api.work._
 //import com.pharbers.ipaas.data.driver.libs.spark.PhSparkDriver
+//import com.pharbers.ipaas.data.driver.plugins._
 //import org.apache.spark.sql.DataFrame
 //import org.apache.spark.sql.functions._
 //import org.scalatest.FunSuite
@@ -30,7 +31,7 @@
 //            ("name4", "prod2", "201801", 3, 0.5)
 //        ).toDF("CHECK_NAME", "CHECK_PROD", "CHECK_DATE", "CHECK_VALUE", "CHECK_RESULT")
 //
-//        val yearGrowthPlugin = CalcYearGrowth().perform(PhMapArgs(Map(
+//        val yearGrowthPlugin = CalcYearGrowthPlugin().perform(PhMapArgs(Map(
 //			"dateColName" -> PhStringArgs(dateColName),
 //			"valueColumnName" -> PhStringArgs(valueColumnName),
 //			"partitionColumnNames" -> PhListArgs(partitionColumnNames.map(x => PhStringArgs(x)))
@@ -61,7 +62,7 @@
 //        ).toDF("CHECK_NAME", "CHECK_PROD", "CHECK_DATE", "CHECK_VALUE", "CHECK_RESULT")
 //
 //        df.withColumn("test", when(expr("VALUE > '1'"), 0)).show()
-//        val growthPlugin = CalcRingGrowth().perform(PhMapArgs(Map(
+//        val growthPlugin = CalcRingGrowthPlugin().perform(PhMapArgs(Map(
 //			"dateColName" -> PhStringArgs(dateColName),
 //			"valueColumnName" -> PhStringArgs(valueColumnName),
 //			"partitionColumnNames" -> PhListArgs(partitionColumnNames.map(x => PhStringArgs(x)))
@@ -121,7 +122,7 @@
 //		).toDF("CHECK_NAME", "CHECK_PROD", "CHECK_DATE", "CHECK_VALUE", "CHECK_RESULT")
 //
 //
-//		val growthPlugin = CalcEI().perform(PhMapArgs(Map(
+//		val growthPlugin = CalcEIPlugin().perform(PhMapArgs(Map(
 //			"valueColumnName" -> PhStringArgs(valueColumnName),
 //			"dateColName" -> PhStringArgs(dateColName),
 //			"partitionColumnNames" -> PhListArgs(partitionColumnNames.map(x => PhStringArgs(x)))
@@ -150,7 +151,7 @@
 //		).toDF("CHECK_NAME", "CHECK_PROD", "CHECK_DATE", "CHECK_VALUE", "CHECK_RESULT")
 //
 //
-//		val growthPlugin = CalcMat().perform(PhMapArgs(Map(
+//		val growthPlugin = CalcMatPlugin().perform(PhMapArgs(Map(
 //			"valueColumnName" -> PhStringArgs(valueColumnName),
 //			"dateColName" -> PhStringArgs(dateColName),
 //			"partitionColumnNames" -> PhListArgs(partitionColumnNames.map(x => PhStringArgs(x)))
@@ -179,7 +180,7 @@
 //		).toDF("CHECK_NAME", "CHECK_PROD", "CHECK_DATE", "CHECK_VALUE", "CHECK_RESULT")
 //
 //		val rankPartitionColumnNames = List("DATE")
-//		val growthPlugin = CalcRankByWindow().perform(PhMapArgs(Map(
+//		val growthPlugin = CalcRankByWindowPlugin().perform(PhMapArgs(Map(
 //			"dateColName" -> PhStringArgs(dateColName),
 //			"valueColumnName" -> PhStringArgs(valueColumnName),
 //			"partitionColumnNames" -> PhListArgs(rankPartitionColumnNames.map(x => PhStringArgs(x)))
@@ -208,7 +209,7 @@
 //		).toDF("CHECK_NAME", "CHECK_PROD", "CHECK_DATE", "CHECK_VALUE", "CHECK_RESULT")
 //
 //		val rankPartitionColumnNames = List("DATE")
-//		val growthPlugin = CalcShare().perform(PhMapArgs(Map(
+//		val growthPlugin = CalcSharePlugin().perform(PhMapArgs(Map(
 //			"valueColumnName" -> PhStringArgs(valueColumnName),
 //			"partitionColumnNames" -> PhListArgs(rankPartitionColumnNames.map(x => PhStringArgs(x)))
 //		))).asInstanceOf[PhColArgs].get
