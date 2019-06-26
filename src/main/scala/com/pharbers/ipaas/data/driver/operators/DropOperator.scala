@@ -37,7 +37,7 @@ case class DropOperator(name: String,
         extends PhOperatorTrait[DataFrame] {
     /** 要作用的 DataFrame 名字 */
     val inDFName: String = defaultArgs.getAs[PhStringArgs]("inDFName").get.get
-    /** 要删除的列名列表 */
+    /** 要删除的列名列表，用`#`号分割 */
     val drops: Array[String] = defaultArgs.getAs[PhStringArgs]("drops").get.get.split("#")
 
     override def perform(pr: PhMapArgs[PhWorkArgs[Any]]): PhWorkArgs[DataFrame] = {

@@ -28,8 +28,8 @@ import org.apache.spark.sql.types.IntegerType
   * @author dcs
   * @version 0.1
   * @since 2019/6/24 15:16
-  * @example df.CalcYearGrowth("$name", CalcMat().CalcRankByWindow(PhMapArgs).get)
   * @note 同比 =（当月 - 去年当月） / 去年当月
+  * @example df.CalcYearGrowth("$name", CalcMat().CalcRankByWindow(PhMapArgs).get)
   * {{{
   *       valueColumnName: String 值所在列名
   *       dateColName: String 日期所在列名
