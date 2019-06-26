@@ -32,7 +32,7 @@ import org.apache.spark.sql.functions.{col, first, to_date}
   * {{{
   *      valueColumnName: String 值所在列名
   *      dateColName: String 日期所在列名
-  *      partitionColumnNames: List[String] 需要分组列的集合
+  *      partitionColumnNames: List[String] 需要分组列的集合，使用"#"分隔
   * }}}
   */
 case class CalcRingGrowthPlugin(name: String,
@@ -43,8 +43,8 @@ case class CalcRingGrowthPlugin(name: String,
 	val valueColumnName: String = defaultArgs.getAs[PhStringArgs]("valueColumnName").get.get
 	/**	日期所在列名 */
 	val dateColName: String = defaultArgs.getAs[PhStringArgs]("dateColName").get.get
-	/**	需要分组列的集合 */
-	val partitionColumnNames: List[String] = defaultArgs.getAs[PhListArgs[String]]("partitionColumnNames").get.get
+	/** 需要分组列的集合，使用"#"分隔 */
+	val partitionColumnNames: List[String] = defaultArgs.getAs[PhStringArgs]("partitionColumnNames").get.get.split("#").toList
 	override def perform(pr: PhMapArgs[PhWorkArgs[Any]]): PhWorkArgs[Column] = {
         val windowYearOnYear = Window.partitionBy(partitionColumnNames.map(x => col(x)): _*).orderBy(to_date(col(dateColName), "yyyyMM").cast("timestamp").cast("long"))
                 .rangeBetween(-86400 * 31, -86400 * 28)

@@ -30,7 +30,7 @@ import org.apache.spark.sql.functions._
   * @example 默认参数例子
   * {{{
   *      valueColumnName: String 值所在列名
-  *      partitionColumnNames: List[String] 需要分组列的集合
+  *      partitionColumnNames: String 需要分组列的集合，使用"#"分隔
   * }}}
   */
 case class CalcRankByWindowPlugin(name: String,
@@ -39,8 +39,8 @@ case class CalcRankByWindowPlugin(name: String,
 	extends PhPluginTrait[Column] {
 	/** 值所在列名 */
 	val valueColumnName: String = defaultArgs.getAs[PhStringArgs]("valueColumnName").get.get
-	/**	需要分组列的集合 */
-	val partitionColumnNames: List[String] = defaultArgs.getAs[PhListArgs[String]]("partitionColumnNames").get.get
+	/** 需要分组列的集合，使用"#"分隔 */
+	val partitionColumnNames: List[String] = defaultArgs.getAs[PhStringArgs]("partitionColumnNames").get.get.split("#").toList
 
 	override def perform(pr: PhMapArgs[PhWorkArgs[Any]]): PhWorkArgs[Column] = {
 		val windowYearOnYear = Window.partitionBy(partitionColumnNames.map(x => col(x)): _*).orderBy(col(valueColumnName).desc)

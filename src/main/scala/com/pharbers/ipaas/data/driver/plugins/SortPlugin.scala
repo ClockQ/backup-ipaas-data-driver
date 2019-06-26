@@ -28,18 +28,21 @@ import org.apache.spark.sql.functions.col
   * @since 2019/6/24 15:16
   * @example 默认参数例子
   * {{{
-  *     valueColumnName: String 值所在列名
-  *     dateColName: String 日期所在列名
-  *     partitionColumnNames: List[String] 需要分组列的集合
+  *     inDF: DataFrame 要排序的DataFrame
+  *     orderStr: String 排序方式 升序降序 asc  desc
+  *     sortList: List[String] 需要分组列的集合，使用#分隔
   * }}}
   */
 case class SortPlugin(name: String,
                       defaultArgs: PhMapArgs[PhWorkArgs[Any]],
                       subPluginLst: Seq[PhPluginTrait[Column]])
 	extends PhPluginTrait[DataFrame] {
+	/** 要排序的DataFrame */
 	val inDF: DataFrame = defaultArgs.getAs[PhDFArgs]("inDF").get.get
+	/** 排序方式 升序降序 asc  desc */
 	val orderStr: String = defaultArgs.getAs[PhStringArgs]("orderStr").get.get
-	val sortList: List[String] = defaultArgs.getAs[PhListArgs[String]]("sortList").get.get
+	/** 需要分组列的集合，使用#分隔 */
+	val sortList: List[String] = defaultArgs.getAs[PhStringArgs]("sortList").get.get.split("#").toList
 
 	override def perform(pr: PhMapArgs[PhWorkArgs[Any]]): PhWorkArgs[DataFrame] = {
 		val descFunc: List[String] => List[Column] = lst => lst.map(x => -col(x))
