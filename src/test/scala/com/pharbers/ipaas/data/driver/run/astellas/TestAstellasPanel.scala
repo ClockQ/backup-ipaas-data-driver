@@ -313,4 +313,60 @@ class TestAstellasPanel extends FunSuite {
         assert(checkCount == resultCount)
     }
 
+    test("test astellas panel") {
+        def panel(shouldSave: Boolean, name: String, gycxERDPath: String, cpaERDPath: String, gycxTreeSourcePath: String, cpaTreeSourcePath: String, cpaSampleHospERDPath: String, gycxSampleHospERDPath: String, savePath: String): DataFrame = {
+            val templatePath = "src/test/maxConfig/template/astellasPanel.yaml"
+            val yamlPath = buildYaml(templatePath,
+                Map("gycxERDPath" -> gycxERDPath,
+                    "cpaERDPath" -> cpaERDPath,
+                    "gycxTreeSourcePath" -> gycxTreeSourcePath,
+                    "cpaTreeSourcePath" -> cpaTreeSourcePath,
+                    "cpaSampleHospERDPath" -> cpaSampleHospERDPath,
+                    "gycxSampleHospERDPath" -> gycxSampleHospERDPath),
+                name)
+            val phJobs = inst(readJobConfig(yamlPath))
+            val result = phJobs.head.perform(PhMapArgs(Map(
+                "sparkDriver" -> PhSparkDriverArgs(sd),
+                "logDriver" -> PhLogDriverArgs(PhLogDriver(formatMsg("test_user", "test_traceID", "test_jobID")))
+            )))
+
+            val cleanDF = result.toMapArgs[PhDFArgs].get("panelERD").get
+
+            if (shouldSave) {
+                sd.setUtil(save2Parquet()).save2Parquet(cleanDF, savePath, SaveMode.Overwrite)
+            }
+            cleanDF
+        }
+
+        val markets = Map(
+            "5eec5688-f3e6-4249-a468-c4276e79cf2e" -> "Allelock"
+        )
+        markets.foreach(x => {
+            println(x._2)
+            val checkDF = sd.setUtil(readParquet()).readParquet(s"hdfs:///workData/Panel/${x._1}")
+            val resultDF = panel(
+                false,
+                s"astellas${x._2}PanelTest",
+                "hdfs:///test/dcs/Clean/gycx/astellas",
+                "hdfs:///test/dcs/Clean/cpa/astellas",
+                "hdfs:///test/dcs/Clean/treeSource/astellas/gycx",
+                "hdfs:///test/dcs/Clean/treeSource/astellas/cpa",
+                s"hdfs:///test/dcs/Clean/sampleHosp/astellas/${x._2}" + "_cpa",
+                s"hdfs:///test/dcs/Clean/sampleHosp/astellas/${x._2}" + "_gycx",
+                s"hdfs:///test/dcs/Clean/panel/astellas/${x._2}"
+            )
+
+            val checkUnits = checkDF.agg(sum("UNITS")).first.get(0).toString.toDouble
+            val cleanUnits = resultDF.agg(sum("UNITS")).first.get(0).toString.toDouble
+            println(checkUnits)
+            println(cleanUnits)
+            assert(Math.abs(checkUnits - cleanUnits) < (checkUnits * 0.1))
+
+            val checkSales = checkDF.agg(sum("SALES")).first.get(0).toString.toDouble
+            val resultSales = resultDF.agg(sum("SALES")).first.get(0).toString.toDouble
+            println(checkSales)
+            println(resultSales)
+            assert(Math.abs(checkSales - resultSales) < (checkSales * 0.1))
+        })
+    }
 }
