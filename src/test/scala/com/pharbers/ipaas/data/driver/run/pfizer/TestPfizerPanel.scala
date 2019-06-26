@@ -462,10 +462,10 @@ class TestPfizerPanel extends FunSuite {
             val checkDF = sd.setUtil(readParquet()).readParquet(s"/workData/Max/${x._1}")
             val resultDF = max(
                 false,
-                s"astellas${x._2}MaxTest",
+                s"pfizer${x._2}MaxTest",
                 s"hdfs:///test/dcs/Clean/panel/pfizer/${x._2}",
                 s"hdfs:///test/dcs/Clean/universe/pfizer/${x._2}",
-                s"hdfs:///test/dcs/Clean/max/astellas/${x._2}"
+                s"hdfs:///test/dcs/Clean/max/pfizer/${x._2}"
             )
 
             val checkUnits = checkDF.agg(sum("f_units")).first.get(0).toString.toDouble

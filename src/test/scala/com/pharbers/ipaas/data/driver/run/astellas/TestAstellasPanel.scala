@@ -369,4 +369,95 @@ class TestAstellasPanel extends FunSuite {
             assert(Math.abs(checkSales - resultSales) < (checkSales * 0.1))
         })
     }
+
+    test("test astellas universe clean") {
+        def cleanUniverse(shouldSave: Boolean, name: String, universePath: String, hospERDPath: String, PhaPath: String, savePath: String): DataFrame = {
+            val templatePath = "src/test/maxConfig/template/pfizerCleanUniverse.yaml"
+            val yamlPath = buildYaml(templatePath,
+                Map("universePath" -> universePath,
+                    "hospERDPath" -> hospERDPath,
+                    "phaERDPath" -> PhaPath),
+                name)
+            val phJobs = inst(readJobConfig(yamlPath))
+            val result = phJobs.head.perform(PhMapArgs(Map(
+                "sparkDriver" -> PhSparkDriverArgs(sd),
+                "logDriver" -> PhLogDriverArgs(PhLogDriver(formatMsg("test_user", "test_traceID", "test_jobID")))
+            )))
+
+            val cleanDF = result.toMapArgs[PhDFArgs].get("universeDF").get
+
+            if (shouldSave) {
+                sd.setUtil(save2Parquet()).save2Parquet(cleanDF, savePath, SaveMode.Overwrite)
+            }
+            cleanDF
+        }
+
+        val markets = List("Allelock")
+        markets.foreach(x => {
+            val checkDF = sd.setUtil(readCsv()).readCsv(s"hdfs:///data/astellas/pha_config_repository1804/Astellas_Universe_${x}_20180709.csv")
+            val resultDF = cleanUniverse(
+                true,
+                "astellasUniverseTest",
+                s"hdfs:///data/astellas/pha_config_repository1804/Astellas_Universe_${x}_20180709.csv",
+                "hdfs:///repository/hosp_dis_max",
+                "hdfs:///repository/pha",
+                s"hdfs:///test/dcs/Clean/universe/astellas/$x"
+            )
+            val checkCount = checkDF.count()
+            val cleanCount = resultDF.count()
+            println(checkCount)
+            println(cleanCount)
+
+            assert(Math.abs(cleanCount - checkCount) < checkCount * 0.1)
+        })
+    }
+
+    test("test astellas max") {
+        def max(shouldSave: Boolean, name: String, panelERDPath: String, universeERDPath: String, savePath: String): DataFrame = {
+            val templatePath = "src/test/maxConfig/template/commonMax.yaml"
+            val yamlPath = buildYaml(templatePath,
+                Map("panelERDPath" -> panelERDPath,
+                    "universeERDPath" -> universeERDPath),
+                name)
+            val phJobs = inst(readJobConfig(yamlPath))
+            val result = phJobs.head.perform(PhMapArgs(Map(
+                "sparkDriver" -> PhSparkDriverArgs(sd),
+                "logDriver" -> PhLogDriverArgs(PhLogDriver(formatMsg("test_user", "test_traceID", "test_jobID")))
+            )))
+
+            val cleanDF = result.toMapArgs[PhDFArgs].get("maxResultDF").get
+
+            if (shouldSave) {
+                sd.setUtil(save2Parquet()).save2Parquet(cleanDF, savePath, SaveMode.Overwrite)
+            }
+            cleanDF
+        }
+
+        val markets = Map(
+            "748377c2-7737-4564-a43a-07c8c200b667" -> "Allelock"
+        )
+        markets.foreach(x => {
+            println(x._2)
+            val checkDF = sd.setUtil(readParquet()).readParquet(s"/workData/Max/${x._1}")
+            val resultDF = max(
+                false,
+                s"astellas${x._2}MaxTest",
+                s"hdfs:///test/dcs/Clean/panel/astellas/${x._2}",
+                s"hdfs:///test/dcs/Clean/universe/astellas/${x._2}",
+                s"hdfs:///test/dcs/Clean/max/astellas/${x._2}"
+            )
+
+            val checkUnits = checkDF.agg(sum("f_units")).first.get(0).toString.toDouble
+            val cleanUnits = resultDF.agg(sum("f_units")).first.get(0).toString.toDouble
+            println(checkUnits)
+            println(cleanUnits)
+            assert(Math.abs(checkUnits - cleanUnits) < (checkUnits * 0.1))
+
+            val checkSales = checkDF.agg(sum("f_sales")).first.get(0).toString.toDouble
+            val resultSales = resultDF.agg(sum("f_sales")).first.get(0).toString.toDouble
+            println(checkSales)
+            println(resultSales)
+            assert(Math.abs(checkSales - resultSales) < (checkSales * 0.1))
+        })
+    }
 }
