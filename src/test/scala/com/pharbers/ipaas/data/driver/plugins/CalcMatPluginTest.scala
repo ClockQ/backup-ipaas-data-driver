@@ -1,11 +1,10 @@
-package com.pharbers.ipaas.data.driver.pluginsNew
+package com.pharbers.ipaas.data.driver.plugins
 
 import com.pharbers.ipaas.data.driver.api.work.{PhColArgs, PhMapArgs, PhStringArgs}
 import com.pharbers.ipaas.data.driver.libs.spark.PhSparkDriver
-import com.pharbers.ipaas.data.driver.plugins.CalcMatPlugin
 import org.apache.spark.sql.DataFrame
-import org.scalatest.FunSuite
 import org.apache.spark.sql.functions._
+import org.scalatest.FunSuite
 
 class CalcMatPluginTest extends FunSuite {
 	implicit val sparkDriver: PhSparkDriver = PhSparkDriver("testSparkDriver")
