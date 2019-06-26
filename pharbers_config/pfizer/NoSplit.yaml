@@ -32,7 +32,7 @@ actions:
             filter: MARKET like 'INF'
       - name: rename
         factory: com.pharbers.ipaas.data.driver.api.factory.PhOperatorFactory
-        reference: com.pharbers.ipaas.data.driver.operators.withColumnRenamed
+        reference: com.pharbers.ipaas.data.driver.operators.WithColumnRenamedOperator
         args:
           inDFName: df
           oldColName: MOLE_NAME

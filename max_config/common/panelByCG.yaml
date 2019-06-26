@@ -118,7 +118,7 @@ actions:
       dropColName: DATE
   #      - name: union
   #        factory: com.pharbers.ipaas.data.driver.api.factory.PhOperatorFactory
-  #        reference: com.pharbers.ipaas.data.driver.operators.unionOperator
+  #        reference: com.pharbers.ipaas.data.driver.operators.UnionOperator
   #        args:
   #          inDFName: df
   #          unionDFName: readNotPublishHosp
@@ -136,7 +136,7 @@ actions:
       null: null
   - name: rename
     factory: com.pharbers.ipaas.data.driver.api.factory.PhOperatorFactory
-    reference: com.pharbers.ipaas.data.driver.operators.withColumnRenamed
+    reference: com.pharbers.ipaas.data.driver.operators.WithColumnRenamedOperator
     args:
       inDFName: df
       oldColName: HOSPITAL_ID
@@ -210,13 +210,13 @@ actions:
       dropColName: MISS_HOSPITAL_ID
   - name: union
     factory: com.pharbers.ipaas.data.driver.api.factory.PhOperatorFactory
-    reference: com.pharbers.ipaas.data.driver.operators.unionOperator
+    reference: com.pharbers.ipaas.data.driver.operators.UnionOperator
     args:
       inDFName: df
       unionDFName: reducedCpa
   - name: union
       factory: com.pharbers.ipaas.data.driver.api.factory.PhOperatorFactory
-      reference: com.pharbers.ipaas.data.driver.operators.unionOperator
+      reference: com.pharbers.ipaas.data.driver.operators.UnionOperator
       args:
         inDFName: df
         unionDFName: readGycx
@@ -249,7 +249,7 @@ actions:
       filter: "MARKET == 'DVP' AND SAMPLE == 1"
   - name: rename
     factory: com.pharbers.ipaas.data.driver.api.factory.PhOperatorFactory
-    reference: com.pharbers.ipaas.data.driver.operators.withColumnRenamed
+    reference: com.pharbers.ipaas.data.driver.operators.WithColumnRenamedOperator
     args:
       inDFName: df
       oldColName: HOSPITAL_ID
@@ -296,7 +296,7 @@ actions:
         dilimiter: "#"
   - name: group
     factory: com.pharbers.ipaas.data.driver.api.factory.PhOperatorFactory
-    reference: com.pharbers.ipaas.data.driver.operators.groupOperator
+    reference: com.pharbers.ipaas.data.driver.operators.GroupOperator
     args:
       inDFName: df
       groupCol: GROUP

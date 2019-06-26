@@ -56,14 +56,14 @@ actions:
               path: hdfs:///data/servier/201806_all_correct/IHD_Panel 201806.csv
         -   name: rename Date to YM
             factory: com.pharbers.ipaas.data.driver.api.factory.PhOperatorFactory
-            reference: com.pharbers.ipaas.data.driver.operators.withColumnRenamed
+            reference: com.pharbers.ipaas.data.driver.operators.WithColumnRenamedOperator
             args:
               inDFName: df
               oldColName: Date
               newColName: YM
         -   name: rename HOSP_ID to HOSPITAL_ID
             factory: com.pharbers.ipaas.data.driver.api.factory.PhOperatorFactory
-            reference: com.pharbers.ipaas.data.driver.operators.withColumnRenamed
+            reference: com.pharbers.ipaas.data.driver.operators.WithColumnRenamedOperator
             args:
               inDFName: df
               oldColName: HOSP_ID
@@ -98,21 +98,21 @@ actions:
                 exprString: case when HOSPITAL_ID IS NULL THEN concat('other', PHA_ID) else HOSPITAL_ID end
         -   name: rename Units to UNITS
             factory: com.pharbers.ipaas.data.driver.api.factory.PhOperatorFactory
-            reference: com.pharbers.ipaas.data.driver.operators.withColumnRenamed
+            reference: com.pharbers.ipaas.data.driver.operators.WithColumnRenamedOperator
             args:
               inDFName: df
               oldColName: Units
               newColName: UNITS
         -   name: rename Strength to PRODUCT_ID
             factory: com.pharbers.ipaas.data.driver.api.factory.PhOperatorFactory
-            reference: com.pharbers.ipaas.data.driver.operators.withColumnRenamed
+            reference: com.pharbers.ipaas.data.driver.operators.WithColumnRenamedOperator
             args:
               inDFName: df
               oldColName: Strength
               newColName: PRODUCT_ID
         -   name: rename Sales to SALES
             factory: com.pharbers.ipaas.data.driver.api.factory.PhOperatorFactory
-            reference: com.pharbers.ipaas.data.driver.operators.withColumnRenamed
+            reference: com.pharbers.ipaas.data.driver.operators.WithColumnRenamedOperator
             args:
               inDFName: df
               oldColName: Sales

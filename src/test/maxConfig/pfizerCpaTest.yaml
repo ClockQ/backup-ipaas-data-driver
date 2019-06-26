@@ -1,3 +1,10 @@
+args:
+  phaERDPath: &phaERDPath hdfs:///repository/pha
+  ProductMatchPath: &ProductMatchPath hdfs:///data/pfizer/pha_config_repository1901/Pfizer_ProductMatchTable_20190403.csv
+  productERDPath: &productERDPath hdfs:///repository/prod_etc_dis_max/5ca069e2eeefcc012918ec73
+  cpaPath: &cpaPath hdfs:///data/pfizer/pha_config_repository1804/Pfizer_201804_CPA.csv
+  hospERDPath: &hospERDPath hdfs:///repository/hosp_dis_max
+
 #cpaPath,hospERDPath,productERDPath,phaERDPath,ProductMatchPath
 name: clean gycx
 reference: com.pharbers.ipaas.data.driver.api.job.PhBaseJob

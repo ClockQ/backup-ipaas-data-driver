@@ -26,7 +26,7 @@ actions:
             path: hdfs:///data/nhwa/pha_config_repository1809/Nhwa_universe_麻醉市场_20180705.csv
     -   name: rename PHA_HOSP_ID to PHA_ID_OLD
         factory: com.pharbers.ipaas.data.driver.api.factory.PhOperatorFactory
-        reference: com.pharbers.ipaas.data.driver.operators.withColumnRenamed
+        reference: com.pharbers.ipaas.data.driver.operators.WithColumnRenamedOperator
         args:
             inDFName: df
             oldColName: PHA_HOSP_ID
