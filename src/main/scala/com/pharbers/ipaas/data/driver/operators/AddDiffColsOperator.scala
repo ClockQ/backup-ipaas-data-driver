@@ -1,7 +1,7 @@
 package com.pharbers.ipaas.data.driver.operators
 
 import com.pharbers.ipaas.data.driver.api.work.{PhDFArgs, PhMapArgs, PhOperatorTrait, PhPluginTrait, PhStringArgs, PhWorkArgs}
-import org.apache.spark.sql.{Column, DataFrame}
+import org.apache.spark.sql.{Column, DataFrame, functions}
 
 /** 用null值补充inDF的列，使其列不少于moreColDF
   *
@@ -23,12 +23,12 @@ case class AddDiffColsOperator(name: String,
 	val moreColDFName: String = defaultArgs.getAs[PhStringArgs]("moreColDFName").get.get
 	/** 要新增列的DataFrame */
 	val inDFName: String = defaultArgs.getAs[PhStringArgs]("inDFName").get.get
+
 	override def perform(pr: PhMapArgs[PhWorkArgs[Any]]): PhWorkArgs[DataFrame] = {
-		val prMapArgs = pr.toMapArgs[PhWorkArgs[_]]
-		val inDF = prMapArgs.getAs[PhDFArgs](inDFName).get.get
-		val moreColDF = prMapArgs.getAs[PhDFArgs](moreColDFName).get.get
+		val inDF = pr.getAs[PhDFArgs](inDFName).get.get
+		val moreColDF = pr.getAs[PhDFArgs](moreColDFName).get.get
 		val addColList = moreColDF.columns.diff(inDF.columns)
-		val outDF = addColList.foldRight(inDF)((a, b) => b.withColumn(a, null))
+		val outDF = addColList.foldRight(inDF)((a, b) => b.withColumn(a, functions.lit(null)))
 		PhDFArgs(outDF)
 	}
 }

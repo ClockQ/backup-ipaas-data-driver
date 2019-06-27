@@ -28,23 +28,24 @@ import org.apache.spark.sql.{Column, DataFrame}
   * @since 2019/6/26 14:48
   * @example 默认参数例子
   * {{{
-  *     inDF: DataFrame 要排序的DataFrame
-  *     orderStr: String 排序方式 升序降序 asc  desc
-  *     sortList: List[String] 需要分组列的集合，使用#分隔
+  *     inDFName: DataFrame // 要排序的DataFrame
+  *     sortList: List[String] // 需要分组列的集合，使用#分隔
+  *     orderStr: String // 排序方式 升序 asc, 降序desc
   * }}}
   */
 case class SortOperator(name: String,
                         defaultArgs: PhMapArgs[PhWorkArgs[Any]],
                         pluginLst: Seq[PhPluginTrait[Column]])
 	extends PhOperatorTrait[DataFrame] {
-	/** 要排序的DataFrame */
-	val inDF: DataFrame = defaultArgs.getAs[PhDFArgs]("inDF").get.get
-	/** 排序方式 升序降序 asc  desc */
+	/** 要作用的 DataFrame 名字*/
+	val inDFName: String = defaultArgs.getAs[PhStringArgs]("inDFName").get.get
+	/** 排序方式 升序 asc, 降序 desc */
 	val orderStr: String = defaultArgs.getAs[PhStringArgs]("orderStr").get.get
 	/** 需要分组列的集合，使用#分隔 */
 	val sortList: List[String] = defaultArgs.getAs[PhStringArgs]("sortList").get.get.split("#").toList
 
 	override def perform(pr: PhMapArgs[PhWorkArgs[Any]]): PhWorkArgs[DataFrame] = {
+		val inDF = pr.getAs[PhDFArgs](inDFName).get.get
 		val descFunc: List[String] => List[Column] = lst => lst.map(x => -col(x))
 		val ascFuc: List[String] => List[Column] = lst => lst.map(x => col(x))
 		val funcMap = Map("asc" -> ascFuc, "desc" -> descFunc)

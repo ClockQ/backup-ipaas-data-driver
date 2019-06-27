@@ -31,16 +31,15 @@ package com.pharbers.ipaas.data.driver.operators
 import com.pharbers.ipaas.data.driver.api.work.{PhDFArgs, PhMapArgs, PhOperatorTrait, PhPluginTrait, PhStringArgs, PhWorkArgs}
 import org.apache.spark.sql.{Column, DataFrame}
 
-case class CacaheOperator(name: String,
-                          defaultArgs: PhMapArgs[PhWorkArgs[Any]],
-                          pluginLst: Seq[PhPluginTrait[Column]])
+case class CacheOperator(name: String,
+						 defaultArgs: PhMapArgs[PhWorkArgs[Any]],
+						 pluginLst: Seq[PhPluginTrait[Column]])
 	extends PhOperatorTrait[DataFrame] {
 	/** 要缓存的 DataFrame 名字 */
 	val inDFName: String = defaultArgs.getAs[PhStringArgs]("inDFName").get.get
 
 	override def perform(pr: PhMapArgs[PhWorkArgs[Any]]): PhWorkArgs[DataFrame] = {
-		val prMapArgs = pr.toMapArgs[PhWorkArgs[_]]
-		val inDF = prMapArgs.getAs[PhDFArgs](inDFName).get.get
+		val inDF = pr.getAs[PhDFArgs](inDFName).get.get
 		val outDF = inDF.cache()
 		PhDFArgs(outDF)
 	}
