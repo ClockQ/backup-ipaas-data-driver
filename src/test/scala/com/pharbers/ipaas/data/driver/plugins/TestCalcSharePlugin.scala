@@ -6,7 +6,7 @@ import org.apache.spark.sql.DataFrame
 import org.apache.spark.sql.functions._
 import org.scalatest.FunSuite
 
-class CalcMatPluginTest extends FunSuite {
+class TestCalcSharePlugin extends FunSuite {
 	implicit val sparkDriver: PhSparkDriver = PhSparkDriver("testSparkDriver")
 
 	import sparkDriver.ss.implicits._
@@ -16,27 +16,25 @@ class CalcMatPluginTest extends FunSuite {
 	val valueColumnName = "VALUE"
 	val outputColumnName = "RESULT"
 
-	test("MAT plugin") {
+	test("CalcShare plugin") {
 		val df: DataFrame = List(
-			("name1", "prod1", "201701", 1),
-			("name2", "prod1", "201702", 1),
-			("name3", "prod1", "201801", 1),
-			("name4", "prod1", "201802", 1)
+			("name1", "prod1", "201701", 5),
+			("name2", "prod2", "201701", 5),
+			("name3", "prod1", "201801", 3),
+			("name4", "prod2", "201801", 7)
 		).toDF("NAME", "PROD", "DATE", "VALUE")
 
 		val checkDf: DataFrame = List(
-			("name1", "prod1", "201701", 1, 1),
-			("name2", "prod1", "201702", 1, 2),
-			("name3", "prod1", "201801", 1, 2),
-			("name4", "prod1", "201802", 1, 2)
+			("name1", "prod1", "201701", 5, 0.5),
+			("name2", "prod2", "201701", 5, 0.5),
+			("name3", "prod1", "201801", 3, 0.3),
+			("name4", "prod2", "201801", 7, 0.7)
 		).toDF("CHECK_NAME", "CHECK_PROD", "CHECK_DATE", "CHECK_VALUE", "CHECK_RESULT")
 
-
-		val growthPlugin = CalcMatPlugin("CalcMatPluginTest",
+		val growthPlugin = CalcSharePlugin("CalcSharePlugin",
 			PhMapArgs(Map(
 				"valueColumnName" -> PhStringArgs(valueColumnName),
-				"dateColName" -> PhStringArgs(dateColName),
-				"partitionColumnNames" -> PhStringArgs("PROD")
+				"partitionColumnNames" -> PhStringArgs("DATE")
 			)),
 			Seq()
 		).perform(PhMapArgs(Map().empty)).asInstanceOf[PhColArgs].get

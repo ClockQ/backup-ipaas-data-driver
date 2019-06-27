@@ -21,29 +21,28 @@ import com.pharbers.ipaas.data.driver.api.work.{PhColArgs, PhMapArgs, PhPluginTr
 import org.apache.spark.sql.Column
 import org.apache.spark.sql.functions.{col, explode, split}
 
-/** 功能描述
-  * 按一个column内容拆分一行为多行
-  * @author EDZ
-  * @version 0.0
-  * @since 2019/06/25 10:53
+/** 按一个column内容拆分一行为多行
+  *
+  * @author clock
+  * @version 0.1
+  * @since 2019/06/27 10:53
   * @note
   * {{{
   * splitColName: MONTH // 需要拆分的column
-  * delimit: 、 // 按这个字符串分割
+  * delimiter: "," // 拆分的column是按这个字符串分割
   * }}}
   */
-case class SplitColumnPlugin(name: String,
-                        defaultArgs: PhMapArgs[PhWorkArgs[Any]],
-                        subPluginLst: Seq[PhPluginTrait[Column]])
+case class ExplodePlugin(name: String,
+                         defaultArgs: PhMapArgs[PhWorkArgs[Any]],
+                         subPluginLst: Seq[PhPluginTrait[Column]])
         extends PhPluginTrait[Column] {
 
-    val argsMap: PhMapArgs[_] = defaultArgs.asInstanceOf[PhMapArgs[_]]
-    //需要拆分的column
-    val splitColName: String = argsMap.getAs[PhStringArgs]("splitColName").get.get
-    //按这个字符串分割
-    val delimit: String = argsMap.getAs[PhStringArgs]("delimit").get.get
+    /** 需要拆分的column */
+    val splitColName: String = defaultArgs.getAs[PhStringArgs]("splitColName").get.get
+    /** 拆分的column是按这个字符串分割 */
+    val delimiter: String = defaultArgs.getAs[PhStringArgs]("delimiter").get.get
 
     override def perform(pr: PhMapArgs[PhWorkArgs[Any]]): PhWorkArgs[Column] = {
-        PhColArgs(explode(split(col(splitColName), delimit)))
+        PhColArgs(explode(split(col(splitColName), delimiter)))
     }
 }

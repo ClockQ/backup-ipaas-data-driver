@@ -6,7 +6,7 @@ import org.apache.spark.sql.DataFrame
 import org.apache.spark.sql.functions._
 import org.scalatest.FunSuite
 
-class CalcRankByWindowPluginTest extends FunSuite {
+class TestCalcMatPlugin extends FunSuite {
 	implicit val sparkDriver: PhSparkDriver = PhSparkDriver("testSparkDriver")
 
 	import sparkDriver.ss.implicits._
@@ -16,26 +16,26 @@ class CalcRankByWindowPluginTest extends FunSuite {
 	val valueColumnName = "VALUE"
 	val outputColumnName = "RESULT"
 
-	test("CalcRankByWindow plugin") {
+	test("MAT plugin") {
 		val df: DataFrame = List(
 			("name1", "prod1", "201701", 1),
-			("name2", "prod2", "201701", 2),
-			("name3", "prod1", "201801", 2),
-			("name4", "prod2", "201801", 1)
+			("name2", "prod1", "201702", 1),
+			("name3", "prod1", "201801", 1),
+			("name4", "prod1", "201802", 1)
 		).toDF("NAME", "PROD", "DATE", "VALUE")
 
 		val checkDf: DataFrame = List(
-			("name1", "prod1", "201701", 1, 2),
-			("name2", "prod2", "201701", 2, 1),
-			("name3", "prod1", "201801", 2, 1),
-			("name4", "prod2", "201801", 1, 2)
+			("name1", "prod1", "201701", 1, 1),
+			("name2", "prod1", "201702", 1, 2),
+			("name3", "prod1", "201801", 1, 2),
+			("name4", "prod1", "201802", 1, 2)
 		).toDF("CHECK_NAME", "CHECK_PROD", "CHECK_DATE", "CHECK_VALUE", "CHECK_RESULT")
 
-		val growthPlugin = CalcRankByWindowPlugin("CalcRankByWindowPlugin",
+		val growthPlugin = CalcMatPlugin("CalcMatPluginTest",
 			PhMapArgs(Map(
-				"dateColName" -> PhStringArgs(dateColName),
 				"valueColumnName" -> PhStringArgs(valueColumnName),
-				"partitionColumnNames" -> PhStringArgs("DATE")
+				"dateColName" -> PhStringArgs(dateColName),
+				"partitionColumnNames" -> PhStringArgs("PROD")
 			)),
 			Seq()
 		).perform(PhMapArgs(Map().empty)).asInstanceOf[PhColArgs].get

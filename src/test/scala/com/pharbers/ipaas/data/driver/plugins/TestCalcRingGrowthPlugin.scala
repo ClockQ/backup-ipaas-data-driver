@@ -6,7 +6,7 @@ import org.apache.spark.sql.DataFrame
 import org.apache.spark.sql.functions._
 import org.scalatest.FunSuite
 
-class CalcYearGrowthPluginTest extends FunSuite {
+class TestCalcRingGrowthPlugin extends FunSuite {
 	implicit val sparkDriver: PhSparkDriver = PhSparkDriver("testSparkDriver")
 
 	import sparkDriver.ss.implicits._
@@ -16,23 +16,24 @@ class CalcYearGrowthPluginTest extends FunSuite {
 	val valueColumnName = "VALUE"
 	val outputColumnName = "RESULT"
 
-	test("CalcYearGrowth plugin") {
+	test("CalcRingGrowth plugin") {
 
 		val df: DataFrame = List(
-			("name1", "prod1", "201701", 1),
-			("name2", "prod2", "201701", 2),
-			("name3", "prod1", "201801", 2),
-			("name4", "prod2", "201801", 3)
+			("name1", "prod1", "201801", 1),
+			("name2", "prod2", "201801", 2),
+			("name3", "prod1", "201802", 2),
+			("name4", "prod2", "201802", 3)
 		).toDF("NAME", "PROD", "DATE", "VALUE")
 
 		val checkDf: DataFrame = List(
-			("name1", "prod1", "201701", 1, 0.0),
-			("name2", "prod2", "201701", 2, 0.0),
-			("name3", "prod1", "201801", 2, 1.0),
-			("name4", "prod2", "201801", 3, 0.5)
+			("name1", "prod1", "201801", 1, 0.0),
+			("name2", "prod2", "201801", 2, 0.0),
+			("name3", "prod1", "201802", 2, 1.0),
+			("name4", "prod2", "201802", 3, 0.5)
 		).toDF("CHECK_NAME", "CHECK_PROD", "CHECK_DATE", "CHECK_VALUE", "CHECK_RESULT")
 
-		val yearGrowthPlugin = CalcYearGrowthPlugin("CalcYearGrowthPlugin",
+		df.withColumn("test", when(expr("VALUE > '1'"), 0)).show()
+		val growthPlugin = CalcRingGrowthPlugin("CalcRingGrowthPlugin",
 			PhMapArgs(Map(
 				"dateColName" -> PhStringArgs(dateColName),
 				"valueColumnName" -> PhStringArgs(valueColumnName),
@@ -40,9 +41,11 @@ class CalcYearGrowthPluginTest extends FunSuite {
 			)),
 			Seq()
 		).perform(PhMapArgs(Map().empty)).asInstanceOf[PhColArgs].get
-		val result = df.withColumn(outputColumnName, yearGrowthPlugin)
+
+		val result = df.withColumn(outputColumnName, growthPlugin)
 		result.show()
 		assert(result.columns.contains(outputColumnName))
 		assert(result.join(checkDf, col("CHECK_NAME") === col("NAME")).filter(col("RESULT") =!= col("CHECK_RESULT")).count() == 0)
 	}
+
 }

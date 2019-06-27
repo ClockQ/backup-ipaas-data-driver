@@ -5,7 +5,7 @@ import com.pharbers.ipaas.data.driver.libs.spark.PhSparkDriver
 import com.pharbers.ipaas.data.driver.libs.spark.util.save2Parquet
 import org.apache.spark.sql.{Column, DataFrame}
 
-/** 将DataFrame1以parquet的格式保存到一个路径地址
+/** 将DataFrame以parquet的格式保存到一个路径地址
   *
   * @author EDZ
   * @version 0.1
