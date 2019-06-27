@@ -1,39 +1,35 @@
-package com.pharbers.ipaas.data.driver.pluginsNew
+package com.pharbers.ipaas.data.driver.plugins
 
 import com.pharbers.ipaas.data.driver.api.work.{PhColArgs, PhMapArgs, PhStringArgs}
 import com.pharbers.ipaas.data.driver.libs.spark.PhSparkDriver
-import com.pharbers.ipaas.data.driver.plugins.CalcMatPlugin
 import org.apache.spark.sql.DataFrame
-import org.scalatest.FunSuite
 import org.apache.spark.sql.functions._
+import org.scalatest.FunSuite
 
-class CalcMatPluginTest extends FunSuite {
+class CalcEIPluginTest extends FunSuite {
 	implicit val sparkDriver: PhSparkDriver = PhSparkDriver("testSparkDriver")
-
 	import sparkDriver.ss.implicits._
-
 	val partitionColumnNames = List("PROD")
 	val dateColName = "DATE"
 	val valueColumnName = "VALUE"
 	val outputColumnName = "RESULT"
-
-	test("MAT plugin") {
+	test("EI plugin"){
 		val df: DataFrame = List(
-			("name1", "prod1", "201701", 1),
-			("name2", "prod1", "201702", 1),
-			("name3", "prod1", "201801", 1),
-			("name4", "prod1", "201802", 1)
+			("name1", "prod1", "201701", 0.25),
+			("name2", "prod2", "201702", 0.5),
+			("name3", "prod1", "201801", 1.0),
+			("name4", "prod2", "201802", 1.0)
 		).toDF("NAME", "PROD", "DATE", "VALUE")
 
 		val checkDf: DataFrame = List(
-			("name1", "prod1", "201701", 1, 1),
-			("name2", "prod1", "201702", 1, 2),
-			("name3", "prod1", "201801", 1, 2),
-			("name4", "prod1", "201802", 1, 2)
+			("name1", "prod1", "201701", 0.25, 0),
+			("name2", "prod2", "201702", 0.5, 0),
+			("name3", "prod1", "201801", 1.0, 4),
+			("name4", "prod2", "201802", 1.0, 2)
 		).toDF("CHECK_NAME", "CHECK_PROD", "CHECK_DATE", "CHECK_VALUE", "CHECK_RESULT")
 
 
-		val growthPlugin = CalcMatPlugin("CalcMatPluginTest",
+		val growthPlugin = CalcEIPlugin("",
 			PhMapArgs(Map(
 				"valueColumnName" -> PhStringArgs(valueColumnName),
 				"dateColName" -> PhStringArgs(dateColName),

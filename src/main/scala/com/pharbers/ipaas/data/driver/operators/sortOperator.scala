@@ -33,7 +33,7 @@ import org.apache.spark.sql.{Column, DataFrame}
   *     sortList: List[String] 需要分组列的集合，使用#分隔
   * }}}
   */
-case class sortOperator(name: String,
+case class SortOperator(name: String,
                         defaultArgs: PhMapArgs[PhWorkArgs[Any]],
                         pluginLst: Seq[PhPluginTrait[Column]])
 	extends PhOperatorTrait[DataFrame] {
