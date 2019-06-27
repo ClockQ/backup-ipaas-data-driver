@@ -28,7 +28,7 @@ import org.apache.spark.sql.functions.{col, first, to_date}
   * @version 0.1
   * @since 2019/6/24 15:16
   * @note 环比 = （当月 - 上月） / 上月
-  * @example df.CalcRingGrowth("$name", CalcMat().CalcRankByWindow(PhMapArgs).get)
+  * @example df.CalcRingGrowth(col("name"), CalcMat().CalcRankByWindow(PhMapArgs).get)
   * {{{
   *      valueColumnName: String 值所在列名
   *      dateColName: String 日期所在列名
@@ -38,7 +38,7 @@ import org.apache.spark.sql.functions.{col, first, to_date}
 case class CalcRingGrowthPlugin(name: String,
                                 defaultArgs: PhMapArgs[PhWorkArgs[Any]],
                                 subPluginLst: Seq[PhPluginTrait[Column]])
-	extends PhPluginTrait[Column] {
+		extends PhPluginTrait[Column] {
 	/**	值所在列名 */
 	val valueColumnName: String = defaultArgs.getAs[PhStringArgs]("valueColumnName").get.get
 	/**	日期所在列名 */

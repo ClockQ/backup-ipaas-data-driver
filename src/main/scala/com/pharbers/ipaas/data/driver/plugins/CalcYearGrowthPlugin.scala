@@ -29,7 +29,7 @@ import org.apache.spark.sql.types.IntegerType
   * @version 0.1
   * @since 2019/6/24 15:16
   * @note 同比 =（当月 - 去年当月） / 去年当月
-  * @example df.CalcYearGrowth("$name", CalcMat().CalcRankByWindow(PhMapArgs).get)
+  * @example df.CalcYearGrowth(col("name"), CalcMat().CalcRankByWindow(PhMapArgs).get)
   * {{{
   *       valueColumnName: String 值所在列名
   *       dateColName: String 日期所在列名
@@ -39,7 +39,7 @@ import org.apache.spark.sql.types.IntegerType
 case class CalcYearGrowthPlugin(name: String,
                                 defaultArgs: PhMapArgs[PhWorkArgs[Any]],
                                 subPluginLst: Seq[PhPluginTrait[Column]])
-	extends PhPluginTrait[Column] {
+		extends PhPluginTrait[Column] {
 	/**	值所在列名 */
 	val valueColumnName: String = defaultArgs.getAs[PhStringArgs]("valueColumnName").get.get
 	/**	日期所在列名 */

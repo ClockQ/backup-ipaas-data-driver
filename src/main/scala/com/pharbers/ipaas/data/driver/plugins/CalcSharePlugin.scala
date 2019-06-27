@@ -28,7 +28,7 @@ import org.apache.spark.sql.functions._
   * @version 0.1
   * @since 2019/6/24 15:16
   * @note 环比 = （当月 - 上月） / 上月
-  * @example df.CalcShare("$name", CalcMat().CalcRankByWindow(PhMapArgs).get)
+  * @example df.CalcShare(col("name"), CalcMat().CalcRankByWindow(PhMapArgs).get)
   * {{{
   *       valueColumnName: String 值所在列名
   *       partitionColumnNames: String 需要分组列的集合，使用"#"分隔
@@ -38,7 +38,7 @@ import org.apache.spark.sql.functions._
 case class CalcSharePlugin(name: String,
                            defaultArgs: PhMapArgs[PhWorkArgs[Any]],
                            subPluginLst: Seq[PhPluginTrait[Column]])
-	extends PhPluginTrait[Column] {
+		extends PhPluginTrait[Column] {
 	/**	值所在列名 */
 	val valueColumnName: String = defaultArgs.getAs[PhStringArgs]("valueColumnName").get.get
 	/** 需要分组列的集合，使用"#"分隔 */
