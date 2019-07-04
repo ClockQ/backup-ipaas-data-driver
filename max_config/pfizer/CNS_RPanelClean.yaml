@@ -1,0 +1,43 @@
+name: CNS_R Panel
+reference: com.pharbers.ipaas.data.driver.api.job.PhBaseJob
+factory: com.pharbers.ipaas.data.driver.api.factory.PhJobFactory
+actions:
+-   name: panelData
+    reference: com.pharbers.ipaas.data.driver.api.job.PhBaseAction
+    factory: com.pharbers.ipaas.data.driver.api.factory.PhActionFactory
+    args:
+        null: null
+    opers:
+    -   name: readParquet
+        factory: com.pharbers.ipaas.data.driver.api.factory.PhOperatorFactory
+        reference: com.pharbers.ipaas.data.driver.operators.ReadParquetOperator
+        args:
+            path: hdfs:///test/dcs/Clean/panel/pfizer/CNS_R
+    -   name:
+        factory: com.pharbers.ipaas.data.driver.api.factory.PhOperatorFactory
+        reference: com.pharbers.ipaas.data.driver.operators.JoinOperator
+        args:
+            inDFName: df
+            joinDFName: productDF
+            joinExpr: PRODUCT_ID == ETC_PRODUCT_ID
+            joinType: left
+    -   name: select
+        factory: com.pharbers.ipaas.data.driver.api.factory.PhOperatorFactory
+        reference: com.pharbers.ipaas.data.driver.operators.SelectOperator
+        args:
+            inDFName: df
+            selects: YM#PRODUCT_ID#HOSPITAL_ID#SALES#UNITS#ETC_DOSAGE_NAME
+
+-   name: panelSummed
+    reference: com.pharbers.ipaas.data.driver.api.job.PhBaseAction
+    factory: com.pharbers.ipaas.data.driver.api.factory.PhActionFactory
+    args:
+        df: panelData
+    opers:
+    -   name: group by SEGMENT#PRODUCT_ID#YM sum(sumSales) as s_sumSales,sum(sumUnits) as s_sumUnits,sum(WEST_MEDICINE_INCOME) as s_westMedicineIncome,first(SEGMENT) as SEGMENT, first(PRODUCT_ID) as PRODUCT_ID,first(YM) as YM
+        factory: com.pharbers.ipaas.data.driver.api.factory.PhOperatorFactory
+        reference: com.pharbers.ipaas.data.driver.operators.GroupOperator
+        args:
+            inDFName: panelData
+            groups: YM#HOSPITAL_ID#PRODUCT_ID
+            aggExprs: sum(UNITS) as sumUnits#sum(SALES) as sumSales#first(YM) as P_YM#first(HOSPITAL_ID) as P_HOSPITAL_ID#first(PRODUCT_ID) as P_PRODUCT_ID#first(ETC_DOSAGE_NAME) as ETC_DOSAGE_NAME
