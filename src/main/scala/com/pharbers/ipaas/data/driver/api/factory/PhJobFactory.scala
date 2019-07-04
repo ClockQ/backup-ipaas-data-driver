@@ -17,10 +17,8 @@
 
 package com.pharbers.ipaas.data.driver.api.factory
 
-import java.lang.reflect.InvocationTargetException
-
 import com.pharbers.ipaas.data.driver.api.model.Job
-import com.pharbers.ipaas.data.driver.exceptions.{PhBuildJobException, PhOperatorException}
+import com.pharbers.ipaas.data.driver.exceptions.PhBuildJobException
 import com.pharbers.ipaas.data.driver.api.work.{PhActionTrait, PhJobTrait, PhMapArgs, PhStringArgs}
 
 /** Job 实体工厂
