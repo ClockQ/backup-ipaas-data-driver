@@ -20,26 +20,25 @@ package com.pharbers.ipaas.data.driver.libs.spark.util
 import com.pharbers.ipaas.data.driver.libs.spark.session.SparkConnInstance
 import org.apache.spark.sql.DataFrame
 
-/** SPARK 常用工具集，读取 avro 数据到 DataFrame
+/** 将DataFrame以avro的形式保存到HDFS的一个路径
   *
   * @author cui
   * @version 0.1
   * @since 2019/7/04 17:06
   */
 case class save2Avro(implicit val conn_instance: SparkConnInstance) extends SparkUtilTrait {
-	/** 将DataFrame以csv的形式保存到HDFS的一个路径
+	/** 将DataFrame以avro的形式保存到HDFS的一个路径
 	  *
 	  * @param df 要保存的DataFrame
 	  * @param path HDFS上的路径
 	  * @return Unit
 	  * @author cui
 	  * @version 0.1
-	  * @since 2019-06-27 18:47
+	  * @since 2019/7/04 10:28
 	  * @example 默认参数例子
 	  * {{{
 	  *     df: DataFrame // 要保存的 DataFrame
 	  *     path: String // HDFS上的路径
-	  *     delimiter: String // 分隔符，默认为 "#"
 	  * }}}
 	  */
 	def save2Avro(df: DataFrame, path: String): Unit ={
