@@ -44,17 +44,17 @@ case class PhOperatorFactory(operator: Operator) extends PhFactoryTrait[PhOperat
             case one => one.asScala.map(x => (x._1, PhStringArgs(x._2))).toMap
         }
 
-
         val plugin = operator.getPlugin match {
             case null => Seq()
             case one: Plugin => try {
                 Seq(getMethodMirror(one.getFactory)(one).asInstanceOf[PhFactoryTrait[PhPluginTrait[Any]]].inst())
-            }catch {
+            } catch {
                 case e: PhBuildJobException =>
                     throw PhBuildJobException(e.configs ++ List(operator.name + ":" + operator.args.asScala.mkString(",")), e.exception)
                 case e: Exception => throw e
             }
         }
+
         try {
             getMethodMirror(operator.getReference)(
                 operator.getName,
