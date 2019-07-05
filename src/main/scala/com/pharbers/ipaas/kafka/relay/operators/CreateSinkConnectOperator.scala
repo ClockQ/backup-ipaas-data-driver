@@ -30,7 +30,7 @@ import scala.util.parsing.json._
   * @since 2019/7/3 19:10
   * @example 默认参数例子
   * {{{
-  *  connectName: "testName" // 创建的sink连接名
+  *  connectName: "testSinkConnect" // 创建的sink连接名
   *  connectClass: "org.apache.kafka.connect.file.FileStreamSinkConnector" // 指定使用的连接类，有默认值
   *  tasksMax: "1" // 连接管道的最大线程数, 默认值为“1”
   *  topic: "testTopic" // 连接kafka的主题名字

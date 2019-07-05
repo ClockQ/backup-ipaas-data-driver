@@ -1,0 +1,25 @@
+name: kafkaConnectJob
+factory: com.pharbers.ipaas.data.driver.api.factory.PhJobFactory
+reference: com.pharbers.ipaas.data.driver.api.job.PhBaseJob
+actions:
+- name: kafkaConnectAction
+  factory: com.pharbers.ipaas.data.driver.api.factory.PhActionFactory
+  reference: com.pharbers.ipaas.kafka.relay.job.PhKafkaConnectAction
+  args:
+    protocol: http
+    ip: 192.168.100.176
+    port: 8083
+  opers:
+  - name: 创建SourceConnect
+    factory: com.pharbers.ipaas.data.driver.api.factory.PhOperatorFactory
+    reference: com.pharbers.ipaas.kafka.relay.operators.CreateSourceConnectOperator
+    args:
+      connectName: testSourceName
+      tasksMax: 1
+      topic: testTopic
+      listenFile: /data/test.log
+  - name: 删除SourceConnect
+    factory: com.pharbers.ipaas.data.driver.api.factory.PhOperatorFactory
+    reference: com.pharbers.ipaas.kafka.relay.operators.DeleteConnectOperator
+    args:
+      connectName: testSourceName

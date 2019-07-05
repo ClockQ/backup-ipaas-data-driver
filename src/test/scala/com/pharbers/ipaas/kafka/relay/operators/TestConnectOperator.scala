@@ -20,7 +20,7 @@ package com.pharbers.ipaas.kafka.relay.operators
 import org.scalatest.{BeforeAndAfterAll, FunSuite}
 import com.pharbers.ipaas.data.driver.api.work.{PhMapArgs, PhStringArgs}
 
-class TestCreateSourceConnectOperator extends FunSuite with BeforeAndAfterAll {
+class TestConnectOperator extends FunSuite with BeforeAndAfterAll {
 
     val local = "http://192.168.100.176:8083"
 

@@ -42,7 +42,6 @@ case class PhBaseJob(name: String,
       * @since 2019/6/11 16:43
       */
     def perform(pr: PhMapArgs[PhWorkArgs[Any]]): PhWorkArgs[Any] = {
-        val _: PhSparkDriver = pr.get("sparkDriver").asInstanceOf[PhSparkDriverArgs].get
         val log: PhLogDriver = pr.get("logDriver").asInstanceOf[PhLogDriverArgs].get
 
         if (actionLst.isEmpty) pr
