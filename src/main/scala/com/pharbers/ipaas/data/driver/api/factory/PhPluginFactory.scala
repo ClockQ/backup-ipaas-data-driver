@@ -40,7 +40,7 @@ case class PhPluginFactory(plugin: Plugin) extends PhFactoryTrait[PhPluginTrait[
             case null => Map[String, PhStringArgs]().empty
             case one => one.asScala.map(x => (x._1, PhStringArgs(x._2))).toMap
         }
-        
+
         try {
             val sub = plugin.getSub match {
                 case null => Seq()

@@ -26,6 +26,6 @@ package com.pharbers.ipaas.data.driver.libs
   */
 package object log {
     def formatMsg(user: String, traceID: String, jobID: String)(msgs: Seq[Any]): String = {
-        s"""host: ${PhConstant.LOCALHOST_NAME}, user: $user, traceID: $traceID, jobID: $jobID, ${msgs.map(_.toString).mkString(", ")}"""
+        s"""host: ${PhSysConsts.LOCALHOST_NAME}, user: $user, traceID: $traceID, jobID: $jobID, ${msgs.map(_.toString).mkString(", ")}"""
     }
 }
