@@ -19,12 +19,9 @@ package com.pharbers.ipaas.kafka.relay.job
 
 import java.util.UUID
 
-import com.pharbers.ipaas.data.driver.api.factory.{PhFactoryTrait, getMethodMirror}
-import com.pharbers.ipaas.data.driver.api.model.Action
 import com.pharbers.ipaas.data.driver.api.work._
-import com.pharbers.ipaas.data.driver.exceptions.{PhBuildJobException, PhOperatorException}
+import com.pharbers.ipaas.data.driver.exceptions.PhOperatorException
 import com.pharbers.ipaas.data.driver.libs.log.PhLogDriver
-import com.pharbers.ipaas.data.driver.libs.spark.PhSparkDriver
 
 /** Kafka Connect Action 运行实体
   *
@@ -40,7 +37,7 @@ import com.pharbers.ipaas.data.driver.libs.spark.PhSparkDriver
   * @version 0.1
   * @since 2019/7/5 12:20
   */
-case class PhKafkaConnectAction(name: String,
+case class PhKafkaTestAction(name: String,
                                 defaultArgs: PhMapArgs[PhWorkArgs[Any]],
                                 operatorLst: Seq[PhOperatorTrait[Any]])
 	extends PhActionTrait {
@@ -52,15 +49,19 @@ case class PhKafkaConnectAction(name: String,
 	  */
 	def perform(pr: PhMapArgs[PhWorkArgs[Any]]): PhWorkArgs[Any] = {
 		val log: PhLogDriver = pr.get("logDriver").asInstanceOf[PhLogDriverArgs].get
-//		val chanelId = defaultArgs.get("chanelId").get.asInstanceOf[String] + UUID.randomUUID().toString.replaceAll("-", "")
+		val chanelId = UUID.randomUUID().toString.replaceAll("-", "")
 		if (operatorLst.isEmpty) pr
-		else operatorLst.foreach { oper => {
-			log.setInfoLog(oper.name)
-//			oper.perform(PhMapArgs(pr.get ++ defaultArgs.get ++ Map("chanelId" -> PhStringArgs(chanelId))))
-			oper.perform(PhMapArgs(pr.get ++ defaultArgs.get))
-		}
-		}
+		else {
+			operatorLst.foldLeft(pr) { (l, r) =>
+				log.setInfoLog(r.name, "开始执行")
+				try {
+					PhMapArgs(l.get + (r.name -> r.perform(PhMapArgs(l.get ++ defaultArgs.get ++ Map("chanelId" -> PhStringArgs(chanelId))))))
+				} catch {
+					case e: Exception => throw PhOperatorException(List(r.name, name), e)
+				}
 
-		PhNoneArgs
+			}.get(operatorLst.last.name)
+		}
+//		PhNoneArgs
 	}
 }

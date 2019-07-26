@@ -21,6 +21,9 @@ import org.scalatest.FunSuite
 import env.configObj.{inst, readJobConfig}
 import com.pharbers.ipaas.data.driver.api.work._
 import com.pharbers.ipaas.data.driver.libs.log.{PhLogDriver, formatMsg}
+import com.pharbers.ipaas.data.driver.libs.spark.PhSparkDriver
+import com.pharbers.ipaas.data.driver.libs.spark.util.readParquet
+import org.apache.spark.sql.Column
 
 class TestKafkaConnectAction extends FunSuite {
 	test("kafka connect action") {
@@ -28,5 +31,53 @@ class TestKafkaConnectAction extends FunSuite {
 		phJobs.head.perform(PhMapArgs(Map(
 			"logDriver" -> PhLogDriverArgs(PhLogDriver(formatMsg("test_user", "test_traceID", "test_jobID")))
 		)))
+	}
+
+	test("kafka connect source and sink test") {
+		val phJobs = inst(readJobConfig("pharbers_config/channel/kafkaconnect.yaml"))
+		val sparkDriver = PhSparkDriver("cui-test")
+		phJobs.foreach(x =>
+			x.perform(PhMapArgs(Map(
+				"sparkDriver" -> PhSparkDriverArgs(sparkDriver),
+				"logDriver" -> PhLogDriverArgs(PhLogDriver(formatMsg("test_user", "test_traceID", "test_jobID")))
+			)))
+		)
+	}
+
+	test("kafka connect HDFS to ES") {
+		val phJobs = inst(readJobConfig("pharbers_config/channel/hdfsSinkToES.yaml"))
+		phJobs.foreach(x =>
+			x.perform(PhMapArgs(Map(
+				"logDriver" -> PhLogDriverArgs(PhLogDriver(formatMsg("test_user", "test_traceID", "test_jobID")))
+			)))
+		)
+	}
+
+	test("kafka connect all Test") {
+		val phJobs = inst(readJobConfig("pharbers_config/channel/allChanel.yaml"))
+		val sparkDriver = PhSparkDriver("cui-test")
+		phJobs.foreach(x =>
+			x.perform(PhMapArgs(Map(
+				"sparkDriver" -> PhSparkDriverArgs(sparkDriver),
+				"logDriver" -> PhLogDriverArgs(PhLogDriver(formatMsg("test_user", "test_traceID", "test_jobID")))
+			)))
+		)
+	}
+
+	test("check") {
+		val path = "hdfs:///logs/testLogs/topics/source_e7871c264a0346dca6ce613e8ab0c7a9/partition=0"
+		implicit val sd: PhSparkDriver = PhSparkDriver("cui-test")
+		import com.pharbers.ipaas.data.driver.libs.spark.util._
+		import org.apache.spark.sql.functions.expr
+		val df = sd.setUtil(readParquet()).readParquet(path)
+		df.groupBy("department").agg(expr("count(department) as count")).show(false)
+	}
+
+	test("result") {
+		val path = "/test/testCui/kfkaTest"
+		implicit val sd: PhSparkDriver = PhSparkDriver("cui-test")
+		import com.pharbers.ipaas.data.driver.libs.spark.util._
+		val df = sd.setUtil(readParquet()).readParquet(path)
+		df.show(false)
 	}
 }
