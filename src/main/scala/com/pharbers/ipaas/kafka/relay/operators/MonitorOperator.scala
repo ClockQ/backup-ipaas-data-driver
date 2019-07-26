@@ -54,6 +54,7 @@ case class MonitorOperator(name: String,
 		//step 3 向MonitorServer发送这次JobID的监控请求（Kafka Producer）（前提要确保MonitorServer已经启动!）
 		// 请求参数（[JobID]和[监控策略]）
 		def sendMonitorRequest(): Unit = {
+			//TODO: 这是一个单例，应该提出来
 			val pkp = new PharbersKafkaProducer[String, MonitorRequest]
 			val record = new MonitorRequest(chanelId, "default")
 			val fu = pkp.produce("MonitorRequest", chanelId, record)
@@ -66,7 +67,7 @@ case class MonitorOperator(name: String,
 				listenMonitor = false
 				deleteConnectors(record.value().getJobId.toString)
 			}
-			if (record.value().getError.toString != "") {
+			if (record.value().getError.toString != "" && record.value().getJobId.toString == chanelId) {
 				log.setInfoLog(s"收到错误信息后关闭，id: ${record.value().getJobId.toString}, error：${record.value().getError.toString}")
 				deleteConnectors(record.value().getJobId.toString)
 				listenMonitor = false
