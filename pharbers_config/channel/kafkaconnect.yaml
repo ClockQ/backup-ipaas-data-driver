@@ -2,24 +2,58 @@ name: kafkaConnectJob
 factory: com.pharbers.ipaas.data.driver.api.factory.PhJobFactory
 reference: com.pharbers.ipaas.data.driver.api.job.PhBaseJob
 actions:
-- name: kafkaConnectAction
-  factory: com.pharbers.ipaas.data.driver.api.factory.PhActionFactory
-  reference: com.pharbers.ipaas.kafka.relay.job.PhKafkaConnectAction
-  args:
-    protocol: http
-    ip: 192.168.100.176
-    port: 8083
-  opers:
-  - name: 创建SourceConnect
-    factory: com.pharbers.ipaas.data.driver.api.factory.PhOperatorFactory
-    reference: com.pharbers.ipaas.kafka.relay.operators.CreateSourceConnectOperator
+-   name: kafkaConnectAction
+    factory: com.pharbers.ipaas.data.driver.api.factory.PhActionFactory
+    reference: com.pharbers.ipaas.kafka.relay.job.PhKafkaConnectAction
     args:
-      connectName: testSourceName
-      tasksMax: 1
-      topic: testTopic
-      listenFile: /data/test.log
-  - name: 删除SourceConnect
-    factory: com.pharbers.ipaas.data.driver.api.factory.PhOperatorFactory
-    reference: com.pharbers.ipaas.kafka.relay.operators.DeleteConnectOperator
+        protocol: http
+        ip: 192.168.100.176
+        port: 8083
+        chanelId: ba4cb2673345449798bce1d6b55f23d0
+    opers:
+    -   name: 创建SourceConnect
+        factory: com.pharbers.ipaas.data.driver.api.factory.PhOperatorFactory
+        reference: com.pharbers.ipaas.kafka.relay.operators.SourceFromOSSOperator
+        args:
+            connectName: testSourceName
+            tasksMax: 1
+            topic: testTopic
+            key: employeesList.xlsx
+            connectClass: com.pharbers.kafka.connect.oss.OssExcelSourceConnector
+    -   name: 创建SinkConnect
+        factory: com.pharbers.ipaas.data.driver.api.factory.PhOperatorFactory
+        reference: com.pharbers.ipaas.kafka.relay.operators.OSSSink2HDFSOperator
+        args:
+            connectName: testSinkName
+            tasksMax: 1
+            topic: testTopic
+            hdfsPath: hdfs://192.168.100.137:9000/logs/testLogs/
+            connectClass: io.confluent.connect.hdfs.HdfsSinkConnector
+    -   name: 创建monitor
+        factory: com.pharbers.ipaas.data.driver.api.factory.PhOperatorFactory
+        reference: com.pharbers.ipaas.kafka.relay.operators.MonitorOperator
+
+-   name: groupEmployeesList
+    reference: com.pharbers.ipaas.data.driver.api.job.PhBaseAction
+    factory: com.pharbers.ipaas.data.driver.api.factory.PhActionFactory
     args:
-      connectName: testSourceName
+        null: null
+    opers:
+    -   name: readParquet
+        factory: com.pharbers.ipaas.data.driver.api.factory.PhOperatorFactory
+        reference: com.pharbers.ipaas.data.driver.operators.ReadParquetOperator
+        args:
+            path: hdfs:///logs/testLogs/topics/source_ba4cb2673345449798bce1d6b55f23d0/partition=0
+    -   name: group
+        factory: com.pharbers.ipaas.data.driver.api.factory.PhOperatorFactory
+        reference: com.pharbers.ipaas.data.driver.operators.GroupOperator
+        args:
+            inDFName: readParquet
+            groups: department
+            aggExprs: count(department) as count
+    -   name: saveToParquet
+        factory: com.pharbers.ipaas.data.driver.api.factory.PhOperatorFactory
+        reference: com.pharbers.ipaas.data.driver.operators.SaveParquetOperator
+        args:
+            inDFName: group
+            path: hdfs:///test/testCui/kfkaTest/

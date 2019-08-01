@@ -71,6 +71,17 @@ class TestKafkaConnectAction extends FunSuite {
 		import org.apache.spark.sql.functions.expr
 		val df = sd.setUtil(readParquet()).readParquet(path)
 		df.groupBy("department").agg(expr("count(department) as count")).show(false)
+		(1 until 1000).foreach(x => df.show(false))
+	}
+
+	test("check2") {
+		val path = "hdfs:///logs/testLogs/topics/source_e7871c264a0346dca6ce613e8ab0c7a9/partition=0"
+		implicit val sd: PhSparkDriver = PhSparkDriver("cui-test2")
+		import com.pharbers.ipaas.data.driver.libs.spark.util._
+		import org.apache.spark.sql.functions.expr
+		val df = sd.setUtil(readParquet()).readParquet(path)
+		df.groupBy("department").agg(expr("count(department) as count")).show(false)
+		(1 until 1000).foreach(x => df.show(false))
 	}
 
 	test("result") {
