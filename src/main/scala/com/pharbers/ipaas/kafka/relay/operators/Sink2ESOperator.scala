@@ -75,7 +75,9 @@ case class Sink2ESOperator(name: String,
 			   |		"tasks.max": $tasksMax,
 			   |		"key.ignore": "true",
 			   |		"connection.url": "$esUrl",
-			   |		"type.name": ""
+			   |		"type.name": "",
+			   |        "read.timeout.ms": "10000",
+			   |        "connection.timeout.ms": "5000"
 			   |    }
 			   |}
              """.stripMargin

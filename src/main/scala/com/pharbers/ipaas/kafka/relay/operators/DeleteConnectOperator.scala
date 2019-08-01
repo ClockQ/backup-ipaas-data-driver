@@ -18,6 +18,7 @@
 package com.pharbers.ipaas.kafka.relay.operators
 
 import com.pharbers.ipaas.data.driver.api.work._
+import com.pharbers.ipaas.data.driver.libs.log.PhLogDriver
 import org.apache.spark.sql.Column
 import scalaj.http.Http
 
@@ -30,28 +31,48 @@ import scala.util.parsing.json._
   * @since 2019/7/3 19:10
   * @example 默认参数例子
   * {{{
-  * connectName: "testName" // 删除的连接名
+  *  connectName: "testName" // 删除的连接名
   * }}}
   */
 case class DeleteConnectOperator(name: String,
                                  defaultArgs: PhMapArgs[PhWorkArgs[Any]],
                                  pluginLst: Seq[PhPluginTrait[Column]])
-        extends PhOperatorTrait[String => Unit] {
+	extends PhOperatorTrait[String] {
 
-    val api: String = "/connectors/"
-    val connect_name: String = defaultArgs.getAs[PhStringArgs]("connectName").get.get
+	val api: String = "/connectors/"
 
-    override def perform(pr: PhMapArgs[PhWorkArgs[Any]]): PhWorkArgs[String => Unit] = {
+	override def perform(pr: PhMapArgs[PhWorkArgs[Any]]): PhWorkArgs[String] = {
+		val log: PhLogDriver = pr.get("logDriver").asInstanceOf[PhLogDriverArgs].get
+		/** 调用的 Kafka Connect HTTP 协议 */
+		val protocol: String = pr.getAs[PhStringArgs]("protocol") match {
+			case Some(one) => one.get
+			case None => "http"
+		}
+		/** 调用的 Kafka Connect HTTP ip */
+		val ip: String = pr.getAs[PhStringArgs]("ip").get.get
+		/** 调用的 Kafka Connect HTTP 端口 */
+		val port: String = pr.getAs[PhStringArgs]("port").get.get
+		val local = s"$protocol://$ip:$port"
+		val chanelId = pr.getAs[PhStringArgs]("chanelId").get.get
+		try {
+			val deleteSourceConnectorResult = Http(local + api + s"$chanelId-source-connector").method("DELETE").asString
+			if (deleteSourceConnectorResult.code > 400) {
+				log.setErrorLog(deleteSourceConnectorResult)
+				val body = JSON.parseFull(deleteSourceConnectorResult.body).get.asInstanceOf[Map[String, Any]]
+				val errMsg = body("message").toString
+				throw new Exception(errMsg)
+			} else log.setInfoLog(deleteSourceConnectorResult)
+			val deleteSinkConnectorResult = Http(local + api + s"$chanelId-sink-connector").method("DELETE").asString
+			if (deleteSinkConnectorResult.code > 400) {
+				log.setErrorLog(deleteSinkConnectorResult)
+				val body = JSON.parseFull(deleteSinkConnectorResult.body).get.asInstanceOf[Map[String, Any]]
+				val errMsg = body("message").toString
+				throw new Exception(errMsg)
+			} else log.setInfoLog(deleteSinkConnectorResult)
+		} catch {
+			case e: Exception => log.setInfoLog(e.getMessage)
+		}
 
-        val call: String => Unit = local => {
-            val response = Http(local+api+connect_name).method("DELETE").asString
-            if(response.code > 400){
-                val body = JSON.parseFull(response.body).get.asInstanceOf[Map[String, Any]]
-                val errMsg = body("message").toString
-                throw new Exception(errMsg)
-            }
-        }
-
-        PhFuncArgs(call)
-    }
+		PhStringArgs(chanelId)
+	}
 }
