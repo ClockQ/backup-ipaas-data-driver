@@ -38,7 +38,12 @@
               "name": "创建monitor",
               "factory": "com.pharbers.ipaas.data.driver.api.factory.PhOperatorFactory",
               "reference": "com.pharbers.ipaas.kafka.relay.operators.MonitorOperator"
-            }
+            },
+          {
+            "name": "删除管道",
+            "factory": "com.pharbers.ipaas.data.driver.api.factory.PhOperatorFactory",
+            "reference": "com.pharbers.ipaas.kafka.relay.operators.DeleteConnectOperator"
+          }
         ]
       },
       {
@@ -110,6 +115,11 @@
             "name": "创建monitor",
             "factory": "com.pharbers.ipaas.data.driver.api.factory.PhOperatorFactory",
             "reference": "com.pharbers.ipaas.kafka.relay.operators.MonitorOperator"
+          },
+          {
+            "name": "删除管道",
+            "factory": "com.pharbers.ipaas.data.driver.api.factory.PhOperatorFactory",
+            "reference": "com.pharbers.ipaas.kafka.relay.operators.DeleteConnectOperator"
           }
         ]
       }

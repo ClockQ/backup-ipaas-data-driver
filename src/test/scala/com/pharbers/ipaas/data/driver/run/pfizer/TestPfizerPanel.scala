@@ -33,7 +33,7 @@ import scala.io.Source
 
 class TestPfizerPanel extends FunSuite {
     implicit val sd: PhSparkDriver = PhSparkDriver("test-driver")
-    sd.addJar("target/ipaas-data-driver-0.1.jar")
+//    sd.addJar("target/ipaas-data-driver-0.1.jar")
     sd.sc.setLogLevel("ERROR")
     test("test pfizer gycx clean") {
         def cleanGycx(shouldSave: Boolean, name: String, gycxPath: String, ProductMatchPath: String, ProductERDPath: String, hospERDPath: String, PhaPath: String, savePath: String): DataFrame = {
