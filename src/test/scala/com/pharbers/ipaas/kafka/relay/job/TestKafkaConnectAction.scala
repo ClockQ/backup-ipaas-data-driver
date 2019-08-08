@@ -80,12 +80,16 @@ class TestKafkaConnectAction extends FunSuite {
 		import com.pharbers.ipaas.data.driver.libs.spark.util._
 		import org.apache.spark.sql.functions.expr
 		val df = sd.setUtil(readParquet()).readParquet(path)
-		df.groupBy("department").agg(expr("count(department) as count")).show(false)
+		import org.apache.spark.sql.functions._
+//		df.groupBy("department").agg(expr("count(department) as count")).show(false)
+		val df1 = df.groupBy("department").agg(expr("count(department) as countResult"))
+		val result = df1.selectExpr("sum(countResult) as summ", "max(countResult) as maxx", "min(countResult) as minn")
+		result.show(false)
 		(1 until 1000).foreach(x => df.show(false))
 	}
 
 	test("result") {
-		val path = "/test/testCui/kfkaTest"
+		val path = "/test/TMTest/output/e3cb67bbbe934516ba0ee033ce4b82e7"
 		implicit val sd: PhSparkDriver = PhSparkDriver("cui-test")
 		import com.pharbers.ipaas.data.driver.libs.spark.util._
 		val df = sd.setUtil(readParquet()).readParquet(path)

@@ -1,0 +1,55 @@
+[
+    {
+        "name": "730f2060b8f411e999e5e5d98db22f6d",
+        "reference": "com.pharbers.ipaas.data.driver.api.job.PhBaseJob",
+        "factory": "com.pharbers.ipaas.data.driver.api.factory.PhJobFactory",
+        "actions": [
+            {
+                "name": "730ed241b8f411e999e5e5d98db22f6d",
+                "reference": "com.pharbers.ipaas.data.driver.api.job.PhBaseAction",
+                "factory": "com.pharbers.ipaas.data.driver.api.factory.PhActionFactory",
+                "args": {
+                    "null": "null"
+                },
+                "opers": [
+                    {
+                        "name": "730ed240b8f411e999e5e5d98db22f6d",
+                        "factory": "com.pharbers.ipaas.data.driver.api.factory.PhOperatorFactory",
+                        "reference": "com.pharbers.ipaas.data.driver.operators.ReadParquetOperator",
+                        "args": {
+                            "path": "/logs/testLogs/topics/source_dc53bf11c2eb42538835f6b5ea1fc868/partition=0"
+                        }
+                    }
+                ]
+            },
+            {
+                "name": "730ef952b8f411e999e5e5d98db22f6d",
+                "reference": "com.pharbers.ipaas.data.driver.api.job.PhBaseAction",
+                "factory": "com.pharbers.ipaas.data.driver.api.factory.PhActionFactory",
+                "args": {
+                    "null": "null"
+                },
+                "opers": [
+                    {
+                        "name": "730ef950b8f411e999e5e5d98db22f6d",
+                        "reference": "com.pharbers.ipaas.data.driver.operators.AddColumnOperator",
+                        "factory": "com.pharbers.ipaas.data.driver.api.factory.PhOperatorFactory",
+                        "args": {
+                            "inDFName": "730ed241b8f411e999e5e5d98db22f6d",
+                            "newColName": "r"
+                        },
+                        "plugin": {
+                            "name": "730ef951b8f411e999e5e5d98db22f6d",
+                            "reference": "com.pharbers.ipaas.data.driver.plugins.ExprPlugin",
+                            "factory": "com.pharbers.ipaas.data.driver.api.factory.PhPluginFactory",
+                            "args": {
+                                "exprString": "rand()*3+1"
+                            }
+                        }
+                    }
+                ]
+            }
+        ]
+    }
+]
+
