@@ -39,9 +39,9 @@ case class PhJobFactory(job: Job) extends PhFactoryTrait[PhJobTrait] {
             case one => one.asScala.map(x => (x._1, PhStringArgs(x._2))).toMap
         }
 
-        val actions = job.getActions.asScala match {
+        val actions = job.getActions match {
             case null => Seq()
-            case lst => lst.map { action =>
+            case lst => lst.asScala.map { action =>
                 try {
                     getMethodMirror(action.getFactory)(action).asInstanceOf[PhFactoryTrait[PhActionTrait]].inst()
                 } catch {

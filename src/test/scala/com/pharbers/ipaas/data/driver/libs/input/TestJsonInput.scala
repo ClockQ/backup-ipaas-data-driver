@@ -50,9 +50,9 @@ class TestJsonInput extends FunSuite {
     }
 
     test("json input from file to Jobs") {
-        val stream = new FileInputStream(new File("src/test/scala/com/pharbers/ipaas/data/driver/libs/input/testJson.json"))
+        val stream = new FileInputStream(new File("C:\\Users\\EDZ\\Documents\\WeChat Files\\dengcao1993\\FileStorage\\File\\2019-08\\pressureTest.json"))
         val jobs = JsonInput().readObjects[Job](stream)
-        assert(jobs.size == 2)
+        assert(jobs.size == 1)
         assert(!jobs.head.getName.isEmpty)
     }
 }
