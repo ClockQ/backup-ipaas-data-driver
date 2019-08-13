@@ -3,7 +3,7 @@ package com.pharbers.ipaas.data.driver.tm.tmConfig
 import com.pharbers.ipaas.data.driver.api.work.{PhLogDriverArgs, PhMapArgs, PhSparkDriverArgs}
 import com.pharbers.ipaas.data.driver.libs.log.{PhLogDriver, formatMsg}
 import com.pharbers.ipaas.data.driver.libs.spark.PhSparkDriver
-import com.pharbers.ipaas.data.driver.libs.spark.util.{readCsv, readParquet, save2Parquet}
+import com.pharbers.ipaas.data.driver.libs.spark.util.{readCsv, readParquet, save2Csv, save2Parquet}
 import env.configObj.{inst, readJobConfig}
 import org.scalatest.FunSuite
 
@@ -35,6 +35,63 @@ class readParquetTest extends FunSuite {
 		def testExe(n: Int): Unit = {
 			println(s"第${n}次测试开始===========")
 			val phJobs = inst(readJobConfig("pharbers_config/json/tmTestConfig/rand.json"))
+			phJobs.foreach(x =>
+				x.perform(PhMapArgs(Map(
+					"sparkDriver" -> PhSparkDriverArgs(sparkDriver),
+					"logDriver" -> PhLogDriverArgs(log)
+				)))
+			)
+			println(s"第${n}次测试结束==========")
+		}
+
+		(1 to 1).foreach(n => testExe(n))
+	}
+
+	test("TM calc test") {
+		val sparkDriver = PhSparkDriver("cui-test")
+		val log = PhLogDriver(formatMsg("test_user", "test_traceID", "test_jobID"))
+
+		def testExe(n: Int): Unit = {
+			println(s"第${n}次测试开始===========")
+			val phJobs = inst(readJobConfig("pharbers_config/json/tmTestConfig/TMcalc.json"))
+			phJobs.foreach(x =>
+				x.perform(PhMapArgs(Map(
+					"sparkDriver" -> PhSparkDriverArgs(sparkDriver),
+					"logDriver" -> PhLogDriverArgs(log)
+				)))
+			)
+			println(s"第${n}次测试结束==========")
+		}
+
+		(1 to 1).foreach(n => testExe(n))
+	}
+
+	test("UCB sales test") {
+		val sparkDriver = PhSparkDriver("cui-test")
+		val log = PhLogDriver(formatMsg("test_user", "test_traceID", "test_jobID"))
+
+		def testExe(n: Int): Unit = {
+			println(s"第${n}次测试开始===========")
+			val phJobs = inst(readJobConfig("pharbers_config/json/tmTestConfig/UCBtest.json"))
+			phJobs.foreach(x =>
+				x.perform(PhMapArgs(Map(
+					"sparkDriver" -> PhSparkDriverArgs(sparkDriver),
+					"logDriver" -> PhLogDriverArgs(log)
+				)))
+			)
+			println(s"第${n}次测试结束==========")
+		}
+
+		(1 to 1).foreach(n => testExe(n))
+	}
+
+	test("UCB all test") {
+		val sparkDriver = PhSparkDriver("cui-test")
+		val log = PhLogDriver(formatMsg("test_user", "test_traceID", "test_jobID"))
+
+		def testExe(n: Int): Unit = {
+			println(s"第${n}次测试开始===========")
+			val phJobs = inst(readJobConfig("pharbers_config/json/tmTestConfig/UCBAllTest.json"))
 			phJobs.foreach(x =>
 				x.perform(PhMapArgs(Map(
 					"sparkDriver" -> PhSparkDriverArgs(sparkDriver),
@@ -94,5 +151,31 @@ class readParquetTest extends FunSuite {
 			sparkDriver.setUtil(save2Parquet()).save2Parquet(df, "/test/TMTest/inputParquet/" + fileName.split("\\.").head)
 		}
 		)
+	}
+
+	test("read tm output") {
+		implicit val sparkDriver: PhSparkDriver = PhSparkDriver("cui-test")
+		val path = "/test/TMTest/output/"
+		val fileList = List("HospitalReport",
+			"ProductReport",
+			"RepresentativeReport",
+			"UpdateActionKpi",
+			"UpdateRepresentativeAbility",
+			"Assessment"
+		)
+		fileList.foreach(fileName => {
+			val df = sparkDriver.setUtil(readParquet()).readParquet(path + fileName)
+			df.show(false)
+		}
+		)
+	}
+
+	test("read ucb output") {
+		implicit val sparkDriver: PhSparkDriver = PhSparkDriver("cui-test")
+		val path = "/test/UCBTest/output/Result"
+		val df = sparkDriver.setUtil(readParquet()).readParquet(path)
+		val savePath = "/test/UCBTest/output/csvResult"
+		sparkDriver.setUtil(save2Csv()).save2Csv(df, savePath)
+		df.show(false)
 	}
 }

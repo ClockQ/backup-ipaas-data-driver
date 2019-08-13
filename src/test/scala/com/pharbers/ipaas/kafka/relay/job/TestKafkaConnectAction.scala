@@ -81,7 +81,7 @@ class TestKafkaConnectAction extends FunSuite {
 		import org.apache.spark.sql.functions.expr
 		val df = sd.setUtil(readParquet()).readParquet(path)
 		import org.apache.spark.sql.functions._
-//		df.groupBy("department").agg(expr("count(department) as count")).show(false)
+		//		df.groupBy("department").agg(expr("count(department) as count")).show(false)
 		val df1 = df.groupBy("department").agg(expr("count(department) as countResult"))
 		val result = df1.selectExpr("sum(countResult) as summ", "max(countResult) as maxx", "min(countResult) as minn")
 		result.show(false)
@@ -89,10 +89,48 @@ class TestKafkaConnectAction extends FunSuite {
 	}
 
 	test("result") {
-		val path = "/test/TMTest/output/e3cb67bbbe934516ba0ee033ce4b82e7"
+		val path = "/test/TMTest/input/TMinput20190809/"
+		val fileNameList = List("cal_data.csv", "competition.csv", "curves.csv", "level_data.csv", "manager.csv", "p_action_kpi.csv",
+			"standard_time.csv", "weightages.csv")
+		val savePath = "/test/TMTest/inputParquet/"
 		implicit val sd: PhSparkDriver = PhSparkDriver("cui-test")
 		import com.pharbers.ipaas.data.driver.libs.spark.util._
-		val df = sd.setUtil(readParquet()).readParquet(path)
-		df.show(false)
+		fileNameList.foreach(name => {
+//			val df = sd.setUtil(readParquet()).readParquet(path + name)
+			val df = sd.setUtil(readCsv()).readCsv(path + name)
+			sd.setUtil(save2Parquet()).save2Parquet(df, savePath + name.split("\\.").head)
+			println(name + "保存完毕")
+		})
 	}
+
+	test("UCB input") {
+		val path = "/test/UCBTest/input/"
+		val fileNameList = List("cal_data.csv", "competitor.csv", "curves.csv", "weightages.csv", "p_data1.csv",
+		"p_data2.csv", "p_data3.csv", "p_data4.csv")
+		val savePath = "/test/UCBTest/inputParquet/"
+		implicit val sd: PhSparkDriver = PhSparkDriver("cui-test")
+		import com.pharbers.ipaas.data.driver.libs.spark.util._
+		fileNameList.foreach(name => {
+			//			val df = sd.setUtil(readParquet()).readParquet(path + name)
+			val df = sd.setUtil(readCsv()).readCsv(path + name)
+			df.show(false)
+			sd.setUtil(save2Parquet()).save2Parquet(df, savePath + name.split("\\.").head)
+			println(name + "保存完毕")
+		})
+	}
+
+	test("UCB output") {
+		val path = "/test/UCBTest/output/"
+		val fileNameList = List("CityReport", "FinalReport", "HospitalReport", "NextBudget", "ProductReport",
+			"RepresentativeReport", "SummaryReport")
+		implicit val sd: PhSparkDriver = PhSparkDriver("cui-test")
+		import com.pharbers.ipaas.data.driver.libs.spark.util._
+		fileNameList.foreach(name => {
+			//			val df = sd.setUtil(readParquet()).readParquet(path + name)
+			val df = sd.setUtil(readParquet()).readParquet(path + name)
+			df.show(false)
+			println(name + "展示完毕")
+		})
+	}
+
 }

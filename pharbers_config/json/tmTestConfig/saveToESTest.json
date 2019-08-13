@@ -3868,20 +3868,62 @@
       },
       {
         "name": "d147e651acc0435fafea169f2147858a",
-        "reference": "com.pharbers.ipaas.data.driver.api.job.PhBaseAction",
+        "reference": "com.pharbers.ipaas.kafka.relay.job.PhKafkaTestAction",
         "factory": "com.pharbers.ipaas.data.driver.api.factory.PhActionFactory",
         "args": {
           "null": "null"
         },
         "opers": [
           {
-            "name": "95ccd9f1f0ec44049ffbdc69e8f7e9ee",
+            "name": "saveToParquet",
             "factory": "com.pharbers.ipaas.data.driver.api.factory.PhOperatorFactory",
-            "reference": "com.pharbers.ipaas.data.driver.operators.SaveParquetOperator",
+            "reference": "com.pharbers.ipaas.data.driver.operators.SaveParquetTestOperator",
             "args": {
               "inDFName": "977477deb8ea11e999e5e5d98db22f6d",
-              "path": "hdfs:///test/TMTest/output/e3cb67bbbe934516ba0ee033ce4b82e7"
+              "path": "Source_cal_data_FromMongodb"
             }
+          }
+        ]
+      },
+      {
+        "name": "kafkaConnectAction",
+        "factory": "com.pharbers.ipaas.data.driver.api.factory.PhActionFactory",
+        "reference": "com.pharbers.ipaas.kafka.relay.job.PhKafkaTestAction",
+        "args": {
+          "protocol": "http",
+          "ip": "192.168.100.176",
+          "port": "8083"
+        },
+        "opers": [
+          {
+            "name": "创建SourceHDFSConnect",
+            "factory": "com.pharbers.ipaas.data.driver.api.factory.PhOperatorFactory",
+            "reference": "com.pharbers.ipaas.kafka.relay.operators.SourceFromParquetOperator",
+            "args": {
+              "connectName": "testSourceName",
+              "tasksMax": "1",
+              "topic": "testTopic",
+              "hdfsPath": "Source_cal_data_FromMongodb"
+            }
+          },
+          {
+            "name": "创建SinkConnect",
+            "factory": "com.pharbers.ipaas.data.driver.api.factory.PhOperatorFactory",
+            "reference": "com.pharbers.ipaas.kafka.relay.operators.Sink2ESOperator",
+            "args": {
+              "tasksMax": "1",
+              "esUrl": "http://192.168.100.174:9200"
+            }
+          },
+          {
+            "name": "创建monitor",
+            "factory": "com.pharbers.ipaas.data.driver.api.factory.PhOperatorFactory",
+            "reference": "com.pharbers.ipaas.kafka.relay.operators.MonitorOperator"
+          },
+          {
+            "name": "删除管道",
+            "factory": "com.pharbers.ipaas.data.driver.api.factory.PhOperatorFactory",
+            "reference": "com.pharbers.ipaas.kafka.relay.operators.DeleteConnectOperator"
           }
         ]
       }
