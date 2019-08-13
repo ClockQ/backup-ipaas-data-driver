@@ -46,7 +46,7 @@ case class JsonInput() extends InputTrait {
       */
     def readObject[T: ClassTag](stream: InputStream): T =
     //todo: 全局应该只有一个ObjectMapper
-        new ObjectMapper().readValue(stream, implicitly[ClassTag[T]].runtimeClass).asInstanceOf[T]
+        JsonInput.mapper.readValue(stream, implicitly[ClassTag[T]].runtimeClass).asInstanceOf[T]
 
     /** 读取Json数据为对象集合 Seq[T]
       *
@@ -71,8 +71,11 @@ case class JsonInput() extends InputTrait {
       */
     def readObjects[T: ClassTag](stream: InputStream): Seq[T] = {
         import scala.collection.JavaConverters._
-        val mapper = new ObjectMapper()
-        val javaType = mapper.getTypeFactory.constructParametricType(classOf[java.util.List[T]], implicitly[ClassTag[T]].runtimeClass)
-        mapper.readValue(stream, javaType).asInstanceOf[java.util.List[T]].asScala
+        val javaType = JsonInput.mapper.getTypeFactory.constructParametricType(classOf[java.util.List[T]], implicitly[ClassTag[T]].runtimeClass)
+        JsonInput.mapper.readValue(stream, javaType).asInstanceOf[java.util.List[T]].asScala
     }
+}
+
+object JsonInput{
+    val mapper =  new ObjectMapper()
 }

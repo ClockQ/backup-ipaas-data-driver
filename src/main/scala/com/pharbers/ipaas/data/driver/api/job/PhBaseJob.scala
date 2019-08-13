@@ -53,7 +53,7 @@ case class PhBaseJob(name: String,
                 } catch {
                     case e: PhOperatorException =>
                         log.setErrorLog(PhOperatorException(e.names :+ name, e.exception).getMessage)
-                        pr
+                        throw e
                 }
             }
         }

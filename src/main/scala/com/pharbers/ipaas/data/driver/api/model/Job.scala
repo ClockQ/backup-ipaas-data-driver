@@ -17,6 +17,7 @@
 
 package com.pharbers.ipaas.data.driver.api.model
 
+
 /** iPaas Driver Action 运行实体
   *
   * @author clock
@@ -32,7 +33,14 @@ case class Job() extends Model {
       * @since 2019/06/14 11:30
       * @note
       */
+
+    var jobId = ""
+
     var actions: java.util.List[Action] = _
+
+    def getJobId: String = jobId
+
+    def setJobId(jobId: String): Unit = this.jobId = jobId
 
     def getActions: java.util.List[Action] = actions
 
