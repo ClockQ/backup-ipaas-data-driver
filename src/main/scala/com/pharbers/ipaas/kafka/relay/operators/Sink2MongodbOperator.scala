@@ -32,15 +32,18 @@ import scala.util.parsing.json.JSON
   * @since 2019/08/06 16:12
   * @example 默认参数例子
   *          {{{
-  *                "tasks.max" : "1", // 连接管道的最大线程数, 默认值为“1”
-  *                "connection": "mongodb://192.168.100.176:27017", mongodb 地址
-  *                "topic": "mongotest3", // 连接kafka的主题名字
-  *                "database":"pharbers-aggrate-data", 数据库名
-  *                "collection": "aggregateData",  集合名
-  *                job: 之前aggmongo operator 的name
+  *                "key.converter":"io.confluent.connect.avro.AvroConverter",
+  *               "key.converter.schema.registry.url":"http://59.110.31.50:8081",
+  *               "value.converter":"io.confluent.connect.avro.AvroConverter",
+  *               "value.converter.schema.registry.url":"http://59.110.31.50:8081",
+  *              "connector.class": "at.grahsl.kafka.connect.mongodb.MongoDbSinkConnector",
+  *               "topics": "aggregate_data_003",
+  *               "jobId": "aggregate_data_003",
+  *               "mongodb.connection.uri": "mongodb://192.168.100.176:27017/kafkaconnect?w=1&journal=true",
+  *               "mongodb.collection": "aggregate_data_003"
   *          }}}
   */
-case class TMSourceFromMongodbOperator(name: String,
+case class Sink2MongodbOperator(name: String,
                                      defaultArgs: PhMapArgs[PhWorkArgs[Any]],
                                      pluginLst: Seq[PhPluginTrait[Column]])
         extends PhOperatorTrait[Unit] {
@@ -49,7 +52,7 @@ case class TMSourceFromMongodbOperator(name: String,
     /** 使用的连接类 */
     val connectClass: String = defaultArgs.getAs[PhStringArgs]("connectClass") match {
         case Some(one) => one.get
-        case None => "com.pharbers.kafka.connect.mongodb.MongodbSourceConnector"
+        case None => "at.grahsl.kafka.connect.mongodb.MongoDbSinkConnector"
     }
     /** 连接管道的最大线程数 */
     val tasksMax: String = defaultArgs.getAs[PhStringArgs]("tasksMax") match {
@@ -57,12 +60,9 @@ case class TMSourceFromMongodbOperator(name: String,
         case None => "1"
     }
     val connection: String = defaultArgs.getAs[PhStringArgs]("connection").get.get
-    val database: String = defaultArgs.getAs[PhStringArgs]("database").get.get
     val collection: String = defaultArgs.getAs[PhStringArgs]("collection").get.get
-    val jobName: String = defaultArgs.getAs[PhStringArgs]("job").get.get
 
     override def perform(pr: PhMapArgs[PhWorkArgs[Any]]): PhWorkArgs[Unit] = {
-        val job = pr.getAs[PhStringArgs]("jobName").get.get
         /** 调用的 Kafka Connect HTTP 协议 */
         val protocol: String = pr.getAs[PhStringArgs]("protocol") match {
             case Some(one) => one.get
@@ -80,14 +80,16 @@ case class TMSourceFromMongodbOperator(name: String,
                			   |{
                			   |    "name": "$chanelId-source-connector",
                			   |    "config": {
+                           |        "key.converter":"io.confluent.connect.avro.AvroConverter",
+                           |        "key.converter.schema.registry.url":"http://59.110.31.50:8081",
+                           |        "value.converter":"io.confluent.connect.avro.AvroConverter",
+                           |        "value.converter.schema.registry.url":"http://59.110.31.50:8081",
                			   |        "connector.class": "$connectClass",
                			   |        "tasks.max": "$tasksMax",
                			   |        "topic": "source_$chanelId",
                			   |        "job": "$chanelId",
-               			   |        "connection": "$connection",
-               			   |        "database": "$database",
-               			   |        "collection": "$collection",
-               			   |        "filter": "{'value':'$job', 'key':'job_id'}"
+               			   |        "mongodb.connection.uri": "$connection",
+               			   |        "mongodb.collection": "$collection"
                			   |    }
                			   |}
 	                 """.stripMargin
