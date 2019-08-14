@@ -62,7 +62,7 @@ case class TMSourceFromMongodbOperator(name: String,
     val jobName: String = defaultArgs.getAs[PhStringArgs]("job").get.get
 
     override def perform(pr: PhMapArgs[PhWorkArgs[Any]]): PhWorkArgs[Unit] = {
-        val job = pr.getAs[PhStringArgs]("jobName").get.get
+        val job = pr.getAs[PhStringArgs](jobName).get.get
         /** 调用的 Kafka Connect HTTP 协议 */
         val protocol: String = pr.getAs[PhStringArgs]("protocol") match {
             case Some(one) => one.get
@@ -87,7 +87,7 @@ case class TMSourceFromMongodbOperator(name: String,
                			   |        "connection": "$connection",
                			   |        "database": "$database",
                			   |        "collection": "$collection",
-               			   |        "filter": "{'value':'$job', 'key':'job_id'}"
+               			   |        "filter": "{'job_id':'$job'}"
                			   |    }
                			   |}
 	                 """.stripMargin

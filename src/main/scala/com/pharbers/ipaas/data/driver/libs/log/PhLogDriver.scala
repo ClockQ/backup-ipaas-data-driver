@@ -26,7 +26,7 @@ import org.apache.logging.log4j.{LogManager, Logger}
   * @since 2019-06-4 10:21
   */
 case class PhLogDriver(formatMsg: Seq[Any] => String = _.map(_.toString).mkString(", ")) {
-    private val logger: Logger = LogManager.getLogger()
+    private val logger: Logger = LogManager.getRootLogger()
 
     /** 输出 Trace 级别日志，来跟踪过程
       *

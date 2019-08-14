@@ -59,7 +59,7 @@ object Main {
 }
 
 object Runner {
-    val logger = PhLogDriver(formatMsg("driver_manager", "", ""))
+    val logger = PhLogDriver(formatMsg("driver_manager", "test", "test"))
     //todo: 提前把job缓存到了这个队列，如果中间driver gg了，这些job就不能恢复
     var jobs: List[Job] = List()
     val lock = new ReentrantLock(true)
@@ -113,12 +113,17 @@ object Runner {
         try {
             val client: OSS = new OSSClientBuilder().build(endpoint, accessKeyId, accessKeySecret)
             val ossObj: OSSObject = client.getObject(record.value().getBucketName.toString, record.value().getOssKey.toString)
-            val job = JsonInput().readObject[Job](ossObj.getObjectContent)
-            record.value().getMode.toString match {
-                case "tm" => TmJobBuilder(job, record.value().getId.toString)
-                        .setMongoSourceFilter(record.value().getConfig.asScala.map(m => (m._1.toString, m._2.toString)).toMap)
-                        .build()
-                case _ => job.setJobId(record.value().getId.toString)
+            val job = {
+                val mode = JsonInput().readObject[Job](ossObj.getObjectContent)
+                record.value().getMode.toString match {
+                    case "tm" =>
+                        TmJobBuilder(mode, record.value().getId.toString)
+                            .setMongoSourceFilter(record.value().getConfig.asScala.map(m => (m._1.toString, m._2.toString)).toMap)
+                            .build()
+                    case _ =>
+                        mode.setJobId(record.value().getId.toString)
+                        mode
+                }
             }
 
             Runner.lock.lock()

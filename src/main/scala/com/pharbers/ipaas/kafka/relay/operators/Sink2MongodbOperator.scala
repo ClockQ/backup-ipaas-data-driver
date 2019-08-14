@@ -78,7 +78,7 @@ case class Sink2MongodbOperator(name: String,
         val postData =
             s"""
                			   |{
-               			   |    "name": "$chanelId-source-connector",
+               			   |    "name": "$chanelId-sink-connector",
                			   |    "config": {
                            |        "key.converter":"io.confluent.connect.avro.AvroConverter",
                            |        "key.converter.schema.registry.url":"http://59.110.31.50:8081",
@@ -86,8 +86,8 @@ case class Sink2MongodbOperator(name: String,
                            |        "value.converter.schema.registry.url":"http://59.110.31.50:8081",
                			   |        "connector.class": "$connectClass",
                			   |        "tasks.max": "$tasksMax",
-               			   |        "topic": "source_$chanelId",
-               			   |        "job": "$chanelId",
+               			   |        "topics": "source_$chanelId",
+               			   |        "jobId": "$chanelId",
                			   |        "mongodb.connection.uri": "$connection",
                			   |        "mongodb.collection": "$collection"
                			   |    }

@@ -41,7 +41,6 @@ case class TmJobBuilder(jobMode: Job, jobId: String) {
     }
 
     def build(): Job ={
-        val bytes = jobJson.getBytes
-        JsonInput().readObject[Job](new ByteInputStream(bytes, bytes.length))
+        JsonInput().readObject[Job](jobJson)
     }
 }

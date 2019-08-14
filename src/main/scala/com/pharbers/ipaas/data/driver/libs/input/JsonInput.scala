@@ -48,6 +48,10 @@ case class JsonInput() extends InputTrait {
     //todo: 全局应该只有一个ObjectMapper
         JsonInput.mapper.readValue(stream, implicitly[ClassTag[T]].runtimeClass).asInstanceOf[T]
 
+    def readObject[T: ClassTag](json: String): T =
+    //todo: 全局应该只有一个ObjectMapper
+        JsonInput.mapper.readValue(json, implicitly[ClassTag[T]].runtimeClass).asInstanceOf[T]
+
     /** 读取Json数据为对象集合 Seq[T]
       *
       * @example
