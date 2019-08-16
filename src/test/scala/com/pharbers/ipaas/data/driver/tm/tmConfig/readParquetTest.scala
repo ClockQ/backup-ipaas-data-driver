@@ -104,6 +104,101 @@ class readParquetTest extends FunSuite {
 		(1 to 1).foreach(n => testExe(n))
 	}
 
+	test("TM New test") {
+		val sparkDriver = PhSparkDriver("cui-test")
+		val log = PhLogDriver(formatMsg("test_user", "test_traceID", "test_jobID"))
+
+		def testExe(n: Int): Unit = {
+			println(s"第${n}次测试开始===========")
+			val phJobs = inst(readJobConfig("pharbers_config/json/tmTestConfig/TMtestNew.json"))
+			phJobs.foreach(x =>
+				x.perform(PhMapArgs(Map(
+					"sparkDriver" -> PhSparkDriverArgs(sparkDriver),
+					"logDriver" -> PhLogDriverArgs(log)
+				)))
+			)
+			println(s"第${n}次测试结束==========")
+		}
+
+		(1 to 1).foreach(n => testExe(n))
+	}
+
+	test("TM Liu test") {
+		val sparkDriver = PhSparkDriver("cui-test")
+		val log = PhLogDriver(formatMsg("test_user", "test_traceID", "test_jobID"))
+
+		def testExe(n: Int): Unit = {
+			println(s"第${n}次测试开始===========")
+			val phJobs = inst(readJobConfig("pharbers_config/json/tmTestConfig/TMtest0814.json"))
+			phJobs.foreach(x =>
+				x.perform(PhMapArgs(Map(
+					"sparkDriver" -> PhSparkDriverArgs(sparkDriver),
+					"logDriver" -> PhLogDriverArgs(log)
+				)))
+			)
+			println(s"第${n}次测试结束==========")
+		}
+
+		(1 to 1).foreach(n => testExe(n))
+	}
+
+	test("UCB test 0814") {
+		val sparkDriver = PhSparkDriver("cui-test")
+		val log = PhLogDriver(formatMsg("test_user", "test_traceID", "test_jobID"))
+
+		def testExe(n: Int): Unit = {
+			println(s"第${n}次测试开始===========")
+			val phJobs = inst(readJobConfig("pharbers_config/json/tmTestConfig/UCBtest0814.json"))
+			phJobs.foreach(x =>
+				x.perform(PhMapArgs(Map(
+					"sparkDriver" -> PhSparkDriverArgs(sparkDriver),
+					"logDriver" -> PhLogDriverArgs(log)
+				)))
+			)
+			println(s"第${n}次测试结束==========")
+		}
+
+		(1 to 1).foreach(n => testExe(n))
+	}
+
+	test("UCB check") {
+		val sparkDriver = PhSparkDriver("cui-test")
+		val log = PhLogDriver(formatMsg("test_user", "test_traceID", "test_jobID"))
+
+		def testExe(n: Int): Unit = {
+			println(s"第${n}次测试开始===========")
+			val phJobs = inst(readJobConfig("pharbers_config/json/tmTestConfig/UCBcheck.json"))
+			phJobs.foreach(x =>
+				x.perform(PhMapArgs(Map(
+					"sparkDriver" -> PhSparkDriverArgs(sparkDriver),
+					"logDriver" -> PhLogDriverArgs(log)
+				)))
+			)
+			println(s"第${n}次测试结束==========")
+		}
+
+		(1 to 1).foreach(n => testExe(n))
+	}
+
+	test("TM test 0815 new") {
+		val sparkDriver = PhSparkDriver("cui-test")
+		val log = PhLogDriver(formatMsg("test_user", "test_traceID", "test_jobID"))
+
+		def testExe(n: Int): Unit = {
+			println(s"第${n}次测试开始===========")
+			val phJobs = inst(readJobConfig("pharbers_config/json/tmTestConfig/TMtest0815New.json"))
+			phJobs.foreach(x =>
+				x.perform(PhMapArgs(Map(
+					"sparkDriver" -> PhSparkDriverArgs(sparkDriver),
+					"logDriver" -> PhLogDriverArgs(log)
+				)))
+			)
+			println(s"第${n}次测试结束==========")
+		}
+
+		(1 to 1).foreach(n => testExe(n))
+	}
+
 	test("export max") {
 		implicit val sparkDriver: PhSparkDriver = PhSparkDriver("cui-test")
 		val path = "/workData/Max/"
@@ -139,16 +234,20 @@ class readParquetTest extends FunSuite {
 
 	test("read tm input") {
 		implicit val sparkDriver: PhSparkDriver = PhSparkDriver("cui-test")
-		val path = "/test/TMTest/input/"
+		val path = "/test/TMTest/input/TMInput0813/"
 		val fileList = List("cal_data.csv",
+			"competitor.csv",
 			"curves.csv",
+			"level_data.csv",
 			"manager.csv",
+			"standard_time.csv",
 			"weightages.csv"
 		)
 		fileList.foreach(fileName => {
 			val df = sparkDriver.setUtil(readCsv()).readCsv(path + fileName)
 			df.show(false)
-			sparkDriver.setUtil(save2Parquet()).save2Parquet(df, "/test/TMTest/inputParquet/" + fileName.split("\\.").head)
+			sparkDriver.setUtil(save2Parquet()).save2Parquet(df, "/test/TMTest/inputParquet/TMInputParquet0813/"
+				+ fileName.split("\\.").head)
 		}
 		)
 	}

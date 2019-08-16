@@ -28,22 +28,22 @@ import org.apache.spark.sql.DataFrame
   * @version 0.1
   * @since 2019/6/15 18:59
   * @example 默认参数例子
-  * {{{
-  *        path: hdfs:///test //Parquet 的路径
-  * }}}
+  *          {{{
+  *                  path: hdfs:///test //Parquet 的路径
+  *          }}}
   */
 case class ReadParquetTestOperator(name: String,
-                               defaultArgs: PhMapArgs[PhWorkArgs[Any]],
-                               pluginLst: Seq[PhPluginTrait[Any]])
-        extends PhOperatorTrait[DataFrame] {
+                                   defaultArgs: PhMapArgs[PhWorkArgs[Any]],
+                                   pluginLst: Seq[PhPluginTrait[Any]])
+	extends PhOperatorTrait[DataFrame] {
 
-    /** Parquet 的路径 */
-    val path: String = defaultArgs.getAs[PhStringArgs]("path").get.get
+	/** Parquet 的路径 */
+	val path: String = defaultArgs.getAs[PhStringArgs]("path").get.get
 
-    override def perform(pr: PhMapArgs[PhWorkArgs[Any]]): PhWorkArgs[DataFrame] = {
-        implicit val sd: PhSparkDriver = pr.get("sparkDriver").asInstanceOf[PhSparkDriverArgs].get
-        val chanelId: String = pr.get(path).asInstanceOf[PhStringArgs].get
-	    val realPath = "hdfs:///logs/testLogs/topics/source_" + chanelId + "/partition=0"
-        PhDFArgs(sd.setUtil(readParquet()).readParquet(realPath))
-    }
+	override def perform(pr: PhMapArgs[PhWorkArgs[Any]]): PhWorkArgs[DataFrame] = {
+		implicit val sd: PhSparkDriver = pr.get("sparkDriver").asInstanceOf[PhSparkDriverArgs].get
+		val chanelId: String = pr.get(path).asInstanceOf[PhStringArgs].get
+		val realPath = "hdfs:///logs/testLogs/topics/source_" + chanelId + "/partition=0"
+		PhDFArgs(sd.setUtil(readParquet()).readParquet(realPath))
+	}
 }
