@@ -1,0 +1,122 @@
+name: sample cpa hosp
+reference: com.pharbers.ipaas.data.driver.api.job.PhBaseJob
+factory: com.pharbers.ipaas.data.driver.api.factory.PhJobFactory
+actions:
+  - name: readHospitalFile
+    reference: com.pharbers.ipaas.data.driver.api.job.PhBaseAction
+    factory: com.pharbers.ipaas.data.driver.api.factory.PhActionFactory
+    args:
+      null: null
+    opers:
+      - name:
+        factory: com.pharbers.ipaas.data.driver.api.factory.PhOperatorFactory
+        reference: com.pharbers.ipaas.data.driver.operators.ReadParquetOperator
+        args:
+          path: hdfs:///repository/hosp_dis_max
+      - name: filter
+        factory: com.pharbers.ipaas.data.driver.api.factory.PhOperatorFactory
+        reference: com.pharbers.ipaas.data.driver.operators.ExprFilterOperator
+        args:
+          inDFName: df
+          filter: PHA_IS_REPEAT == 0
+      - name:
+        factory: com.pharbers.ipaas.data.driver.api.factory.PhOperatorFactory
+        reference: com.pharbers.ipaas.data.driver.operators.DistinctByKeyOperator
+        args:
+          inDFName: df
+          keys: PHA_HOSP_ID
+
+  - name: readPhaFile
+    reference: com.pharbers.ipaas.data.driver.api.job.PhBaseAction
+    factory: com.pharbers.ipaas.data.driver.api.factory.PhActionFactory
+    args:
+      null: null
+    opers:
+      - name:
+        factory: com.pharbers.ipaas.data.driver.api.factory.PhOperatorFactory
+        reference: com.pharbers.ipaas.data.driver.operators.ReadParquetOperator
+        args:
+          path: hdfs:///repository/pha
+      - name:
+        factory: com.pharbers.ipaas.data.driver.api.factory.PhOperatorFactory
+        reference: com.pharbers.ipaas.data.driver.operators.DistinctByKeyOperator
+        args:
+          inDFName: df
+          keys: CPA
+
+  - name: sample_hosp
+    reference: com.pharbers.ipaas.data.driver.api.job.PhBaseAction
+    factory: com.pharbers.ipaas.data.driver.api.factory.PhActionFactory
+    args:
+      null: null
+    opers:
+      - name: read
+        reference: com.pharbers.ipaas.data.driver.operators.ReadCsvOperator
+        factory: com.pharbers.ipaas.data.driver.api.factory.PhOperatorFactory
+        args:
+          path: hdfs:///data/astellas/pha_config_repository1804/Astellas_2018_If_panel_all_Allelock_20180703.csv
+      - name: filter IF_PANEL_ALL
+        factory: com.pharbers.ipaas.data.driver.api.factory.PhOperatorFactory
+        reference: com.pharbers.ipaas.data.driver.operators.ExprFilterOperator
+        args:
+          inDFName: df
+          filter: HOSP_ID IS NOT NULL AND IF_PANEL_ALL != 0
+      - name: rename
+        factory: com.pharbers.ipaas.data.driver.api.factory.PhOperatorFactory
+        reference: com.pharbers.ipaas.data.driver.operators.WithColumnRenamedOperator
+        args:
+          inDFName: df
+          oldColName: PHA_HOSP_ID
+          newColName: PHA_HOSP_ID_S
+      - name: join cpa
+        factory: com.pharbers.ipaas.data.driver.api.factory.PhOperatorFactory
+        reference: com.pharbers.ipaas.data.driver.operators.JoinOperator
+        args:
+          inDFName: df
+          joinDFName: readPhaFile
+          joinExpr: HOSP_ID == CPA
+          joinType: inner
+      - name: join hosp
+        factory: com.pharbers.ipaas.data.driver.api.factory.PhOperatorFactory
+        reference: com.pharbers.ipaas.data.driver.operators.JoinOperator
+        args:
+          inDFName: df
+          joinDFName: readHospitalFile
+          joinExpr: PHA_HOSP_ID_S == PHA_HOSP_ID
+          joinType: left
+      - name: addHospId
+        factory: com.pharbers.ipaas.data.driver.api.factory.PhOperatorFactory
+        reference: com.pharbers.ipaas.data.driver.operators.AddColumnOperator
+        args:
+          inDFName: df
+          newColName: HOSPITAL_ID
+        plugin:
+          name: fillHospId
+          factory: com.pharbers.ipaas.data.driver.api.factory.PhPluginFactory
+          reference: com.pharbers.ipaas.data.driver.plugins.ExprPlugin
+          args:
+            exprString: case when HOSPITAL_ID is not null then HOSPITAL_ID else concat("other", HOSP_ID) end
+      - name: select
+        factory: com.pharbers.ipaas.data.driver.api.factory.PhOperatorFactory
+        reference: com.pharbers.ipaas.data.driver.operators.SelectOperator
+        args:
+          inDFName: df
+          selects: "HOSPITAL_ID#PHA_HOSP_NAME#MARKET#IF_PANEL_ALL as SAMPLE"
+      - name: distinct by ket
+        factory: com.pharbers.ipaas.data.driver.api.factory.PhOperatorFactory
+        reference: com.pharbers.ipaas.data.driver.operators.DistinctByKeyOperator
+        args:
+          inDFName: df
+          keys: "HOSPITAL_ID#SAMPLE"
+          chooseBy: "HOSPITAL_ID"
+          chooseFun: min
+      - name: fillid
+        factory: com.pharbers.ipaas.data.driver.api.factory.PhOperatorFactory
+        reference: com.pharbers.ipaas.data.driver.operators.AddColumnOperator
+        args:
+          inDFName: df
+          newColName: _id
+        plugin:
+          name: fillid
+          factory: com.pharbers.ipaas.data.driver.api.factory.PhPluginFactory
+          reference: com.pharbers.ipaas.data.driver.plugins.GenerateObjectIdPlugin

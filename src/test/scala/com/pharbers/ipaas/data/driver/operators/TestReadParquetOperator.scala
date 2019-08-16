@@ -7,7 +7,7 @@ import com.pharbers.ipaas.data.driver.api.work.{PhMapArgs, PhOperatorTrait, PhSp
 class TestReadParquetOperator extends FunSuite with BeforeAndAfterAll {
     implicit var sd: PhSparkDriver = _
 
-    val parquetPath: String = "hdfs:///test/TMTest/output/TMResult"
+    val parquetPath: String = "hdfs:///test/TMTest/inputParquet/TMinputParquet0813/weightages"
 
     override def beforeAll(): Unit = {
         sd = PhSparkDriver("test-driver")

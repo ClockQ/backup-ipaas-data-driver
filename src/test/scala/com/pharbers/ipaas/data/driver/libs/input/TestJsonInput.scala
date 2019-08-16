@@ -4,6 +4,7 @@ import java.io._
 
 import org.scalatest.FunSuite
 import com.pharbers.ipaas.data.driver.api.model.{Job, Plugin}
+import com.pharbers.ipaas.job.tm.TmJobBuilder
 
 /**
   * @author clock
@@ -50,9 +51,11 @@ class TestJsonInput extends FunSuite {
     }
 
     test("json input from file to Jobs") {
-        val stream = new FileInputStream(new File("C:\\Users\\EDZ\\Documents\\WeChat Files\\dengcao1993\\FileStorage\\File\\2019-08\\pressureTest.json"))
-        val jobs = JsonInput().readObjects[Job](stream)
-        assert(jobs.size == 1)
-        assert(!jobs.head.getName.isEmpty)
+        val stream = new FileInputStream(new File("D:\\文件\\TMtestNew.json"))
+        val jobs = JsonInput().readObject[Job](stream)
+        TmJobBuilder(jobs, "").setMongoSourceFilter(Map("proposalId" -> "1", "projectId" -> "2", "periodId" -> "3")).build()
+        println()
+//        assert(jobs.size == 1)
+//        assert(!jobs.head.getName.isEmpty)
     }
 }

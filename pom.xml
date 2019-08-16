@@ -128,6 +128,12 @@
                     <artifactId>aliyun-sdk-oss</artifactId>
                     <version>3.5.0</version>
                 </dependency>
+                <!--tm mongodb聚合-->
+                <dependency>
+                    <groupId>pharbers.com</groupId>
+                    <artifactId>TM-Answer-Agg</artifactId>
+                    <version>1.0-SNAPSHOT</version>
+                </dependency>
             </dependencies>
         </profile>
     </profiles>

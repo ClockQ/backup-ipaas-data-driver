@@ -20,16 +20,16 @@ import org.apache.spark.sql.{Column, SaveMode}
   * }}}
   */
 case class SaveParquetTestOperator(name: String,
-                               defaultArgs: PhMapArgs[PhWorkArgs[Any]],
-                               pluginLst: Seq[PhPluginTrait[Column]])
-    extends PhOperatorTrait[String] {
-	/** 要保存的 DataFrame 名字 */
+                                   defaultArgs: PhMapArgs[PhWorkArgs[Any]],
+                                   pluginLst: Seq[PhPluginTrait[Column]])
+        extends PhOperatorTrait[String] {
+    /** 要保存的 DataFrame 名字 */
     val inDFName: String = defaultArgs.getAs[PhStringArgs]("inDFName").get.get
-	/** 要保存的路径地址 */
+    /** 要保存的路径地址 */
     val path: String = defaultArgs.getAs[PhStringArgs]("path").get.get
     /** Parquet 的文件名 */
     val fileName: String = defaultArgs.getAs[PhStringArgs]("fileName").getOrElse(PhStringArgs(UUID.randomUUID()
-        .toString.replaceAll("-", ""))).get
+            .toString.replaceAll("-", ""))).get
     /** 要保存的方式 */
     val saveMode: SaveMode = defaultArgs.getAs[PhStringArgs]("saveMode") match {
         case Some(one) => one.get.toUpperCase() match {
@@ -42,7 +42,7 @@ case class SaveParquetTestOperator(name: String,
     override def perform(pr: PhMapArgs[PhWorkArgs[Any]]): PhWorkArgs[String] = {
         implicit val sd: PhSparkDriver = pr.getAs[PhSparkDriverArgs]("sparkDriver").get.get
         val inDF = pr.getAs[PhDFArgs](inDFName).get.get
-	    val savePath = path + "\\/" + fileName
+        val savePath = path + "\\/" + fileName
         sd.setUtil(save2Parquet()).save2Parquet(inDF, savePath, saveMode)
         PhStringArgs(savePath)
     }

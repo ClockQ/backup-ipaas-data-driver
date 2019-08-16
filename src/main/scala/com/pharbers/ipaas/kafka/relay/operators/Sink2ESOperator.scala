@@ -71,7 +71,7 @@ case class Sink2ESOperator(name: String,
 			   |    "config": {
 			   |        "topics": "source_$chanelId",
 			   |        "jobId": "$chanelId",
-			   |        "connector.class": "io.confluent.connect.elasticsearch.ElasticsearchSinkConnector",
+			   |        "connector.class": "com.pharbers.kafka.connect.elasticsearch.ElasticsearchSinkConnector",
 			   |		"tasks.max": $tasksMax,
 			   |		"key.ignore": "true",
 			   |		"connection.url": "$esUrl",

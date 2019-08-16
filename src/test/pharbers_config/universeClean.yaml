@@ -1,0 +1,68 @@
+name: universeClean
+reference: com.pharbers.ipaas.data.driver.api.job.PhBaseJob
+factory: com.pharbers.ipaas.data.driver.api.factory.PhJobFactory
+actions:
+-   name: phaDF
+    reference: com.pharbers.ipaas.data.driver.api.job.PhBaseAction
+    factory: com.pharbers.ipaas.data.driver.api.factory.PhActionFactory
+    args:
+        null: null
+    opers:
+    -   name: readParquet
+        factory: com.pharbers.ipaas.data.driver.api.factory.PhOperatorFactory
+        reference: com.pharbers.ipaas.data.driver.operators.ReadParquetOperator
+        args:
+            path: hdfs:///repository/pha
+-   name: universeClean
+    reference: com.pharbers.ipaas.data.driver.api.job.PhBaseAction
+    factory: com.pharbers.ipaas.data.driver.api.factory.PhActionFactory
+    args:
+        null: null
+    opers:
+    -   name: read universe csv file
+        factory: com.pharbers.ipaas.data.driver.api.factory.PhOperatorFactory
+        reference: com.pharbers.ipaas.data.driver.operators.ReadParquetOperator
+        args:
+            path: hdfs:///data/nhwa/pha_config_repository1809/Nhwa_universe_麻醉市场_20180705.csv
+    -   name: rename PHA_HOSP_ID to PHA_ID_OLD
+        factory: com.pharbers.ipaas.data.driver.api.factory.PhOperatorFactory
+        reference: com.pharbers.ipaas.data.driver.operators.WithColumnRenamedOperator
+        args:
+            inDFName: df
+            oldColName: PHA_HOSP_ID
+            newColName: PHA_ID_OLD
+    -   name:
+        factory: com.pharbers.ipaas.data.driver.api.factory.PhOperatorFactory
+        reference: com.pharbers.ipaas.data.driver.operators.JoinOperator
+        args:
+            inDFName: df
+            joinDFName: phaDF
+            joinExpr: PHA_ID_OLD == PHA_ID
+            joinType: left
+    -   name: fill HOSPITAL_ID
+        factory: com.pharbers.ipaas.data.driver.api.factory.PhOperatorFactory
+        reference: com.pharbers.ipaas.data.driver.operators.AddColumnOperator
+        args:
+            inDFName: df
+            newColName: avg_Sales
+        plugin:
+            name: BaseCalcPlugin
+            reference: com.pharbers.ipaas.data.driver.plugins.ExprPlugin
+            factory: com.pharbers.ipaas.data.driver.api.factory.PhPluginFactory
+            args:
+                exprString: case when HOSPITAL_ID IS NULL THEN concat('other', PHA_ID) else HOSPITAL_ID end
+    -   name: HOSPITAL_ID
+        factory: com.pharbers.ipaas.data.driver.api.factory.PhOperatorFactory
+        reference: com.pharbers.ipaas.data.driver.operators.DistinctByKeyOperator
+        args:
+            inDFName: df
+            keys: HOSPITAL_ID
+            chooseBy: IF_PANEL_TO_USE
+            chooseFun: max
+    -   name: generateObjectId
+        factory: com.pharbers.ipaas.data.driver.api.factory.PhOperatorFactory
+        reference: com.pharbers.ipaas.data.driver.operators.AddColumnOperator
+        args:
+            inDFName: df
+            newColName: _id
+

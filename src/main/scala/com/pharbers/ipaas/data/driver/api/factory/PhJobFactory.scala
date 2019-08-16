@@ -45,7 +45,7 @@ case class PhJobFactory(job: Job) extends PhFactoryTrait[PhJobTrait] {
                 try {
                     getMethodMirror(action.getFactory)(action).asInstanceOf[PhFactoryTrait[PhActionTrait]].inst()
                 } catch {
-                    case e: PhBuildJobException => throw PhBuildJobException(e.configs ++ List(job.name + ":" + job.args.asScala.mkString(",")), e.exception)
+                    case e: PhBuildJobException => throw PhBuildJobException(e.configs ++ List(job.name + ":" + args.mkString(",")), e.exception)
                     case e: Exception => throw e
                 }
             }
