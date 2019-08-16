@@ -64,7 +64,7 @@ case class SourceFromParquetOperator(name: String,
 		/** 管道ID */
 		val chanelId = pr.getAs[PhStringArgs]("chanelId").get.get
 		val local = s"$protocol://$ip:$port"
-		val hdfsRealPath = "hdfs://192.168.100.137:9000" + hdfsPath
+		val hdfsRealPath = "hdfs://192.168.100.137:9000" + pr.getAs[PhStringArgs](hdfsPath).get.get
 		val postData =
 			s"""
 			   |{

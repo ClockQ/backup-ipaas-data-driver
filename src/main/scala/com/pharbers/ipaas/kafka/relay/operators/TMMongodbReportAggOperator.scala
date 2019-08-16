@@ -17,7 +17,7 @@
 
 package com.pharbers.ipaas.kafka.relay.operators
 
-import com.pharbers.ipaas.data.driver.api.work.{PhMapArgs, PhOperatorTrait, PhPluginTrait, PhStringArgs, PhWorkArgs}
+import com.pharbers.ipaas.data.driver.api.work.{PhMapArgs, PhOperatorTrait, PhPluginTrait, PhWorkArgs}
 import org.apache.spark.sql.Column
 
 /** 功能描述
@@ -26,21 +26,13 @@ import org.apache.spark.sql.Column
   * @tparam T 构造泛型参数
   * @author dcs
   * @version 0.0
-  * @since 2019/08/13 15:53
+  * @since 2019/08/16 10:35
   * @note 一些值得注意的地方
   */
-case class TMMongodbAggOperator(name: String,
-                           defaultArgs: PhMapArgs[PhWorkArgs[Any]],
-                           pluginLst: Seq[PhPluginTrait[Column]])
+case class TMMongodbReportAggOperator(name: String,
+                                 defaultArgs: PhMapArgs[PhWorkArgs[Any]],
+                                 pluginLst: Seq[PhPluginTrait[Column]])
         extends PhOperatorTrait[String] {
-
-    val connection: String = defaultArgs.getAs[PhStringArgs]("connection").get.get
-    val database: String = defaultArgs.getAs[PhStringArgs]("database").get.get
-    val collection: String = defaultArgs.getAs[PhStringArgs]("collection").get.get
-    val periodId: String = defaultArgs.getAs[PhStringArgs]("periodId").get.get
-    val projectId: String = defaultArgs.getAs[PhStringArgs]("projectId").get.get
-    val proposalId: String = defaultArgs.getAs[PhStringArgs]("proposalId").get.get
-
     /** CMD执行方法
       *
       * @param pr 包含的子的 CMD 执行结果及之前执行过的 Action 中的结果
@@ -54,9 +46,5 @@ case class TMMongodbAggOperator(name: String,
       *     pr中需要传递 `key` 为 `logDriver` 的 PhLogDriverArgs
       * }}}
       */
-    override def perform(pr: PhMapArgs[PhWorkArgs[Any]]): PhWorkArgs[String] = {
-        import com.pharbers.NTMIOAggregation._
-        val res = TmInputAgg(proposalId, projectId, periodId)
-        PhStringArgs(res)
-    }
+    override def perform(pr: PhMapArgs[PhWorkArgs[Any]]): PhWorkArgs[String] = ???
 }
