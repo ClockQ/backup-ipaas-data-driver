@@ -140,13 +140,14 @@ object Runner {
         logger.setInfoLog("beginning job",s"name:${job.name}")
         val phJob = getMethodMirror(job.getFactory)(job).asInstanceOf[PhFactoryTrait[PhJobTrait]].inst()
         try {
-            phJob.perform(PhMapArgs(Map(
+            val result = phJob.perform(PhMapArgs(Map(
                 "sparkDriver" -> PhSparkDriverArgs(driver),
-                "logDriver" -> PhLogDriverArgs(PhLogDriver(formatMsg("test_user", "test_traceID", "test_jobID")))
+                "logDriver" -> PhLogDriverArgs(PhLogDriver(formatMsg("test_user", "test_traceID", job.jobId)))
             )))
+//                    .asInstanceOf[PhMapArgs].getAs[PhStringArgs]("result").getOrElse(PhStringArgs(job.jobId)).get
             //todo: job完成判断， recall job结果
             logger.setInfoLog("job finish",s"jobId:${job.jobId}, name:${job.name}")
-            writeMapped(JsonInput.mapper.writeValueAsString(new DriverJobMsg(job.jobId, "success", "")))
+            writeMapped(JsonInput.mapper.writeValueAsString(new DriverJobMsg(job.jobId, "success", s"""{"job_id": "$result"}""")))
         }catch {
             case e: PhOperatorException =>
                 writeMapped(JsonInput.mapper.writeValueAsString(new DriverJobMsg(job.jobId, "error", e.names.mkString(","))))

@@ -1,0 +1,65 @@
+[
+  {
+    "name": "TMMongo2EsJob",
+    "factory": "com.pharbers.ipaas.data.driver.api.factory.PhJobFactory",
+    "reference": "com.pharbers.ipaas.data.driver.api.job.PhBaseJob",
+    "actions": [
+      {
+        "name": "result",
+        "factory": "com.pharbers.ipaas.data.driver.api.factory.PhActionFactory",
+        "reference": "com.pharbers.ipaas.kafka.relay.job.PhKafkaTestAction",
+        "args": {
+          "protocol": "http",
+          "ip": "192.168.100.176",
+          "port": "8083"
+        },
+        "opers": [
+          {
+            "name": "aggDataOperator",
+            "factory": "com.pharbers.ipaas.data.driver.api.factory.PhOperatorFactory",
+            "reference": "com.pharbers.ipaas.kafka.relay.operators.TMMongodbReportAggOperator",
+            "args": {
+              "connection": "mongodb://192.168.100.176:27017",
+              "periodId": "",
+              "projectId": "",
+              "proposalId": "5d563e6245c8d71248eaa8a4",
+              "database": "pharbers-ntm-client-4",
+              "collection": "show_reports"
+            }
+          }
+        ]
+      },
+      {
+        "name": "SourceFromMongo2Es",
+        "factory": "com.pharbers.ipaas.data.driver.api.factory.PhActionFactory",
+        "reference": "com.pharbers.ipaas.kafka.relay.job.PhKafkaTestAction",
+        "args": {
+          "protocol": "http",
+          "ip": "192.168.100.176",
+          "port": "8083"
+        },
+        "opers": [
+          {
+            "name": "创建SourceConnect",
+            "factory": "com.pharbers.ipaas.data.driver.api.factory.PhOperatorFactory",
+            "reference": "com.pharbers.ipaas.kafka.relay.operators.MongodbSourceConnectorOperator",
+            "args": {
+              "connectClass": "com.pharbers.kafka.connect.mongodb.TMMongodbSourceConnector",
+              "tasksMax": "1",
+              "connection": "mongodb://192.168.100.176:27017",
+              "database": "pharbers-ntm-client-5",
+              "collection": "show_reports",
+              "job": "result",
+              "topic": "tmrs"
+            }
+          },
+          {
+            "name": "删除管道",
+            "factory": "com.pharbers.ipaas.data.driver.api.factory.PhOperatorFactory",
+            "reference": "com.pharbers.ipaas.kafka.relay.operators.DeleteConnectOperator"
+          }
+        ]
+      }
+    ]
+  }
+]

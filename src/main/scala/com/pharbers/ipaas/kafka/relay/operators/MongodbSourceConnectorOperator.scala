@@ -17,6 +17,8 @@
 
 package com.pharbers.ipaas.kafka.relay.operators
 
+import java.util.UUID
+
 import com.pharbers.ipaas.data.driver.api.work.{PhMapArgs, PhNoneArgs, PhOperatorTrait, PhPluginTrait, PhStringArgs, PhWorkArgs}
 import com.pharbers.ipaas.kafka.relay.http.PhChanelHttpRequest
 import org.apache.spark.sql.Column
@@ -24,25 +26,25 @@ import org.apache.spark.sql.Column
 import scala.util.parsing.json.JSON
 
 /** 功能描述
-  * 测试用，与PhKafkaTestAction 绑定，会动态指定topic
+  *需要指定topic的operator
+  *
   * @param args 构造参数
   * @tparam T 构造泛型参数
   * @author dcs
   * @version 0.0
-  * @since 2019/08/06 16:12
-  * @example 默认参数例子
-  *          {{{
-  *                "tasks.max" : "1", // 连接管道的最大线程数, 默认值为“1”
-  *                "connection": "mongodb://192.168.100.176:27017", mongodb 地址
-  *                "topic": "mongotest3", // 连接kafka的主题名字
-  *                "database":"pharbers-aggrate-data", 数据库名
-  *                "collection": "aggregateData",  集合名
-  *                "filter":"{'value':{$lt:1}, 'key':'葡萄糖酸钙锌'}"  筛选
-  *          }}}
+  * @since 2019/08/16 11:22
+  * @note {{{
+  *                          "tasks.max" : "1", // 连接管道的最大线程数, 默认值为“1”
+  *                          "connection": "mongodb://192.168.100.176:27017", mongodb 地址
+  *                          "topic": "mongotest3", // 连接kafka的主题名字
+  *                          "database":"pharbers-aggrate-data", 数据库名
+  *                          "collection": "aggregateData",  集合名
+  *                          "filter":"{'value':{$lt:1}, 'key':'葡萄糖酸钙锌'}"  筛选
+  *                    }}}
   */
-case class SourceFromMongodbOperator(name: String,
-                                     defaultArgs: PhMapArgs[PhWorkArgs[Any]],
-                                     pluginLst: Seq[PhPluginTrait[Column]])
+case class MongodbSourceConnectorOperator(name: String,
+                                          defaultArgs: PhMapArgs[PhWorkArgs[Any]],
+                                          pluginLst: Seq[PhPluginTrait[Column]])
         extends PhOperatorTrait[Unit] {
     /** 调用的 HTTP 接口 */
     val api: String = "/connectors/"
@@ -59,9 +61,11 @@ case class SourceFromMongodbOperator(name: String,
     val connection: String = defaultArgs.getAs[PhStringArgs]("connection").get.get
     val database: String = defaultArgs.getAs[PhStringArgs]("database").get.get
     val collection: String = defaultArgs.getAs[PhStringArgs]("collection").get.get
-    val filter: String = defaultArgs.getAs[PhStringArgs]("filter").get.get
+    val jobName: String = defaultArgs.getAs[PhStringArgs]("job").get.get
+    val topic: String = defaultArgs.getAs[PhStringArgs]("topic").get.get
 
     override def perform(pr: PhMapArgs[PhWorkArgs[Any]]): PhWorkArgs[Unit] = {
+        val job = pr.getAs[PhStringArgs](jobName).get.get
         /** 调用的 Kafka Connect HTTP 协议 */
         val protocol: String = pr.getAs[PhStringArgs]("protocol") match {
             case Some(one) => one.get
@@ -72,7 +76,7 @@ case class SourceFromMongodbOperator(name: String,
         /** 调用的 Kafka Connect HTTP 端口 */
         val port: String = pr.getAs[PhStringArgs]("port").get.get
         /** 管道的ID */
-        val chanelId = pr.getAs[PhStringArgs]("chanelId").get.get
+        val chanelId = pr.getAs[PhStringArgs]("chanelId").getOrElse(PhStringArgs(UUID.randomUUID().toString.replaceAll("-", ""))).get
         val local = s"$protocol://$ip:$port"
         val postData =
             s"""
@@ -81,12 +85,12 @@ case class SourceFromMongodbOperator(name: String,
                			   |    "config": {
                			   |        "connector.class": "$connectClass",
                			   |        "tasks.max": "$tasksMax",
-               			   |        "topic": "source_$chanelId",
+               			   |        "topic": "$topic",
                			   |        "job": "$chanelId",
                			   |        "connection": "$connection",
                			   |        "database": "$database",
                			   |        "collection": "$collection",
-               			   |        "filter": "$filter"
+               			   |        "filter": "{'job_id':'$job'}"
                			   |    }
                			   |}
 	                 """.stripMargin
@@ -97,6 +101,8 @@ case class SourceFromMongodbOperator(name: String,
             val errMsg = body("message").toString
             throw new Exception(errMsg)
         }
+        //todo: 没有监控，暂时这样
+        Thread.sleep(10000)
         PhNoneArgs
     }
 }

@@ -7,12 +7,12 @@ import env.configObj.{inst, readJobConfig}
 import org.scalatest.FunSuite
 
 class pressureTest extends FunSuite {
-	test("kafka connect all Test") {
+	test("kafka connect") {
 		val sparkDriver = PhSparkDriver("cui-test")
 		val log = PhLogDriver(formatMsg("test_user", "test_traceID", "test_jobID"))
 		def testExe(n: Int): Unit ={
 			println(s"第${n}次测试开始===========")
-			val phJobs = inst(readJobConfig("pharbers_config/channel/pressureTest.yaml"))
+			val phJobs = inst(readJobConfig("src/test/pharbers_config/TM/TMMongo2EsJob.json"))
 			phJobs.foreach(x =>
 				x.perform(PhMapArgs(Map(
 					"sparkDriver" -> PhSparkDriverArgs(sparkDriver),
@@ -21,7 +21,7 @@ class pressureTest extends FunSuite {
 			)
 			println(s"第${n}次测试结束==========")
 		}
-		(1 to 100).foreach(n => testExe(n))
+		(1 to 1).foreach(n => testExe(n))
 //		(1 to 1).foreach(n => testExe(n))
 	}
 }
