@@ -22,7 +22,7 @@
               "connection": "mongodb://192.168.100.176:27017",
               "periodId": "",
               "projectId": "",
-              "proposalId": "5d563e6245c8d71248eaa8a4",
+              "proposalId": "5d567f896c257c23525644eb",
               "database": "pharbers-ntm-client-4",
               "collection": "show_reports"
             }

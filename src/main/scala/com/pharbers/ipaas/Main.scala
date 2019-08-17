@@ -28,6 +28,7 @@ import com.aliyun.oss.model.OSSObject
 import com.fasterxml.jackson.core.JsonParseException
 import com.fasterxml.jackson.databind.{JsonMappingException, ObjectMapper}
 import com.pharbers.ipaas.data.driver.api.factory.{PhFactoryTrait, getMethodMirror}
+import com.pharbers.ipaas.data.driver.api.job.PhBaseJob
 import com.pharbers.ipaas.data.driver.api.model.Job
 import com.pharbers.ipaas.data.driver.api.model.driverConfig.DriverConfig
 import com.pharbers.ipaas.data.driver.api.work._
@@ -39,6 +40,7 @@ import com.pharbers.ipaas.job.tm.TmJobBuilder
 import com.pharbers.kafka.consumer.PharbersKafkaConsumer
 import com.pharbers.kafka.schema.SparkJob
 import org.apache.kafka.clients.consumer.ConsumerRecord
+
 import scala.beans.BeanProperty
 import scala.collection.JavaConverters._
 
@@ -116,10 +118,22 @@ object Runner {
             val job = {
                 val mode = JsonInput().readObject[Job](ossObj.getObjectContent)
                 record.value().getMode.toString match {
-                    case "tm" =>
-                        TmJobBuilder(mode, record.value().getId.toString)
+                    case "tmr" =>
+                        TmJobBuilder(mode, record.value().getId.toString, record.value().getMode.toString)
                             .setMongoSourceFilter(record.value().getConfig.asScala.map(m => (m._1.toString, m._2.toString)).toMap)
                             .build()
+                    case "tm" =>
+                        TmJobBuilder(mode, record.value().getId.toString, record.value().getMode.toString)
+                                .setMongoSourceFilter(record.value().getConfig.asScala.map(m => (m._1.toString, m._2.toString)).toMap)
+                                .build()
+                    case "ucbr" =>
+                        TmJobBuilder(mode, record.value().getId.toString, record.value().getMode.toString)
+                                .setMongoSourceFilter(record.value().getConfig.asScala.map(m => (m._1.toString, m._2.toString)).toMap)
+                                .build()
+                    case "ucb" =>
+                        TmJobBuilder(mode, record.value().getId.toString, record.value().getMode.toString)
+                                .setMongoSourceFilter(record.value().getConfig.asScala.map(m => (m._1.toString, m._2.toString)).toMap)
+                                .build()
                     case _ =>
                         mode.setJobId(record.value().getId.toString)
                         mode
@@ -138,16 +152,21 @@ object Runner {
 
     def runJob(job: Job, driver: PhSparkDriver): Unit ={
         logger.setInfoLog("beginning job",s"name:${job.name}")
-        val phJob = getMethodMirror(job.getFactory)(job).asInstanceOf[PhFactoryTrait[PhJobTrait]].inst()
+        val phJob = try{
+            getMethodMirror(job.getFactory)(job).asInstanceOf[PhFactoryTrait[PhJobTrait]].inst()
+        }catch {
+            case e: Exception =>
+                writeMapped(JsonInput.mapper.writeValueAsString(new DriverJobMsg(job.jobId, "error", e.getMessage)))
+                PhBaseJob("null", PhMapArgs(), Nil)
+        }
         try {
             val result = phJob.perform(PhMapArgs(Map(
                 "sparkDriver" -> PhSparkDriverArgs(driver),
                 "logDriver" -> PhLogDriverArgs(PhLogDriver(formatMsg("test_user", "test_traceID", job.jobId)))
-            )))
-//                    .asInstanceOf[PhMapArgs].getAs[PhStringArgs]("result").getOrElse(PhStringArgs(job.jobId)).get
+            ))).get.asInstanceOf[Map[String, PhWorkArgs[Any]]].getOrElse("result" ,PhStringArgs(job.jobId)).get
             //todo: job完成判断， recall job结果
             logger.setInfoLog("job finish",s"jobId:${job.jobId}, name:${job.name}")
-            writeMapped(JsonInput.mapper.writeValueAsString(new DriverJobMsg(job.jobId, "success", s"""{"job_id": "$result"}""")))
+            writeMapped(JsonInput.mapper.writeValueAsString(new DriverJobMsg(job.jobId, "1", s"""{"job_id": "$result", "type": "${job.jobType}"}""")))
         }catch {
             case e: PhOperatorException =>
                 writeMapped(JsonInput.mapper.writeValueAsString(new DriverJobMsg(job.jobId, "error", e.names.mkString(","))))
@@ -158,9 +177,10 @@ object Runner {
     def writeMapped(json: String): Unit ={
         logger.setInfoLog(s"write mapped $json")
         //todo：配置化
-        val mapBuf = fc.map(FileChannel.MapMode.READ_WRITE, 0, 1024)
+        val size = scala.util.Properties.envOrElse("DRIVER_MAPPED_SIZE", "1024").toInt
+        val mapBuf = fc.map(FileChannel.MapMode.READ_WRITE, 0, size)
         val fl = fc.lock()
-        for (i <- 0 until 1024) {
+        for (i <- 0 until size) {
             mapBuf.put(i, 0.toByte)
         }
         mapBuf.clear()

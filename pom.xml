@@ -26,6 +26,7 @@
                 <hadoop.version>2.7.2</hadoop.version>
                 <scalatest.version>3.0.1</scalatest.version>
                 <log4j.version>2.11.2</log4j.version>
+                <jackson.version>2.9.8</jackson.version>
             </properties>
 
             <repositories>
@@ -90,17 +91,23 @@
                 </dependency>
 
                 <!--json-->
+                <!--json-->
                 <dependency>
                     <groupId>com.fasterxml.jackson.core</groupId>
                     <artifactId>jackson-core</artifactId>
-                    <version>2.9.8</version>
+                    <version>${jackson.version}</version>
                 </dependency>
-
-                <!-- https://mvnrepository.com/artifact/org.scalaj/scalaj-http -->
                 <dependency>
-                    <groupId>org.scalaj</groupId>
-                    <artifactId>scalaj-http_${scalaBinaryVersion}</artifactId>
-                    <version>2.3.0</version>
+                    <!-- Note: core-annotations version x.y.0 is generally compatible with
+                         (identical to) version x.y.1, x.y.2, etc. -->
+                    <groupId>com.fasterxml.jackson.core</groupId>
+                    <artifactId>jackson-annotations</artifactId>
+                    <version>${jackson.version}</version>
+                </dependency>
+                <dependency>
+                    <groupId>com.fasterxml.jackson.core</groupId>
+                    <artifactId>jackson-databind</artifactId>
+                    <version>${jackson.version}</version>
                 </dependency>
 
                 <!--test-->
@@ -260,39 +267,63 @@
                 </executions>
             </plugin>
             <!--主类声明-->
+            <!--<plugin>-->
+                <!--<groupId>org.apache.maven.plugins</groupId>-->
+                <!--<artifactId>maven-jar-plugin</artifactId>-->
+                <!--<configuration>-->
+                    <!--<archive>-->
+                        <!--<manifest>-->
+                            <!--<addClasspath>true</addClasspath>-->
+                            <!--<classpathPrefix>lib/</classpathPrefix>&lt;!&ndash;声明主类使用类库的相对目录名称&ndash;&gt;-->
+                            <!--<mainClass>com.pharbers.ipaas.Main</mainClass>-->
+                            <!--&lt;!&ndash;默认true SNAPSHOT会变成时间戳&ndash;&gt;-->
+                            <!--<useUniqueVersions>false</useUniqueVersions>-->
+                        <!--</manifest>-->
+                    <!--</archive>-->
+                <!--</configuration>-->
+            <!--</plugin>-->
+            <!--依赖类库复制插件-->
+            <!--<plugin>-->
+                <!--<groupId>org.apache.maven.plugins</groupId>-->
+                <!--<artifactId>maven-dependency-plugin</artifactId>-->
+                <!--<executions>-->
+                    <!--<execution>-->
+                        <!--<id>copy-dependencies</id>-->
+                        <!--<phase>prepare-package</phase>-->
+                        <!--<goals>-->
+                            <!--<goal>copy-dependencies</goal>-->
+                        <!--</goals>-->
+                        <!--<configuration>-->
+                            <!--&lt;!&ndash;${project.build.directory}是项目构建完成后的根目录，可执行的Jar在此目录&ndash;&gt;-->
+                            <!--<outputDirectory>${project.build.directory}/lib</outputDirectory>-->
+                            <!--<overWriteReleases>false</overWriteReleases>-->
+                            <!--<overWriteSnapshots>false</overWriteSnapshots>-->
+                            <!--<overWriteIfNewer>true</overWriteIfNewer>-->
+                        <!--</configuration>-->
+                    <!--</execution>-->
+                <!--</executions>-->
+            <!--</plugin>-->
+            <!--将依赖打包成一个jar，与上面主类设置冲突-->
             <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-jar-plugin</artifactId>
+                <artifactId>maven-assembly-plugin</artifactId>
+                <version>3.1.1</version>
                 <configuration>
+                    <descriptorRefs>
+                        <descriptorRef>jar-with-dependencies</descriptorRef>
+                    </descriptorRefs>
                     <archive>
                         <manifest>
-                            <addClasspath>true</addClasspath>
-                            <classpathPrefix>lib/</classpathPrefix><!--声明主类使用类库的相对目录名称-->
                             <mainClass>com.pharbers.ipaas.Main</mainClass>
-                            <!--默认true SNAPSHOT会变成时间戳-->
-                            <useUniqueVersions>false</useUniqueVersions>
                         </manifest>
                     </archive>
                 </configuration>
-            </plugin>
-            <!--依赖类库复制插件-->
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-dependency-plugin</artifactId>
                 <executions>
                     <execution>
-                        <id>copy-dependencies</id>
-                        <phase>prepare-package</phase>
+                        <id>make-assembly</id>
+                        <phase>package</phase>
                         <goals>
-                            <goal>copy-dependencies</goal>
+                            <goal>single</goal>
                         </goals>
-                        <configuration>
-                            <!--${project.build.directory}是项目构建完成后的根目录，可执行的Jar在此目录-->
-                            <outputDirectory>${project.build.directory}/lib</outputDirectory>
-                            <overWriteReleases>false</overWriteReleases>
-                            <overWriteSnapshots>false</overWriteSnapshots>
-                            <overWriteIfNewer>true</overWriteIfNewer>
-                        </configuration>
                     </execution>
                 </executions>
             </plugin>

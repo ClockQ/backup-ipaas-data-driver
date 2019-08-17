@@ -53,7 +53,7 @@ class TestJsonInput extends FunSuite {
     test("json input from file to Jobs") {
         val stream = new FileInputStream(new File("D:\\文件\\TMtestNew.json"))
         val jobs = JsonInput().readObject[Job](stream)
-        TmJobBuilder(jobs, "").setMongoSourceFilter(Map("proposalId" -> "1", "projectId" -> "2", "periodId" -> "3")).build()
+        TmJobBuilder(jobs, "", "").setMongoSourceFilter(Map("proposalId" -> "1", "projectId" -> "2", "periodId" -> "3")).build()
         println()
 //        assert(jobs.size == 1)
 //        assert(!jobs.head.getName.isEmpty)
