@@ -112,8 +112,8 @@ object Runner {
         val endpoint = "oss-cn-beijing.aliyuncs.com"
         val accessKeyId = "LTAIEoXgk4DOHDGi"
         val accessKeySecret = "x75sK6191dPGiu9wBMtKE6YcBBh8EI"
+        val client: OSS = new OSSClientBuilder().build(endpoint, accessKeyId, accessKeySecret)
         try {
-            val client: OSS = new OSSClientBuilder().build(endpoint, accessKeyId, accessKeySecret)
             val ossObj: OSSObject = client.getObject(record.value().getBucketName.toString, record.value().getOssKey.toString)
             val job = {
                 val mode = JsonInput().readObject[Job](ossObj.getObjectContent)
@@ -147,6 +147,9 @@ object Runner {
         } catch {
             case e: JsonMappingException => logger.setErrorLog(e)
             case e: JsonParseException => logger.setErrorLog(e)
+            case e: Exception => logger.setErrorLog(e)
+        }finally {
+            client.shutdown()
         }
     }
 

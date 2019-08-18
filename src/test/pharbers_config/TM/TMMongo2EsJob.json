@@ -20,11 +20,11 @@
             "reference": "com.pharbers.ipaas.kafka.relay.operators.TMMongodbReportAggOperator",
             "args": {
               "connection": "mongodb://192.168.100.176:27017",
-              "periodId": "",
-              "projectId": "",
-              "proposalId": "5d567f896c257c23525644eb",
-              "database": "pharbers-ntm-client-4",
-              "collection": "show_reports"
+              "periodId": "5d57f2946db007183e2628ea",
+              "projectId": "5d57f2946db007183e2628e9",
+              "proposalId": "5d57ed3cab0bf2192d416afb",
+              "database": "pharbers-ntm-client",
+              "collection": "show_report"
             }
           }
         ]
@@ -47,8 +47,8 @@
               "connectClass": "com.pharbers.kafka.connect.mongodb.TMMongodbSourceConnector",
               "tasksMax": "1",
               "connection": "mongodb://192.168.100.176:27017",
-              "database": "pharbers-ntm-client-5",
-              "collection": "show_reports",
+              "database": "pharbers-ntm-client",
+              "collection": "show_report",
               "job": "result",
               "topic": "tmrs"
             }

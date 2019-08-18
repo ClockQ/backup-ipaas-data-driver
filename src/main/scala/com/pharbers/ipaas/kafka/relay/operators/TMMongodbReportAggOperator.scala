@@ -40,10 +40,11 @@ case class TMMongodbReportAggOperator(name: String,
     val periodId: String = defaultArgs.getAs[PhStringArgs]("periodId").get.get
     val projectId: String = defaultArgs.getAs[PhStringArgs]("projectId").get.get
     val proposalId: String = defaultArgs.getAs[PhStringArgs]("proposalId").get.get
+    val phase: Int = defaultArgs.getAs[PhStringArgs]("phase").getOrElse(PhStringArgs("0")).get.toInt
 
     override def perform(pr: PhMapArgs[PhWorkArgs[Any]]): PhWorkArgs[String] = {
-        import com.pharbers.NTMIOAggregation._
-        val res = TmReportAgg(proposalId, projectId, periodId)
+        import com.pharbers.TmAggregation._
+        val res = TmAggReport2Show.apply(proposalId, projectId, periodId, phase)
         PhStringArgs(res)
     }
 }

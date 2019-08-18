@@ -76,7 +76,7 @@ case class MonitorOperator(name: String,
 		def pollMonitorProgress(chanelId: String): Unit = {
 			var time = 0
 			listenMonitor = true
-			val pkc = new PharbersKafkaConsumer[String, MonitorResponse](List("MonitorResponse"), 1000, Int.MaxValue, myProcess)
+			val pkc = new PharbersKafkaConsumer[String, MonitorResponse](List("MonitorResponse"), 1000, Int.MaxValue, process = myProcess)
 			val t = new Thread(pkc)
 
 			try {
@@ -85,10 +85,10 @@ case class MonitorOperator(name: String,
 				log.setInfoLog("PollMonitorProgress is started! Close by enter \"exit\" in console.")
 				//            var cmd = Console.readLine()
 				while (listenMonitor) {
-					Thread.sleep(30000)
+					Thread.sleep(10000)
 					time = time + 1
-					if (time > 50) {
-						log.setInfoLog("error: 程序异常")
+					if (time > 2) {
+						log.setErrorLog("error: 监控超时")
 						listenMonitor = false
 					}
 				}

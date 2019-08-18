@@ -38,6 +38,7 @@ case class TmJobBuilder(jobMode: Job, jobId: String, jobType: String) {
         jobJson = jobJson.replaceAll("#proposalId#", config.getOrElse("proposalId", ""))
                 .replaceAll("#projectId#", config.getOrElse("projectId", ""))
                 .replaceAll("#periodId#", config.getOrElse("periodId", ""))
+                .replaceAll("#phase#", config.getOrElse("phase", "0"))
         this
     }
 
