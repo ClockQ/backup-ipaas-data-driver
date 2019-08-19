@@ -42,7 +42,7 @@ case class SaveParquetTestOperator(name: String,
     override def perform(pr: PhMapArgs[PhWorkArgs[Any]]): PhWorkArgs[String] = {
         implicit val sd: PhSparkDriver = pr.getAs[PhSparkDriverArgs]("sparkDriver").get.get
         val inDF = pr.getAs[PhDFArgs](inDFName).get.get
-        val savePath = path + "\\/" + fileName
+        val savePath = path + "/" + fileName
         sd.setUtil(save2Parquet()).save2Parquet(inDF, savePath, saveMode)
         PhStringArgs(savePath)
     }

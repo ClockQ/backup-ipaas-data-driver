@@ -91,13 +91,13 @@ class TestKafkaConnectAction extends FunSuite {
 	test("result") {
 		val path = "/test/TMTest/input/TMInput0813/"
 		val fileNameList = List("curves.csv")
-//		val fileNameList = List("cal_data.csv", "competition.csv", "curves.csv", "level_data.csv", "manager.csv", "p_action_kpi.csv",
-//			"standard_time.csv", "weightages.csv")
+		//		val fileNameList = List("cal_data.csv", "competition.csv", "curves.csv", "level_data.csv", "manager.csv", "p_action_kpi.csv",
+		//			"standard_time.csv", "weightages.csv")
 		val savePath = "/test/TMTest/inputParquet/TMInputParquet0813/"
 		implicit val sd: PhSparkDriver = PhSparkDriver("cui-test")
 		import com.pharbers.ipaas.data.driver.libs.spark.util._
 		fileNameList.foreach(name => {
-//			val df = sd.setUtil(readParquet()).readParquet(path + name)
+			//			val df = sd.setUtil(readParquet()).readParquet(path + name)
 			val df = sd.setUtil(readCsv()).readCsv(path + name)
 			sd.setUtil(save2Parquet()).save2Parquet(df, savePath + name.split("\\.").head)
 			println(name + "保存完毕")
@@ -105,10 +105,10 @@ class TestKafkaConnectAction extends FunSuite {
 	}
 
 	test("UCB input") {
-//		val path = "/test/UCBTest/input/"
+		//		val path = "/test/UCBTest/input/"
 		val path = "/test/UCBTest/input/input0814/"
 		val fileNameList = List("cal_data.csv", "competitor.csv", "curves.csv", "weightages.csv", "p_data1.csv",
-		"p_data2.csv")
+			"p_data2.csv")
 		val savePath = "/test/UCBTest/inputParquet/input0814/"
 		implicit val sd: PhSparkDriver = PhSparkDriver("cui-test")
 		import com.pharbers.ipaas.data.driver.libs.spark.util._
@@ -172,7 +172,7 @@ class TestKafkaConnectAction extends FunSuite {
 		fileNameList.foreach(name => {
 			//			val df = sd.setUtil(readParquet()).readParquet(path + name)
 			val df = sd.setUtil(readParquet()).readParquet(path + name)
-//			df.show(false)
+			//			df.show(false)
 			sd.setUtil(save2Csv()).save2Csv(df, savePath + name)
 			println(name + "展示完毕")
 		})
@@ -196,7 +196,7 @@ class TestKafkaConnectAction extends FunSuite {
 	test("TM input 0815") {
 		val path = "/test/TMTest/input/TMInput0815/"
 		val fileNameList = List("cal_data.csv", "competitor.csv", "curves.csv", "level_data.csv", "manager.csv",
-		"standard_time.csv", "weightages.csv")
+			"standard_time.csv", "weightages.csv")
 		val savePath = "/test/TMTest/inputParquet/TMInputParquet0815/"
 		implicit val sd: PhSparkDriver = PhSparkDriver("cui-test")
 		import com.pharbers.ipaas.data.driver.libs.spark.util._
@@ -211,12 +211,60 @@ class TestKafkaConnectAction extends FunSuite {
 	test("TM output 0815 show") {
 		val path = "/test/TMTest/output/TMoutput0815/"
 		val fileNameList = List("Assessment", "TMCompetitor", "TMResult")
-//		val savePath = "/test/UCBTest/output/UCBcheckCsv/"
+		//		val savePath = "/test/UCBTest/output/UCBcheckCsv/"
 		implicit val sd: PhSparkDriver = PhSparkDriver("cui-test")
 		import com.pharbers.ipaas.data.driver.libs.spark.util._
 		fileNameList.foreach(name => {
 			//			val df = sd.setUtil(readParquet()).readParquet(path + name)
 			val df = sd.setUtil(readParquet()).readParquet(path + name)
+			df.show(false)
+			//			sd.setUtil(save2Csv()).save2Csv(df, savePath + name)
+			println(name + "展示完毕")
+		})
+	}
+
+	test("UCB output 0816") {
+		val path = "/test/UCBTest/output/output0816/"
+		val fileNameList = List("CompetitorReport", "HospitalReport", "UCBResult")
+		val savePath = "/test/UCBTest/output/output0816/UCBCsv/"
+		implicit val sd: PhSparkDriver = PhSparkDriver("cui-test")
+		import com.pharbers.ipaas.data.driver.libs.spark.util._
+		fileNameList.foreach(name => {
+			//			val df = sd.setUtil(readParquet()).readParquet(path + name)
+			val df = sd.setUtil(readParquet()).readParquet(path + name)
+			println(name + "开始保存完毕")
+			sd.setUtil(save2Csv()).save2Csv(df, savePath + name)
+			println(name + "保存完毕")
+		})
+	}
+
+	test("UCB output 081601") {
+		val path = "/test/testCui/kafkaTest003/"
+		val fileNameList = List("bd3e19a8112749c09514bfb11cfcbb21", "bbb2c6df4c3b4a2c8464236b93a5367b",
+			"822090a0880d42e2b91cbe399acbd04c")
+		val savePath = "/test/UCBTest/output/output0816/UCBCsv081601/"
+		implicit val sd: PhSparkDriver = PhSparkDriver("cui-test")
+		import com.pharbers.ipaas.data.driver.libs.spark.util._
+		fileNameList.foreach(name => {
+			//			val df = sd.setUtil(readParquet()).readParquet(path + name)
+			val df = sd.setUtil(readParquet()).readParquet(path + name)
+			println(name + "开始保存完毕")
+			sd.setUtil(save2Csv()).save2Csv(df, savePath + name)
+			println(name + "保存完毕")
+		})
+	}
+
+	test("UCB output 081701") {
+		val path = "/test/UCBTest/output/output0817/"
+		val fileNameList = List("CompetitorReport", "FinalSummary",
+			"HospitalReport", "UCBResult")
+//		val savePath = "/test/UCBTest/output/output0816/UCBCsv081601/"
+		implicit val sd: PhSparkDriver = PhSparkDriver("cui-test")
+		import com.pharbers.ipaas.data.driver.libs.spark.util._
+		fileNameList.foreach(name => {
+			//			val df = sd.setUtil(readParquet()).readParquet(path + name)
+			val df = sd.setUtil(readParquet()).readParquet(path + name)
+			println(name + "开始展示")
 			df.show(false)
 //			sd.setUtil(save2Csv()).save2Csv(df, savePath + name)
 			println(name + "展示完毕")

@@ -55,8 +55,8 @@ case class TMMongodbAggOperator(name: String,
       * }}}
       */
     override def perform(pr: PhMapArgs[PhWorkArgs[Any]]): PhWorkArgs[String] = {
-        import com.pharbers.NTMIOAggregation._
-        val res = TmInputAgg(proposalId, projectId, periodId)
+        import com.pharbers.TmAggregation._
+        val res = TmAggPreset2Cal.apply(proposalId, projectId, periodId)
         PhStringArgs(res)
     }
 }

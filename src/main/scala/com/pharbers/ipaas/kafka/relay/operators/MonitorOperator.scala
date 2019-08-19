@@ -85,9 +85,11 @@ case class MonitorOperator(name: String,
 				log.setInfoLog("PollMonitorProgress is started! Close by enter \"exit\" in console.")
 				//            var cmd = Console.readLine()
 				while (listenMonitor) {
-					Thread.sleep(30000)
+//					Thread.sleep(30000)
+					Thread.sleep(10000)
 					time = time + 1
-					if (time > 50) {
+//					if (time > 50) {
+					if (time > 2) {
 						log.setInfoLog("error: 程序异常")
 						listenMonitor = false
 					}
