@@ -17,6 +17,7 @@
 
 package com.pharbers.ipaas.kafka.relay.operators
 
+import com.pharbers.TmAggregation.TmAggCal2Report
 import com.pharbers.ipaas.data.driver.api.work.{PhMapArgs, PhNoneArgs, PhOperatorTrait, PhPluginTrait, PhStringArgs, PhWorkArgs}
 import org.apache.spark.sql.Column
 
@@ -35,12 +36,15 @@ case class TMResultAggOperator(name: String,
         extends PhOperatorTrait[Unit] {
 
     val jobName: String = defaultArgs.getAs[PhStringArgs]("job").get.get
+    val periodId: String = defaultArgs.getAs[PhStringArgs]("periodId").get.get
+    val projectId: String = defaultArgs.getAs[PhStringArgs]("projectId").get.get
+    val proposalId: String = defaultArgs.getAs[PhStringArgs]("proposalId").get.get
+    val phase: Int = defaultArgs.getAs[PhStringArgs]("phase").getOrElse(PhStringArgs("0")).get.toInt
 
 
     override def perform(pr: PhMapArgs[PhWorkArgs[Any]]): PhWorkArgs[Unit] = {
-        import com.pharbers.TmIOAggregation._
         val job = pr.getAs[PhStringArgs](jobName).get.get
-        TmResultAgg(job)
+        TmAggCal2Report.apply(job, proposalId, projectId, periodId, phase)
         PhNoneArgs
     }
 }

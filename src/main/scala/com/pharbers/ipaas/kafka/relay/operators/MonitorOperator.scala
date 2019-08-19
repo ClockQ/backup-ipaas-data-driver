@@ -87,7 +87,7 @@ case class MonitorOperator(name: String,
 				while (listenMonitor) {
 					Thread.sleep(10000)
 					time = time + 1
-					if (time > 2) {
+					if (time > 3) {
 						log.setErrorLog("error: 监控超时")
 						listenMonitor = false
 					}

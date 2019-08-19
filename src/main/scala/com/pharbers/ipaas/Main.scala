@@ -118,6 +118,7 @@ object Runner {
             val job = {
                 val mode = JsonInput().readObject[Job](ossObj.getObjectContent)
                 record.value().getMode.toString match {
+                        //todo: 等选择再多一些时换map加配置文件
                     case "tmr" =>
                         TmJobBuilder(mode, record.value().getId.toString, record.value().getMode.toString)
                             .setMongoSourceFilter(record.value().getConfig.asScala.map(m => (m._1.toString, m._2.toString)).toMap)
