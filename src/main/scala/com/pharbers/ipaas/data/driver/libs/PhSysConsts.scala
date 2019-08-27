@@ -23,7 +23,7 @@ package com.pharbers.ipaas.data.driver.libs
   * @version 0.1
   * @since 2019/06/25 16:17
   */
-object PhConstant {
+object PhSysConsts {
     val LOCALHOST_NAME: String = java.net.InetAddress.getLocalHost.getHostName
 
 //    val SPARK_CONF_DIR: String = sys.env("PH_DRIVER_SPARK_CONF")
