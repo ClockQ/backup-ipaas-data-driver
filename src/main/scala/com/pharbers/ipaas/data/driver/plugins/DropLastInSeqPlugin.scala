@@ -23,30 +23,30 @@ import org.apache.spark.sql.expressions.UserDefinedFunction
 import org.apache.spark.sql.functions.{col, udf}
 
 /** 去掉Seq[String]类型的最后一个元素，剩余元素拼成以指定分隔符分隔的String
-  *
-  * @author clock
-  * @version 0.1
-  * @since 2019/6/27 15:16
-  * @example 默认参数例子
-  * {{{
-  *     colName: String 要进行操作的列
-  *     delimiter: "," // 合并后字符串的分隔符，默认为空格
-  * }}}
-  */
+ *
+ * @author clock
+ * @version 0.1
+ * @since 2019/6/27 15:16
+ * @example 默认参数例子
+ * {{{
+ *     colName: String 要进行操作的列
+ *     delimiter: "," // 合并后字符串的分隔符，默认为空格
+ * }}}
+ */
 case class DropLastInSeqPlugin(name: String,
-							   defaultArgs: PhMapArgs[PhWorkArgs[Any]],
-							   subPluginLst: Seq[PhPluginTrait[Column]])
-		extends PhPluginTrait[Column] {
-	/** 要转换的列名 */
-	val colName: String = defaultArgs.getAs[PhStringArgs]("colName").get.get
-	/** 分隔符 */
-	val delimiter: String = defaultArgs.getAs[PhStringArgs]("delimiter") match {
-		case Some(one) => one.get
-		case None => " "
-	}
+                               defaultArgs: PhMapArgs[PhWorkArgs[Any]],
+                               subPluginLst: Seq[PhPluginTrait[Column]])(implicit ctx: PhMapArgs[PhWorkArgs[_]])
+        extends PhPluginTrait[Column] {
+    /** 要转换的列名 */
+    val colName: String = defaultArgs.getAs[PhStringArgs]("colName").get.get
+    /** 分隔符 */
+    val delimiter: String = defaultArgs.getAs[PhStringArgs]("delimiter") match {
+        case Some(one) => one.get
+        case None => " "
+    }
 
-	override def perform(pr: PhMapArgs[PhWorkArgs[Any]]): PhWorkArgs[Column] = {
-		val formatFunc: UserDefinedFunction = udf { lst: Seq[String] => lst.dropRight(1).mkString(delimiter)}
-		PhColArgs(formatFunc(col(colName)))
-	}
+    override def perform(pr: PhMapArgs[PhWorkArgs[Any]]): PhWorkArgs[Column] = {
+        val formatFunc: UserDefinedFunction = udf { lst: Seq[String] => lst.dropRight(1).mkString(delimiter) }
+        PhColArgs(formatFunc(col(colName)))
+    }
 }

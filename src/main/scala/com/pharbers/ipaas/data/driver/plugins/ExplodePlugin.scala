@@ -22,19 +22,19 @@ import org.apache.spark.sql.Column
 import org.apache.spark.sql.functions.{col, explode, split}
 
 /** 按一个column内容拆分一行为多行
-  *
-  * @author clock
-  * @version 0.1
-  * @since 2019/06/27 10:53
-  * @note
-  * {{{
-  * splitColName: MONTH // 需要拆分的column
-  * delimiter: "," // 拆分的column是按这个字符串分割
-  * }}}
-  */
+ *
+ * @author clock
+ * @version 0.1
+ * @since 2019/06/27 10:53
+ * @note
+ * {{{
+ * splitColName: MONTH // 需要拆分的column
+ * delimiter: "," // 拆分的column是按这个字符串分割
+ * }}}
+ */
 case class ExplodePlugin(name: String,
                          defaultArgs: PhMapArgs[PhWorkArgs[Any]],
-                         subPluginLst: Seq[PhPluginTrait[Column]])
+                         subPluginLst: Seq[PhPluginTrait[Column]])(implicit ctx: PhMapArgs[PhWorkArgs[_]])
         extends PhPluginTrait[Column] {
 
     /** 需要拆分的column */

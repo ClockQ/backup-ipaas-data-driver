@@ -23,18 +23,18 @@ import org.apache.spark.sql.expressions.UserDefinedFunction
 import org.apache.spark.sql.functions.{col, udf}
 
 /** 取一个集合的头元素
-  *
-  * @author cui
-  * @version 0.1
-  * @since 2019/6/24 15:16
-  * @example 默认参数例子
-  * {{{
-  *      colName: String 要取头元素的列名
-  * }}}
-  */
+ *
+ * @author cui
+ * @version 0.1
+ * @since 2019/6/24 15:16
+ * @example 默认参数例子
+ * {{{
+ *      colName: String 要取头元素的列名
+ * }}}
+ */
 case class TakeHeadInSeqPlugin(name: String,
                                defaultArgs: PhMapArgs[PhWorkArgs[Any]],
-                               subPluginLst: Seq[PhPluginTrait[Column]])
+                               subPluginLst: Seq[PhPluginTrait[Column]])(implicit ctx: PhMapArgs[PhWorkArgs[_]])
         extends PhPluginTrait[Column] {
     /** 要取头元素的列名 */
     val colName: String = defaultArgs.getAs[PhStringArgs]("colName").get.get
