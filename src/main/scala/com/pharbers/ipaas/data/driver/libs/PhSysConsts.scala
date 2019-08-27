@@ -18,11 +18,11 @@
 package com.pharbers.ipaas.data.driver.libs
 
 /** 全局常量定义
-  *
-  * @author clock
-  * @version 0.1
-  * @since 2019/06/25 16:17
-  */
+ *
+ * @author clock
+ * @version 0.1
+ * @since 2019/06/25 16:17
+ */
 object PhSysConsts {
     val LOCALHOST_NAME: String = java.net.InetAddress.getLocalHost.getHostName
 

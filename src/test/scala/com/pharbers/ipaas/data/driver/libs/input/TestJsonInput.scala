@@ -7,11 +7,11 @@ import com.pharbers.ipaas.data.driver.api.model.{Job, Plugin}
 import com.pharbers.ipaas.job.tm.TmJobBuilder
 
 /**
-  * @author clock
-  * @version 0.1
-  * @since 2019/06/14 11:13
-  * @note
-  */
+ * @author clock
+ * @version 0.1
+ * @since 2019/06/14 11:13
+ * @note
+ */
 class TestJsonInput extends FunSuite {
 
     test("json input from memory to Plugin") {
@@ -51,11 +51,9 @@ class TestJsonInput extends FunSuite {
     }
 
     test("json input from file to Jobs") {
-        val stream = new FileInputStream(new File("D:\\文件\\TMtestNew.json"))
-        val jobs = JsonInput().readObject[Job](stream)
-        TmJobBuilder(jobs, "", "").setMongoSourceFilter(Map("proposalId" -> "1", "projectId" -> "2", "periodId" -> "3")).build()
-        println()
-//        assert(jobs.size == 1)
-//        assert(!jobs.head.getName.isEmpty)
+        val stream = new FileInputStream(new File("src/test/scala/com/pharbers/ipaas/data/driver/libs/input/testJson.json"))
+        val jobs = JsonInput().readObjects[Job](stream)
+        assert(jobs.size == 2)
+        assert(!jobs.head.getName.isEmpty)
     }
 }

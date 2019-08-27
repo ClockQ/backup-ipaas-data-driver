@@ -18,12 +18,12 @@
 package com.pharbers.ipaas.data.driver.libs
 
 /** work包实例
-  *
-  * @author clock
-  * @version 0.1
-  * @since 2019/06/18 15:41
-  * @note 常用 log 工具
-  */
+ *
+ * @author clock
+ * @version 0.1
+ * @since 2019/06/18 15:41
+ * @note 常用 log 工具
+ */
 package object log {
     def formatMsg(user: String, traceID: String, jobID: String)(msgs: Seq[Any]): String = {
         s"""host: ${PhSysConsts.LOCALHOST_NAME}, user: $user, traceID: $traceID, jobID: $jobID, ${msgs.map(_.toString).mkString(", ")}"""

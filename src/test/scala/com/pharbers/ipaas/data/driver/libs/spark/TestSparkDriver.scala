@@ -4,6 +4,7 @@ import org.scalatest.{BeforeAndAfterAll, FunSuite}
 
 class TestSparkDriver extends FunSuite with BeforeAndAfterAll {
     implicit var sd: PhSparkDriver = _
+
     import util._
 
     val mongodbHost: String = "192.168.100.176"
@@ -39,7 +40,7 @@ class TestSparkDriver extends FunSuite with BeforeAndAfterAll {
         val trueResult = sd.setUtil(readCsv()).readCsv(fileName)
         assert(trueResult.count() != 0)
 
-        try{
+        try {
             sd.setUtil(readCsv()).readCsv(falseFileName)
         } catch {
             case _: org.apache.spark.sql.AnalysisException => Unit
@@ -59,7 +60,7 @@ class TestSparkDriver extends FunSuite with BeforeAndAfterAll {
         val trueResult = sd.setUtil(readParquet()).readParquet(parquetName)
         assert(trueResult.count() != 0)
 
-        try{
+        try {
             sd.setUtil(readParquet()).readParquet(falseParquetName)
         } catch {
             case _: org.apache.spark.sql.AnalysisException => Unit

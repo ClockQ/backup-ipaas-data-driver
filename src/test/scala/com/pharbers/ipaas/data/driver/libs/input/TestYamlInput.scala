@@ -6,14 +6,14 @@ import org.scalatest.FunSuite
 import com.pharbers.ipaas.data.driver.api.model.{Job, Plugin}
 
 /**
-  * @author clock
-  * @version 0.1
-  * @since 2019/06/14 11:15
-  * @note
-  */
-class TestYamlInput extends FunSuite{
+ * @author clock
+ * @version 0.1
+ * @since 2019/06/14 11:15
+ * @note
+ */
+class TestYamlInput extends FunSuite {
 
-    test("yaml input from memory to Plugin"){
+    test("yaml input from memory to Plugin") {
         val data =
             """
               |name: testName
@@ -29,7 +29,7 @@ class TestYamlInput extends FunSuite{
         assert("subTestName" == plugin.sub.name)
     }
 
-    test("yaml input from memory to Plugins"){
+    test("yaml input from memory to Plugins") {
         val data =
             """
               |name: testName1
