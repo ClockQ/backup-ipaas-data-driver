@@ -1,10 +1,8 @@
 package com.pharbers.ipaas.data.driver.libs.input
 
 import java.io._
-
 import org.scalatest.FunSuite
 import com.pharbers.ipaas.data.driver.api.model.{Job, Plugin}
-import com.pharbers.ipaas.job.tm.TmJobBuilder
 
 /**
  * @author clock

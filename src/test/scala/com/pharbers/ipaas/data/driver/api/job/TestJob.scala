@@ -21,10 +21,6 @@ class TestJob extends FunSuite with BeforeAndAfterAll {
         require(testDF != null)
     }
 
-    override def afterAll(): Unit = {
-        env.sparkObj.sparkDriver.stopSpark()
-    }
-
     case class lit(name: String, defaultArgs: PhMapArgs[PhWorkArgs[Any]], subPluginLst: Seq[PhPluginTrait[Any]])
             extends PhPluginTrait[Column] {
 

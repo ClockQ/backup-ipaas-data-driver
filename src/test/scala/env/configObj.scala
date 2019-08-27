@@ -35,6 +35,6 @@ object configObj {
     }
 
     def inst(jobs: Seq[Job]): Seq[PhJobTrait] = {
-        jobs.map(x => getMethodMirror(x.getFactory)(x).asInstanceOf[PhFactoryTrait[PhJobTrait]].inst())
+        jobs.map(x => getMethodMirror(x.getFactory)(x, env.sparkObj.ctx).asInstanceOf[PhFactoryTrait[PhJobTrait]].inst())
     }
 }
