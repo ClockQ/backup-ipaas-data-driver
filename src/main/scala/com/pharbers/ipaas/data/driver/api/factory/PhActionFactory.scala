@@ -18,16 +18,16 @@
 package com.pharbers.ipaas.data.driver.api.factory
 
 import com.pharbers.ipaas.data.driver.api.model.Action
-import com.pharbers.ipaas.data.driver.exceptions.{PhBuildJobException, PhOperatorException}
+import com.pharbers.ipaas.data.driver.exceptions.PhBuildJobException
 import com.pharbers.ipaas.data.driver.api.work.{PhActionTrait, PhMapArgs, PhOperatorTrait, PhStringArgs}
 
 /** Action 实体工厂
-  *
-  * @param action model.Action 对象
-  * @author dcs
-  * @version 0.1
-  * @since 2019/06/14 15:30
-  */
+ *
+ * @param action model.Action 对象
+ * @author dcs
+ * @version 0.1
+ * @since 2019/06/14 15:30
+ */
 case class PhActionFactory(action: Action) extends PhFactoryTrait[PhActionTrait] {
 
     /** 构建 Action 运行实例 */

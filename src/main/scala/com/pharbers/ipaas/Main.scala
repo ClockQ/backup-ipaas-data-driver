@@ -27,7 +27,7 @@
 //import com.fasterxml.jackson.databind.{JsonMappingException, ObjectMapper}
 //import com.pharbers.ipaas.data.driver.api.factory.{PhFactoryTrait, getMethodMirror}
 //import com.pharbers.ipaas.data.driver.api.model.Job
-//import com.pharbers.ipaas.data.driver.api.model.driverConfig.DriverConfig
+//import com.pharbers.ipaas.job.tm.driverConfig.DriverConfig
 //import com.pharbers.ipaas.data.driver.api.work._
 //import com.pharbers.ipaas.data.driver.libs.input.{JsonInput, YamlInput}
 //import com.pharbers.ipaas.data.driver.libs.log.{PhLogDriver, formatMsg}
@@ -144,7 +144,7 @@ import com.fasterxml.jackson.databind.{JsonMappingException, ObjectMapper}
 import com.pharbers.ipaas.data.driver.api.factory.{PhFactoryTrait, getMethodMirror}
 import com.pharbers.ipaas.data.driver.api.job.PhBaseJob
 import com.pharbers.ipaas.data.driver.api.model.Job
-import com.pharbers.ipaas.data.driver.api.model.driverConfig.DriverConfig
+import com.pharbers.ipaas.job.tm.driverConfig.DriverConfig
 import com.pharbers.ipaas.data.driver.api.work._
 import com.pharbers.ipaas.data.driver.exceptions.PhOperatorException
 import com.pharbers.ipaas.data.driver.libs.input.{JsonInput, YamlInput}

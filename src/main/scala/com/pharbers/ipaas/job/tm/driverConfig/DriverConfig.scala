@@ -32,7 +32,7 @@
  * along with Foobar.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package com.pharbers.ipaas.data.driver.api.model.driverConfig
+package com.pharbers.ipaas.job.tm.driverConfig
 
 import scala.beans.BeanProperty
 

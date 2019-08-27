@@ -24,12 +24,12 @@ import com.pharbers.ipaas.data.driver.api.work.{PhMapArgs, PhPluginTrait, PhStri
 import com.pharbers.ipaas.data.driver.exceptions.PhBuildJobException
 
 /** Plugin实体工厂
-  *
-  * @param plugin model.Plugin 对象
-  * @author dcs
-  * @version 0.1
-  * @since 2019/06/14 15:30
-  */
+ *
+ * @param plugin model.Plugin 对象
+ * @author dcs
+ * @version 0.1
+ * @since 2019/06/14 15:30
+ */
 case class PhPluginFactory(plugin: Plugin) extends PhFactoryTrait[PhPluginTrait[Any]] {
 
     /** 构建 Plugin 运行实例 */

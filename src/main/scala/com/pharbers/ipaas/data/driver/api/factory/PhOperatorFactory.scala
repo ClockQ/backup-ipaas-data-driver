@@ -20,22 +20,22 @@ package com.pharbers.ipaas.data.driver.api.factory
 import java.lang.reflect.InvocationTargetException
 
 import com.pharbers.ipaas.data.driver.api.model.{Operator, Plugin}
-import com.pharbers.ipaas.data.driver.exceptions.{PhBuildJobException, PhOperatorException}
+import com.pharbers.ipaas.data.driver.exceptions.PhBuildJobException
 import com.pharbers.ipaas.data.driver.api.work.{PhMapArgs, PhOperatorTrait, PhPluginTrait, PhStringArgs}
 
 /** Operator实体工厂
-  *
-  * @param operator model.Operator 对象
-  * @author dcs
-  * @version 0.1
-  * @since 2019/06/14 15:30
-  */
+ *
+ * @param operator model.Operator 对象
+ * @author dcs
+ * @version 0.1
+ * @since 2019/06/14 15:30
+ */
 case class PhOperatorFactory(operator: Operator) extends PhFactoryTrait[PhOperatorTrait[Any]] {
 
     /** 构建 Operator 运行实例
-      *
-      * @throws com.pharbers.ipaas.data.driver.exceptions.PhOperatorException 构建算子时的异常
-      * */
+     *
+     * @throws com.pharbers.ipaas.data.driver.exceptions.PhBuildJobException 构建算子时的异常
+     **/
     override def inst(): PhOperatorTrait[Any] = {
         import scala.collection.JavaConverters.mapAsScalaMapConverter
 

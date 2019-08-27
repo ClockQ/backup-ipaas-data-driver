@@ -22,12 +22,12 @@ import com.pharbers.ipaas.data.driver.exceptions.PhBuildJobException
 import com.pharbers.ipaas.data.driver.api.work.{PhActionTrait, PhJobTrait, PhMapArgs, PhStringArgs}
 
 /** Job 实体工厂
-  *
-  * @param action model.Job 对象
-  * @author dcs
-  * @version 0.1
-  * @since 2019/06/14 15:30
-  */
+ *
+ * @param job model.Job 对象
+ * @author dcs
+ * @version 0.1
+ * @since 2019/06/14 15:30
+ */
 case class PhJobFactory(job: Job) extends PhFactoryTrait[PhJobTrait] {
 
     /** 构建 Job 运行实例 */
