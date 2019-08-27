@@ -30,7 +30,7 @@ package object work {
 
     /** PhWorkArgs 可用的隐式类
      *
-     * @param args PhWorkArgs类型的参数
+     * @param work PhWorkArgs类型的参数
      * @tparam T PhWorkArgs类型中包装的参数类型
      * @author clock
      * @version 0.1

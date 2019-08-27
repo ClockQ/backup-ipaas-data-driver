@@ -21,19 +21,19 @@ import org.apache.spark.sql.{Column, DataFrame}
 import com.pharbers.ipaas.data.driver.api.work._
 
 /** 添加新列的算子
-  *
-  * @author clock
-  * @version 0.1
-  * @since 2019/6/15 18:10
-  * @example 默认参数例子
-  * {{{
-  *     inDFName: actionName // 要作用的 DataFrame 名字
-  *     newColName: newCol // 新增的列名
-  * }}}
-  */
+ *
+ * @author clock
+ * @version 0.1
+ * @since 2019/6/15 18:10
+ * @example 默认参数例子
+ * {{{
+ *     inDFName: actionName // 要作用的 DataFrame 名字
+ *     newColName: newCol // 新增的列名
+ * }}}
+ */
 case class AddColumnOperator(name: String,
                              defaultArgs: PhMapArgs[PhWorkArgs[Any]],
-                             pluginLst: Seq[PhPluginTrait[Column]])
+                             pluginLst: Seq[PhPluginTrait[Column]])(implicit ctx: PhMapArgs[PhWorkArgs[_]])
         extends PhOperatorTrait[DataFrame] {
     /** 要作用的 DataFrame 名字 */
     val inDFName: String = defaultArgs.getAs[PhStringArgs]("inDFName").get.get

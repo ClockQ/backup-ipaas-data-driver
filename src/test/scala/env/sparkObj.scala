@@ -18,7 +18,7 @@ object sparkObj {
 
     val logDriver = PhLogDriver(formatMsg("test_user", "test_traceID", "test_jobID"))
 
-    val ctx = PhMapArgs(Map(
+    implicit val ctx = PhMapArgs(Map(
         "sparkDriver" -> PhSparkDriverArgs(sparkDriver),
         "logDriver" -> PhLogDriverArgs(logDriver)
     ))

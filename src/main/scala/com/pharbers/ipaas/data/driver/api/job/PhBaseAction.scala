@@ -33,7 +33,7 @@ import com.pharbers.ipaas.data.driver.exceptions.PhOperatorException
  */
 case class PhBaseAction(name: String,
                         defaultArgs: PhMapArgs[PhWorkArgs[Any]],
-                        operatorLst: Seq[PhOperatorTrait[Any]])(ctx: PhMapArgs[PhWorkArgs[_]])
+                        operatorLst: Seq[PhOperatorTrait[Any]])(implicit ctx: PhMapArgs[PhWorkArgs[_]])
         extends PhActionTrait {
 
     val _: PhSparkDriver = ctx.get("sparkDriver").asInstanceOf[PhSparkDriverArgs].get

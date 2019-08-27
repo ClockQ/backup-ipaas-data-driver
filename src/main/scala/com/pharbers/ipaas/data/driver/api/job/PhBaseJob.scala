@@ -33,7 +33,7 @@ import com.pharbers.ipaas.data.driver.libs.spark.PhSparkDriver
  */
 case class PhBaseJob(name: String,
                      defaultArgs: PhMapArgs[PhWorkArgs[Any]],
-                     actionLst: Seq[PhActionTrait])(ctx: PhMapArgs[PhWorkArgs[_]])
+                     actionLst: Seq[PhActionTrait])(implicit ctx: PhMapArgs[PhWorkArgs[_]])
         extends PhJobTrait {
 
     val _: PhSparkDriver = ctx.get("sparkDriver").asInstanceOf[PhSparkDriverArgs].get

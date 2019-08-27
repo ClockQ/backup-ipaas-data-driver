@@ -28,7 +28,7 @@ import com.pharbers.ipaas.data.driver.api.work.{PhActionTrait, PhMapArgs, PhOper
  * @version 0.1
  * @since 2019/06/14 15:30
  */
-case class PhActionFactory(action: Action)(ctx: PhMapArgs[PhWorkArgs[_]]) extends PhFactoryTrait[PhActionTrait] {
+case class PhActionFactory(action: Action)(implicit ctx: PhMapArgs[PhWorkArgs[_]]) extends PhFactoryTrait[PhActionTrait] {
 
     /** 构建 Action 运行实例 */
     override def inst(): PhActionTrait = {

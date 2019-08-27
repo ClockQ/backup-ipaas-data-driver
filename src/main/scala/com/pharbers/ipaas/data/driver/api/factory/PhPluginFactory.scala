@@ -29,7 +29,7 @@ import com.pharbers.ipaas.data.driver.api.work.{PhMapArgs, PhPluginTrait, PhStri
  * @version 0.1
  * @since 2019/06/14 15:30
  */
-case class PhPluginFactory(plugin: Plugin)(ctx: PhMapArgs[PhWorkArgs[_]]) extends PhFactoryTrait[PhPluginTrait[Any]] {
+case class PhPluginFactory(plugin: Plugin)(implicit ctx: PhMapArgs[PhWorkArgs[_]]) extends PhFactoryTrait[PhPluginTrait[Any]] {
 
     /** 构建 Plugin 运行实例 */
     override def inst(): PhPluginTrait[Any] = {

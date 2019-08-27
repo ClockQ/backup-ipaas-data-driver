@@ -22,21 +22,21 @@ import org.apache.spark.sql.functions.struct
 import com.pharbers.ipaas.data.driver.api.work._
 
 /** 利用GroupBy对数据集去重（稳定去重算法）
-  *
-  * @author clock
-  * @version 0.1
-  * @since 2019-05-28 17:21
-  * @example 默认参数例子
-  * {{{
-  * inDFName: actionName // 要作用的 DataFrame 名字
-  * keys: col_1#col_2 // 去重根据的列名，用`#`号分割
-  * chooseBy: col_3 // 根据哪列进行去重（缺省值是数据集第一列）
-  * chooseFun: max // 保留col_3中最大的一条（缺省值），或最小的一条（min）
-  * }}}
-  */
+ *
+ * @author clock
+ * @version 0.1
+ * @since 2019-05-28 17:21
+ * @example 默认参数例子
+ * {{{
+ * inDFName: actionName // 要作用的 DataFrame 名字
+ * keys: col_1#col_2 // 去重根据的列名，用`#`号分割
+ * chooseBy: col_3 // 根据哪列进行去重（缺省值是数据集第一列）
+ * chooseFun: max // 保留col_3中最大的一条（缺省值），或最小的一条（min）
+ * }}}
+ */
 case class DistinctByKeyOperator(name: String,
                                  defaultArgs: PhMapArgs[PhWorkArgs[Any]],
-                                 pluginLst: Seq[PhPluginTrait[Column]])
+                                 pluginLst: Seq[PhPluginTrait[Column]])(implicit ctx: PhMapArgs[PhWorkArgs[_]])
         extends PhOperatorTrait[DataFrame] {
     /** 要作用的 DataFrame 名字 */
     val inDFName: String = defaultArgs.getAs[PhStringArgs]("inDFName").get.get
@@ -54,6 +54,7 @@ case class DistinctByKeyOperator(name: String,
             case Some(one) => one.get
             case None => columns.head
         }
+
         def sortFun(col: Column): Column = chooseFun match {
             case Some(str) =>
                 str.get match {

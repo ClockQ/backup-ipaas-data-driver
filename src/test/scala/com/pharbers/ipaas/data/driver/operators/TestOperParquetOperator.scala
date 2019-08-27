@@ -17,22 +17,20 @@
 
 package com.pharbers.ipaas.data.driver.operators
 
-import com.pharbers.ipaas.data.driver.api.work.{PhDFArgs, PhMapArgs, PhSparkDriverArgs, PhStringArgs}
-import com.pharbers.ipaas.data.driver.libs.spark.PhSparkDriver
 import org.apache.spark.sql.DataFrame
 import org.scalatest.{BeforeAndAfterAll, FunSuite}
+import com.pharbers.ipaas.data.driver.api.work.{PhDFArgs, PhMapArgs, PhSparkDriverArgs, PhStringArgs}
 
-class TestSaveParquetOperator extends FunSuite with BeforeAndAfterAll {
-    implicit var sd: PhSparkDriver = _
+class TestOperParquetOperator extends FunSuite with BeforeAndAfterAll {
+
+    import env.sparkObj._
+    import sparkDriver.ss.implicits._
+
     var testDF: DataFrame = _
 
     val savePath: String = "/test/testSavePath"
 
     override def beforeAll(): Unit = {
-        sd = PhSparkDriver("test-driver")
-        val tmp = sd.ss.implicits
-        import tmp._
-
         testDF = List(
             ("name1", "prod1", "201801", 1),
             ("name2", "prod1", "201801", 2),
@@ -40,7 +38,6 @@ class TestSaveParquetOperator extends FunSuite with BeforeAndAfterAll {
             ("name4", "prod2", "201801", 4)
         ).toDF("NAME", "PROD", "DATE", "VALUE")
 
-        require(sd != null)
         require(testDF != null)
     }
 
@@ -54,8 +51,10 @@ class TestSaveParquetOperator extends FunSuite with BeforeAndAfterAll {
             )),
             Seq()
         )
-        save.perform(PhMapArgs(Map("inDFName" -> PhDFArgs(testDF), "sparkDriver" -> PhSparkDriverArgs(sd))))
+        save.perform(PhMapArgs(Map("inDFName" -> PhDFArgs(testDF))))
+    }
 
+    test("read parquet") {
         val read = ReadParquetOperator(
             "ReadParquetOperator",
             PhMapArgs(Map(
@@ -63,7 +62,7 @@ class TestSaveParquetOperator extends FunSuite with BeforeAndAfterAll {
             )),
             Seq.empty
         )
-        val result = read.perform(PhMapArgs(Map("sparkDriver" -> PhSparkDriverArgs(sd))))
+        val result = read.perform(PhMapArgs(Map()))
 
         assert(result.get.columns.length == testDF.columns.length)
         assert(result.get.count() == testDF.count())

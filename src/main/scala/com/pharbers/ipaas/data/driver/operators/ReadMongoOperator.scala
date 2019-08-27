@@ -1,30 +1,41 @@
-//package com.pharbers.ipaas.data.driver.operators
-//
-//import com.pharbers.ipaas.data.driver.api.work.{PhDFArgs, PhMapArgs, PhNoneArgs, PhOperatorTrait, PhPluginTrait, PhStringArgs, PhWorkArgs}
-//import com.pharbers.ipaas.data.driver.libs.spark.PhSparkDriver
-//import com.pharbers.ipaas.data.driver.libs.spark.util._
-//import env.sparkObj2
-//
-///** 功能描述
-//  * 读取mongo算子
-//  * @param plugin 插件
-//  * @param name 算子 name
-//  * @param defaultArgs 配置参数 "mongodbHost"-> 地址, "mongodbPort" -> 端口, "databaseName" -> 库名, "collName" -> 表名
-//  * @author dcs
-//  * @version 0.0
-//  * @since 2019/6/11 16:50
-//  * @note 一些值得注意的地方
-//  */
-//case class ReadMongoOperator(plugin: PhPluginTrait, name: String, defaultArgs: PhWorkArgs[_]) extends PhOperatorTrait{
-//    val defaultMapArgs: PhMapArgs[PhWorkArgs[_]] = defaultArgs.toMapArgs[PhWorkArgs[_]]
-//    val mongodbHost: String = defaultMapArgs.getAs[PhStringArgs]("mongodbHost").get.get
-//    val mongodbPort: String = defaultMapArgs.getAs[PhStringArgs]("mongodbPort").get.get
-//    val databaseName: String = defaultMapArgs.getAs[PhStringArgs]("databaseName").get.get
-//    val collName: String = defaultMapArgs.getAs[PhStringArgs]("collName").get.get
-//
-//    override def perform(pr: PhWorkArgs[_]): PhWorkArgs[_] = {
-//
-//        implicit val sd: PhSparkDriver = sparkObj2
-//        PhDFArgs(sd.setUtil(readMongo()).readMongo(mongodbHost, mongodbPort, databaseName, collName))
-//    }
-//}
+package com.pharbers.ipaas.data.driver.operators
+
+import org.apache.spark.sql.DataFrame
+import com.pharbers.ipaas.data.driver.api.work._
+import com.pharbers.ipaas.data.driver.libs.spark.util._
+import com.pharbers.ipaas.data.driver.libs.spark.PhSparkDriver
+
+/** 读取 mongo 的算子
+ *
+ * @author clock
+ * @version 0.1
+ * @since 2019/6/15 17:59
+ * @example 默认参数例子
+ * {{{
+ *       mongodbHost: "127.0.0.1" //地址
+ *       mongodbPort: "27017" //端口
+ *       databaseName: "db" //库名
+ *       collName: "coll" //表名
+ * }}}
+ */
+case class ReadMongoOperator(name: String,
+                             defaultArgs: PhMapArgs[PhWorkArgs[Any]],
+                             pluginLst: Seq[PhPluginTrait[Any]])(implicit ctx: PhMapArgs[PhWorkArgs[_]])
+        extends PhOperatorTrait[DataFrame] {
+
+    /** spark driver 实例 */
+    val sd: PhSparkDriver = ctx.get("sparkDriver").asInstanceOf[PhSparkDriverArgs].get
+
+    /** 地址 */
+    val mongodbHost: String = defaultArgs.getAs[PhStringArgs]("mongodbHost").get.get
+    /** 端口 */
+    val mongodbPort: String = defaultArgs.getAs[PhStringArgs]("mongodbPort").get.get
+    /** 库名 */
+    val databaseName: String = defaultArgs.getAs[PhStringArgs]("databaseName").get.get
+    /** 表名 */
+    val collName: String = defaultArgs.getAs[PhStringArgs]("collName").get.get
+
+    override def perform(pr: PhMapArgs[PhWorkArgs[Any]]): PhWorkArgs[DataFrame] = {
+        PhDFArgs(sd.setUtil(readMongo()(sd)).readMongo(mongodbHost, mongodbPort, databaseName, collName))
+    }
+}

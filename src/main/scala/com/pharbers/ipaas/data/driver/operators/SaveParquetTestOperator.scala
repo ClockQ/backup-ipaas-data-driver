@@ -9,7 +9,7 @@ import org.apache.spark.sql.{Column, SaveMode}
 
 /** 将DataFrame以parquet的格式保存到一个路径地址
   *
-  * @author EDZ
+  * @author cui
   * @version 0.1
   * @since 2019/6/11 16:50
   * @example 默认参数例子
@@ -21,7 +21,7 @@ import org.apache.spark.sql.{Column, SaveMode}
   */
 case class SaveParquetTestOperator(name: String,
                                    defaultArgs: PhMapArgs[PhWorkArgs[Any]],
-                                   pluginLst: Seq[PhPluginTrait[Column]])
+                                   pluginLst: Seq[PhPluginTrait[Column]])(implicit ctx: PhMapArgs[PhWorkArgs[_]])
         extends PhOperatorTrait[String] {
     /** 要保存的 DataFrame 名字 */
     val inDFName: String = defaultArgs.getAs[PhStringArgs]("inDFName").get.get

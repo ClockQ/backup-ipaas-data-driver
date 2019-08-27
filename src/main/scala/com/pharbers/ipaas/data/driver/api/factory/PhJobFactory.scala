@@ -28,7 +28,7 @@ import com.pharbers.ipaas.data.driver.api.work.{PhActionTrait, PhJobTrait, PhMap
  * @version 0.1
  * @since 2019/06/14 15:30
  */
-case class PhJobFactory(job: Job)(ctx: PhMapArgs[PhWorkArgs[_]]) extends PhFactoryTrait[PhJobTrait] {
+case class PhJobFactory(job: Job)(implicit ctx: PhMapArgs[PhWorkArgs[_]]) extends PhFactoryTrait[PhJobTrait] {
 
     /** 构建 Job 运行实例 */
     override def inst(): PhJobTrait = {

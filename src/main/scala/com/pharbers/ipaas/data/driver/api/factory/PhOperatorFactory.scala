@@ -29,7 +29,7 @@ import com.pharbers.ipaas.data.driver.api.work.{PhMapArgs, PhOperatorTrait, PhPl
  * @version 0.1
  * @since 2019/06/14 15:30
  */
-case class PhOperatorFactory(operator: Operator)(ctx: PhMapArgs[PhWorkArgs[_]]) extends PhFactoryTrait[PhOperatorTrait[Any]] {
+case class PhOperatorFactory(operator: Operator)(implicit ctx: PhMapArgs[PhWorkArgs[_]]) extends PhFactoryTrait[PhOperatorTrait[Any]] {
 
     /** 构建 Operator 运行实例
      *
