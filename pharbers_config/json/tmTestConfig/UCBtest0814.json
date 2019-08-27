@@ -1,0 +1,3839 @@
+[
+    {
+        "name": "d7aa308abf0411e999e5e5d98db22f6d",
+        "reference": "com.pharbers.ipaas.data.driver.api.job.PhBaseJob",
+        "factory": "com.pharbers.ipaas.data.driver.api.factory.PhJobFactory",
+        "actions": [
+            {
+                "name": "d752c07bbf0411e999e5e5d98db22f6d",
+                "reference": "com.pharbers.ipaas.data.driver.api.job.PhBaseAction",
+                "factory": "com.pharbers.ipaas.data.driver.api.factory.PhActionFactory",
+                "args": {
+                    "null": "null"
+                },
+                "opers": [
+                    {
+                        "name": "d752c07abf0411e999e5e5d98db22f6d",
+                        "factory": "com.pharbers.ipaas.data.driver.api.factory.PhOperatorFactory",
+                        "reference": "com.pharbers.ipaas.data.driver.operators.ReadParquetOperator",
+                        "args": {
+                            "path": "/test/UCBTest/inputParquet/input0814/cal_data"
+                        }
+                    }
+                ]
+            },
+            {
+                "name": "d752e78bbf0411e999e5e5d98db22f6d",
+                "reference": "com.pharbers.ipaas.data.driver.api.job.PhBaseAction",
+                "factory": "com.pharbers.ipaas.data.driver.api.factory.PhActionFactory",
+                "args": {
+                    "null": "null"
+                },
+                "opers": [
+                    {
+                        "name": "d752e78abf0411e999e5e5d98db22f6d",
+                        "factory": "com.pharbers.ipaas.data.driver.api.factory.PhOperatorFactory",
+                        "reference": "com.pharbers.ipaas.data.driver.operators.ReadParquetOperator",
+                        "args": {
+                            "path": "/test/UCBTest/inputParquet/input0814/weightages"
+                        }
+                    }
+                ]
+            },
+            {
+                "name": "d7530e9abf0411e999e5e5d98db22f6d",
+                "reference": "com.pharbers.ipaas.data.driver.api.job.PhBaseAction",
+                "factory": "com.pharbers.ipaas.data.driver.api.factory.PhActionFactory",
+                "args": {
+                    "null": "null"
+                },
+                "opers": [
+                    {
+                        "name": "d752e78cbf0411e999e5e5d98db22f6d",
+                        "reference": "com.pharbers.ipaas.data.driver.operators.JoinOperator",
+                        "factory": "com.pharbers.ipaas.data.driver.api.factory.PhOperatorFactory",
+                        "args": {
+                            "inDFName": "d752c07bbf0411e999e5e5d98db22f6d",
+                            "joinDFName": "d752e78bbf0411e999e5e5d98db22f6d",
+                            "joinExpr": "TRUE",
+                            "joinType": "full"
+                        }
+                    }
+                ]
+            },
+            {
+                "name": "d75335aabf0411e999e5e5d98db22f6d",
+                "reference": "com.pharbers.ipaas.data.driver.api.job.PhBaseAction",
+                "factory": "com.pharbers.ipaas.data.driver.api.factory.PhActionFactory",
+                "args": {
+                    "null": "null"
+                },
+                "opers": [
+                    {
+                        "name": "d7530e9bbf0411e999e5e5d98db22f6d",
+                        "reference": "com.pharbers.ipaas.data.driver.operators.AddColumnOperator",
+                        "factory": "com.pharbers.ipaas.data.driver.api.factory.PhOperatorFactory",
+                        "args": {
+                            "inDFName": "d7530e9abf0411e999e5e5d98db22f6d",
+                            "newColName": "potential"
+                        },
+                        "plugin": {
+                            "name": "d7530e9cbf0411e999e5e5d98db22f6d",
+                            "reference": "com.pharbers.ipaas.data.driver.plugins.ExprPlugin",
+                            "factory": "com.pharbers.ipaas.data.driver.api.factory.PhPluginFactory",
+                            "args": {
+                                "exprString": "cast(potential as double)"
+                            }
+                        }
+                    }
+                ]
+            },
+            {
+                "name": "d7535cbabf0411e999e5e5d98db22f6d",
+                "reference": "com.pharbers.ipaas.data.driver.api.job.PhBaseAction",
+                "factory": "com.pharbers.ipaas.data.driver.api.factory.PhActionFactory",
+                "args": {
+                    "null": "null"
+                },
+                "opers": [
+                    {
+                        "name": "d75335abbf0411e999e5e5d98db22f6d",
+                        "reference": "com.pharbers.ipaas.data.driver.operators.AddColumnOperator",
+                        "factory": "com.pharbers.ipaas.data.driver.api.factory.PhOperatorFactory",
+                        "args": {
+                            "inDFName": "d75335aabf0411e999e5e5d98db22f6d",
+                            "newColName": "patient"
+                        },
+                        "plugin": {
+                            "name": "d75335acbf0411e999e5e5d98db22f6d",
+                            "reference": "com.pharbers.ipaas.data.driver.plugins.ExprPlugin",
+                            "factory": "com.pharbers.ipaas.data.driver.api.factory.PhPluginFactory",
+                            "args": {
+                                "exprString": "cast(patient as double)"
+                            }
+                        }
+                    }
+                ]
+            },
+            {
+                "name": "d753aadbbf0411e999e5e5d98db22f6d",
+                "reference": "com.pharbers.ipaas.data.driver.api.job.PhBaseAction",
+                "factory": "com.pharbers.ipaas.data.driver.api.factory.PhActionFactory",
+                "args": {
+                    "null": "null"
+                },
+                "opers": [
+                    {
+                        "name": "d7535cbbbf0411e999e5e5d98db22f6d",
+                        "reference": "com.pharbers.ipaas.data.driver.operators.AddColumnOperator",
+                        "factory": "com.pharbers.ipaas.data.driver.api.factory.PhOperatorFactory",
+                        "args": {
+                            "inDFName": "d7535cbabf0411e999e5e5d98db22f6d",
+                            "newColName": "rep_num"
+                        },
+                        "plugin": {
+                            "name": "d753aadabf0411e999e5e5d98db22f6d",
+                            "reference": "com.pharbers.ipaas.data.driver.plugins.ExprPlugin",
+                            "factory": "com.pharbers.ipaas.data.driver.api.factory.PhPluginFactory",
+                            "args": {
+                                "exprString": "cast(rep_num as double)"
+                            }
+                        }
+                    }
+                ]
+            },
+            {
+                "name": "d753f8fabf0411e999e5e5d98db22f6d",
+                "reference": "com.pharbers.ipaas.data.driver.api.job.PhBaseAction",
+                "factory": "com.pharbers.ipaas.data.driver.api.factory.PhActionFactory",
+                "args": {
+                    "null": "null"
+                },
+                "opers": [
+                    {
+                        "name": "d753d1eabf0411e999e5e5d98db22f6d",
+                        "reference": "com.pharbers.ipaas.data.driver.operators.AddColumnOperator",
+                        "factory": "com.pharbers.ipaas.data.driver.api.factory.PhOperatorFactory",
+                        "args": {
+                            "inDFName": "d753aadbbf0411e999e5e5d98db22f6d",
+                            "newColName": "hosp_num"
+                        },
+                        "plugin": {
+                            "name": "d753d1ebbf0411e999e5e5d98db22f6d",
+                            "reference": "com.pharbers.ipaas.data.driver.plugins.ExprPlugin",
+                            "factory": "com.pharbers.ipaas.data.driver.api.factory.PhPluginFactory",
+                            "args": {
+                                "exprString": "cast(hosp_num as double)"
+                            }
+                        }
+                    }
+                ]
+            },
+            {
+                "name": "d754200abf0411e999e5e5d98db22f6d",
+                "reference": "com.pharbers.ipaas.data.driver.api.job.PhBaseAction",
+                "factory": "com.pharbers.ipaas.data.driver.api.factory.PhActionFactory",
+                "args": {
+                    "null": "null"
+                },
+                "opers": [
+                    {
+                        "name": "d753f8fbbf0411e999e5e5d98db22f6d",
+                        "reference": "com.pharbers.ipaas.data.driver.operators.AddColumnOperator",
+                        "factory": "com.pharbers.ipaas.data.driver.api.factory.PhOperatorFactory",
+                        "args": {
+                            "inDFName": "d753f8fabf0411e999e5e5d98db22f6d",
+                            "newColName": "initial_budget"
+                        },
+                        "plugin": {
+                            "name": "d753f8fcbf0411e999e5e5d98db22f6d",
+                            "reference": "com.pharbers.ipaas.data.driver.plugins.ExprPlugin",
+                            "factory": "com.pharbers.ipaas.data.driver.api.factory.PhPluginFactory",
+                            "args": {
+                                "exprString": "cast(initial_budget as double)"
+                            }
+                        }
+                    }
+                ]
+            },
+            {
+                "name": "d754471abf0411e999e5e5d98db22f6d",
+                "reference": "com.pharbers.ipaas.data.driver.api.job.PhBaseAction",
+                "factory": "com.pharbers.ipaas.data.driver.api.factory.PhActionFactory",
+                "args": {
+                    "null": "null"
+                },
+                "opers": [
+                    {
+                        "name": "d754200bbf0411e999e5e5d98db22f6d",
+                        "reference": "com.pharbers.ipaas.data.driver.operators.AddColumnOperator",
+                        "factory": "com.pharbers.ipaas.data.driver.api.factory.PhOperatorFactory",
+                        "args": {
+                            "inDFName": "d754200abf0411e999e5e5d98db22f6d",
+                            "newColName": "p_quota"
+                        },
+                        "plugin": {
+                            "name": "d754200cbf0411e999e5e5d98db22f6d",
+                            "reference": "com.pharbers.ipaas.data.driver.plugins.ExprPlugin",
+                            "factory": "com.pharbers.ipaas.data.driver.api.factory.PhPluginFactory",
+                            "args": {
+                                "exprString": "cast(p_quota as double)"
+                            }
+                        }
+                    }
+                ]
+            },
+            {
+                "name": "d7546e2abf0411e999e5e5d98db22f6d",
+                "reference": "com.pharbers.ipaas.data.driver.api.job.PhBaseAction",
+                "factory": "com.pharbers.ipaas.data.driver.api.factory.PhActionFactory",
+                "args": {
+                    "null": "null"
+                },
+                "opers": [
+                    {
+                        "name": "d754471bbf0411e999e5e5d98db22f6d",
+                        "reference": "com.pharbers.ipaas.data.driver.operators.AddColumnOperator",
+                        "factory": "com.pharbers.ipaas.data.driver.api.factory.PhOperatorFactory",
+                        "args": {
+                            "inDFName": "d754471abf0411e999e5e5d98db22f6d",
+                            "newColName": "p_budget"
+                        },
+                        "plugin": {
+                            "name": "d754471cbf0411e999e5e5d98db22f6d",
+                            "reference": "com.pharbers.ipaas.data.driver.plugins.ExprPlugin",
+                            "factory": "com.pharbers.ipaas.data.driver.api.factory.PhPluginFactory",
+                            "args": {
+                                "exprString": "cast(p_budget as double)"
+                            }
+                        }
+                    }
+                ]
+            },
+            {
+                "name": "d754bc4abf0411e999e5e5d98db22f6d",
+                "reference": "com.pharbers.ipaas.data.driver.api.job.PhBaseAction",
+                "factory": "com.pharbers.ipaas.data.driver.api.factory.PhActionFactory",
+                "args": {
+                    "null": "null"
+                },
+                "opers": [
+                    {
+                        "name": "d7546e2bbf0411e999e5e5d98db22f6d",
+                        "reference": "com.pharbers.ipaas.data.driver.operators.AddColumnOperator",
+                        "factory": "com.pharbers.ipaas.data.driver.api.factory.PhOperatorFactory",
+                        "args": {
+                            "inDFName": "d7546e2abf0411e999e5e5d98db22f6d",
+                            "newColName": "p_sales"
+                        },
+                        "plugin": {
+                            "name": "d754953abf0411e999e5e5d98db22f6d",
+                            "reference": "com.pharbers.ipaas.data.driver.plugins.ExprPlugin",
+                            "factory": "com.pharbers.ipaas.data.driver.api.factory.PhPluginFactory",
+                            "args": {
+                                "exprString": "cast(p_sales as double)"
+                            }
+                        }
+                    }
+                ]
+            },
+            {
+                "name": "d7550a6bbf0411e999e5e5d98db22f6d",
+                "reference": "com.pharbers.ipaas.data.driver.api.job.PhBaseAction",
+                "factory": "com.pharbers.ipaas.data.driver.api.factory.PhActionFactory",
+                "args": {
+                    "null": "null"
+                },
+                "opers": [
+                    {
+                        "name": "d754e35abf0411e999e5e5d98db22f6d",
+                        "reference": "com.pharbers.ipaas.data.driver.operators.AddColumnOperator",
+                        "factory": "com.pharbers.ipaas.data.driver.api.factory.PhOperatorFactory",
+                        "args": {
+                            "inDFName": "d754bc4abf0411e999e5e5d98db22f6d",
+                            "newColName": "pppp_sales"
+                        },
+                        "plugin": {
+                            "name": "d7550a6abf0411e999e5e5d98db22f6d",
+                            "reference": "com.pharbers.ipaas.data.driver.plugins.ExprPlugin",
+                            "factory": "com.pharbers.ipaas.data.driver.api.factory.PhPluginFactory",
+                            "args": {
+                                "exprString": "cast(pppp_sales as double)"
+                            }
+                        }
+                    }
+                ]
+            },
+            {
+                "name": "d7555895bf0411e999e5e5d98db22f6d",
+                "reference": "com.pharbers.ipaas.data.driver.api.job.PhBaseAction",
+                "factory": "com.pharbers.ipaas.data.driver.api.factory.PhActionFactory",
+                "args": {
+                    "null": "null"
+                },
+                "opers": [
+                    {
+                        "name": "d7553184bf0411e999e5e5d98db22f6d",
+                        "reference": "com.pharbers.ipaas.data.driver.operators.AddColumnOperator",
+                        "factory": "com.pharbers.ipaas.data.driver.api.factory.PhOperatorFactory",
+                        "args": {
+                            "inDFName": "d7550a6bbf0411e999e5e5d98db22f6d",
+                            "newColName": "p_ytd_sales"
+                        },
+                        "plugin": {
+                            "name": "d7555894bf0411e999e5e5d98db22f6d",
+                            "reference": "com.pharbers.ipaas.data.driver.plugins.ExprPlugin",
+                            "factory": "com.pharbers.ipaas.data.driver.api.factory.PhPluginFactory",
+                            "args": {
+                                "exprString": "cast(p_ytd_sales as double)"
+                            }
+                        }
+                    }
+                ]
+            },
+            {
+                "name": "d755a6b5bf0411e999e5e5d98db22f6d",
+                "reference": "com.pharbers.ipaas.data.driver.api.job.PhBaseAction",
+                "factory": "com.pharbers.ipaas.data.driver.api.factory.PhActionFactory",
+                "args": {
+                    "null": "null"
+                },
+                "opers": [
+                    {
+                        "name": "d7557fa4bf0411e999e5e5d98db22f6d",
+                        "reference": "com.pharbers.ipaas.data.driver.operators.AddColumnOperator",
+                        "factory": "com.pharbers.ipaas.data.driver.api.factory.PhOperatorFactory",
+                        "args": {
+                            "inDFName": "d7555895bf0411e999e5e5d98db22f6d",
+                            "newColName": "quota"
+                        },
+                        "plugin": {
+                            "name": "d755a6b4bf0411e999e5e5d98db22f6d",
+                            "reference": "com.pharbers.ipaas.data.driver.plugins.ExprPlugin",
+                            "factory": "com.pharbers.ipaas.data.driver.api.factory.PhPluginFactory",
+                            "args": {
+                                "exprString": "cast(quota as double)"
+                            }
+                        }
+                    }
+                ]
+            },
+            {
+                "name": "d755f4d4bf0411e999e5e5d98db22f6d",
+                "reference": "com.pharbers.ipaas.data.driver.api.job.PhBaseAction",
+                "factory": "com.pharbers.ipaas.data.driver.api.factory.PhActionFactory",
+                "args": {
+                    "null": "null"
+                },
+                "opers": [
+                    {
+                        "name": "d755cdc4bf0411e999e5e5d98db22f6d",
+                        "reference": "com.pharbers.ipaas.data.driver.operators.AddColumnOperator",
+                        "factory": "com.pharbers.ipaas.data.driver.api.factory.PhOperatorFactory",
+                        "args": {
+                            "inDFName": "d755a6b5bf0411e999e5e5d98db22f6d",
+                            "newColName": "budget"
+                        },
+                        "plugin": {
+                            "name": "d755cdc5bf0411e999e5e5d98db22f6d",
+                            "reference": "com.pharbers.ipaas.data.driver.plugins.ExprPlugin",
+                            "factory": "com.pharbers.ipaas.data.driver.api.factory.PhPluginFactory",
+                            "args": {
+                                "exprString": "cast(budget as double)"
+                            }
+                        }
+                    }
+                ]
+            },
+            {
+                "name": "d7566a04bf0411e999e5e5d98db22f6d",
+                "reference": "com.pharbers.ipaas.data.driver.api.job.PhBaseAction",
+                "factory": "com.pharbers.ipaas.data.driver.api.factory.PhActionFactory",
+                "args": {
+                    "null": "null"
+                },
+                "opers": [
+                    {
+                        "name": "d7561be4bf0411e999e5e5d98db22f6d",
+                        "reference": "com.pharbers.ipaas.data.driver.operators.AddColumnOperator",
+                        "factory": "com.pharbers.ipaas.data.driver.api.factory.PhOperatorFactory",
+                        "args": {
+                            "inDFName": "d755f4d4bf0411e999e5e5d98db22f6d",
+                            "newColName": "hospital_quota_base_factor_w"
+                        },
+                        "plugin": {
+                            "name": "d75642f4bf0411e999e5e5d98db22f6d",
+                            "reference": "com.pharbers.ipaas.data.driver.plugins.ExprPlugin",
+                            "factory": "com.pharbers.ipaas.data.driver.api.factory.PhPluginFactory",
+                            "args": {
+                                "exprString": "cast(hospital_quota_base_factor_w as double)"
+                            }
+                        }
+                    }
+                ]
+            },
+            {
+                "name": "d756b824bf0411e999e5e5d98db22f6d",
+                "reference": "com.pharbers.ipaas.data.driver.api.job.PhBaseAction",
+                "factory": "com.pharbers.ipaas.data.driver.api.factory.PhActionFactory",
+                "args": {
+                    "null": "null"
+                },
+                "opers": [
+                    {
+                        "name": "d7569114bf0411e999e5e5d98db22f6d",
+                        "reference": "com.pharbers.ipaas.data.driver.operators.AddColumnOperator",
+                        "factory": "com.pharbers.ipaas.data.driver.api.factory.PhOperatorFactory",
+                        "args": {
+                            "inDFName": "d7566a04bf0411e999e5e5d98db22f6d",
+                            "newColName": "hospital_product_quota_growth_factor_w"
+                        },
+                        "plugin": {
+                            "name": "d7569115bf0411e999e5e5d98db22f6d",
+                            "reference": "com.pharbers.ipaas.data.driver.plugins.ExprPlugin",
+                            "factory": "com.pharbers.ipaas.data.driver.api.factory.PhPluginFactory",
+                            "args": {
+                                "exprString": "cast(hospital_product_quota_growth_factor_w as double)"
+                            }
+                        }
+                    }
+                ]
+            },
+            {
+                "name": "d756df35bf0411e999e5e5d98db22f6d",
+                "reference": "com.pharbers.ipaas.data.driver.api.job.PhBaseAction",
+                "factory": "com.pharbers.ipaas.data.driver.api.factory.PhActionFactory",
+                "args": {
+                    "null": "null"
+                },
+                "opers": [
+                    {
+                        "name": "d756b825bf0411e999e5e5d98db22f6d",
+                        "reference": "com.pharbers.ipaas.data.driver.operators.AddColumnOperator",
+                        "factory": "com.pharbers.ipaas.data.driver.api.factory.PhOperatorFactory",
+                        "args": {
+                            "inDFName": "d756b824bf0411e999e5e5d98db22f6d",
+                            "newColName": "district_potential_factor_w1"
+                        },
+                        "plugin": {
+                            "name": "d756df34bf0411e999e5e5d98db22f6d",
+                            "reference": "com.pharbers.ipaas.data.driver.plugins.ExprPlugin",
+                            "factory": "com.pharbers.ipaas.data.driver.api.factory.PhPluginFactory",
+                            "args": {
+                                "exprString": "cast(district_potential_factor_w1 as double)"
+                            }
+                        }
+                    }
+                ]
+            },
+            {
+                "name": "d7577b74bf0411e999e5e5d98db22f6d",
+                "reference": "com.pharbers.ipaas.data.driver.api.job.PhBaseAction",
+                "factory": "com.pharbers.ipaas.data.driver.api.factory.PhActionFactory",
+                "args": {
+                    "null": "null"
+                },
+                "opers": [
+                    {
+                        "name": "d7570644bf0411e999e5e5d98db22f6d",
+                        "reference": "com.pharbers.ipaas.data.driver.operators.AddColumnOperator",
+                        "factory": "com.pharbers.ipaas.data.driver.api.factory.PhOperatorFactory",
+                        "args": {
+                            "inDFName": "d756df35bf0411e999e5e5d98db22f6d",
+                            "newColName": "district_sales_factor_w"
+                        },
+                        "plugin": {
+                            "name": "d7575464bf0411e999e5e5d98db22f6d",
+                            "reference": "com.pharbers.ipaas.data.driver.plugins.ExprPlugin",
+                            "factory": "com.pharbers.ipaas.data.driver.api.factory.PhPluginFactory",
+                            "args": {
+                                "exprString": "cast(district_sales_factor_w as double)"
+                            }
+                        }
+                    }
+                ]
+            },
+            {
+                "name": "d757c994bf0411e999e5e5d98db22f6d",
+                "reference": "com.pharbers.ipaas.data.driver.api.job.PhBaseAction",
+                "factory": "com.pharbers.ipaas.data.driver.api.factory.PhActionFactory",
+                "args": {
+                    "null": "null"
+                },
+                "opers": [
+                    {
+                        "name": "d7577b75bf0411e999e5e5d98db22f6d",
+                        "reference": "com.pharbers.ipaas.data.driver.operators.AddColumnOperator",
+                        "factory": "com.pharbers.ipaas.data.driver.api.factory.PhOperatorFactory",
+                        "args": {
+                            "inDFName": "d7577b74bf0411e999e5e5d98db22f6d",
+                            "newColName": "factor2_w"
+                        },
+                        "plugin": {
+                            "name": "d757a284bf0411e999e5e5d98db22f6d",
+                            "reference": "com.pharbers.ipaas.data.driver.plugins.ExprPlugin",
+                            "factory": "com.pharbers.ipaas.data.driver.api.factory.PhPluginFactory",
+                            "args": {
+                                "exprString": "cast(factor2_w as double)"
+                            }
+                        }
+                    }
+                ]
+            },
+            {
+                "name": "d75817bebf0411e999e5e5d98db22f6d",
+                "reference": "com.pharbers.ipaas.data.driver.api.job.PhBaseAction",
+                "factory": "com.pharbers.ipaas.data.driver.api.factory.PhActionFactory",
+                "args": {
+                    "null": "null"
+                },
+                "opers": [
+                    {
+                        "name": "d757f0aebf0411e999e5e5d98db22f6d",
+                        "reference": "com.pharbers.ipaas.data.driver.operators.AddColumnOperator",
+                        "factory": "com.pharbers.ipaas.data.driver.api.factory.PhOperatorFactory",
+                        "args": {
+                            "inDFName": "d757c994bf0411e999e5e5d98db22f6d",
+                            "newColName": "district_cross_factor_w1"
+                        },
+                        "plugin": {
+                            "name": "d757f0afbf0411e999e5e5d98db22f6d",
+                            "reference": "com.pharbers.ipaas.data.driver.plugins.ExprPlugin",
+                            "factory": "com.pharbers.ipaas.data.driver.api.factory.PhPluginFactory",
+                            "args": {
+                                "exprString": "cast(district_cross_factor_w1 as double)"
+                            }
+                        }
+                    }
+                ]
+            },
+            {
+                "name": "d7583ecfbf0411e999e5e5d98db22f6d",
+                "reference": "com.pharbers.ipaas.data.driver.api.job.PhBaseAction",
+                "factory": "com.pharbers.ipaas.data.driver.api.factory.PhActionFactory",
+                "args": {
+                    "null": "null"
+                },
+                "opers": [
+                    {
+                        "name": "d75817bfbf0411e999e5e5d98db22f6d",
+                        "reference": "com.pharbers.ipaas.data.driver.operators.AddColumnOperator",
+                        "factory": "com.pharbers.ipaas.data.driver.api.factory.PhOperatorFactory",
+                        "args": {
+                            "inDFName": "d75817bebf0411e999e5e5d98db22f6d",
+                            "newColName": "district_hospital_factor_w1"
+                        },
+                        "plugin": {
+                            "name": "d7583ecebf0411e999e5e5d98db22f6d",
+                            "reference": "com.pharbers.ipaas.data.driver.plugins.ExprPlugin",
+                            "factory": "com.pharbers.ipaas.data.driver.api.factory.PhPluginFactory",
+                            "args": {
+                                "exprString": "cast(district_hospital_factor_w1 as double)"
+                            }
+                        }
+                    }
+                ]
+            },
+            {
+                "name": "d7588ceebf0411e999e5e5d98db22f6d",
+                "reference": "com.pharbers.ipaas.data.driver.api.job.PhBaseAction",
+                "factory": "com.pharbers.ipaas.data.driver.api.factory.PhActionFactory",
+                "args": {
+                    "null": "null"
+                },
+                "opers": [
+                    {
+                        "name": "d75865debf0411e999e5e5d98db22f6d",
+                        "reference": "com.pharbers.ipaas.data.driver.operators.AddColumnOperator",
+                        "factory": "com.pharbers.ipaas.data.driver.api.factory.PhOperatorFactory",
+                        "args": {
+                            "inDFName": "d7583ecfbf0411e999e5e5d98db22f6d",
+                            "newColName": "district_potential_factor_w2"
+                        },
+                        "plugin": {
+                            "name": "d75865dfbf0411e999e5e5d98db22f6d",
+                            "reference": "com.pharbers.ipaas.data.driver.plugins.ExprPlugin",
+                            "factory": "com.pharbers.ipaas.data.driver.api.factory.PhPluginFactory",
+                            "args": {
+                                "exprString": "cast(district_potential_factor_w2 as double)"
+                            }
+                        }
+                    }
+                ]
+            },
+            {
+                "name": "d758b3ffbf0411e999e5e5d98db22f6d",
+                "reference": "com.pharbers.ipaas.data.driver.api.job.PhBaseAction",
+                "factory": "com.pharbers.ipaas.data.driver.api.factory.PhActionFactory",
+                "args": {
+                    "null": "null"
+                },
+                "opers": [
+                    {
+                        "name": "d7588cefbf0411e999e5e5d98db22f6d",
+                        "reference": "com.pharbers.ipaas.data.driver.operators.AddColumnOperator",
+                        "factory": "com.pharbers.ipaas.data.driver.api.factory.PhOperatorFactory",
+                        "args": {
+                            "inDFName": "d7588ceebf0411e999e5e5d98db22f6d",
+                            "newColName": "district_cross_factor_w2"
+                        },
+                        "plugin": {
+                            "name": "d758b3febf0411e999e5e5d98db22f6d",
+                            "reference": "com.pharbers.ipaas.data.driver.plugins.ExprPlugin",
+                            "factory": "com.pharbers.ipaas.data.driver.api.factory.PhPluginFactory",
+                            "args": {
+                                "exprString": "cast(district_cross_factor_w2 as double)"
+                            }
+                        }
+                    }
+                ]
+            },
+            {
+                "name": "d759021ebf0411e999e5e5d98db22f6d",
+                "reference": "com.pharbers.ipaas.data.driver.api.job.PhBaseAction",
+                "factory": "com.pharbers.ipaas.data.driver.api.factory.PhActionFactory",
+                "args": {
+                    "null": "null"
+                },
+                "opers": [
+                    {
+                        "name": "d758db0ebf0411e999e5e5d98db22f6d",
+                        "reference": "com.pharbers.ipaas.data.driver.operators.AddColumnOperator",
+                        "factory": "com.pharbers.ipaas.data.driver.api.factory.PhOperatorFactory",
+                        "args": {
+                            "inDFName": "d758b3ffbf0411e999e5e5d98db22f6d",
+                            "newColName": "district_hospital_factor_w2"
+                        },
+                        "plugin": {
+                            "name": "d758db0fbf0411e999e5e5d98db22f6d",
+                            "reference": "com.pharbers.ipaas.data.driver.plugins.ExprPlugin",
+                            "factory": "com.pharbers.ipaas.data.driver.api.factory.PhPluginFactory",
+                            "args": {
+                                "exprString": "cast(district_hospital_factor_w2 as double)"
+                            }
+                        }
+                    }
+                ]
+            },
+            {
+                "name": "d759292fbf0411e999e5e5d98db22f6d",
+                "reference": "com.pharbers.ipaas.data.driver.api.job.PhBaseAction",
+                "factory": "com.pharbers.ipaas.data.driver.api.factory.PhActionFactory",
+                "args": {
+                    "null": "null"
+                },
+                "opers": [
+                    {
+                        "name": "d759021fbf0411e999e5e5d98db22f6d",
+                        "reference": "com.pharbers.ipaas.data.driver.operators.AddColumnOperator",
+                        "factory": "com.pharbers.ipaas.data.driver.api.factory.PhOperatorFactory",
+                        "args": {
+                            "inDFName": "d759021ebf0411e999e5e5d98db22f6d",
+                            "newColName": "total_budget"
+                        },
+                        "plugin": {
+                            "name": "d759292ebf0411e999e5e5d98db22f6d",
+                            "reference": "com.pharbers.ipaas.data.driver.plugins.ExprPlugin",
+                            "factory": "com.pharbers.ipaas.data.driver.api.factory.PhPluginFactory",
+                            "args": {
+                                "exprString": "case when product == '开拓来' then initial_budget * 0.6 else initial_budget * 0.12 end"
+                            }
+                        }
+                    }
+                ]
+            },
+            {
+                "name": "d7595040bf0411e999e5e5d98db22f6d",
+                "reference": "com.pharbers.ipaas.data.driver.api.job.PhBaseAction",
+                "factory": "com.pharbers.ipaas.data.driver.api.factory.PhActionFactory",
+                "args": {
+                    "null": "null"
+                },
+                "opers": [
+                    {
+                        "name": "d759503ebf0411e999e5e5d98db22f6d",
+                        "reference": "com.pharbers.ipaas.data.driver.operators.AddColumnOperator",
+                        "factory": "com.pharbers.ipaas.data.driver.api.factory.PhOperatorFactory",
+                        "args": {
+                            "inDFName": "d759292fbf0411e999e5e5d98db22f6d",
+                            "newColName": "budget_prop"
+                        },
+                        "plugin": {
+                            "name": "d759503fbf0411e999e5e5d98db22f6d",
+                            "reference": "com.pharbers.ipaas.data.driver.plugins.ExprPlugin",
+                            "factory": "com.pharbers.ipaas.data.driver.api.factory.PhPluginFactory",
+                            "args": {
+                                "exprString": "budget / total_budget"
+                            }
+                        }
+                    }
+                ]
+            },
+            {
+                "name": "d7599e5fbf0411e999e5e5d98db22f6d",
+                "reference": "com.pharbers.ipaas.data.driver.api.job.PhBaseAction",
+                "factory": "com.pharbers.ipaas.data.driver.api.factory.PhActionFactory",
+                "args": {
+                    "null": "null"
+                },
+                "opers": [
+                    {
+                        "name": "d759774ebf0411e999e5e5d98db22f6d",
+                        "reference": "com.pharbers.ipaas.data.driver.operators.AddColumnOperator",
+                        "factory": "com.pharbers.ipaas.data.driver.api.factory.PhOperatorFactory",
+                        "args": {
+                            "inDFName": "d7595040bf0411e999e5e5d98db22f6d",
+                            "newColName": "potential_m"
+                        },
+                        "plugin": {
+                            "name": "d7599e5ebf0411e999e5e5d98db22f6d",
+                            "reference": "com.pharbers.ipaas.data.driver.plugins.ExprPlugin",
+                            "factory": "com.pharbers.ipaas.data.driver.api.factory.PhPluginFactory",
+                            "args": {
+                                "exprString": "case when status == '未开发' then 0 else potential end"
+                            }
+                        }
+                    }
+                ]
+            },
+            {
+                "name": "d759c56fbf0411e999e5e5d98db22f6d",
+                "reference": "com.pharbers.ipaas.data.driver.api.job.PhBaseAction",
+                "factory": "com.pharbers.ipaas.data.driver.api.factory.PhActionFactory",
+                "args": {
+                    "null": "null"
+                },
+                "opers": [
+                    {
+                        "name": "d7599e60bf0411e999e5e5d98db22f6d",
+                        "reference": "com.pharbers.ipaas.data.driver.operators.AddColumnOperator",
+                        "factory": "com.pharbers.ipaas.data.driver.api.factory.PhOperatorFactory",
+                        "args": {
+                            "inDFName": "d7599e5fbf0411e999e5e5d98db22f6d",
+                            "newColName": "potential_factor"
+                        },
+                        "plugin": {
+                            "name": "d759c56ebf0411e999e5e5d98db22f6d",
+                            "reference": "com.pharbers.ipaas.data.driver.plugins.ExprPlugin",
+                            "factory": "com.pharbers.ipaas.data.driver.api.factory.PhPluginFactory",
+                            "args": {
+                                "exprString": "case when product == '开拓来' then 0.8 else 1 end"
+                            }
+                        }
+                    }
+                ]
+            },
+            {
+                "name": "d75a3a9ebf0411e999e5e5d98db22f6d",
+                "reference": "com.pharbers.ipaas.data.driver.api.job.PhBaseAction",
+                "factory": "com.pharbers.ipaas.data.driver.api.factory.PhActionFactory",
+                "args": {
+                    "null": "null"
+                },
+                "opers": [
+                    {
+                        "name": "d759ec7ebf0411e999e5e5d98db22f6d",
+                        "reference": "com.pharbers.ipaas.data.driver.operators.AddColumnOperator",
+                        "factory": "com.pharbers.ipaas.data.driver.api.factory.PhOperatorFactory",
+                        "args": {
+                            "inDFName": "d759c56fbf0411e999e5e5d98db22f6d",
+                            "newColName": "sales_factor"
+                        },
+                        "plugin": {
+                            "name": "d75a138ebf0411e999e5e5d98db22f6d",
+                            "reference": "com.pharbers.ipaas.data.driver.plugins.ExprPlugin",
+                            "factory": "com.pharbers.ipaas.data.driver.api.factory.PhPluginFactory",
+                            "args": {
+                                "exprString": "case when product == '开拓来' then 0.2 else 0 end"
+                            }
+                        }
+                    }
+                ]
+            },
+            {
+                "name": "d75a88c8bf0411e999e5e5d98db22f6d",
+                "reference": "com.pharbers.ipaas.data.driver.api.job.PhBaseAction",
+                "factory": "com.pharbers.ipaas.data.driver.api.factory.PhActionFactory",
+                "args": {
+                    "null": "null"
+                },
+                "opers": [
+                    {
+                        "name": "d75a61aebf0411e999e5e5d98db22f6d",
+                        "reference": "com.pharbers.ipaas.data.driver.operators.AddColumnOperator",
+                        "factory": "com.pharbers.ipaas.data.driver.api.factory.PhOperatorFactory",
+                        "args": {
+                            "inDFName": "d75a3a9ebf0411e999e5e5d98db22f6d",
+                            "newColName": "max_oa"
+                        },
+                        "plugin": {
+                            "name": "d75a61afbf0411e999e5e5d98db22f6d",
+                            "reference": "com.pharbers.ipaas.data.driver.plugins.ExprPlugin",
+                            "factory": "com.pharbers.ipaas.data.driver.api.factory.PhPluginFactory",
+                            "args": {
+                                "exprString": "case when product == '开拓来' then 100 else 40 end"
+                            }
+                        }
+                    }
+                ]
+            },
+            {
+                "name": "d75d20d8bf0411e999e5e5d98db22f6d",
+                "reference": "com.pharbers.ipaas.data.driver.api.job.PhBaseAction",
+                "factory": "com.pharbers.ipaas.data.driver.api.factory.PhActionFactory",
+                "args": {
+                    "null": "null"
+                },
+                "opers": [
+                    {
+                        "name": "d75cf9c8bf0411e999e5e5d98db22f6d",
+                        "reference": "com.pharbers.ipaas.data.driver.operators.GroupOperator",
+                        "factory": "com.pharbers.ipaas.data.driver.api.factory.PhOperatorFactory",
+                        "args": {
+                            "inDFName": "d75a88c8bf0411e999e5e5d98db22f6d",
+                            "groups": "product",
+                            "aggExprs": "sum(potential) as sumptt#sum(potential_m) as sumpttm#sum(p_sales) as sumps#sum(quota) as sumqt"
+                        }
+                    }
+                ]
+            },
+            {
+                "name": "d75d47f2bf0411e999e5e5d98db22f6d",
+                "reference": "com.pharbers.ipaas.data.driver.api.job.PhBaseAction",
+                "factory": "com.pharbers.ipaas.data.driver.api.factory.PhActionFactory",
+                "args": {
+                    "null": "null"
+                },
+                "opers": [
+                    {
+                        "name": "d75d20d9bf0411e999e5e5d98db22f6d",
+                        "reference": "com.pharbers.ipaas.data.driver.operators.WithColumnRenamedOperator",
+                        "factory": "com.pharbers.ipaas.data.driver.api.factory.PhOperatorFactory",
+                        "args": {
+                            "inDFName": "d75d20d8bf0411e999e5e5d98db22f6d",
+                            "oldColName": "product",
+                            "newColName": "product_m"
+                        }
+                    }
+                ]
+            },
+            {
+                "name": "d75fb8f2bf0411e999e5e5d98db22f6d",
+                "reference": "com.pharbers.ipaas.data.driver.api.job.PhBaseAction",
+                "factory": "com.pharbers.ipaas.data.driver.api.factory.PhActionFactory",
+                "args": {
+                    "null": "null"
+                },
+                "opers": [
+                    {
+                        "name": "d75f91e2bf0411e999e5e5d98db22f6d",
+                        "reference": "com.pharbers.ipaas.data.driver.operators.JoinOperator",
+                        "factory": "com.pharbers.ipaas.data.driver.api.factory.PhOperatorFactory",
+                        "args": {
+                            "inDFName": "d75a88c8bf0411e999e5e5d98db22f6d",
+                            "joinDFName": "d75d47f2bf0411e999e5e5d98db22f6d",
+                            "joinExpr": "product_m == product",
+                            "joinType": "left"
+                        }
+                    }
+                ]
+            },
+            {
+                "name": "d75fb8f4bf0411e999e5e5d98db22f6d",
+                "reference": "com.pharbers.ipaas.data.driver.api.job.PhBaseAction",
+                "factory": "com.pharbers.ipaas.data.driver.api.factory.PhActionFactory",
+                "args": {
+                    "null": "null"
+                },
+                "opers": [
+                    {
+                        "name": "d75fb8f3bf0411e999e5e5d98db22f6d",
+                        "reference": "com.pharbers.ipaas.data.driver.operators.DropOperator",
+                        "factory": "com.pharbers.ipaas.data.driver.api.factory.PhOperatorFactory",
+                        "args": {
+                            "inDFName": "d75fb8f2bf0411e999e5e5d98db22f6d",
+                            "drops": "product_m"
+                        }
+                    }
+                ]
+            },
+            {
+                "name": "d75be859bf0411e999e5e5d98db22f6d",
+                "reference": "com.pharbers.ipaas.data.driver.api.job.PhBaseAction",
+                "factory": "com.pharbers.ipaas.data.driver.api.factory.PhActionFactory",
+                "args": {
+                    "null": "null"
+                },
+                "opers": [
+                    {
+                        "name": "d75be858bf0411e999e5e5d98db22f6d",
+                        "reference": "com.pharbers.ipaas.data.driver.operators.GroupOperator",
+                        "factory": "com.pharbers.ipaas.data.driver.api.factory.PhOperatorFactory",
+                        "args": {
+                            "inDFName": "d75a88c8bf0411e999e5e5d98db22f6d",
+                            "groups": "product#representative#city",
+                            "aggExprs": "sum(potential_m) as potential_dist#sum(p_sales) as sales_dist#count(hospital) as hospital_num_dist"
+                        }
+                    }
+                ]
+            },
+            {
+                "name": "d75c0f69bf0411e999e5e5d98db22f6d",
+                "reference": "com.pharbers.ipaas.data.driver.api.job.PhBaseAction",
+                "factory": "com.pharbers.ipaas.data.driver.api.factory.PhActionFactory",
+                "args": {
+                    "null": "null"
+                },
+                "opers": [
+                    {
+                        "name": "d75c0f68bf0411e999e5e5d98db22f6d",
+                        "reference": "com.pharbers.ipaas.data.driver.operators.GroupOperator",
+                        "factory": "com.pharbers.ipaas.data.driver.api.factory.PhOperatorFactory",
+                        "args": {
+                            "inDFName": "d75be859bf0411e999e5e5d98db22f6d",
+                            "groups": "product#representative",
+                            "aggExprs": "sum(potential_dist) as potential_dist#sum(sales_dist) as sales_dist#sum(hospital_num_dist) as hospital_num_dist#count(city) as city_num_dist"
+                        }
+                    }
+                ]
+            },
+            {
+                "name": "d75c3679bf0411e999e5e5d98db22f6d",
+                "reference": "com.pharbers.ipaas.data.driver.api.job.PhBaseAction",
+                "factory": "com.pharbers.ipaas.data.driver.api.factory.PhActionFactory",
+                "args": {
+                    "null": "null"
+                },
+                "opers": [
+                    {
+                        "name": "d75c3678bf0411e999e5e5d98db22f6d",
+                        "reference": "com.pharbers.ipaas.data.driver.operators.WithColumnRenamedOperator",
+                        "factory": "com.pharbers.ipaas.data.driver.api.factory.PhOperatorFactory",
+                        "args": {
+                            "inDFName": "d75c0f69bf0411e999e5e5d98db22f6d",
+                            "oldColName": "product",
+                            "newColName": "product_m"
+                        }
+                    }
+                ]
+            },
+            {
+                "name": "d75c5d88bf0411e999e5e5d98db22f6d",
+                "reference": "com.pharbers.ipaas.data.driver.api.job.PhBaseAction",
+                "factory": "com.pharbers.ipaas.data.driver.api.factory.PhActionFactory",
+                "args": {
+                    "null": "null"
+                },
+                "opers": [
+                    {
+                        "name": "d75c367abf0411e999e5e5d98db22f6d",
+                        "reference": "com.pharbers.ipaas.data.driver.operators.WithColumnRenamedOperator",
+                        "factory": "com.pharbers.ipaas.data.driver.api.factory.PhOperatorFactory",
+                        "args": {
+                            "inDFName": "d75c3679bf0411e999e5e5d98db22f6d",
+                            "oldColName": "representative",
+                            "newColName": "representative_m"
+                        }
+                    }
+                ]
+            },
+            {
+                "name": "d760071cbf0411e999e5e5d98db22f6d",
+                "reference": "com.pharbers.ipaas.data.driver.api.job.PhBaseAction",
+                "factory": "com.pharbers.ipaas.data.driver.api.factory.PhActionFactory",
+                "args": {
+                    "null": "null"
+                },
+                "opers": [
+                    {
+                        "name": "d75fe00cbf0411e999e5e5d98db22f6d",
+                        "reference": "com.pharbers.ipaas.data.driver.operators.JoinOperator",
+                        "factory": "com.pharbers.ipaas.data.driver.api.factory.PhOperatorFactory",
+                        "args": {
+                            "inDFName": "d75fb8f4bf0411e999e5e5d98db22f6d",
+                            "joinDFName": "d75c5d88bf0411e999e5e5d98db22f6d",
+                            "joinExpr": "product == product_m and representative == representative_m",
+                            "joinType": "left"
+                        }
+                    }
+                ]
+            },
+            {
+                "name": "d760553cbf0411e999e5e5d98db22f6d",
+                "reference": "com.pharbers.ipaas.data.driver.api.job.PhBaseAction",
+                "factory": "com.pharbers.ipaas.data.driver.api.factory.PhActionFactory",
+                "args": {
+                    "null": "null"
+                },
+                "opers": [
+                    {
+                        "name": "d7602e2cbf0411e999e5e5d98db22f6d",
+                        "reference": "com.pharbers.ipaas.data.driver.operators.DropOperator",
+                        "factory": "com.pharbers.ipaas.data.driver.api.factory.PhOperatorFactory",
+                        "args": {
+                            "inDFName": "d760071cbf0411e999e5e5d98db22f6d",
+                            "drops": "product_m#representative_m"
+                        }
+                    }
+                ]
+            },
+            {
+                "name": "d7607c4dbf0411e999e5e5d98db22f6d",
+                "reference": "com.pharbers.ipaas.data.driver.api.job.PhBaseAction",
+                "factory": "com.pharbers.ipaas.data.driver.api.factory.PhActionFactory",
+                "args": {
+                    "null": "null"
+                },
+                "opers": [
+                    {
+                        "name": "d760553dbf0411e999e5e5d98db22f6d",
+                        "reference": "com.pharbers.ipaas.data.driver.operators.AddColumnOperator",
+                        "factory": "com.pharbers.ipaas.data.driver.api.factory.PhOperatorFactory",
+                        "args": {
+                            "inDFName": "d760553cbf0411e999e5e5d98db22f6d",
+                            "newColName": "potential_contri"
+                        },
+                        "plugin": {
+                            "name": "d7607c4cbf0411e999e5e5d98db22f6d",
+                            "reference": "com.pharbers.ipaas.data.driver.plugins.ExprPlugin",
+                            "factory": "com.pharbers.ipaas.data.driver.api.factory.PhPluginFactory",
+                            "args": {
+                                "exprString": "potential_m / sumpttm"
+                            }
+                        }
+                    }
+                ]
+            },
+            {
+                "name": "d760a35dbf0411e999e5e5d98db22f6d",
+                "reference": "com.pharbers.ipaas.data.driver.api.job.PhBaseAction",
+                "factory": "com.pharbers.ipaas.data.driver.api.factory.PhActionFactory",
+                "args": {
+                    "null": "null"
+                },
+                "opers": [
+                    {
+                        "name": "d7607c4ebf0411e999e5e5d98db22f6d",
+                        "reference": "com.pharbers.ipaas.data.driver.operators.AddColumnOperator",
+                        "factory": "com.pharbers.ipaas.data.driver.api.factory.PhOperatorFactory",
+                        "args": {
+                            "inDFName": "d7607c4dbf0411e999e5e5d98db22f6d",
+                            "newColName": "sales_contri"
+                        },
+                        "plugin": {
+                            "name": "d760a35cbf0411e999e5e5d98db22f6d",
+                            "reference": "com.pharbers.ipaas.data.driver.plugins.ExprPlugin",
+                            "factory": "com.pharbers.ipaas.data.driver.api.factory.PhPluginFactory",
+                            "args": {
+                                "exprString": "case when sumps == 0 then 0 else p_sales / sumps end"
+                            }
+                        }
+                    }
+                ]
+            },
+            {
+                "name": "d760f17cbf0411e999e5e5d98db22f6d",
+                "reference": "com.pharbers.ipaas.data.driver.api.job.PhBaseAction",
+                "factory": "com.pharbers.ipaas.data.driver.api.factory.PhActionFactory",
+                "args": {
+                    "null": "null"
+                },
+                "opers": [
+                    {
+                        "name": "d760ca6cbf0411e999e5e5d98db22f6d",
+                        "reference": "com.pharbers.ipaas.data.driver.operators.AddColumnOperator",
+                        "factory": "com.pharbers.ipaas.data.driver.api.factory.PhOperatorFactory",
+                        "args": {
+                            "inDFName": "d760a35dbf0411e999e5e5d98db22f6d",
+                            "newColName": "value_contri"
+                        },
+                        "plugin": {
+                            "name": "d760ca6dbf0411e999e5e5d98db22f6d",
+                            "reference": "com.pharbers.ipaas.data.driver.plugins.ExprPlugin",
+                            "factory": "com.pharbers.ipaas.data.driver.api.factory.PhPluginFactory",
+                            "args": {
+                                "exprString": "potential_contri * potential_factor + sales_contri * sales_factor"
+                            }
+                        }
+                    }
+                ]
+            },
+            {
+                "name": "d7613f9cbf0411e999e5e5d98db22f6d",
+                "reference": "com.pharbers.ipaas.data.driver.api.job.PhBaseAction",
+                "factory": "com.pharbers.ipaas.data.driver.api.factory.PhActionFactory",
+                "args": {
+                    "null": "null"
+                },
+                "opers": [
+                    {
+                        "name": "d761188cbf0411e999e5e5d98db22f6d",
+                        "reference": "com.pharbers.ipaas.data.driver.operators.AddColumnOperator",
+                        "factory": "com.pharbers.ipaas.data.driver.api.factory.PhOperatorFactory",
+                        "args": {
+                            "inDFName": "d760f17cbf0411e999e5e5d98db22f6d",
+                            "newColName": "budget_factor"
+                        },
+                        "plugin": {
+                            "name": "d761188dbf0411e999e5e5d98db22f6d",
+                            "reference": "com.pharbers.ipaas.data.driver.plugins.ExprPlugin",
+                            "factory": "com.pharbers.ipaas.data.driver.api.factory.PhPluginFactory",
+                            "args": {
+                                "exprString": "budget_prop / value_contri"
+                            }
+                        }
+                    }
+                ]
+            },
+            {
+                "name": "d7782356bf0411e999e5e5d98db22f6d",
+                "reference": "com.pharbers.ipaas.data.driver.api.job.PhBaseAction",
+                "factory": "com.pharbers.ipaas.data.driver.api.factory.PhActionFactory",
+                "args": {
+                    "null": "null"
+                },
+                "opers": [
+                    {
+                        "name": "d777fc46bf0411e999e5e5d98db22f6d",
+                        "reference": "com.pharbers.ipaas.data.driver.operators.ExprFilterOperator",
+                        "factory": "com.pharbers.ipaas.data.driver.api.factory.PhOperatorFactory",
+                        "args": {
+                            "inDFName": "d7613f9cbf0411e999e5e5d98db22f6d",
+                            "filter": "status == '已开发' or status == '正在开发'"
+                        }
+                    }
+                ]
+            },
+            {
+                "name": "d7787176bf0411e999e5e5d98db22f6d",
+                "reference": "com.pharbers.ipaas.data.driver.api.job.PhBaseAction",
+                "factory": "com.pharbers.ipaas.data.driver.api.factory.PhActionFactory",
+                "args": {
+                    "null": "null"
+                },
+                "opers": [
+                    {
+                        "name": "d7782357bf0411e999e5e5d98db22f6d",
+                        "reference": "com.pharbers.ipaas.data.driver.operators.AddColumnOperator",
+                        "factory": "com.pharbers.ipaas.data.driver.api.factory.PhOperatorFactory",
+                        "args": {
+                            "inDFName": "d7782356bf0411e999e5e5d98db22f6d",
+                            "newColName": "oa_factor_base_curve"
+                        },
+                        "plugin": {
+                            "name": "d7784a66bf0411e999e5e5d98db22f6d",
+                            "reference": "com.pharbers.ipaas.data.driver.plugins.ExprPlugin",
+                            "factory": "com.pharbers.ipaas.data.driver.api.factory.PhPluginFactory",
+                            "args": {
+                                "exprString": "case when product == '开拓来' then 'curve02' else 'curve03' end"
+                            }
+                        }
+                    }
+                ]
+            },
+            {
+                "name": "d74e5397bf0411e999e5e5d98db22f6d",
+                "reference": "com.pharbers.ipaas.data.driver.api.job.PhBaseAction",
+                "factory": "com.pharbers.ipaas.data.driver.api.factory.PhActionFactory",
+                "args": {
+                    "null": "null"
+                },
+                "opers": [
+                    {
+                        "name": "d74e5396bf0411e999e5e5d98db22f6d",
+                        "factory": "com.pharbers.ipaas.data.driver.api.factory.PhOperatorFactory",
+                        "reference": "com.pharbers.ipaas.data.driver.operators.ReadParquetOperator",
+                        "args": {
+                            "path": "/test/UCBTest/inputParquet/input0814/curves"
+                        }
+                    }
+                ]
+            },
+            {
+                "name": "d74e7aa8bf0411e999e5e5d98db22f6d",
+                "reference": "com.pharbers.ipaas.data.driver.api.job.PhBaseAction",
+                "factory": "com.pharbers.ipaas.data.driver.api.factory.PhActionFactory",
+                "args": {
+                    "null": "null"
+                },
+                "opers": [
+                    {
+                        "name": "d74e7aa6bf0411e999e5e5d98db22f6d",
+                        "reference": "com.pharbers.ipaas.data.driver.operators.AddColumnOperator",
+                        "factory": "com.pharbers.ipaas.data.driver.api.factory.PhOperatorFactory",
+                        "args": {
+                            "inDFName": "d74e5397bf0411e999e5e5d98db22f6d",
+                            "newColName": "x1"
+                        },
+                        "plugin": {
+                            "name": "d74e7aa7bf0411e999e5e5d98db22f6d",
+                            "reference": "com.pharbers.ipaas.data.driver.plugins.ExprPlugin",
+                            "factory": "com.pharbers.ipaas.data.driver.api.factory.PhPluginFactory",
+                            "args": {
+                                "exprString": "cast(x1 as double)"
+                            }
+                        }
+                    }
+                ]
+            },
+            {
+                "name": "d74ec8c6bf0411e999e5e5d98db22f6d",
+                "reference": "com.pharbers.ipaas.data.driver.api.job.PhBaseAction",
+                "factory": "com.pharbers.ipaas.data.driver.api.factory.PhActionFactory",
+                "args": {
+                    "null": "null"
+                },
+                "opers": [
+                    {
+                        "name": "d74ea1b6bf0411e999e5e5d98db22f6d",
+                        "reference": "com.pharbers.ipaas.data.driver.operators.AddColumnOperator",
+                        "factory": "com.pharbers.ipaas.data.driver.api.factory.PhOperatorFactory",
+                        "args": {
+                            "inDFName": "d74e7aa8bf0411e999e5e5d98db22f6d",
+                            "newColName": "x2"
+                        },
+                        "plugin": {
+                            "name": "d74ea1b7bf0411e999e5e5d98db22f6d",
+                            "reference": "com.pharbers.ipaas.data.driver.plugins.ExprPlugin",
+                            "factory": "com.pharbers.ipaas.data.driver.api.factory.PhPluginFactory",
+                            "args": {
+                                "exprString": "cast(x2 as double)"
+                            }
+                        }
+                    }
+                ]
+            },
+            {
+                "name": "d74eefd7bf0411e999e5e5d98db22f6d",
+                "reference": "com.pharbers.ipaas.data.driver.api.job.PhBaseAction",
+                "factory": "com.pharbers.ipaas.data.driver.api.factory.PhActionFactory",
+                "args": {
+                    "null": "null"
+                },
+                "opers": [
+                    {
+                        "name": "d74ec8c7bf0411e999e5e5d98db22f6d",
+                        "reference": "com.pharbers.ipaas.data.driver.operators.AddColumnOperator",
+                        "factory": "com.pharbers.ipaas.data.driver.api.factory.PhOperatorFactory",
+                        "args": {
+                            "inDFName": "d74ec8c6bf0411e999e5e5d98db22f6d",
+                            "newColName": "y1"
+                        },
+                        "plugin": {
+                            "name": "d74eefd6bf0411e999e5e5d98db22f6d",
+                            "reference": "com.pharbers.ipaas.data.driver.plugins.ExprPlugin",
+                            "factory": "com.pharbers.ipaas.data.driver.api.factory.PhPluginFactory",
+                            "args": {
+                                "exprString": "cast(y1 as double)"
+                            }
+                        }
+                    }
+                ]
+            },
+            {
+                "name": "d74f16e7bf0411e999e5e5d98db22f6d",
+                "reference": "com.pharbers.ipaas.data.driver.api.job.PhBaseAction",
+                "factory": "com.pharbers.ipaas.data.driver.api.factory.PhActionFactory",
+                "args": {
+                    "null": "null"
+                },
+                "opers": [
+                    {
+                        "name": "d74eefd8bf0411e999e5e5d98db22f6d",
+                        "reference": "com.pharbers.ipaas.data.driver.operators.AddColumnOperator",
+                        "factory": "com.pharbers.ipaas.data.driver.api.factory.PhOperatorFactory",
+                        "args": {
+                            "inDFName": "d74eefd7bf0411e999e5e5d98db22f6d",
+                            "newColName": "y2"
+                        },
+                        "plugin": {
+                            "name": "d74f16e6bf0411e999e5e5d98db22f6d",
+                            "reference": "com.pharbers.ipaas.data.driver.plugins.ExprPlugin",
+                            "factory": "com.pharbers.ipaas.data.driver.api.factory.PhPluginFactory",
+                            "args": {
+                                "exprString": "cast(y2 as double)"
+                            }
+                        }
+                    }
+                ]
+            },
+            {
+                "name": "d74f8c17bf0411e999e5e5d98db22f6d",
+                "reference": "com.pharbers.ipaas.data.driver.api.job.PhBaseAction",
+                "factory": "com.pharbers.ipaas.data.driver.api.factory.PhActionFactory",
+                "args": {
+                    "null": "null"
+                },
+                "opers": [
+                    {
+                        "name": "d74f8c16bf0411e999e5e5d98db22f6d",
+                        "reference": "com.pharbers.ipaas.data.driver.operators.GroupOperator",
+                        "factory": "com.pharbers.ipaas.data.driver.api.factory.PhOperatorFactory",
+                        "args": {
+                            "inDFName": "d74f16e7bf0411e999e5e5d98db22f6d",
+                            "groups": "curve_name",
+                            "aggExprs": "min(x1) as min_x1#max(x2) as max_x2"
+                        }
+                    }
+                ]
+            },
+            {
+                "name": "d74fb327bf0411e999e5e5d98db22f6d",
+                "reference": "com.pharbers.ipaas.data.driver.api.job.PhBaseAction",
+                "factory": "com.pharbers.ipaas.data.driver.api.factory.PhActionFactory",
+                "args": {
+                    "null": "null"
+                },
+                "opers": [
+                    {
+                        "name": "d74fb326bf0411e999e5e5d98db22f6d",
+                        "reference": "com.pharbers.ipaas.data.driver.operators.WithColumnRenamedOperator",
+                        "factory": "com.pharbers.ipaas.data.driver.api.factory.PhOperatorFactory",
+                        "args": {
+                            "inDFName": "d74f8c17bf0411e999e5e5d98db22f6d",
+                            "oldColName": "curve_name",
+                            "newColName": "curve_mm"
+                        }
+                    }
+                ]
+            },
+            {
+                "name": "d778bf96bf0411e999e5e5d98db22f6d",
+                "reference": "com.pharbers.ipaas.data.driver.api.job.PhBaseAction",
+                "factory": "com.pharbers.ipaas.data.driver.api.factory.PhActionFactory",
+                "args": {
+                    "null": "null"
+                },
+                "opers": [
+                    {
+                        "name": "d7789886bf0411e999e5e5d98db22f6d",
+                        "reference": "com.pharbers.ipaas.data.driver.operators.JoinOperator",
+                        "factory": "com.pharbers.ipaas.data.driver.api.factory.PhOperatorFactory",
+                        "args": {
+                            "inDFName": "d7787176bf0411e999e5e5d98db22f6d",
+                            "joinDFName": "d74fb327bf0411e999e5e5d98db22f6d",
+                            "joinExpr": "oa_factor_base_curve == curve_mm",
+                            "joinType": "left"
+                        }
+                    }
+                ]
+            },
+            {
+                "name": "d77934c6bf0411e999e5e5d98db22f6d",
+                "reference": "com.pharbers.ipaas.data.driver.api.job.PhBaseAction",
+                "factory": "com.pharbers.ipaas.data.driver.api.factory.PhActionFactory",
+                "args": {
+                    "null": "null"
+                },
+                "opers": [
+                    {
+                        "name": "d778bf97bf0411e999e5e5d98db22f6d",
+                        "reference": "com.pharbers.ipaas.data.driver.operators.AddColumnOperator",
+                        "factory": "com.pharbers.ipaas.data.driver.api.factory.PhOperatorFactory",
+                        "args": {
+                            "inDFName": "d778bf96bf0411e999e5e5d98db22f6d",
+                            "newColName": "x0"
+                        },
+                        "plugin": {
+                            "name": "d778e6a6bf0411e999e5e5d98db22f6d",
+                            "reference": "com.pharbers.ipaas.data.driver.plugins.ExprPlugin",
+                            "factory": "com.pharbers.ipaas.data.driver.api.factory.PhPluginFactory",
+                            "args": {
+                                "exprString": "case when budget_factor <= min_x1 then min_x1+0.000001 when budget_factor > max_x2 then max_x2 else budget_factor end"
+                            }
+                        }
+                    }
+                ]
+            },
+            {
+                "name": "d779a9f6bf0411e999e5e5d98db22f6d",
+                "reference": "com.pharbers.ipaas.data.driver.api.job.PhBaseAction",
+                "factory": "com.pharbers.ipaas.data.driver.api.factory.PhActionFactory",
+                "args": {
+                    "null": "null"
+                },
+                "opers": [
+                    {
+                        "name": "d77934c7bf0411e999e5e5d98db22f6d",
+                        "reference": "com.pharbers.ipaas.data.driver.operators.AddColumnOperator",
+                        "factory": "com.pharbers.ipaas.data.driver.api.factory.PhOperatorFactory",
+                        "args": {
+                            "inDFName": "d77934c6bf0411e999e5e5d98db22f6d",
+                            "newColName": "x00"
+                        },
+                        "plugin": {
+                            "name": "d7795bd6bf0411e999e5e5d98db22f6d",
+                            "reference": "com.pharbers.ipaas.data.driver.plugins.ExprPlugin",
+                            "factory": "com.pharbers.ipaas.data.driver.api.factory.PhPluginFactory",
+                            "args": {
+                                "exprString": "case when budget_factor < min_x1 then min_x1 when budget_factor > max_x2 then max_x2 else budget_factor end"
+                            }
+                        }
+                    }
+                ]
+            },
+            {
+                "name": "d779d107bf0411e999e5e5d98db22f6d",
+                "reference": "com.pharbers.ipaas.data.driver.api.job.PhBaseAction",
+                "factory": "com.pharbers.ipaas.data.driver.api.factory.PhActionFactory",
+                "args": {
+                    "null": "null"
+                },
+                "opers": [
+                    {
+                        "name": "d779d106bf0411e999e5e5d98db22f6d",
+                        "reference": "com.pharbers.ipaas.data.driver.operators.JoinOperator",
+                        "factory": "com.pharbers.ipaas.data.driver.api.factory.PhOperatorFactory",
+                        "args": {
+                            "inDFName": "d779a9f6bf0411e999e5e5d98db22f6d",
+                            "joinDFName": "d74f16e7bf0411e999e5e5d98db22f6d",
+                            "joinExpr": "curve_mm == curve_name and x0 > x1 and x0 <= x2",
+                            "joinType": "left"
+                        }
+                    }
+                ]
+            },
+            {
+                "name": "d77a1f26bf0411e999e5e5d98db22f6d",
+                "reference": "com.pharbers.ipaas.data.driver.api.job.PhBaseAction",
+                "factory": "com.pharbers.ipaas.data.driver.api.factory.PhActionFactory",
+                "args": {
+                    "null": "null"
+                },
+                "opers": [
+                    {
+                        "name": "d779f816bf0411e999e5e5d98db22f6d",
+                        "reference": "com.pharbers.ipaas.data.driver.operators.AddColumnOperator",
+                        "factory": "com.pharbers.ipaas.data.driver.api.factory.PhOperatorFactory",
+                        "args": {
+                            "inDFName": "d779d107bf0411e999e5e5d98db22f6d",
+                            "newColName": "oa_factor_base"
+                        },
+                        "plugin": {
+                            "name": "d779f817bf0411e999e5e5d98db22f6d",
+                            "reference": "com.pharbers.ipaas.data.driver.plugins.ExprPlugin",
+                            "factory": "com.pharbers.ipaas.data.driver.api.factory.PhPluginFactory",
+                            "args": {
+                                "exprString": "(y2 - y1) / (x2 - x1) * (x00 - x1) + y1"
+                            }
+                        }
+                    }
+                ]
+            },
+            {
+                "name": "d77a4637bf0411e999e5e5d98db22f6d",
+                "reference": "com.pharbers.ipaas.data.driver.api.job.PhBaseAction",
+                "factory": "com.pharbers.ipaas.data.driver.api.factory.PhActionFactory",
+                "args": {
+                    "null": "null"
+                },
+                "opers": [
+                    {
+                        "name": "d77a4636bf0411e999e5e5d98db22f6d",
+                        "reference": "com.pharbers.ipaas.data.driver.operators.DropOperator",
+                        "factory": "com.pharbers.ipaas.data.driver.api.factory.PhOperatorFactory",
+                        "args": {
+                            "inDFName": "d77a1f26bf0411e999e5e5d98db22f6d",
+                            "drops": "oa_factor_base_curve#curve_mm#min_x1#max_x2#x0#x00#curve_name#x1#x2#y1#y2"
+                        }
+                    }
+                ]
+            },
+            {
+                "name": "d77abb70bf0411e999e5e5d98db22f6d",
+                "reference": "com.pharbers.ipaas.data.driver.api.job.PhBaseAction",
+                "factory": "com.pharbers.ipaas.data.driver.api.factory.PhActionFactory",
+                "args": {
+                    "null": "null"
+                },
+                "opers": [
+                    {
+                        "name": "d77a6d46bf0411e999e5e5d98db22f6d",
+                        "reference": "com.pharbers.ipaas.data.driver.operators.AddColumnOperator",
+                        "factory": "com.pharbers.ipaas.data.driver.api.factory.PhOperatorFactory",
+                        "args": {
+                            "inDFName": "d77a4637bf0411e999e5e5d98db22f6d",
+                            "newColName": "hospital_quota_base"
+                        },
+                        "plugin": {
+                            "name": "d77a6d47bf0411e999e5e5d98db22f6d",
+                            "reference": "com.pharbers.ipaas.data.driver.plugins.ExprPlugin",
+                            "factory": "com.pharbers.ipaas.data.driver.api.factory.PhPluginFactory",
+                            "args": {
+                                "exprString": "case when status == '已开发' then 0.4 * p_sales / sumps + 0.6 * potential / sumptt else potential / sumptt end"
+                            }
+                        }
+                    }
+                ]
+            },
+            {
+                "name": "d77b30a0bf0411e999e5e5d98db22f6d",
+                "reference": "com.pharbers.ipaas.data.driver.api.job.PhBaseAction",
+                "factory": "com.pharbers.ipaas.data.driver.api.factory.PhActionFactory",
+                "args": {
+                    "null": "null"
+                },
+                "opers": [
+                    {
+                        "name": "d77b0990bf0411e999e5e5d98db22f6d",
+                        "reference": "com.pharbers.ipaas.data.driver.operators.AddColumnOperator",
+                        "factory": "com.pharbers.ipaas.data.driver.api.factory.PhOperatorFactory",
+                        "args": {
+                            "inDFName": "d77abb70bf0411e999e5e5d98db22f6d",
+                            "newColName": "quota_prop"
+                        },
+                        "plugin": {
+                            "name": "d77b0991bf0411e999e5e5d98db22f6d",
+                            "reference": "com.pharbers.ipaas.data.driver.plugins.ExprPlugin",
+                            "factory": "com.pharbers.ipaas.data.driver.api.factory.PhPluginFactory",
+                            "args": {
+                                "exprString": "case when sumqt == 0 then 0 else quota / sumqt end"
+                            }
+                        }
+                    }
+                ]
+            },
+            {
+                "name": "d77bcce0bf0411e999e5e5d98db22f6d",
+                "reference": "com.pharbers.ipaas.data.driver.api.job.PhBaseAction",
+                "factory": "com.pharbers.ipaas.data.driver.api.factory.PhActionFactory",
+                "args": {
+                    "null": "null"
+                },
+                "opers": [
+                    {
+                        "name": "d77b57b0bf0411e999e5e5d98db22f6d",
+                        "reference": "com.pharbers.ipaas.data.driver.operators.AddColumnOperator",
+                        "factory": "com.pharbers.ipaas.data.driver.api.factory.PhOperatorFactory",
+                        "args": {
+                            "inDFName": "d77b30a0bf0411e999e5e5d98db22f6d",
+                            "newColName": "hospital_quota_base_factor"
+                        },
+                        "plugin": {
+                            "name": "d77b7ec0bf0411e999e5e5d98db22f6d",
+                            "reference": "com.pharbers.ipaas.data.driver.plugins.ExprPlugin",
+                            "factory": "com.pharbers.ipaas.data.driver.api.factory.PhPluginFactory",
+                            "args": {
+                                "exprString": "1 - (abs(quota_prop - hospital_quota_base) / hospital_quota_base)"
+                            }
+                        }
+                    }
+                ]
+            },
+            {
+                "name": "d77c1b00bf0411e999e5e5d98db22f6d",
+                "reference": "com.pharbers.ipaas.data.driver.api.job.PhBaseAction",
+                "factory": "com.pharbers.ipaas.data.driver.api.factory.PhActionFactory",
+                "args": {
+                    "null": "null"
+                },
+                "opers": [
+                    {
+                        "name": "d77bf3f0bf0411e999e5e5d98db22f6d",
+                        "reference": "com.pharbers.ipaas.data.driver.operators.AddColumnOperator",
+                        "factory": "com.pharbers.ipaas.data.driver.api.factory.PhOperatorFactory",
+                        "args": {
+                            "inDFName": "d77bcce0bf0411e999e5e5d98db22f6d",
+                            "newColName": "hospital_quota_base_factor_m"
+                        },
+                        "plugin": {
+                            "name": "d77bf3f1bf0411e999e5e5d98db22f6d",
+                            "reference": "com.pharbers.ipaas.data.driver.plugins.ExprPlugin",
+                            "factory": "com.pharbers.ipaas.data.driver.api.factory.PhPluginFactory",
+                            "args": {
+                                "exprString": "case when hospital_quota_base_factor < 0 then 0 else hospital_quota_base_factor end"
+                            }
+                        }
+                    }
+                ]
+            },
+            {
+                "name": "d77c9030bf0411e999e5e5d98db22f6d",
+                "reference": "com.pharbers.ipaas.data.driver.api.job.PhBaseAction",
+                "factory": "com.pharbers.ipaas.data.driver.api.factory.PhActionFactory",
+                "args": {
+                    "null": "null"
+                },
+                "opers": [
+                    {
+                        "name": "d77c1b01bf0411e999e5e5d98db22f6d",
+                        "reference": "com.pharbers.ipaas.data.driver.operators.AddColumnOperator",
+                        "factory": "com.pharbers.ipaas.data.driver.api.factory.PhOperatorFactory",
+                        "args": {
+                            "inDFName": "d77c1b00bf0411e999e5e5d98db22f6d",
+                            "newColName": "hospital_product_quota_growth_factor"
+                        },
+                        "plugin": {
+                            "name": "d77c4210bf0411e999e5e5d98db22f6d",
+                            "reference": "com.pharbers.ipaas.data.driver.plugins.ExprPlugin",
+                            "factory": "com.pharbers.ipaas.data.driver.api.factory.PhPluginFactory",
+                            "args": {
+                                "exprString": "case when status == '已开发' then 1 - abs((quota - p_sales)/(sumqt - sumps) - (potential_m - p_sales) / (sumptt - sumps)) else 0 end"
+                            }
+                        }
+                    }
+                ]
+            },
+            {
+                "name": "d77cde50bf0411e999e5e5d98db22f6d",
+                "reference": "com.pharbers.ipaas.data.driver.api.job.PhBaseAction",
+                "factory": "com.pharbers.ipaas.data.driver.api.factory.PhActionFactory",
+                "args": {
+                    "null": "null"
+                },
+                "opers": [
+                    {
+                        "name": "d77cb740bf0411e999e5e5d98db22f6d",
+                        "reference": "com.pharbers.ipaas.data.driver.operators.AddColumnOperator",
+                        "factory": "com.pharbers.ipaas.data.driver.api.factory.PhOperatorFactory",
+                        "args": {
+                            "inDFName": "d77c9030bf0411e999e5e5d98db22f6d",
+                            "newColName": "hospital_product_quota_growth_factor_m"
+                        },
+                        "plugin": {
+                            "name": "d77cb741bf0411e999e5e5d98db22f6d",
+                            "reference": "com.pharbers.ipaas.data.driver.plugins.ExprPlugin",
+                            "factory": "com.pharbers.ipaas.data.driver.api.factory.PhPluginFactory",
+                            "args": {
+                                "exprString": "case when hospital_product_quota_growth_factor < 0 then 0 else hospital_product_quota_growth_factor end"
+                            }
+                        }
+                    }
+                ]
+            },
+            {
+                "name": "d77d7a9abf0411e999e5e5d98db22f6d",
+                "reference": "com.pharbers.ipaas.data.driver.api.job.PhBaseAction",
+                "factory": "com.pharbers.ipaas.data.driver.api.factory.PhActionFactory",
+                "args": {
+                    "null": "null"
+                },
+                "opers": [
+                    {
+                        "name": "d77cde51bf0411e999e5e5d98db22f6d",
+                        "reference": "com.pharbers.ipaas.data.driver.operators.AddColumnOperator",
+                        "factory": "com.pharbers.ipaas.data.driver.api.factory.PhOperatorFactory",
+                        "args": {
+                            "inDFName": "d77cde50bf0411e999e5e5d98db22f6d",
+                            "newColName": "factor1"
+                        },
+                        "plugin": {
+                            "name": "d77d0560bf0411e999e5e5d98db22f6d",
+                            "reference": "com.pharbers.ipaas.data.driver.plugins.ExprPlugin",
+                            "factory": "com.pharbers.ipaas.data.driver.api.factory.PhPluginFactory",
+                            "args": {
+                                "exprString": "case when status == '已开发' then hospital_quota_base_factor_m * hospital_quota_base_factor_w + hospital_product_quota_growth_factor_m * hospital_product_quota_growth_factor_w else hospital_quota_base_factor_m end"
+                            }
+                        }
+                    }
+                ]
+            },
+            {
+                "name": "d77da1aabf0411e999e5e5d98db22f6d",
+                "reference": "com.pharbers.ipaas.data.driver.api.job.PhBaseAction",
+                "factory": "com.pharbers.ipaas.data.driver.api.factory.PhActionFactory",
+                "args": {
+                    "null": "null"
+                },
+                "opers": [
+                    {
+                        "name": "d77d7a9bbf0411e999e5e5d98db22f6d",
+                        "reference": "com.pharbers.ipaas.data.driver.operators.AddColumnOperator",
+                        "factory": "com.pharbers.ipaas.data.driver.api.factory.PhOperatorFactory",
+                        "args": {
+                            "inDFName": "d77d7a9abf0411e999e5e5d98db22f6d",
+                            "newColName": "district_cross_factor"
+                        },
+                        "plugin": {
+                            "name": "d77d7a9cbf0411e999e5e5d98db22f6d",
+                            "reference": "com.pharbers.ipaas.data.driver.plugins.ExprPlugin",
+                            "factory": "com.pharbers.ipaas.data.driver.api.factory.PhPluginFactory",
+                            "args": {
+                                "exprString": "case when city_num_dist == 1 then 1 else 0 end"
+                            }
+                        }
+                    }
+                ]
+            },
+            {
+                "name": "d77defcabf0411e999e5e5d98db22f6d",
+                "reference": "com.pharbers.ipaas.data.driver.api.job.PhBaseAction",
+                "factory": "com.pharbers.ipaas.data.driver.api.factory.PhActionFactory",
+                "args": {
+                    "null": "null"
+                },
+                "opers": [
+                    {
+                        "name": "d77da1abbf0411e999e5e5d98db22f6d",
+                        "reference": "com.pharbers.ipaas.data.driver.operators.AddColumnOperator",
+                        "factory": "com.pharbers.ipaas.data.driver.api.factory.PhOperatorFactory",
+                        "args": {
+                            "inDFName": "d77da1aabf0411e999e5e5d98db22f6d",
+                            "newColName": "district_potential_factor"
+                        },
+                        "plugin": {
+                            "name": "d77dc8babf0411e999e5e5d98db22f6d",
+                            "reference": "com.pharbers.ipaas.data.driver.plugins.ExprPlugin",
+                            "factory": "com.pharbers.ipaas.data.driver.api.factory.PhPluginFactory",
+                            "args": {
+                                "exprString": "1 / (abs(rep_num * potential_dist / sumptt - 1) + 1)"
+                            }
+                        }
+                    }
+                ]
+            },
+            {
+                "name": "d77e16dbbf0411e999e5e5d98db22f6d",
+                "reference": "com.pharbers.ipaas.data.driver.api.job.PhBaseAction",
+                "factory": "com.pharbers.ipaas.data.driver.api.factory.PhActionFactory",
+                "args": {
+                    "null": "null"
+                },
+                "opers": [
+                    {
+                        "name": "d77defcbbf0411e999e5e5d98db22f6d",
+                        "reference": "com.pharbers.ipaas.data.driver.operators.AddColumnOperator",
+                        "factory": "com.pharbers.ipaas.data.driver.api.factory.PhOperatorFactory",
+                        "args": {
+                            "inDFName": "d77defcabf0411e999e5e5d98db22f6d",
+                            "newColName": "district_sales_factor"
+                        },
+                        "plugin": {
+                            "name": "d77e16dabf0411e999e5e5d98db22f6d",
+                            "reference": "com.pharbers.ipaas.data.driver.plugins.ExprPlugin",
+                            "factory": "com.pharbers.ipaas.data.driver.api.factory.PhPluginFactory",
+                            "args": {
+                                "exprString": "case when status == '已开发' then 1 / (abs(rep_num * sales_dist / sumps - 1) + 1) else 0 end"
+                            }
+                        }
+                    }
+                ]
+            },
+            {
+                "name": "d77e64fbbf0411e999e5e5d98db22f6d",
+                "reference": "com.pharbers.ipaas.data.driver.api.job.PhBaseAction",
+                "factory": "com.pharbers.ipaas.data.driver.api.factory.PhActionFactory",
+                "args": {
+                    "null": "null"
+                },
+                "opers": [
+                    {
+                        "name": "d77e3deabf0411e999e5e5d98db22f6d",
+                        "reference": "com.pharbers.ipaas.data.driver.operators.AddColumnOperator",
+                        "factory": "com.pharbers.ipaas.data.driver.api.factory.PhOperatorFactory",
+                        "args": {
+                            "inDFName": "d77e16dbbf0411e999e5e5d98db22f6d",
+                            "newColName": "district_hospital_factor"
+                        },
+                        "plugin": {
+                            "name": "d77e64fabf0411e999e5e5d98db22f6d",
+                            "reference": "com.pharbers.ipaas.data.driver.plugins.ExprPlugin",
+                            "factory": "com.pharbers.ipaas.data.driver.api.factory.PhPluginFactory",
+                            "args": {
+                                "exprString": "1 / (abs(rep_num * hospital_num_dist / hosp_num - 1) + 1)"
+                            }
+                        }
+                    }
+                ]
+            },
+            {
+                "name": "d77f284abf0411e999e5e5d98db22f6d",
+                "reference": "com.pharbers.ipaas.data.driver.api.job.PhBaseAction",
+                "factory": "com.pharbers.ipaas.data.driver.api.factory.PhActionFactory",
+                "args": {
+                    "null": "null"
+                },
+                "opers": [
+                    {
+                        "name": "d77e8c0abf0411e999e5e5d98db22f6d",
+                        "reference": "com.pharbers.ipaas.data.driver.operators.AddColumnOperator",
+                        "factory": "com.pharbers.ipaas.data.driver.api.factory.PhOperatorFactory",
+                        "args": {
+                            "inDFName": "d77e64fbbf0411e999e5e5d98db22f6d",
+                            "newColName": "factor2"
+                        },
+                        "plugin": {
+                            "name": "d77e8c0bbf0411e999e5e5d98db22f6d",
+                            "reference": "com.pharbers.ipaas.data.driver.plugins.ExprPlugin",
+                            "factory": "com.pharbers.ipaas.data.driver.api.factory.PhPluginFactory",
+                            "args": {
+                                "exprString": "case when status == '已开发' then district_potential_factor * district_potential_factor_w1 * factor2_w + district_sales_factor * district_sales_factor_w * factor2_w + district_cross_factor * district_cross_factor_w1 + district_hospital_factor * district_hospital_factor_w1 else district_potential_factor * district_potential_factor_w2 + district_cross_factor * district_cross_factor_w2 + district_hospital_factor * district_hospital_factor_w2 end"
+                            }
+                        }
+                    }
+                ]
+            },
+            {
+                "name": "d77f4f5bbf0411e999e5e5d98db22f6d",
+                "reference": "com.pharbers.ipaas.data.driver.api.job.PhBaseAction",
+                "factory": "com.pharbers.ipaas.data.driver.api.factory.PhActionFactory",
+                "args": {
+                    "null": "null"
+                },
+                "opers": [
+                    {
+                        "name": "d77f284bbf0411e999e5e5d98db22f6d",
+                        "reference": "com.pharbers.ipaas.data.driver.operators.AddColumnOperator",
+                        "factory": "com.pharbers.ipaas.data.driver.api.factory.PhOperatorFactory",
+                        "args": {
+                            "inDFName": "d77f284abf0411e999e5e5d98db22f6d",
+                            "newColName": "factor"
+                        },
+                        "plugin": {
+                            "name": "d77f4f5abf0411e999e5e5d98db22f6d",
+                            "reference": "com.pharbers.ipaas.data.driver.plugins.ExprPlugin",
+                            "factory": "com.pharbers.ipaas.data.driver.api.factory.PhPluginFactory",
+                            "args": {
+                                "exprString": "factor1 * factor2"
+                            }
+                        }
+                    }
+                ]
+            },
+            {
+                "name": "d77f9d7bbf0411e999e5e5d98db22f6d",
+                "reference": "com.pharbers.ipaas.data.driver.api.job.PhBaseAction",
+                "factory": "com.pharbers.ipaas.data.driver.api.factory.PhActionFactory",
+                "args": {
+                    "null": "null"
+                },
+                "opers": [
+                    {
+                        "name": "d77f766abf0411e999e5e5d98db22f6d",
+                        "reference": "com.pharbers.ipaas.data.driver.operators.AddColumnOperator",
+                        "factory": "com.pharbers.ipaas.data.driver.api.factory.PhOperatorFactory",
+                        "args": {
+                            "inDFName": "d77f4f5bbf0411e999e5e5d98db22f6d",
+                            "newColName": "adjust_factor"
+                        },
+                        "plugin": {
+                            "name": "d77f9d7abf0411e999e5e5d98db22f6d",
+                            "reference": "com.pharbers.ipaas.data.driver.plugins.ExprPlugin",
+                            "factory": "com.pharbers.ipaas.data.driver.api.factory.PhPluginFactory",
+                            "args": {
+                                "exprString": "1 - factor"
+                            }
+                        }
+                    }
+                ]
+            },
+            {
+                "name": "d77feba4bf0411e999e5e5d98db22f6d",
+                "reference": "com.pharbers.ipaas.data.driver.api.job.PhBaseAction",
+                "factory": "com.pharbers.ipaas.data.driver.api.factory.PhActionFactory",
+                "args": {
+                    "null": "null"
+                },
+                "opers": [
+                    {
+                        "name": "d77fc48abf0411e999e5e5d98db22f6d",
+                        "reference": "com.pharbers.ipaas.data.driver.operators.AddColumnOperator",
+                        "factory": "com.pharbers.ipaas.data.driver.api.factory.PhOperatorFactory",
+                        "args": {
+                            "inDFName": "d77f9d7bbf0411e999e5e5d98db22f6d",
+                            "newColName": "p_oa_factor"
+                        },
+                        "plugin": {
+                            "name": "d77fc48bbf0411e999e5e5d98db22f6d",
+                            "reference": "com.pharbers.ipaas.data.driver.plugins.ExprPlugin",
+                            "factory": "com.pharbers.ipaas.data.driver.api.factory.PhPluginFactory",
+                            "args": {
+                                "exprString": "case when status == '已开发' then p_sales / potential_m * 100 else 0 end"
+                            }
+                        }
+                    }
+                ]
+            },
+            {
+                "name": "d78039c4bf0411e999e5e5d98db22f6d",
+                "reference": "com.pharbers.ipaas.data.driver.api.job.PhBaseAction",
+                "factory": "com.pharbers.ipaas.data.driver.api.factory.PhActionFactory",
+                "args": {
+                    "null": "null"
+                },
+                "opers": [
+                    {
+                        "name": "d78012b4bf0411e999e5e5d98db22f6d",
+                        "reference": "com.pharbers.ipaas.data.driver.operators.ExprFilterOperator",
+                        "factory": "com.pharbers.ipaas.data.driver.api.factory.PhOperatorFactory",
+                        "args": {
+                            "inDFName": "d74fb327bf0411e999e5e5d98db22f6d",
+                            "filter": "curve_mm == 'curve09'"
+                        }
+                    }
+                ]
+            },
+            {
+                "name": "d78039c6bf0411e999e5e5d98db22f6d",
+                "reference": "com.pharbers.ipaas.data.driver.api.job.PhBaseAction",
+                "factory": "com.pharbers.ipaas.data.driver.api.factory.PhActionFactory",
+                "args": {
+                    "null": "null"
+                },
+                "opers": [
+                    {
+                        "name": "d78039c5bf0411e999e5e5d98db22f6d",
+                        "reference": "com.pharbers.ipaas.data.driver.operators.JoinOperator",
+                        "factory": "com.pharbers.ipaas.data.driver.api.factory.PhOperatorFactory",
+                        "args": {
+                            "inDFName": "d77feba4bf0411e999e5e5d98db22f6d",
+                            "joinDFName": "d78039c4bf0411e999e5e5d98db22f6d",
+                            "joinExpr": "TRUE",
+                            "joinType": "full"
+                        }
+                    }
+                ]
+            },
+            {
+                "name": "d78087e4bf0411e999e5e5d98db22f6d",
+                "reference": "com.pharbers.ipaas.data.driver.api.job.PhBaseAction",
+                "factory": "com.pharbers.ipaas.data.driver.api.factory.PhActionFactory",
+                "args": {
+                    "null": "null"
+                },
+                "opers": [
+                    {
+                        "name": "d78039c7bf0411e999e5e5d98db22f6d",
+                        "reference": "com.pharbers.ipaas.data.driver.operators.AddColumnOperator",
+                        "factory": "com.pharbers.ipaas.data.driver.api.factory.PhOperatorFactory",
+                        "args": {
+                            "inDFName": "d78039c6bf0411e999e5e5d98db22f6d",
+                            "newColName": "x0"
+                        },
+                        "plugin": {
+                            "name": "d78060d4bf0411e999e5e5d98db22f6d",
+                            "reference": "com.pharbers.ipaas.data.driver.plugins.ExprPlugin",
+                            "factory": "com.pharbers.ipaas.data.driver.api.factory.PhPluginFactory",
+                            "args": {
+                                "exprString": "case when p_oa_factor <= min_x1 then min_x1+0.000001 when p_oa_factor > max_x2 then max_x2 else p_oa_factor end"
+                            }
+                        }
+                    }
+                ]
+            },
+            {
+                "name": "d7812424bf0411e999e5e5d98db22f6d",
+                "reference": "com.pharbers.ipaas.data.driver.api.job.PhBaseAction",
+                "factory": "com.pharbers.ipaas.data.driver.api.factory.PhActionFactory",
+                "args": {
+                    "null": "null"
+                },
+                "opers": [
+                    {
+                        "name": "d780aef4bf0411e999e5e5d98db22f6d",
+                        "reference": "com.pharbers.ipaas.data.driver.operators.AddColumnOperator",
+                        "factory": "com.pharbers.ipaas.data.driver.api.factory.PhOperatorFactory",
+                        "args": {
+                            "inDFName": "d78087e4bf0411e999e5e5d98db22f6d",
+                            "newColName": "x00"
+                        },
+                        "plugin": {
+                            "name": "d780d604bf0411e999e5e5d98db22f6d",
+                            "reference": "com.pharbers.ipaas.data.driver.plugins.ExprPlugin",
+                            "factory": "com.pharbers.ipaas.data.driver.api.factory.PhPluginFactory",
+                            "args": {
+                                "exprString": "case when p_oa_factor < min_x1 then min_x1 when p_oa_factor > max_x2 then max_x2 else p_oa_factor end"
+                            }
+                        }
+                    }
+                ]
+            },
+            {
+                "name": "d7814b34bf0411e999e5e5d98db22f6d",
+                "reference": "com.pharbers.ipaas.data.driver.api.job.PhBaseAction",
+                "factory": "com.pharbers.ipaas.data.driver.api.factory.PhActionFactory",
+                "args": {
+                    "null": "null"
+                },
+                "opers": [
+                    {
+                        "name": "d7812425bf0411e999e5e5d98db22f6d",
+                        "reference": "com.pharbers.ipaas.data.driver.operators.JoinOperator",
+                        "factory": "com.pharbers.ipaas.data.driver.api.factory.PhOperatorFactory",
+                        "args": {
+                            "inDFName": "d7812424bf0411e999e5e5d98db22f6d",
+                            "joinDFName": "d74f16e7bf0411e999e5e5d98db22f6d",
+                            "joinExpr": "curve_mm == curve_name and x0 > x1 and x0 <= x2",
+                            "joinType": "left"
+                        }
+                    }
+                ]
+            },
+            {
+                "name": "d7817245bf0411e999e5e5d98db22f6d",
+                "reference": "com.pharbers.ipaas.data.driver.api.job.PhBaseAction",
+                "factory": "com.pharbers.ipaas.data.driver.api.factory.PhActionFactory",
+                "args": {
+                    "null": "null"
+                },
+                "opers": [
+                    {
+                        "name": "d7814b35bf0411e999e5e5d98db22f6d",
+                        "reference": "com.pharbers.ipaas.data.driver.operators.AddColumnOperator",
+                        "factory": "com.pharbers.ipaas.data.driver.api.factory.PhOperatorFactory",
+                        "args": {
+                            "inDFName": "d7814b34bf0411e999e5e5d98db22f6d",
+                            "newColName": "p_offer_attractiveness"
+                        },
+                        "plugin": {
+                            "name": "d7817244bf0411e999e5e5d98db22f6d",
+                            "reference": "com.pharbers.ipaas.data.driver.plugins.ExprPlugin",
+                            "factory": "com.pharbers.ipaas.data.driver.api.factory.PhPluginFactory",
+                            "args": {
+                                "exprString": "(y2 - y1) / (x2 - x1) * (x00 - x1) + y1"
+                            }
+                        }
+                    }
+                ]
+            },
+            {
+                "name": "d7819955bf0411e999e5e5d98db22f6d",
+                "reference": "com.pharbers.ipaas.data.driver.api.job.PhBaseAction",
+                "factory": "com.pharbers.ipaas.data.driver.api.factory.PhActionFactory",
+                "args": {
+                    "null": "null"
+                },
+                "opers": [
+                    {
+                        "name": "d7819954bf0411e999e5e5d98db22f6d",
+                        "reference": "com.pharbers.ipaas.data.driver.operators.DropOperator",
+                        "factory": "com.pharbers.ipaas.data.driver.api.factory.PhOperatorFactory",
+                        "args": {
+                            "inDFName": "d7817245bf0411e999e5e5d98db22f6d",
+                            "drops": "curve_mm#min_x1#max_x2#x0#x00#curve_name#x1#x2#y1#y2"
+                        }
+                    }
+                ]
+            },
+            {
+                "name": "d781e774bf0411e999e5e5d98db22f6d",
+                "reference": "com.pharbers.ipaas.data.driver.api.job.PhBaseAction",
+                "factory": "com.pharbers.ipaas.data.driver.api.factory.PhActionFactory",
+                "args": {
+                    "null": "null"
+                },
+                "opers": [
+                    {
+                        "name": "d781c064bf0411e999e5e5d98db22f6d",
+                        "reference": "com.pharbers.ipaas.data.driver.operators.AddColumnOperator",
+                        "factory": "com.pharbers.ipaas.data.driver.api.factory.PhOperatorFactory",
+                        "args": {
+                            "inDFName": "d7819955bf0411e999e5e5d98db22f6d",
+                            "newColName": "p_offer_attractiveness_m"
+                        },
+                        "plugin": {
+                            "name": "d781c065bf0411e999e5e5d98db22f6d",
+                            "reference": "com.pharbers.ipaas.data.driver.plugins.ExprPlugin",
+                            "factory": "com.pharbers.ipaas.data.driver.api.factory.PhPluginFactory",
+                            "args": {
+                                "exprString": "case when status == '已开发' then p_offer_attractiveness else rand() * 4 + 3 end"
+                            }
+                        }
+                    }
+                ]
+            },
+            {
+                "name": "d7825ca4bf0411e999e5e5d98db22f6d",
+                "reference": "com.pharbers.ipaas.data.driver.api.job.PhBaseAction",
+                "factory": "com.pharbers.ipaas.data.driver.api.factory.PhActionFactory",
+                "args": {
+                    "null": "null"
+                },
+                "opers": [
+                    {
+                        "name": "d7820e84bf0411e999e5e5d98db22f6d",
+                        "reference": "com.pharbers.ipaas.data.driver.operators.AddColumnOperator",
+                        "factory": "com.pharbers.ipaas.data.driver.api.factory.PhOperatorFactory",
+                        "args": {
+                            "inDFName": "d781e774bf0411e999e5e5d98db22f6d",
+                            "newColName": "offer_attractiveness"
+                        },
+                        "plugin": {
+                            "name": "d7820e85bf0411e999e5e5d98db22f6d",
+                            "reference": "com.pharbers.ipaas.data.driver.plugins.ExprPlugin",
+                            "factory": "com.pharbers.ipaas.data.driver.api.factory.PhPluginFactory",
+                            "args": {
+                                "exprString": "case when oa_factor_base < 0 then p_offer_attractiveness_m * (1 + oa_factor_base) else p_offer_attractiveness_m + (max_oa - p_offer_attractiveness_m) * oa_factor_base end"
+                            }
+                        }
+                    }
+                ]
+            },
+            {
+                "name": "d782d1debf0411e999e5e5d98db22f6d",
+                "reference": "com.pharbers.ipaas.data.driver.api.job.PhBaseAction",
+                "factory": "com.pharbers.ipaas.data.driver.api.factory.PhActionFactory",
+                "args": {
+                    "null": "null"
+                },
+                "opers": [
+                    {
+                        "name": "d78283b4bf0411e999e5e5d98db22f6d",
+                        "reference": "com.pharbers.ipaas.data.driver.operators.AddColumnOperator",
+                        "factory": "com.pharbers.ipaas.data.driver.api.factory.PhOperatorFactory",
+                        "args": {
+                            "inDFName": "d7825ca4bf0411e999e5e5d98db22f6d",
+                            "newColName": "offer_attractiveness_adj"
+                        },
+                        "plugin": {
+                            "name": "d78283b5bf0411e999e5e5d98db22f6d",
+                            "reference": "com.pharbers.ipaas.data.driver.plugins.ExprPlugin",
+                            "factory": "com.pharbers.ipaas.data.driver.api.factory.PhPluginFactory",
+                            "args": {
+                                "exprString": "case when status == '已开发' then offer_attractiveness * (1 - 0.8 * adjust_factor) else offer_attractiveness * (1 - 0.5 * adjust_factor) end"
+                            }
+                        }
+                    }
+                ]
+            },
+            {
+                "name": "d7831ffebf0411e999e5e5d98db22f6d",
+                "reference": "com.pharbers.ipaas.data.driver.api.job.PhBaseAction",
+                "factory": "com.pharbers.ipaas.data.driver.api.factory.PhActionFactory",
+                "args": {
+                    "null": "null"
+                },
+                "opers": [
+                    {
+                        "name": "d782f8eebf0411e999e5e5d98db22f6d",
+                        "reference": "com.pharbers.ipaas.data.driver.operators.AddColumnOperator",
+                        "factory": "com.pharbers.ipaas.data.driver.api.factory.PhOperatorFactory",
+                        "args": {
+                            "inDFName": "d782d1debf0411e999e5e5d98db22f6d",
+                            "newColName": "market_share_curve"
+                        },
+                        "plugin": {
+                            "name": "d782f8efbf0411e999e5e5d98db22f6d",
+                            "reference": "com.pharbers.ipaas.data.driver.plugins.ExprPlugin",
+                            "factory": "com.pharbers.ipaas.data.driver.api.factory.PhPluginFactory",
+                            "args": {
+                                "exprString": "case when status == '已开发' then 'curve01' else 'curve05' end"
+                            }
+                        }
+                    }
+                ]
+            },
+            {
+                "name": "d783470ebf0411e999e5e5d98db22f6d",
+                "reference": "com.pharbers.ipaas.data.driver.api.job.PhBaseAction",
+                "factory": "com.pharbers.ipaas.data.driver.api.factory.PhActionFactory",
+                "args": {
+                    "null": "null"
+                },
+                "opers": [
+                    {
+                        "name": "d7831fffbf0411e999e5e5d98db22f6d",
+                        "reference": "com.pharbers.ipaas.data.driver.operators.JoinOperator",
+                        "factory": "com.pharbers.ipaas.data.driver.api.factory.PhOperatorFactory",
+                        "args": {
+                            "inDFName": "d7831ffebf0411e999e5e5d98db22f6d",
+                            "joinDFName": "d74fb327bf0411e999e5e5d98db22f6d",
+                            "joinExpr": "market_share_curve == curve_mm",
+                            "joinType": "left"
+                        }
+                    }
+                ]
+            },
+            {
+                "name": "d783bc3ebf0411e999e5e5d98db22f6d",
+                "reference": "com.pharbers.ipaas.data.driver.api.job.PhBaseAction",
+                "factory": "com.pharbers.ipaas.data.driver.api.factory.PhActionFactory",
+                "args": {
+                    "null": "null"
+                },
+                "opers": [
+                    {
+                        "name": "d7836e1ebf0411e999e5e5d98db22f6d",
+                        "reference": "com.pharbers.ipaas.data.driver.operators.AddColumnOperator",
+                        "factory": "com.pharbers.ipaas.data.driver.api.factory.PhOperatorFactory",
+                        "args": {
+                            "inDFName": "d783470ebf0411e999e5e5d98db22f6d",
+                            "newColName": "x0"
+                        },
+                        "plugin": {
+                            "name": "d7836e1fbf0411e999e5e5d98db22f6d",
+                            "reference": "com.pharbers.ipaas.data.driver.plugins.ExprPlugin",
+                            "factory": "com.pharbers.ipaas.data.driver.api.factory.PhPluginFactory",
+                            "args": {
+                                "exprString": "case when offer_attractiveness_adj <= min_x1 then min_x1+0.000001 when offer_attractiveness_adj > max_x2 then max_x2 else offer_attractiveness_adj end"
+                            }
+                        }
+                    }
+                ]
+            },
+            {
+                "name": "d7840a5ebf0411e999e5e5d98db22f6d",
+                "reference": "com.pharbers.ipaas.data.driver.api.job.PhBaseAction",
+                "factory": "com.pharbers.ipaas.data.driver.api.factory.PhActionFactory",
+                "args": {
+                    "null": "null"
+                },
+                "opers": [
+                    {
+                        "name": "d783bc3fbf0411e999e5e5d98db22f6d",
+                        "reference": "com.pharbers.ipaas.data.driver.operators.AddColumnOperator",
+                        "factory": "com.pharbers.ipaas.data.driver.api.factory.PhOperatorFactory",
+                        "args": {
+                            "inDFName": "d783bc3ebf0411e999e5e5d98db22f6d",
+                            "newColName": "x00"
+                        },
+                        "plugin": {
+                            "name": "d783e34ebf0411e999e5e5d98db22f6d",
+                            "reference": "com.pharbers.ipaas.data.driver.plugins.ExprPlugin",
+                            "factory": "com.pharbers.ipaas.data.driver.api.factory.PhPluginFactory",
+                            "args": {
+                                "exprString": "case when offer_attractiveness_adj < min_x1 then min_x1 when offer_attractiveness_adj > max_x2 then max_x2 else offer_attractiveness_adj end"
+                            }
+                        }
+                    }
+                ]
+            },
+            {
+                "name": "d784587fbf0411e999e5e5d98db22f6d",
+                "reference": "com.pharbers.ipaas.data.driver.api.job.PhBaseAction",
+                "factory": "com.pharbers.ipaas.data.driver.api.factory.PhActionFactory",
+                "args": {
+                    "null": "null"
+                },
+                "opers": [
+                    {
+                        "name": "d784587ebf0411e999e5e5d98db22f6d",
+                        "reference": "com.pharbers.ipaas.data.driver.operators.JoinOperator",
+                        "factory": "com.pharbers.ipaas.data.driver.api.factory.PhOperatorFactory",
+                        "args": {
+                            "inDFName": "d7840a5ebf0411e999e5e5d98db22f6d",
+                            "joinDFName": "d74f16e7bf0411e999e5e5d98db22f6d",
+                            "joinExpr": "curve_mm == curve_name and x0 > x1 and x0 <= x2",
+                            "joinType": "left"
+                        }
+                    }
+                ]
+            },
+            {
+                "name": "d784a69ebf0411e999e5e5d98db22f6d",
+                "reference": "com.pharbers.ipaas.data.driver.api.job.PhBaseAction",
+                "factory": "com.pharbers.ipaas.data.driver.api.factory.PhActionFactory",
+                "args": {
+                    "null": "null"
+                },
+                "opers": [
+                    {
+                        "name": "d7847f8ebf0411e999e5e5d98db22f6d",
+                        "reference": "com.pharbers.ipaas.data.driver.operators.AddColumnOperator",
+                        "factory": "com.pharbers.ipaas.data.driver.api.factory.PhOperatorFactory",
+                        "args": {
+                            "inDFName": "d784587fbf0411e999e5e5d98db22f6d",
+                            "newColName": "market_share"
+                        },
+                        "plugin": {
+                            "name": "d7847f8fbf0411e999e5e5d98db22f6d",
+                            "reference": "com.pharbers.ipaas.data.driver.plugins.ExprPlugin",
+                            "factory": "com.pharbers.ipaas.data.driver.api.factory.PhPluginFactory",
+                            "args": {
+                                "exprString": "(y2 - y1) / (x2 - x1) * (x00 - x1) + y1"
+                            }
+                        }
+                    }
+                ]
+            },
+            {
+                "name": "d784cdafbf0411e999e5e5d98db22f6d",
+                "reference": "com.pharbers.ipaas.data.driver.api.job.PhBaseAction",
+                "factory": "com.pharbers.ipaas.data.driver.api.factory.PhActionFactory",
+                "args": {
+                    "null": "null"
+                },
+                "opers": [
+                    {
+                        "name": "d784cdaebf0411e999e5e5d98db22f6d",
+                        "reference": "com.pharbers.ipaas.data.driver.operators.DropOperator",
+                        "factory": "com.pharbers.ipaas.data.driver.api.factory.PhOperatorFactory",
+                        "args": {
+                            "inDFName": "d784a69ebf0411e999e5e5d98db22f6d",
+                            "drops": "market_share_curve#curve_mm#min_x1#max_x2#x0#x00#curve_name#x1#x2#y1#y2"
+                        }
+                    }
+                ]
+            },
+            {
+                "name": "d7851bcebf0411e999e5e5d98db22f6d",
+                "reference": "com.pharbers.ipaas.data.driver.api.job.PhBaseAction",
+                "factory": "com.pharbers.ipaas.data.driver.api.factory.PhActionFactory",
+                "args": {
+                    "null": "null"
+                },
+                "opers": [
+                    {
+                        "name": "d784f4bebf0411e999e5e5d98db22f6d",
+                        "reference": "com.pharbers.ipaas.data.driver.operators.AddColumnOperator",
+                        "factory": "com.pharbers.ipaas.data.driver.api.factory.PhOperatorFactory",
+                        "args": {
+                            "inDFName": "d784cdafbf0411e999e5e5d98db22f6d",
+                            "newColName": "market_share_m"
+                        },
+                        "plugin": {
+                            "name": "d784f4bfbf0411e999e5e5d98db22f6d",
+                            "reference": "com.pharbers.ipaas.data.driver.plugins.ExprPlugin",
+                            "factory": "com.pharbers.ipaas.data.driver.api.factory.PhPluginFactory",
+                            "args": {
+                                "exprString": "case when representative == 0 then 0 else market_share / 100 end"
+                            }
+                        }
+                    }
+                ]
+            },
+            {
+                "name": "d78542e9bf0411e999e5e5d98db22f6d",
+                "reference": "com.pharbers.ipaas.data.driver.api.job.PhBaseAction",
+                "factory": "com.pharbers.ipaas.data.driver.api.factory.PhActionFactory",
+                "args": {
+                    "null": "null"
+                },
+                "opers": [
+                    {
+                        "name": "d7851bcfbf0411e999e5e5d98db22f6d",
+                        "reference": "com.pharbers.ipaas.data.driver.operators.AddColumnOperator",
+                        "factory": "com.pharbers.ipaas.data.driver.api.factory.PhOperatorFactory",
+                        "args": {
+                            "inDFName": "d7851bcebf0411e999e5e5d98db22f6d",
+                            "newColName": "sales"
+                        },
+                        "plugin": {
+                            "name": "d78542e8bf0411e999e5e5d98db22f6d",
+                            "reference": "com.pharbers.ipaas.data.driver.plugins.ExprPlugin",
+                            "factory": "com.pharbers.ipaas.data.driver.api.factory.PhPluginFactory",
+                            "args": {
+                                "exprString": "potential_m * market_share_m"
+                            }
+                        }
+                    }
+                ]
+            },
+            {
+                "name": "d7859109bf0411e999e5e5d98db22f6d",
+                "reference": "com.pharbers.ipaas.data.driver.api.job.PhBaseAction",
+                "factory": "com.pharbers.ipaas.data.driver.api.factory.PhActionFactory",
+                "args": {
+                    "null": "null"
+                },
+                "opers": [
+                    {
+                        "name": "d78569f8bf0411e999e5e5d98db22f6d",
+                        "reference": "com.pharbers.ipaas.data.driver.operators.AddColumnOperator",
+                        "factory": "com.pharbers.ipaas.data.driver.api.factory.PhOperatorFactory",
+                        "args": {
+                            "inDFName": "d78542e9bf0411e999e5e5d98db22f6d",
+                            "newColName": "ytd_sales"
+                        },
+                        "plugin": {
+                            "name": "d7859108bf0411e999e5e5d98db22f6d",
+                            "reference": "com.pharbers.ipaas.data.driver.plugins.ExprPlugin",
+                            "factory": "com.pharbers.ipaas.data.driver.api.factory.PhPluginFactory",
+                            "args": {
+                                "exprString": "p_ytd_sales + sales"
+                            }
+                        }
+                    }
+                ]
+            },
+            {
+                "name": "d785b819bf0411e999e5e5d98db22f6d",
+                "reference": "com.pharbers.ipaas.data.driver.api.job.PhBaseAction",
+                "factory": "com.pharbers.ipaas.data.driver.api.factory.PhActionFactory",
+                "args": {
+                    "null": "null"
+                },
+                "opers": [
+                    {
+                        "name": "d785b818bf0411e999e5e5d98db22f6d",
+                        "reference": "com.pharbers.ipaas.data.driver.operators.SelectOperator",
+                        "factory": "com.pharbers.ipaas.data.driver.api.factory.PhOperatorFactory",
+                        "args": {
+                            "inDFName": "d7859109bf0411e999e5e5d98db22f6d",
+                            "selects": "city_id#city#hospital_id#hospital#hospital_level#representative_id#representative#product_id#product#product_area#potential#patient#status#rep_num#hosp_num#initial_budget#p_quota#p_budget#p_sales#pppp_sales#p_ytd_sales#quota#budget#market_share_m#sales#ytd_sales"
+                        }
+                    }
+                ]
+            },
+            {
+                "name": "d7860638bf0411e999e5e5d98db22f6d",
+                "reference": "com.pharbers.ipaas.data.driver.api.job.PhBaseAction",
+                "factory": "com.pharbers.ipaas.data.driver.api.factory.PhActionFactory",
+                "args": {
+                    "null": "null"
+                },
+                "opers": [
+                    {
+                        "name": "d785df28bf0411e999e5e5d98db22f6d",
+                        "reference": "com.pharbers.ipaas.data.driver.operators.WithColumnRenamedOperator",
+                        "factory": "com.pharbers.ipaas.data.driver.api.factory.PhOperatorFactory",
+                        "args": {
+                            "inDFName": "d785b819bf0411e999e5e5d98db22f6d",
+                            "oldColName": "market_share_m",
+                            "newColName": "market_share"
+                        }
+                    }
+                ]
+            },
+            {
+                "name": "d7885032bf0411e999e5e5d98db22f6d",
+                "reference": "com.pharbers.ipaas.data.driver.api.job.PhBaseAction",
+                "factory": "com.pharbers.ipaas.data.driver.api.factory.PhActionFactory",
+                "args": {
+                    "null": "null"
+                },
+                "opers": [
+                    {
+                        "name": "d7882922bf0411e999e5e5d98db22f6d",
+                        "reference": "com.pharbers.ipaas.data.driver.operators.ExprFilterOperator",
+                        "factory": "com.pharbers.ipaas.data.driver.api.factory.PhOperatorFactory",
+                        "args": {
+                            "inDFName": "d7613f9cbf0411e999e5e5d98db22f6d",
+                            "filter": "status == '未开发'"
+                        }
+                    }
+                ]
+            },
+            {
+                "name": "d7889e52bf0411e999e5e5d98db22f6d",
+                "reference": "com.pharbers.ipaas.data.driver.api.job.PhBaseAction",
+                "factory": "com.pharbers.ipaas.data.driver.api.factory.PhActionFactory",
+                "args": {
+                    "null": "null"
+                },
+                "opers": [
+                    {
+                        "name": "d7885033bf0411e999e5e5d98db22f6d",
+                        "reference": "com.pharbers.ipaas.data.driver.operators.AddColumnOperator",
+                        "factory": "com.pharbers.ipaas.data.driver.api.factory.PhOperatorFactory",
+                        "args": {
+                            "inDFName": "d7885032bf0411e999e5e5d98db22f6d",
+                            "newColName": "budget_m"
+                        },
+                        "plugin": {
+                            "name": "d7887742bf0411e999e5e5d98db22f6d",
+                            "reference": "com.pharbers.ipaas.data.driver.plugins.ExprPlugin",
+                            "factory": "com.pharbers.ipaas.data.driver.api.factory.PhPluginFactory",
+                            "args": {
+                                "exprString": "budget + p_budget"
+                            }
+                        }
+                    }
+                ]
+            },
+            {
+                "name": "d788c563bf0411e999e5e5d98db22f6d",
+                "reference": "com.pharbers.ipaas.data.driver.api.job.PhBaseAction",
+                "factory": "com.pharbers.ipaas.data.driver.api.factory.PhActionFactory",
+                "args": {
+                    "null": "null"
+                },
+                "opers": [
+                    {
+                        "name": "d7889e53bf0411e999e5e5d98db22f6d",
+                        "reference": "com.pharbers.ipaas.data.driver.operators.AddColumnOperator",
+                        "factory": "com.pharbers.ipaas.data.driver.api.factory.PhOperatorFactory",
+                        "args": {
+                            "inDFName": "d7889e52bf0411e999e5e5d98db22f6d",
+                            "newColName": "market_share"
+                        },
+                        "plugin": {
+                            "name": "d788c562bf0411e999e5e5d98db22f6d",
+                            "reference": "com.pharbers.ipaas.data.driver.plugins.ExprPlugin",
+                            "factory": "com.pharbers.ipaas.data.driver.api.factory.PhPluginFactory",
+                            "args": {
+                                "exprString": "0"
+                            }
+                        }
+                    }
+                ]
+            },
+            {
+                "name": "d7891383bf0411e999e5e5d98db22f6d",
+                "reference": "com.pharbers.ipaas.data.driver.api.job.PhBaseAction",
+                "factory": "com.pharbers.ipaas.data.driver.api.factory.PhActionFactory",
+                "args": {
+                    "null": "null"
+                },
+                "opers": [
+                    {
+                        "name": "d788ec72bf0411e999e5e5d98db22f6d",
+                        "reference": "com.pharbers.ipaas.data.driver.operators.AddColumnOperator",
+                        "factory": "com.pharbers.ipaas.data.driver.api.factory.PhOperatorFactory",
+                        "args": {
+                            "inDFName": "d788c563bf0411e999e5e5d98db22f6d",
+                            "newColName": "sales"
+                        },
+                        "plugin": {
+                            "name": "d7891382bf0411e999e5e5d98db22f6d",
+                            "reference": "com.pharbers.ipaas.data.driver.plugins.ExprPlugin",
+                            "factory": "com.pharbers.ipaas.data.driver.api.factory.PhPluginFactory",
+                            "args": {
+                                "exprString": "0"
+                            }
+                        }
+                    }
+                ]
+            },
+            {
+                "name": "d7893a94bf0411e999e5e5d98db22f6d",
+                "reference": "com.pharbers.ipaas.data.driver.api.job.PhBaseAction",
+                "factory": "com.pharbers.ipaas.data.driver.api.factory.PhActionFactory",
+                "args": {
+                    "null": "null"
+                },
+                "opers": [
+                    {
+                        "name": "d7893a92bf0411e999e5e5d98db22f6d",
+                        "reference": "com.pharbers.ipaas.data.driver.operators.AddColumnOperator",
+                        "factory": "com.pharbers.ipaas.data.driver.api.factory.PhOperatorFactory",
+                        "args": {
+                            "inDFName": "d7891383bf0411e999e5e5d98db22f6d",
+                            "newColName": "develop_fee"
+                        },
+                        "plugin": {
+                            "name": "d7893a93bf0411e999e5e5d98db22f6d",
+                            "reference": "com.pharbers.ipaas.data.driver.plugins.ExprPlugin",
+                            "factory": "com.pharbers.ipaas.data.driver.api.factory.PhPluginFactory",
+                            "args": {
+                                "exprString": "case when hospital_level == '三级' then 12000 when hospital_level == '二级' then 8000 else 3000 end"
+                            }
+                        }
+                    }
+                ]
+            },
+            {
+                "name": "d78988b3bf0411e999e5e5d98db22f6d",
+                "reference": "com.pharbers.ipaas.data.driver.api.job.PhBaseAction",
+                "factory": "com.pharbers.ipaas.data.driver.api.factory.PhActionFactory",
+                "args": {
+                    "null": "null"
+                },
+                "opers": [
+                    {
+                        "name": "d78961a2bf0411e999e5e5d98db22f6d",
+                        "reference": "com.pharbers.ipaas.data.driver.operators.AddColumnOperator",
+                        "factory": "com.pharbers.ipaas.data.driver.api.factory.PhOperatorFactory",
+                        "args": {
+                            "inDFName": "d7893a94bf0411e999e5e5d98db22f6d",
+                            "newColName": "status_m"
+                        },
+                        "plugin": {
+                            "name": "d78988b2bf0411e999e5e5d98db22f6d",
+                            "reference": "com.pharbers.ipaas.data.driver.plugins.ExprPlugin",
+                            "factory": "com.pharbers.ipaas.data.driver.api.factory.PhPluginFactory",
+                            "args": {
+                                "exprString": "case when budget_m >= develop_fee then '正在开发' else '未开发' end"
+                            }
+                        }
+                    }
+                ]
+            },
+            {
+                "name": "d789afc4bf0411e999e5e5d98db22f6d",
+                "reference": "com.pharbers.ipaas.data.driver.api.job.PhBaseAction",
+                "factory": "com.pharbers.ipaas.data.driver.api.factory.PhActionFactory",
+                "args": {
+                    "null": "null"
+                },
+                "opers": [
+                    {
+                        "name": "d789afc2bf0411e999e5e5d98db22f6d",
+                        "reference": "com.pharbers.ipaas.data.driver.operators.AddColumnOperator",
+                        "factory": "com.pharbers.ipaas.data.driver.api.factory.PhOperatorFactory",
+                        "args": {
+                            "inDFName": "d78988b3bf0411e999e5e5d98db22f6d",
+                            "newColName": "ytd_sales"
+                        },
+                        "plugin": {
+                            "name": "d789afc3bf0411e999e5e5d98db22f6d",
+                            "reference": "com.pharbers.ipaas.data.driver.plugins.ExprPlugin",
+                            "factory": "com.pharbers.ipaas.data.driver.api.factory.PhPluginFactory",
+                            "args": {
+                                "exprString": "p_ytd_sales + sales"
+                            }
+                        }
+                    }
+                ]
+            },
+            {
+                "name": "d789d6d3bf0411e999e5e5d98db22f6d",
+                "reference": "com.pharbers.ipaas.data.driver.api.job.PhBaseAction",
+                "factory": "com.pharbers.ipaas.data.driver.api.factory.PhActionFactory",
+                "args": {
+                    "null": "null"
+                },
+                "opers": [
+                    {
+                        "name": "d789d6d2bf0411e999e5e5d98db22f6d",
+                        "reference": "com.pharbers.ipaas.data.driver.operators.SelectOperator",
+                        "factory": "com.pharbers.ipaas.data.driver.api.factory.PhOperatorFactory",
+                        "args": {
+                            "inDFName": "d789afc4bf0411e999e5e5d98db22f6d",
+                            "selects": "city_id#city#hospital_id#hospital#hospital_level#representative_id#representative#product_id#product#product_area#potential#patient#status_m#rep_num#hosp_num#initial_budget#p_quota#p_budget#p_sales#pppp_sales#p_ytd_sales#quota#budget_m#market_share#sales#ytd_sales"
+                        }
+                    }
+                ]
+            },
+            {
+                "name": "d789fde3bf0411e999e5e5d98db22f6d",
+                "reference": "com.pharbers.ipaas.data.driver.api.job.PhBaseAction",
+                "factory": "com.pharbers.ipaas.data.driver.api.factory.PhActionFactory",
+                "args": {
+                    "null": "null"
+                },
+                "opers": [
+                    {
+                        "name": "d789fde2bf0411e999e5e5d98db22f6d",
+                        "reference": "com.pharbers.ipaas.data.driver.operators.WithColumnRenamedOperator",
+                        "factory": "com.pharbers.ipaas.data.driver.api.factory.PhOperatorFactory",
+                        "args": {
+                            "inDFName": "d789d6d3bf0411e999e5e5d98db22f6d",
+                            "oldColName": "status_m",
+                            "newColName": "status"
+                        }
+                    }
+                ]
+            },
+            {
+                "name": "d78a24f2bf0411e999e5e5d98db22f6d",
+                "reference": "com.pharbers.ipaas.data.driver.api.job.PhBaseAction",
+                "factory": "com.pharbers.ipaas.data.driver.api.factory.PhActionFactory",
+                "args": {
+                    "null": "null"
+                },
+                "opers": [
+                    {
+                        "name": "d789fde4bf0411e999e5e5d98db22f6d",
+                        "reference": "com.pharbers.ipaas.data.driver.operators.WithColumnRenamedOperator",
+                        "factory": "com.pharbers.ipaas.data.driver.api.factory.PhOperatorFactory",
+                        "args": {
+                            "inDFName": "d789fde3bf0411e999e5e5d98db22f6d",
+                            "oldColName": "budget_m",
+                            "newColName": "budget"
+                        }
+                    }
+                ]
+            },
+            {
+                "name": "d78b0f5dbf0411e999e5e5d98db22f6d",
+                "reference": "com.pharbers.ipaas.data.driver.api.job.PhBaseAction",
+                "factory": "com.pharbers.ipaas.data.driver.api.factory.PhActionFactory",
+                "args": {
+                    "null": "null"
+                },
+                "opers": [
+                    {
+                        "name": "d78b0f5cbf0411e999e5e5d98db22f6d",
+                        "reference": "com.pharbers.ipaas.data.driver.operators.UnionOperator",
+                        "factory": "com.pharbers.ipaas.data.driver.api.factory.PhOperatorFactory",
+                        "args": {
+                            "inDFName": "d7860638bf0411e999e5e5d98db22f6d",
+                            "unionDFName": "d78a24f2bf0411e999e5e5d98db22f6d"
+                        }
+                    }
+                ]
+            },
+            {
+                "name": "d78b5d7cbf0411e999e5e5d98db22f6d",
+                "reference": "com.pharbers.ipaas.data.driver.api.job.PhBaseAction",
+                "factory": "com.pharbers.ipaas.data.driver.api.factory.PhActionFactory",
+                "args": {
+                    "null": "null"
+                },
+                "opers": [
+                    {
+                        "name": "d78b366cbf0411e999e5e5d98db22f6d",
+                        "reference": "com.pharbers.ipaas.data.driver.operators.AddColumnOperator",
+                        "factory": "com.pharbers.ipaas.data.driver.api.factory.PhOperatorFactory",
+                        "args": {
+                            "inDFName": "d78b0f5dbf0411e999e5e5d98db22f6d",
+                            "newColName": "account"
+                        },
+                        "plugin": {
+                            "name": "d78b366dbf0411e999e5e5d98db22f6d",
+                            "reference": "com.pharbers.ipaas.data.driver.plugins.ExprPlugin",
+                            "factory": "com.pharbers.ipaas.data.driver.api.factory.PhPluginFactory",
+                            "args": {
+                                "exprString": "case when status == '正在开发' then 1 else 0 end"
+                            }
+                        }
+                    }
+                ]
+            },
+            {
+                "name": "d78b848cbf0411e999e5e5d98db22f6d",
+                "reference": "com.pharbers.ipaas.data.driver.api.job.PhBaseAction",
+                "factory": "com.pharbers.ipaas.data.driver.api.factory.PhActionFactory",
+                "args": {
+                    "null": "null"
+                },
+                "opers": [
+                    {
+                        "name": "d78b5d7dbf0411e999e5e5d98db22f6d",
+                        "reference": "com.pharbers.ipaas.data.driver.operators.SelectOperator",
+                        "factory": "com.pharbers.ipaas.data.driver.api.factory.PhOperatorFactory",
+                        "args": {
+                            "inDFName": "d78b5d7cbf0411e999e5e5d98db22f6d",
+                            "selects": "sum(account) as new_account#sum(budget) as total_budget#sum(p_sales) as sumps#sum(sales) as sums"
+                        }
+                    },
+                    {
+                        "name": "d78b5d7ebf0411e999e5e5d98db22f6d",
+                        "reference": "com.pharbers.ipaas.data.driver.operators.JoinOperator",
+                        "factory": "com.pharbers.ipaas.data.driver.api.factory.PhOperatorFactory",
+                        "args": {
+                            "inDFName": "d78b5d7cbf0411e999e5e5d98db22f6d",
+                            "joinDFName": "d78b5d7dbf0411e999e5e5d98db22f6d",
+                            "joinExpr": "TRUE",
+                            "joinType": "full"
+                        }
+                    }
+                ]
+            },
+            {
+                "name": "d78bd2acbf0411e999e5e5d98db22f6d",
+                "reference": "com.pharbers.ipaas.data.driver.api.job.PhBaseAction",
+                "factory": "com.pharbers.ipaas.data.driver.api.factory.PhActionFactory",
+                "args": {
+                    "null": "null"
+                },
+                "opers": [
+                    {
+                        "name": "d78bab9cbf0411e999e5e5d98db22f6d",
+                        "reference": "com.pharbers.ipaas.data.driver.operators.AddColumnOperator",
+                        "factory": "com.pharbers.ipaas.data.driver.api.factory.PhOperatorFactory",
+                        "args": {
+                            "inDFName": "d78b848cbf0411e999e5e5d98db22f6d",
+                            "newColName": "sales_increase"
+                        },
+                        "plugin": {
+                            "name": "d78bab9dbf0411e999e5e5d98db22f6d",
+                            "reference": "com.pharbers.ipaas.data.driver.plugins.ExprPlugin",
+                            "factory": "com.pharbers.ipaas.data.driver.api.factory.PhPluginFactory",
+                            "args": {
+                                "exprString": "case when sums > sumps then sums - sumps else 0 end"
+                            }
+                        }
+                    }
+                ]
+            },
+            {
+                "name": "d78bf9bcbf0411e999e5e5d98db22f6d",
+                "reference": "com.pharbers.ipaas.data.driver.api.job.PhBaseAction",
+                "factory": "com.pharbers.ipaas.data.driver.api.factory.PhActionFactory",
+                "args": {
+                    "null": "null"
+                },
+                "opers": [
+                    {
+                        "name": "d78bd2adbf0411e999e5e5d98db22f6d",
+                        "reference": "com.pharbers.ipaas.data.driver.operators.AddColumnOperator",
+                        "factory": "com.pharbers.ipaas.data.driver.api.factory.PhOperatorFactory",
+                        "args": {
+                            "inDFName": "d78bd2acbf0411e999e5e5d98db22f6d",
+                            "newColName": "next_budget"
+                        },
+                        "plugin": {
+                            "name": "d78bd2aebf0411e999e5e5d98db22f6d",
+                            "reference": "com.pharbers.ipaas.data.driver.plugins.ExprPlugin",
+                            "factory": "com.pharbers.ipaas.data.driver.api.factory.PhPluginFactory",
+                            "args": {
+                                "exprString": "total_budget + 0.06 * sales_increase"
+                            }
+                        }
+                    }
+                ]
+            },
+            {
+                "name": "d78c47ddbf0411e999e5e5d98db22f6d",
+                "reference": "com.pharbers.ipaas.data.driver.api.job.PhBaseAction",
+                "factory": "com.pharbers.ipaas.data.driver.api.factory.PhActionFactory",
+                "args": {
+                    "null": "null"
+                },
+                "opers": [
+                    {
+                        "name": "d78c47dcbf0411e999e5e5d98db22f6d",
+                        "reference": "com.pharbers.ipaas.data.driver.operators.SaveParquetOperator",
+                        "factory": "com.pharbers.ipaas.data.driver.api.factory.PhOperatorFactory",
+                        "args": {
+                            "inDFName": "d78bf9bcbf0411e999e5e5d98db22f6d",
+                            "path": "/test/UCBTest/output/output0814/UCBResult"
+                        }
+                    }
+                ]
+            },
+            {
+                "name": "d78d0b2dbf0411e999e5e5d98db22f6d",
+                "reference": "com.pharbers.ipaas.data.driver.api.job.PhBaseAction",
+                "factory": "com.pharbers.ipaas.data.driver.api.factory.PhActionFactory",
+                "args": {
+                    "null": "null"
+                },
+                "opers": [
+                    {
+                        "name": "d78d0b2cbf0411e999e5e5d98db22f6d",
+                        "reference": "com.pharbers.ipaas.data.driver.operators.GroupOperator",
+                        "factory": "com.pharbers.ipaas.data.driver.api.factory.PhOperatorFactory",
+                        "args": {
+                            "inDFName": "d78bf9bcbf0411e999e5e5d98db22f6d",
+                            "groups": "product",
+                            "aggExprs": "sum(potential) * (rand() / 100 + 0.01) as potential"
+                        }
+                    }
+                ]
+            },
+            {
+                "name": "d78d323dbf0411e999e5e5d98db22f6d",
+                "reference": "com.pharbers.ipaas.data.driver.api.job.PhBaseAction",
+                "factory": "com.pharbers.ipaas.data.driver.api.factory.PhActionFactory",
+                "args": {
+                    "null": "null"
+                },
+                "opers": [
+                    {
+                        "name": "d78d0b2ebf0411e999e5e5d98db22f6d",
+                        "reference": "com.pharbers.ipaas.data.driver.operators.AddColumnOperator",
+                        "factory": "com.pharbers.ipaas.data.driver.api.factory.PhOperatorFactory",
+                        "args": {
+                            "inDFName": "d78d0b2dbf0411e999e5e5d98db22f6d",
+                            "newColName": "sales"
+                        },
+                        "plugin": {
+                            "name": "d78d323cbf0411e999e5e5d98db22f6d",
+                            "reference": "com.pharbers.ipaas.data.driver.plugins.ExprPlugin",
+                            "factory": "com.pharbers.ipaas.data.driver.api.factory.PhPluginFactory",
+                            "args": {
+                                "exprString": "potential * (rand() / 100 + 0.015)"
+                            }
+                        }
+                    }
+                ]
+            },
+            {
+                "name": "d78d5957bf0411e999e5e5d98db22f6d",
+                "reference": "com.pharbers.ipaas.data.driver.api.job.PhBaseAction",
+                "factory": "com.pharbers.ipaas.data.driver.api.factory.PhActionFactory",
+                "args": {
+                    "null": "null"
+                },
+                "opers": [
+                    {
+                        "name": "d78d5956bf0411e999e5e5d98db22f6d",
+                        "reference": "com.pharbers.ipaas.data.driver.operators.SaveParquetOperator",
+                        "factory": "com.pharbers.ipaas.data.driver.api.factory.PhOperatorFactory",
+                        "args": {
+                            "inDFName": "d78d323dbf0411e999e5e5d98db22f6d",
+                            "path": "/test/UCBTest/output/output0814/HospitalReport"
+                        }
+                    }
+                ]
+            },
+            {
+                "name": "d7903f91bf0411e999e5e5d98db22f6d",
+                "reference": "com.pharbers.ipaas.data.driver.api.job.PhBaseAction",
+                "factory": "com.pharbers.ipaas.data.driver.api.factory.PhActionFactory",
+                "args": {
+                    "null": "null"
+                },
+                "opers": [
+                    {
+                        "name": "d7903f90bf0411e999e5e5d98db22f6d",
+                        "factory": "com.pharbers.ipaas.data.driver.api.factory.PhOperatorFactory",
+                        "reference": "com.pharbers.ipaas.data.driver.operators.ReadParquetOperator",
+                        "args": {
+                            "path": "/test/UCBTest/inputParquet/input0814/competitor"
+                        }
+                    }
+                ]
+            },
+            {
+                "name": "d7908db1bf0411e999e5e5d98db22f6d",
+                "reference": "com.pharbers.ipaas.data.driver.api.job.PhBaseAction",
+                "factory": "com.pharbers.ipaas.data.driver.api.factory.PhActionFactory",
+                "args": {
+                    "null": "null"
+                },
+                "opers": [
+                    {
+                        "name": "d79066a0bf0411e999e5e5d98db22f6d",
+                        "reference": "com.pharbers.ipaas.data.driver.operators.AddColumnOperator",
+                        "factory": "com.pharbers.ipaas.data.driver.api.factory.PhOperatorFactory",
+                        "args": {
+                            "inDFName": "d7903f91bf0411e999e5e5d98db22f6d",
+                            "newColName": "market_share_c"
+                        },
+                        "plugin": {
+                            "name": "d7908db0bf0411e999e5e5d98db22f6d",
+                            "reference": "com.pharbers.ipaas.data.driver.plugins.ExprPlugin",
+                            "factory": "com.pharbers.ipaas.data.driver.api.factory.PhPluginFactory",
+                            "args": {
+                                "exprString": "cast(market_share_c as double)"
+                            }
+                        }
+                    }
+                ]
+            },
+            {
+                "name": "d78e43b7bf0411e999e5e5d98db22f6d",
+                "reference": "com.pharbers.ipaas.data.driver.api.job.PhBaseAction",
+                "factory": "com.pharbers.ipaas.data.driver.api.factory.PhActionFactory",
+                "args": {
+                    "null": "null"
+                },
+                "opers": [
+                    {
+                        "name": "d78e43b6bf0411e999e5e5d98db22f6d",
+                        "reference": "com.pharbers.ipaas.data.driver.operators.GroupOperator",
+                        "factory": "com.pharbers.ipaas.data.driver.api.factory.PhOperatorFactory",
+                        "args": {
+                            "inDFName": "d78bf9bcbf0411e999e5e5d98db22f6d",
+                            "groups": "product_area#product",
+                            "aggExprs": "sum(potential) as potential"
+                        }
+                    }
+                ]
+            },
+            {
+                "name": "d78e6ac7bf0411e999e5e5d98db22f6d",
+                "reference": "com.pharbers.ipaas.data.driver.api.job.PhBaseAction",
+                "factory": "com.pharbers.ipaas.data.driver.api.factory.PhActionFactory",
+                "args": {
+                    "null": "null"
+                },
+                "opers": [
+                    {
+                        "name": "d78e6ac6bf0411e999e5e5d98db22f6d",
+                        "reference": "com.pharbers.ipaas.data.driver.operators.SelectOperator",
+                        "factory": "com.pharbers.ipaas.data.driver.api.factory.PhOperatorFactory",
+                        "args": {
+                            "inDFName": "d78e43b7bf0411e999e5e5d98db22f6d",
+                            "selects": "product_area#potential"
+                        }
+                    }
+                ]
+            },
+            {
+                "name": "d78e91d7bf0411e999e5e5d98db22f6d",
+                "reference": "com.pharbers.ipaas.data.driver.api.job.PhBaseAction",
+                "factory": "com.pharbers.ipaas.data.driver.api.factory.PhActionFactory",
+                "args": {
+                    "null": "null"
+                },
+                "opers": [
+                    {
+                        "name": "d78e91d6bf0411e999e5e5d98db22f6d",
+                        "reference": "com.pharbers.ipaas.data.driver.operators.DistinctOperator",
+                        "factory": "com.pharbers.ipaas.data.driver.api.factory.PhOperatorFactory",
+                        "args": {
+                            "inDFName": "d78e6ac7bf0411e999e5e5d98db22f6d"
+                        }
+                    }
+                ]
+            },
+            {
+                "name": "d78eb8e7bf0411e999e5e5d98db22f6d",
+                "reference": "com.pharbers.ipaas.data.driver.api.job.PhBaseAction",
+                "factory": "com.pharbers.ipaas.data.driver.api.factory.PhActionFactory",
+                "args": {
+                    "null": "null"
+                },
+                "opers": [
+                    {
+                        "name": "d78eb8e6bf0411e999e5e5d98db22f6d",
+                        "reference": "com.pharbers.ipaas.data.driver.operators.WithColumnRenamedOperator",
+                        "factory": "com.pharbers.ipaas.data.driver.api.factory.PhOperatorFactory",
+                        "args": {
+                            "inDFName": "d78e91d7bf0411e999e5e5d98db22f6d",
+                            "oldColName": "product_area",
+                            "newColName": "product_area_m"
+                        }
+                    }
+                ]
+            },
+            {
+                "name": "d790b4c1bf0411e999e5e5d98db22f6d",
+                "reference": "com.pharbers.ipaas.data.driver.api.job.PhBaseAction",
+                "factory": "com.pharbers.ipaas.data.driver.api.factory.PhActionFactory",
+                "args": {
+                    "null": "null"
+                },
+                "opers": [
+                    {
+                        "name": "d790b4c0bf0411e999e5e5d98db22f6d",
+                        "reference": "com.pharbers.ipaas.data.driver.operators.JoinOperator",
+                        "factory": "com.pharbers.ipaas.data.driver.api.factory.PhOperatorFactory",
+                        "args": {
+                            "inDFName": "d7908db1bf0411e999e5e5d98db22f6d",
+                            "joinDFName": "d78eb8e7bf0411e999e5e5d98db22f6d",
+                            "joinExpr": "product_area == product_area_m",
+                            "joinType": "left"
+                        }
+                    }
+                ]
+            },
+            {
+                "name": "d79102e0bf0411e999e5e5d98db22f6d",
+                "reference": "com.pharbers.ipaas.data.driver.api.job.PhBaseAction",
+                "factory": "com.pharbers.ipaas.data.driver.api.factory.PhActionFactory",
+                "args": {
+                    "null": "null"
+                },
+                "opers": [
+                    {
+                        "name": "d790b4c2bf0411e999e5e5d98db22f6d",
+                        "reference": "com.pharbers.ipaas.data.driver.operators.AddColumnOperator",
+                        "factory": "com.pharbers.ipaas.data.driver.api.factory.PhOperatorFactory",
+                        "args": {
+                            "inDFName": "d790b4c1bf0411e999e5e5d98db22f6d",
+                            "newColName": "market_share"
+                        },
+                        "plugin": {
+                            "name": "d790dbd0bf0411e999e5e5d98db22f6d",
+                            "reference": "com.pharbers.ipaas.data.driver.plugins.ExprPlugin",
+                            "factory": "com.pharbers.ipaas.data.driver.api.factory.PhPluginFactory",
+                            "args": {
+                                "exprString": "market_share_c * (rand() * 0.2 + 0.9)"
+                            }
+                        }
+                    }
+                ]
+            },
+            {
+                "name": "d79129f1bf0411e999e5e5d98db22f6d",
+                "reference": "com.pharbers.ipaas.data.driver.api.job.PhBaseAction",
+                "factory": "com.pharbers.ipaas.data.driver.api.factory.PhActionFactory",
+                "args": {
+                    "null": "null"
+                },
+                "opers": [
+                    {
+                        "name": "d79102e1bf0411e999e5e5d98db22f6d",
+                        "reference": "com.pharbers.ipaas.data.driver.operators.AddColumnOperator",
+                        "factory": "com.pharbers.ipaas.data.driver.api.factory.PhOperatorFactory",
+                        "args": {
+                            "inDFName": "d79102e0bf0411e999e5e5d98db22f6d",
+                            "newColName": "sales"
+                        },
+                        "plugin": {
+                            "name": "d79129f0bf0411e999e5e5d98db22f6d",
+                            "reference": "com.pharbers.ipaas.data.driver.plugins.ExprPlugin",
+                            "factory": "com.pharbers.ipaas.data.driver.api.factory.PhPluginFactory",
+                            "args": {
+                                "exprString": "potential * market_share"
+                            }
+                        }
+                    }
+                ]
+            },
+            {
+                "name": "d7915101bf0411e999e5e5d98db22f6d",
+                "reference": "com.pharbers.ipaas.data.driver.api.job.PhBaseAction",
+                "factory": "com.pharbers.ipaas.data.driver.api.factory.PhActionFactory",
+                "args": {
+                    "null": "null"
+                },
+                "opers": [
+                    {
+                        "name": "d7915100bf0411e999e5e5d98db22f6d",
+                        "reference": "com.pharbers.ipaas.data.driver.operators.SelectOperator",
+                        "factory": "com.pharbers.ipaas.data.driver.api.factory.PhOperatorFactory",
+                        "args": {
+                            "inDFName": "d79129f1bf0411e999e5e5d98db22f6d",
+                            "selects": "product#market_share#sales"
+                        }
+                    }
+                ]
+            },
+            {
+                "name": "d7917811bf0411e999e5e5d98db22f6d",
+                "reference": "com.pharbers.ipaas.data.driver.api.job.PhBaseAction",
+                "factory": "com.pharbers.ipaas.data.driver.api.factory.PhActionFactory",
+                "args": {
+                    "null": "null"
+                },
+                "opers": [
+                    {
+                        "name": "d7917810bf0411e999e5e5d98db22f6d",
+                        "reference": "com.pharbers.ipaas.data.driver.operators.SaveParquetOperator",
+                        "factory": "com.pharbers.ipaas.data.driver.api.factory.PhOperatorFactory",
+                        "args": {
+                            "inDFName": "d7915101bf0411e999e5e5d98db22f6d",
+                            "path": "/test/UCBTest/output/output0814/CompetitorReport"
+                        }
+                    }
+                ]
+            },
+            {
+                "name": "d79e4982bf0411e999e5e5d98db22f6d",
+                "reference": "com.pharbers.ipaas.data.driver.api.job.PhBaseAction",
+                "factory": "com.pharbers.ipaas.data.driver.api.factory.PhActionFactory",
+                "args": {
+                    "null": "null"
+                },
+                "opers": [
+                    {
+                        "name": "d79e2272bf0411e999e5e5d98db22f6d",
+                        "reference": "com.pharbers.ipaas.data.driver.operators.SelectOperator",
+                        "factory": "com.pharbers.ipaas.data.driver.api.factory.PhOperatorFactory",
+                        "args": {
+                            "inDFName": "d78bf9bcbf0411e999e5e5d98db22f6d",
+                            "selects": "representative#status#sales#quota#budget"
+                        }
+                    }
+                ]
+            },
+            {
+                "name": "d79e7093bf0411e999e5e5d98db22f6d",
+                "reference": "com.pharbers.ipaas.data.driver.api.job.PhBaseAction",
+                "factory": "com.pharbers.ipaas.data.driver.api.factory.PhActionFactory",
+                "args": {
+                    "null": "null"
+                },
+                "opers": [
+                    {
+                        "name": "d79e4983bf0411e999e5e5d98db22f6d",
+                        "reference": "com.pharbers.ipaas.data.driver.operators.AddColumnOperator",
+                        "factory": "com.pharbers.ipaas.data.driver.api.factory.PhOperatorFactory",
+                        "args": {
+                            "inDFName": "d79e4982bf0411e999e5e5d98db22f6d",
+                            "newColName": "account"
+                        },
+                        "plugin": {
+                            "name": "d79e7092bf0411e999e5e5d98db22f6d",
+                            "reference": "com.pharbers.ipaas.data.driver.plugins.ExprPlugin",
+                            "factory": "com.pharbers.ipaas.data.driver.api.factory.PhPluginFactory",
+                            "args": {
+                                "exprString": "case when status == '正在开发' then 1 else 0 end"
+                            }
+                        }
+                    }
+                ]
+            },
+            {
+                "name": "d79e97a3bf0411e999e5e5d98db22f6d",
+                "reference": "com.pharbers.ipaas.data.driver.api.job.PhBaseAction",
+                "factory": "com.pharbers.ipaas.data.driver.api.factory.PhActionFactory",
+                "args": {
+                    "null": "null"
+                },
+                "opers": [
+                    {
+                        "name": "d79e97a2bf0411e999e5e5d98db22f6d",
+                        "reference": "com.pharbers.ipaas.data.driver.operators.GroupOperator",
+                        "factory": "com.pharbers.ipaas.data.driver.api.factory.PhOperatorFactory",
+                        "args": {
+                            "inDFName": "d79e7093bf0411e999e5e5d98db22f6d",
+                            "groups": "representative",
+                            "aggExprs": "sum(sales) as sales#sum(quota) as quota#sum(account) as new_account#sum(budget) as budget"
+                        }
+                    }
+                ]
+            },
+            {
+                "name": "d79ebeb4bf0411e999e5e5d98db22f6d",
+                "reference": "com.pharbers.ipaas.data.driver.api.job.PhBaseAction",
+                "factory": "com.pharbers.ipaas.data.driver.api.factory.PhActionFactory",
+                "args": {
+                    "null": "null"
+                },
+                "opers": [
+                    {
+                        "name": "d79ebeb2bf0411e999e5e5d98db22f6d",
+                        "reference": "com.pharbers.ipaas.data.driver.operators.AddColumnOperator",
+                        "factory": "com.pharbers.ipaas.data.driver.api.factory.PhOperatorFactory",
+                        "args": {
+                            "inDFName": "d79e97a3bf0411e999e5e5d98db22f6d",
+                            "newColName": "group"
+                        },
+                        "plugin": {
+                            "name": "d79ebeb3bf0411e999e5e5d98db22f6d",
+                            "reference": "com.pharbers.ipaas.data.driver.plugins.ExprPlugin",
+                            "factory": "com.pharbers.ipaas.data.driver.api.factory.PhPluginFactory",
+                            "args": {
+                                "exprString": "1"
+                            }
+                        }
+                    }
+                ]
+            },
+            {
+                "name": "d79f0cd2bf0411e999e5e5d98db22f6d",
+                "reference": "com.pharbers.ipaas.data.driver.api.job.PhBaseAction",
+                "factory": "com.pharbers.ipaas.data.driver.api.factory.PhActionFactory",
+                "args": {
+                    "null": "null"
+                },
+                "opers": [
+                    {
+                        "name": "d79ee5c2bf0411e999e5e5d98db22f6d",
+                        "reference": "com.pharbers.ipaas.data.driver.operators.GroupOperator",
+                        "factory": "com.pharbers.ipaas.data.driver.api.factory.PhOperatorFactory",
+                        "args": {
+                            "inDFName": "d79ebeb4bf0411e999e5e5d98db22f6d",
+                            "groups": "group",
+                            "aggExprs": "sum(sales) as sales#sum(quota) as quota#sum(new_account) as new_account#sum(budget) as budget#count(representative) as rep_num"
+                        }
+                    }
+                ]
+            },
+            {
+                "name": "d7a0ba8dbf0411e999e5e5d98db22f6d",
+                "reference": "com.pharbers.ipaas.data.driver.api.job.PhBaseAction",
+                "factory": "com.pharbers.ipaas.data.driver.api.factory.PhActionFactory",
+                "args": {
+                    "null": "null"
+                },
+                "opers": [
+                    {
+                        "name": "d7a0ba8cbf0411e999e5e5d98db22f6d",
+                        "factory": "com.pharbers.ipaas.data.driver.api.factory.PhOperatorFactory",
+                        "reference": "com.pharbers.ipaas.data.driver.operators.ReadParquetOperator",
+                        "args": {
+                            "path": "/test/UCBTest/inputParquet/input0814/p_data1"
+                        }
+                    }
+                ]
+            },
+            {
+                "name": "d7a108acbf0411e999e5e5d98db22f6d",
+                "reference": "com.pharbers.ipaas.data.driver.api.job.PhBaseAction",
+                "factory": "com.pharbers.ipaas.data.driver.api.factory.PhActionFactory",
+                "args": {
+                    "null": "null"
+                },
+                "opers": [
+                    {
+                        "name": "d7a0e19cbf0411e999e5e5d98db22f6d",
+                        "reference": "com.pharbers.ipaas.data.driver.operators.SelectOperator",
+                        "factory": "com.pharbers.ipaas.data.driver.api.factory.PhOperatorFactory",
+                        "args": {
+                            "inDFName": "d7a0ba8dbf0411e999e5e5d98db22f6d",
+                            "selects": "status#sales#quota#budget"
+                        }
+                    }
+                ]
+            },
+            {
+                "name": "d7a12fbdbf0411e999e5e5d98db22f6d",
+                "reference": "com.pharbers.ipaas.data.driver.api.job.PhBaseAction",
+                "factory": "com.pharbers.ipaas.data.driver.api.factory.PhActionFactory",
+                "args": {
+                    "null": "null"
+                },
+                "opers": [
+                    {
+                        "name": "d7a108adbf0411e999e5e5d98db22f6d",
+                        "reference": "com.pharbers.ipaas.data.driver.operators.AddColumnOperator",
+                        "factory": "com.pharbers.ipaas.data.driver.api.factory.PhOperatorFactory",
+                        "args": {
+                            "inDFName": "d7a108acbf0411e999e5e5d98db22f6d",
+                            "newColName": "account"
+                        },
+                        "plugin": {
+                            "name": "d7a12fbcbf0411e999e5e5d98db22f6d",
+                            "reference": "com.pharbers.ipaas.data.driver.plugins.ExprPlugin",
+                            "factory": "com.pharbers.ipaas.data.driver.api.factory.PhPluginFactory",
+                            "args": {
+                                "exprString": "case when status == '正在开发' then 1 else 0 end"
+                            }
+                        }
+                    }
+                ]
+            },
+            {
+                "name": "d7a17dddbf0411e999e5e5d98db22f6d",
+                "reference": "com.pharbers.ipaas.data.driver.api.job.PhBaseAction",
+                "factory": "com.pharbers.ipaas.data.driver.api.factory.PhActionFactory",
+                "args": {
+                    "null": "null"
+                },
+                "opers": [
+                    {
+                        "name": "d7a156ccbf0411e999e5e5d98db22f6d",
+                        "reference": "com.pharbers.ipaas.data.driver.operators.AddColumnOperator",
+                        "factory": "com.pharbers.ipaas.data.driver.api.factory.PhOperatorFactory",
+                        "args": {
+                            "inDFName": "d7a12fbdbf0411e999e5e5d98db22f6d",
+                            "newColName": "sales"
+                        },
+                        "plugin": {
+                            "name": "d7a17ddcbf0411e999e5e5d98db22f6d",
+                            "reference": "com.pharbers.ipaas.data.driver.plugins.ExprPlugin",
+                            "factory": "com.pharbers.ipaas.data.driver.api.factory.PhPluginFactory",
+                            "args": {
+                                "exprString": "cast(sales as double)"
+                            }
+                        }
+                    }
+                ]
+            },
+            {
+                "name": "d7a1cbfcbf0411e999e5e5d98db22f6d",
+                "reference": "com.pharbers.ipaas.data.driver.api.job.PhBaseAction",
+                "factory": "com.pharbers.ipaas.data.driver.api.factory.PhActionFactory",
+                "args": {
+                    "null": "null"
+                },
+                "opers": [
+                    {
+                        "name": "d7a1a4ecbf0411e999e5e5d98db22f6d",
+                        "reference": "com.pharbers.ipaas.data.driver.operators.AddColumnOperator",
+                        "factory": "com.pharbers.ipaas.data.driver.api.factory.PhOperatorFactory",
+                        "args": {
+                            "inDFName": "d7a17dddbf0411e999e5e5d98db22f6d",
+                            "newColName": "quota"
+                        },
+                        "plugin": {
+                            "name": "d7a1a4edbf0411e999e5e5d98db22f6d",
+                            "reference": "com.pharbers.ipaas.data.driver.plugins.ExprPlugin",
+                            "factory": "com.pharbers.ipaas.data.driver.api.factory.PhPluginFactory",
+                            "args": {
+                                "exprString": "cast(quota as double)"
+                            }
+                        }
+                    }
+                ]
+            },
+            {
+                "name": "d7a1f30dbf0411e999e5e5d98db22f6d",
+                "reference": "com.pharbers.ipaas.data.driver.api.job.PhBaseAction",
+                "factory": "com.pharbers.ipaas.data.driver.api.factory.PhActionFactory",
+                "args": {
+                    "null": "null"
+                },
+                "opers": [
+                    {
+                        "name": "d7a1cbfdbf0411e999e5e5d98db22f6d",
+                        "reference": "com.pharbers.ipaas.data.driver.operators.AddColumnOperator",
+                        "factory": "com.pharbers.ipaas.data.driver.api.factory.PhOperatorFactory",
+                        "args": {
+                            "inDFName": "d7a1cbfcbf0411e999e5e5d98db22f6d",
+                            "newColName": "budget"
+                        },
+                        "plugin": {
+                            "name": "d7a1f30cbf0411e999e5e5d98db22f6d",
+                            "reference": "com.pharbers.ipaas.data.driver.plugins.ExprPlugin",
+                            "factory": "com.pharbers.ipaas.data.driver.api.factory.PhPluginFactory",
+                            "args": {
+                                "exprString": "cast(budget as double)"
+                            }
+                        }
+                    }
+                ]
+            },
+            {
+                "name": "d7a2412dbf0411e999e5e5d98db22f6d",
+                "reference": "com.pharbers.ipaas.data.driver.api.job.PhBaseAction",
+                "factory": "com.pharbers.ipaas.data.driver.api.factory.PhActionFactory",
+                "args": {
+                    "null": "null"
+                },
+                "opers": [
+                    {
+                        "name": "d7a21a1cbf0411e999e5e5d98db22f6d",
+                        "reference": "com.pharbers.ipaas.data.driver.operators.AddColumnOperator",
+                        "factory": "com.pharbers.ipaas.data.driver.api.factory.PhOperatorFactory",
+                        "args": {
+                            "inDFName": "d7a1f30dbf0411e999e5e5d98db22f6d",
+                            "newColName": "group"
+                        },
+                        "plugin": {
+                            "name": "d7a2412cbf0411e999e5e5d98db22f6d",
+                            "reference": "com.pharbers.ipaas.data.driver.plugins.ExprPlugin",
+                            "factory": "com.pharbers.ipaas.data.driver.api.factory.PhPluginFactory",
+                            "args": {
+                                "exprString": "1"
+                            }
+                        }
+                    }
+                ]
+            },
+            {
+                "name": "d7a2683dbf0411e999e5e5d98db22f6d",
+                "reference": "com.pharbers.ipaas.data.driver.api.job.PhBaseAction",
+                "factory": "com.pharbers.ipaas.data.driver.api.factory.PhActionFactory",
+                "args": {
+                    "null": "null"
+                },
+                "opers": [
+                    {
+                        "name": "d7a2683cbf0411e999e5e5d98db22f6d",
+                        "reference": "com.pharbers.ipaas.data.driver.operators.GroupOperator",
+                        "factory": "com.pharbers.ipaas.data.driver.api.factory.PhOperatorFactory",
+                        "args": {
+                            "inDFName": "d7a2412dbf0411e999e5e5d98db22f6d",
+                            "groups": "group",
+                            "aggExprs": "sum(sales) as sales#sum(quota) as quota#sum(budget) as budget#sum(account) as new_account"
+                        }
+                    }
+                ]
+            },
+            {
+                "name": "d7a2b666bf0411e999e5e5d98db22f6d",
+                "reference": "com.pharbers.ipaas.data.driver.api.job.PhBaseAction",
+                "factory": "com.pharbers.ipaas.data.driver.api.factory.PhActionFactory",
+                "args": {
+                    "null": "null"
+                },
+                "opers": [
+                    {
+                        "name": "d7a28f56bf0411e999e5e5d98db22f6d",
+                        "reference": "com.pharbers.ipaas.data.driver.operators.AddColumnOperator",
+                        "factory": "com.pharbers.ipaas.data.driver.api.factory.PhOperatorFactory",
+                        "args": {
+                            "inDFName": "d7a2683dbf0411e999e5e5d98db22f6d",
+                            "newColName": "rep_num"
+                        },
+                        "plugin": {
+                            "name": "d7a28f57bf0411e999e5e5d98db22f6d",
+                            "reference": "com.pharbers.ipaas.data.driver.plugins.ExprPlugin",
+                            "factory": "com.pharbers.ipaas.data.driver.api.factory.PhPluginFactory",
+                            "args": {
+                                "exprString": "0"
+                            }
+                        }
+                    }
+                ]
+            },
+            {
+                "name": "d7a77160bf0411e999e5e5d98db22f6d",
+                "reference": "com.pharbers.ipaas.data.driver.api.job.PhBaseAction",
+                "factory": "com.pharbers.ipaas.data.driver.api.factory.PhActionFactory",
+                "args": {
+                    "null": "null"
+                },
+                "opers": [
+                    {
+                        "name": "d7a74a50bf0411e999e5e5d98db22f6d",
+                        "reference": "com.pharbers.ipaas.data.driver.operators.UnionOperator",
+                        "factory": "com.pharbers.ipaas.data.driver.api.factory.PhOperatorFactory",
+                        "args": {
+                            "inDFName": "d79f0cd2bf0411e999e5e5d98db22f6d",
+                            "unionDFName": "d7a2b666bf0411e999e5e5d98db22f6d"
+                        }
+                    }
+                ]
+            },
+            {
+                "name": "d7a3eee7bf0411e999e5e5d98db22f6d",
+                "reference": "com.pharbers.ipaas.data.driver.api.job.PhBaseAction",
+                "factory": "com.pharbers.ipaas.data.driver.api.factory.PhActionFactory",
+                "args": {
+                    "null": "null"
+                },
+                "opers": [
+                    {
+                        "name": "d7a3eee6bf0411e999e5e5d98db22f6d",
+                        "factory": "com.pharbers.ipaas.data.driver.api.factory.PhOperatorFactory",
+                        "reference": "com.pharbers.ipaas.data.driver.operators.ReadParquetOperator",
+                        "args": {
+                            "path": "/test/UCBTest/inputParquet/input0814/p_data2"
+                        }
+                    }
+                ]
+            },
+            {
+                "name": "d7a43d06bf0411e999e5e5d98db22f6d",
+                "reference": "com.pharbers.ipaas.data.driver.api.job.PhBaseAction",
+                "factory": "com.pharbers.ipaas.data.driver.api.factory.PhActionFactory",
+                "args": {
+                    "null": "null"
+                },
+                "opers": [
+                    {
+                        "name": "d7a415f6bf0411e999e5e5d98db22f6d",
+                        "reference": "com.pharbers.ipaas.data.driver.operators.SelectOperator",
+                        "factory": "com.pharbers.ipaas.data.driver.api.factory.PhOperatorFactory",
+                        "args": {
+                            "inDFName": "d7a3eee7bf0411e999e5e5d98db22f6d",
+                            "selects": "status#sales#quota#budget"
+                        }
+                    }
+                ]
+            },
+            {
+                "name": "d7a46417bf0411e999e5e5d98db22f6d",
+                "reference": "com.pharbers.ipaas.data.driver.api.job.PhBaseAction",
+                "factory": "com.pharbers.ipaas.data.driver.api.factory.PhActionFactory",
+                "args": {
+                    "null": "null"
+                },
+                "opers": [
+                    {
+                        "name": "d7a43d07bf0411e999e5e5d98db22f6d",
+                        "reference": "com.pharbers.ipaas.data.driver.operators.AddColumnOperator",
+                        "factory": "com.pharbers.ipaas.data.driver.api.factory.PhOperatorFactory",
+                        "args": {
+                            "inDFName": "d7a43d06bf0411e999e5e5d98db22f6d",
+                            "newColName": "account"
+                        },
+                        "plugin": {
+                            "name": "d7a46416bf0411e999e5e5d98db22f6d",
+                            "reference": "com.pharbers.ipaas.data.driver.plugins.ExprPlugin",
+                            "factory": "com.pharbers.ipaas.data.driver.api.factory.PhPluginFactory",
+                            "args": {
+                                "exprString": "case when status == '正在开发' then 1 else 0 end"
+                            }
+                        }
+                    }
+                ]
+            },
+            {
+                "name": "d7a4b236bf0411e999e5e5d98db22f6d",
+                "reference": "com.pharbers.ipaas.data.driver.api.job.PhBaseAction",
+                "factory": "com.pharbers.ipaas.data.driver.api.factory.PhActionFactory",
+                "args": {
+                    "null": "null"
+                },
+                "opers": [
+                    {
+                        "name": "d7a48b26bf0411e999e5e5d98db22f6d",
+                        "reference": "com.pharbers.ipaas.data.driver.operators.AddColumnOperator",
+                        "factory": "com.pharbers.ipaas.data.driver.api.factory.PhOperatorFactory",
+                        "args": {
+                            "inDFName": "d7a46417bf0411e999e5e5d98db22f6d",
+                            "newColName": "sales"
+                        },
+                        "plugin": {
+                            "name": "d7a48b27bf0411e999e5e5d98db22f6d",
+                            "reference": "com.pharbers.ipaas.data.driver.plugins.ExprPlugin",
+                            "factory": "com.pharbers.ipaas.data.driver.api.factory.PhPluginFactory",
+                            "args": {
+                                "exprString": "cast(sales as double)"
+                            }
+                        }
+                    }
+                ]
+            },
+            {
+                "name": "d7a4d946bf0411e999e5e5d98db22f6d",
+                "reference": "com.pharbers.ipaas.data.driver.api.job.PhBaseAction",
+                "factory": "com.pharbers.ipaas.data.driver.api.factory.PhActionFactory",
+                "args": {
+                    "null": "null"
+                },
+                "opers": [
+                    {
+                        "name": "d7a4b237bf0411e999e5e5d98db22f6d",
+                        "reference": "com.pharbers.ipaas.data.driver.operators.AddColumnOperator",
+                        "factory": "com.pharbers.ipaas.data.driver.api.factory.PhOperatorFactory",
+                        "args": {
+                            "inDFName": "d7a4b236bf0411e999e5e5d98db22f6d",
+                            "newColName": "quota"
+                        },
+                        "plugin": {
+                            "name": "d7a4b238bf0411e999e5e5d98db22f6d",
+                            "reference": "com.pharbers.ipaas.data.driver.plugins.ExprPlugin",
+                            "factory": "com.pharbers.ipaas.data.driver.api.factory.PhPluginFactory",
+                            "args": {
+                                "exprString": "cast(quota as double)"
+                            }
+                        }
+                    }
+                ]
+            },
+            {
+                "name": "d7a50057bf0411e999e5e5d98db22f6d",
+                "reference": "com.pharbers.ipaas.data.driver.api.job.PhBaseAction",
+                "factory": "com.pharbers.ipaas.data.driver.api.factory.PhActionFactory",
+                "args": {
+                    "null": "null"
+                },
+                "opers": [
+                    {
+                        "name": "d7a4d947bf0411e999e5e5d98db22f6d",
+                        "reference": "com.pharbers.ipaas.data.driver.operators.AddColumnOperator",
+                        "factory": "com.pharbers.ipaas.data.driver.api.factory.PhOperatorFactory",
+                        "args": {
+                            "inDFName": "d7a4d946bf0411e999e5e5d98db22f6d",
+                            "newColName": "budget"
+                        },
+                        "plugin": {
+                            "name": "d7a50056bf0411e999e5e5d98db22f6d",
+                            "reference": "com.pharbers.ipaas.data.driver.plugins.ExprPlugin",
+                            "factory": "com.pharbers.ipaas.data.driver.api.factory.PhPluginFactory",
+                            "args": {
+                                "exprString": "cast(budget as double)"
+                            }
+                        }
+                    }
+                ]
+            },
+            {
+                "name": "d7a54e80bf0411e999e5e5d98db22f6d",
+                "reference": "com.pharbers.ipaas.data.driver.api.job.PhBaseAction",
+                "factory": "com.pharbers.ipaas.data.driver.api.factory.PhActionFactory",
+                "args": {
+                    "null": "null"
+                },
+                "opers": [
+                    {
+                        "name": "d7a52766bf0411e999e5e5d98db22f6d",
+                        "reference": "com.pharbers.ipaas.data.driver.operators.AddColumnOperator",
+                        "factory": "com.pharbers.ipaas.data.driver.api.factory.PhOperatorFactory",
+                        "args": {
+                            "inDFName": "d7a50057bf0411e999e5e5d98db22f6d",
+                            "newColName": "group"
+                        },
+                        "plugin": {
+                            "name": "d7a52767bf0411e999e5e5d98db22f6d",
+                            "reference": "com.pharbers.ipaas.data.driver.plugins.ExprPlugin",
+                            "factory": "com.pharbers.ipaas.data.driver.api.factory.PhPluginFactory",
+                            "args": {
+                                "exprString": "1"
+                            }
+                        }
+                    }
+                ]
+            },
+            {
+                "name": "d7a57590bf0411e999e5e5d98db22f6d",
+                "reference": "com.pharbers.ipaas.data.driver.api.job.PhBaseAction",
+                "factory": "com.pharbers.ipaas.data.driver.api.factory.PhActionFactory",
+                "args": {
+                    "null": "null"
+                },
+                "opers": [
+                    {
+                        "name": "d7a54e81bf0411e999e5e5d98db22f6d",
+                        "reference": "com.pharbers.ipaas.data.driver.operators.GroupOperator",
+                        "factory": "com.pharbers.ipaas.data.driver.api.factory.PhOperatorFactory",
+                        "args": {
+                            "inDFName": "d7a54e80bf0411e999e5e5d98db22f6d",
+                            "groups": "group",
+                            "aggExprs": "sum(sales) as sales#sum(quota) as quota#sum(budget) as budget#sum(account) as new_account"
+                        }
+                    }
+                ]
+            },
+            {
+                "name": "d7a59ca2bf0411e999e5e5d98db22f6d",
+                "reference": "com.pharbers.ipaas.data.driver.api.job.PhBaseAction",
+                "factory": "com.pharbers.ipaas.data.driver.api.factory.PhActionFactory",
+                "args": {
+                    "null": "null"
+                },
+                "opers": [
+                    {
+                        "name": "d7a59ca0bf0411e999e5e5d98db22f6d",
+                        "reference": "com.pharbers.ipaas.data.driver.operators.AddColumnOperator",
+                        "factory": "com.pharbers.ipaas.data.driver.api.factory.PhOperatorFactory",
+                        "args": {
+                            "inDFName": "d7a57590bf0411e999e5e5d98db22f6d",
+                            "newColName": "rep_num"
+                        },
+                        "plugin": {
+                            "name": "d7a59ca1bf0411e999e5e5d98db22f6d",
+                            "reference": "com.pharbers.ipaas.data.driver.plugins.ExprPlugin",
+                            "factory": "com.pharbers.ipaas.data.driver.api.factory.PhPluginFactory",
+                            "args": {
+                                "exprString": "0"
+                            }
+                        }
+                    }
+                ]
+            },
+            {
+                "name": "d7a79870bf0411e999e5e5d98db22f6d",
+                "reference": "com.pharbers.ipaas.data.driver.api.job.PhBaseAction",
+                "factory": "com.pharbers.ipaas.data.driver.api.factory.PhActionFactory",
+                "args": {
+                    "null": "null"
+                },
+                "opers": [
+                    {
+                        "name": "d7a77161bf0411e999e5e5d98db22f6d",
+                        "reference": "com.pharbers.ipaas.data.driver.operators.UnionOperator",
+                        "factory": "com.pharbers.ipaas.data.driver.api.factory.PhOperatorFactory",
+                        "args": {
+                            "inDFName": "d7a77160bf0411e999e5e5d98db22f6d",
+                            "unionDFName": "d7a59ca2bf0411e999e5e5d98db22f6d"
+                        }
+                    }
+                ]
+            },
+            {
+                "name": "d7a7bf80bf0411e999e5e5d98db22f6d",
+                "reference": "com.pharbers.ipaas.data.driver.api.job.PhBaseAction",
+                "factory": "com.pharbers.ipaas.data.driver.api.factory.PhActionFactory",
+                "args": {
+                    "null": "null"
+                },
+                "opers": [
+                    {
+                        "name": "d7a79871bf0411e999e5e5d98db22f6d",
+                        "reference": "com.pharbers.ipaas.data.driver.operators.GroupOperator",
+                        "factory": "com.pharbers.ipaas.data.driver.api.factory.PhOperatorFactory",
+                        "args": {
+                            "inDFName": "d7a79870bf0411e999e5e5d98db22f6d",
+                            "groups": "group",
+                            "aggExprs": "sum(sales) as sales#sum(quota) as quota#sum(budget) as budget#sum(new_account) as new_account#sum(rep_num) as rep_num"
+                        }
+                    }
+                ]
+            },
+            {
+                "name": "d7a80daabf0411e999e5e5d98db22f6d",
+                "reference": "com.pharbers.ipaas.data.driver.api.job.PhBaseAction",
+                "factory": "com.pharbers.ipaas.data.driver.api.factory.PhActionFactory",
+                "args": {
+                    "null": "null"
+                },
+                "opers": [
+                    {
+                        "name": "d7a7e69abf0411e999e5e5d98db22f6d",
+                        "reference": "com.pharbers.ipaas.data.driver.operators.AddColumnOperator",
+                        "factory": "com.pharbers.ipaas.data.driver.api.factory.PhOperatorFactory",
+                        "args": {
+                            "inDFName": "d7a7bf80bf0411e999e5e5d98db22f6d",
+                            "newColName": "quota_achv"
+                        },
+                        "plugin": {
+                            "name": "d7a7e69bbf0411e999e5e5d98db22f6d",
+                            "reference": "com.pharbers.ipaas.data.driver.plugins.ExprPlugin",
+                            "factory": "com.pharbers.ipaas.data.driver.api.factory.PhPluginFactory",
+                            "args": {
+                                "exprString": "sales / quota"
+                            }
+                        }
+                    }
+                ]
+            },
+            {
+                "name": "d7a85bcabf0411e999e5e5d98db22f6d",
+                "reference": "com.pharbers.ipaas.data.driver.api.job.PhBaseAction",
+                "factory": "com.pharbers.ipaas.data.driver.api.factory.PhActionFactory",
+                "args": {
+                    "null": "null"
+                },
+                "opers": [
+                    {
+                        "name": "d7a834babf0411e999e5e5d98db22f6d",
+                        "reference": "com.pharbers.ipaas.data.driver.operators.AddColumnOperator",
+                        "factory": "com.pharbers.ipaas.data.driver.api.factory.PhOperatorFactory",
+                        "args": {
+                            "inDFName": "d7a80daabf0411e999e5e5d98db22f6d",
+                            "newColName": "sales_force_productivity"
+                        },
+                        "plugin": {
+                            "name": "d7a834bbbf0411e999e5e5d98db22f6d",
+                            "reference": "com.pharbers.ipaas.data.driver.plugins.ExprPlugin",
+                            "factory": "com.pharbers.ipaas.data.driver.api.factory.PhPluginFactory",
+                            "args": {
+                                "exprString": "sales / rep_num"
+                            }
+                        }
+                    }
+                ]
+            },
+            {
+                "name": "d7a882dbbf0411e999e5e5d98db22f6d",
+                "reference": "com.pharbers.ipaas.data.driver.api.job.PhBaseAction",
+                "factory": "com.pharbers.ipaas.data.driver.api.factory.PhActionFactory",
+                "args": {
+                    "null": "null"
+                },
+                "opers": [
+                    {
+                        "name": "d7a85bcbbf0411e999e5e5d98db22f6d",
+                        "reference": "com.pharbers.ipaas.data.driver.operators.AddColumnOperator",
+                        "factory": "com.pharbers.ipaas.data.driver.api.factory.PhOperatorFactory",
+                        "args": {
+                            "inDFName": "d7a85bcabf0411e999e5e5d98db22f6d",
+                            "newColName": "return_on_investment"
+                        },
+                        "plugin": {
+                            "name": "d7a882dabf0411e999e5e5d98db22f6d",
+                            "reference": "com.pharbers.ipaas.data.driver.plugins.ExprPlugin",
+                            "factory": "com.pharbers.ipaas.data.driver.api.factory.PhPluginFactory",
+                            "args": {
+                                "exprString": "sales / budget"
+                            }
+                        }
+                    }
+                ]
+            },
+            {
+                "name": "d7a8a9ebbf0411e999e5e5d98db22f6d",
+                "reference": "com.pharbers.ipaas.data.driver.api.job.PhBaseAction",
+                "factory": "com.pharbers.ipaas.data.driver.api.factory.PhActionFactory",
+                "args": {
+                    "null": "null"
+                },
+                "opers": [
+                    {
+                        "name": "d7a8a9eabf0411e999e5e5d98db22f6d",
+                        "reference": "com.pharbers.ipaas.data.driver.operators.SelectOperator",
+                        "factory": "com.pharbers.ipaas.data.driver.api.factory.PhOperatorFactory",
+                        "args": {
+                            "inDFName": "d7a882dbbf0411e999e5e5d98db22f6d",
+                            "selects": "sales#quota#budget#new_account#quota_achv#sales_force_productivity#return_on_investment"
+                        }
+                    }
+                ]
+            },
+            {
+                "name": "d7a8d0fabf0411e999e5e5d98db22f6d",
+                "reference": "com.pharbers.ipaas.data.driver.api.job.PhBaseAction",
+                "factory": "com.pharbers.ipaas.data.driver.api.factory.PhActionFactory",
+                "args": {
+                    "null": "null"
+                },
+                "opers": [
+                    {
+                        "name": "d7a8a9ecbf0411e999e5e5d98db22f6d",
+                        "reference": "com.pharbers.ipaas.data.driver.operators.SaveParquetOperator",
+                        "factory": "com.pharbers.ipaas.data.driver.api.factory.PhOperatorFactory",
+                        "args": {
+                            "inDFName": "d7a8a9ebbf0411e999e5e5d98db22f6d",
+                            "path": "/test/UCBTest/output/output0814/FinalSummary"
+                        }
+                    }
+                ]
+            }
+        ]
+    }
+]
+

@@ -43,7 +43,6 @@ case class GroupOperator(name: String,
     val groups: Array[String] = defaultArgs.getAs[PhStringArgs]("groups").get.get.split("#")
     /** group 的 聚合操作集合，用`#`号分割 */
     val aggExprs: Array[Column] = defaultArgs.getAs[PhStringArgs]("aggExprs").get.get.split("#").map(x => expr(x))
-
     override def perform(pr: PhMapArgs[PhWorkArgs[Any]]): PhWorkArgs[DataFrame] = {
         val inDF = pr.getAs[PhDFArgs](inDFName).get.get
         val outDF = inDF.groupBy(groups.head, groups.tail: _*).agg(aggExprs.head ,aggExprs.tail: _*)

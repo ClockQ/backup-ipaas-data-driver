@@ -1,0 +1,32 @@
+name: kafkaConnectJob
+factory: com.pharbers.ipaas.data.driver.api.factory.PhJobFactory
+reference: com.pharbers.ipaas.data.driver.api.job.PhBaseJob
+actions:
+-   name: kafkaConnectAction
+    factory: com.pharbers.ipaas.data.driver.api.factory.PhActionFactory
+    reference: com.pharbers.ipaas.kafka.relay.job.PhKafkaConnectAction
+    args:
+        protocol: http
+        ip: 192.168.100.176
+        port: 8083
+        chanelId: d45972a8c4a04703840b635a41b8ec79
+    opers:
+    -   name: 创建SourceHDFSConnect
+        factory: com.pharbers.ipaas.data.driver.api.factory.PhOperatorFactory
+        reference: com.pharbers.ipaas.kafka.relay.operators.CreateSourceParquetOperator
+        args:
+            connectName: testSourceName
+            tasksMax: 1
+            topic: testTopic
+            hdfsPath: hdfs://192.168.100.137:9000/test/testCui/kafkaTest003/
+    -   name: 创建SinkConnect
+        factory: com.pharbers.ipaas.data.driver.api.factory.PhOperatorFactory
+        reference: com.pharbers.ipaas.kafka.relay.operators.HDFSSink2ESOperator
+        args:
+            connectName: testSinkName
+            tasksMax: 1
+            topic: testTopic
+            esUrl: http://192.168.100.174:9200
+    -   name: 创建monitor
+        factory: com.pharbers.ipaas.data.driver.api.factory.PhOperatorFactory
+        reference: com.pharbers.ipaas.kafka.relay.operators.MonitorOperator
