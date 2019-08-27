@@ -233,48 +233,6 @@ final case class PhFuncArgs[A: ClassTag, B: ClassTag](args: A => B) extends PhWo
     def get: A => B = args
 }
 
-/** iPaas Driver 的 PhSparkDriver 参数包装类
- *
- * @param args 实际包装的 PhSparkDriver 参数，没有默认值
- * @author clock
- * @version 0.1
- * @since 2019/6/15 17:31
- * @note 包装的运行环境
- */
-final case class PhSparkDriverArgs(args: PhSparkDriver) extends PhWorkArgs[PhSparkDriver] {
-    /** 获取实际包装的 PhSparkDriver 参数
-     *
-     * @return PhSparkDriver 返回包装的 PhSparkDriver
-     * @author clock
-     * @version 0.1
-     * @since 2019/6/15 17:34
-     */
-    def get: PhSparkDriver = args
-
-    override def isEmpty = true
-}
-
-/** iPaas Driver 的 PhLogDriver 参数包装类
- *
- * @param args 实际包装的 PhLogDriver 参数，没有默认值
- * @author clock
- * @version 0.1
- * @since 2019/6/18 17:31
- * @note 包装的运行环境
- */
-final case class PhLogDriverArgs(args: PhLogDriver) extends PhWorkArgs[PhLogDriver] {
-    /** 获取实际包装的 PhLogDriver 参数
-     *
-     * @return PhSparkDriver 返回包装的 PhLogDriver
-     * @author clock
-     * @version 0.1
-     * @since 2019/6/18 17:34
-     */
-    def get: PhLogDriver = args
-
-    override def isEmpty = true
-}
-
 /** iPaas Driver 的Nothing参数包装类, 是所有包装类的子类，相当于Nothing
  *
  * @author clock

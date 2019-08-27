@@ -6,7 +6,7 @@ import com.pharbers.ipaas.data.driver.api.factory._
 import com.pharbers.ipaas.data.driver.api.model.Job
 import com.pharbers.ipaas.data.driver.api.work.PhJobTrait
 
-/** Spark Config 实例
+/** Config 工具实例
   *
   * @author clock
   * @version 0.1

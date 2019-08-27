@@ -26,12 +26,4 @@ class TestReadAvro extends FunSuite {
 		df.printSchema()
 		df.show(false)
 	}
-
-	// read avro to rdd
-	//	val path = "hdfs:///test/dcs/testLogs/testSink/topics/Pfizer_201804_Gycx_20181127_001/partition=0"
-	//	val path = "hdfs:///test/dcs/testLogs/testSink/topics/Pfizer_201804_Gycx_20181127_001/partition=0/Pfizer_201804_Gycx_20181127_001+0+0000000000+0000001999.avro"
-	//	val avroRDD = sd.sc.hadoopFile[AvroWrapper[GenericRecord], NullWritable, AvroInputFormat[GenericRecord]](path)
-	//	val a = avroRDD.map(x => x._1.toString)
-	//	a.take(10).foreach(println(_))
-	//	avroRDD.map(l => new String(l._1.datum.get("username").toString())).first
 }

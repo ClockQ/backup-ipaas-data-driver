@@ -20,6 +20,7 @@ package com.pharbers.ipaas.data.driver.api.job
 import com.pharbers.ipaas.data.driver.api.work._
 import com.pharbers.ipaas.data.driver.libs.log.PhLogDriver
 import com.pharbers.ipaas.data.driver.exceptions.PhOperatorException
+import com.pharbers.ipaas.data.driver.libs.spark.PhSparkDriver
 
 /** Job 运行实体
  *
@@ -32,7 +33,11 @@ import com.pharbers.ipaas.data.driver.exceptions.PhOperatorException
  */
 case class PhBaseJob(name: String,
                      defaultArgs: PhMapArgs[PhWorkArgs[Any]],
-                     actionLst: Seq[PhActionTrait]) extends PhJobTrait {
+                     actionLst: Seq[PhActionTrait])(ctx: PhMapArgs[PhWorkArgs[_]])
+        extends PhJobTrait {
+
+    val _: PhSparkDriver = ctx.get("sparkDriver").asInstanceOf[PhSparkDriverArgs].get
+    val log: PhLogDriver = ctx.get("logDriver").asInstanceOf[PhLogDriverArgs].get
 
     /** Job 执行入口
      *
@@ -42,8 +47,6 @@ case class PhBaseJob(name: String,
      * @since 2019/6/11 16:43
      */
     def perform(pr: PhMapArgs[PhWorkArgs[Any]]): PhWorkArgs[Any] = {
-        val log: PhLogDriver = pr.get("logDriver").asInstanceOf[PhLogDriverArgs].get
-
         if (actionLst.isEmpty) pr
         else {
             actionLst.foldLeft(pr) { (l, r) =>

@@ -18,10 +18,9 @@
 package com.pharbers.ipaas.data.driver.api.factory
 
 import java.lang.reflect.InvocationTargetException
-
 import com.pharbers.ipaas.data.driver.api.model.{Operator, Plugin}
 import com.pharbers.ipaas.data.driver.exceptions.PhBuildJobException
-import com.pharbers.ipaas.data.driver.api.work.{PhMapArgs, PhOperatorTrait, PhPluginTrait, PhStringArgs}
+import com.pharbers.ipaas.data.driver.api.work.{PhMapArgs, PhOperatorTrait, PhPluginTrait, PhStringArgs, PhWorkArgs}
 
 /** Operator实体工厂
  *
@@ -30,7 +29,7 @@ import com.pharbers.ipaas.data.driver.api.work.{PhMapArgs, PhOperatorTrait, PhPl
  * @version 0.1
  * @since 2019/06/14 15:30
  */
-case class PhOperatorFactory(operator: Operator) extends PhFactoryTrait[PhOperatorTrait[Any]] {
+case class PhOperatorFactory(operator: Operator)(ctx: PhMapArgs[PhWorkArgs[_]]) extends PhFactoryTrait[PhOperatorTrait[Any]] {
 
     /** 构建 Operator 运行实例
      *
@@ -47,7 +46,7 @@ case class PhOperatorFactory(operator: Operator) extends PhFactoryTrait[PhOperat
         val plugin = operator.getPlugin match {
             case null => Seq()
             case one: Plugin => try {
-                Seq(getMethodMirror(one.getFactory)(one).asInstanceOf[PhFactoryTrait[PhPluginTrait[Any]]].inst())
+                Seq(getMethodMirror(one.getFactory)(one, ctx).asInstanceOf[PhFactoryTrait[PhPluginTrait[Any]]].inst())
             } catch {
                 case e: PhBuildJobException =>
                     throw PhBuildJobException(e.configs ++ List(operator.name + ":" + operator.args.asScala.mkString(",")), e.exception)
@@ -59,7 +58,8 @@ case class PhOperatorFactory(operator: Operator) extends PhFactoryTrait[PhOperat
             getMethodMirror(operator.getReference)(
                 operator.getName,
                 PhMapArgs(args),
-                plugin
+                plugin,
+                ctx
             ).asInstanceOf[PhOperatorTrait[Any]]
         } catch {
             case e: InvocationTargetException => throw PhBuildJobException(List(operator.name + ":" + operator.args.asScala.mkString("\n")), e.getCause)

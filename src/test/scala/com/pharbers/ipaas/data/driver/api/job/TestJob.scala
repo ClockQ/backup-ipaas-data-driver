@@ -2,19 +2,15 @@ package com.pharbers.ipaas.data.driver.api.job
 
 import org.apache.spark.sql.{Column, DataFrame}
 import com.pharbers.ipaas.data.driver.api.work._
-import com.pharbers.ipaas.data.driver.libs.log.{PhLogDriver, formatMsg}
 import org.scalatest.{BeforeAndAfterAll, FunSuite}
-import com.pharbers.ipaas.data.driver.libs.spark.PhSparkDriver
 
 class TestJob extends FunSuite with BeforeAndAfterAll {
-    implicit var sd: PhSparkDriver = _
-
     var testDF: DataFrame = _
 
     override def beforeAll(): Unit = {
-        sd = PhSparkDriver("test-driver")
-        val tmp = sd.ss.implicits
+        val tmp = env.sparkObj.sparkDriver.ss.implicits
         import tmp._
+
         testDF = List(
             ("name1", "prod1", "201801", 1),
             ("name2", "prod1", "201801", 2),
@@ -22,12 +18,11 @@ class TestJob extends FunSuite with BeforeAndAfterAll {
             ("name4", "prod2", "201801", 4)
         ).toDF("NAME", "PROD", "DATE", "VALUE")
 
-        require(sd != null)
         require(testDF != null)
     }
 
     override def afterAll(): Unit = {
-        sd.stopSpark()
+        env.sparkObj.sparkDriver.stopSpark()
     }
 
     case class lit(name: String, defaultArgs: PhMapArgs[PhWorkArgs[Any]], subPluginLst: Seq[PhPluginTrait[Any]])
@@ -77,7 +72,6 @@ class TestJob extends FunSuite with BeforeAndAfterAll {
 
 
     test("PhBaseAction") {
-
         val action1 = PhBaseAction("testAction1", PhMapArgs(), List(
             withColumn("withColumn1",
                 PhMapArgs(Map("inDFName" -> PhStringArgs("df"), "newColName" -> PhStringArgs("a"))),
@@ -91,12 +85,10 @@ class TestJob extends FunSuite with BeforeAndAfterAll {
                 PhMapArgs(Map("inDFName" -> PhStringArgs("withColumn2"), "newColName" -> PhStringArgs("c"))),
                 Seq(generateIdUdf("", PhMapArgs(), Nil))
             )
-        ))
+        ))(env.sparkObj.ctx)
 
         val result = action1.perform(PhMapArgs(Map(
-            "df" -> PhDFArgs(testDF),
-            "sparkDriver" -> PhSparkDriverArgs(sd),
-            "logDriver" -> PhLogDriverArgs(PhLogDriver(formatMsg("test_user", "test_traceID", "test_jobID")))
+            "df" -> PhDFArgs(testDF)
         )))
 
         println(result)
@@ -105,7 +97,6 @@ class TestJob extends FunSuite with BeforeAndAfterAll {
     }
 
     test("PhBaseJob") {
-
         val action1 = PhBaseAction("testAction1", PhMapArgs(), List(
             withColumn("withColumn1",
                 PhMapArgs(Map("inDFName" -> PhStringArgs("df"), "newColName" -> PhStringArgs("a"))),
@@ -119,7 +110,7 @@ class TestJob extends FunSuite with BeforeAndAfterAll {
                 PhMapArgs(Map("inDFName" -> PhStringArgs("withColumn2"), "newColName" -> PhStringArgs("c"))),
                 Seq(generateIdUdf("", PhMapArgs(), Nil))
             )
-        ))
+        ))(env.sparkObj.ctx)
 
         val action2 = PhBaseAction("testAction2", PhMapArgs(), List(
             withColumn("withColumn1",
@@ -134,13 +125,12 @@ class TestJob extends FunSuite with BeforeAndAfterAll {
                 PhMapArgs(Map("inDFName" -> PhStringArgs("withColumn2"), "newColName" -> PhStringArgs("cc"))),
                 Seq(generateIdUdf("", PhMapArgs(), Nil))
             )
-        ))
+        ))(env.sparkObj.ctx)
 
-        val job1 = PhBaseJob("testJob", PhMapArgs(), List(action1, action2))
+        val job1 = PhBaseJob("testJob", PhMapArgs(), List(action1, action2))(env.sparkObj.ctx)
+
         val result = job1.perform(PhMapArgs(Map(
-            "df" -> PhDFArgs(testDF),
-            "sparkDriver" -> PhSparkDriverArgs(sd),
-            "logDriver" -> PhLogDriverArgs(PhLogDriver(formatMsg("test_user", "test_traceID", "test_jobID")))
+            "df" -> PhDFArgs(testDF)
         )))
 
         println(result)

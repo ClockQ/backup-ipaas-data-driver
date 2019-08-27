@@ -33,8 +33,11 @@ import com.pharbers.ipaas.data.driver.exceptions.PhOperatorException
  */
 case class PhBaseAction(name: String,
                         defaultArgs: PhMapArgs[PhWorkArgs[Any]],
-                        operatorLst: Seq[PhOperatorTrait[Any]])
+                        operatorLst: Seq[PhOperatorTrait[Any]])(ctx: PhMapArgs[PhWorkArgs[_]])
         extends PhActionTrait {
+
+    val _: PhSparkDriver = ctx.get("sparkDriver").asInstanceOf[PhSparkDriverArgs].get
+    val log: PhLogDriver = ctx.get("logDriver").asInstanceOf[PhLogDriverArgs].get
 
     /** Action 执行入口
      *
@@ -45,8 +48,6 @@ case class PhBaseAction(name: String,
      * @since 2019/6/11 16:43
      */
     def perform(pr: PhMapArgs[PhWorkArgs[Any]]): PhWorkArgs[Any] = {
-        val _: PhSparkDriver = pr.get("sparkDriver").asInstanceOf[PhSparkDriverArgs].get
-        val log: PhLogDriver = pr.get("logDriver").asInstanceOf[PhLogDriverArgs].get
 
         if (operatorLst.isEmpty) pr
         else {
