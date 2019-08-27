@@ -8,7 +8,6 @@
     <artifactId>ipaas-data-driver</artifactId>
     <version>0.1</version>
 
-
     <!-- Maven profiles allow you to support both Scala 2.10, 2.11 and Scala 2.12 with
       the right dependencies for modules specified for each version separately -->
     <profiles>
@@ -38,11 +37,11 @@
             </repositories>
 
             <dependencies>
-                <dependency>
-                    <groupId>com.pharbers</groupId>
-                    <artifactId>pharbers-kafka</artifactId>
-                    <version>1.0</version>
-                </dependency>
+                <!--                <dependency>-->
+                <!--                    <groupId>com.pharbers</groupId>-->
+                <!--                    <artifactId>pharbers-kafka</artifactId>-->
+                <!--                    <version>1.0</version>-->
+                <!--                </dependency>-->
                 <!-- spark -->
                 <dependency>
                     <groupId>org.apache.spark</groupId>
@@ -97,16 +96,16 @@
                     <version>${jackson.version}</version>
                 </dependency>
                 <!--<dependency>-->
-                    <!--&lt;!&ndash; Note: core-annotations version x.y.0 is generally compatible with-->
-                         <!--(identical to) version x.y.1, x.y.2, etc. &ndash;&gt;-->
-                    <!--<groupId>com.fasterxml.jackson.core</groupId>-->
-                    <!--<artifactId>jackson-annotations</artifactId>-->
-                    <!--<version>${jackson.version}</version>-->
+                <!--&lt;!&ndash; Note: core-annotations version x.y.0 is generally compatible with-->
+                <!--(identical to) version x.y.1, x.y.2, etc. &ndash;&gt;-->
+                <!--<groupId>com.fasterxml.jackson.core</groupId>-->
+                <!--<artifactId>jackson-annotations</artifactId>-->
+                <!--<version>${jackson.version}</version>-->
                 <!--</dependency>-->
                 <!--<dependency>-->
-                    <!--<groupId>com.fasterxml.jackson.core</groupId>-->
-                    <!--<artifactId>jackson-databind</artifactId>-->
-                    <!--<version>${jackson.version}</version>-->
+                <!--<groupId>com.fasterxml.jackson.core</groupId>-->
+                <!--<artifactId>jackson-databind</artifactId>-->
+                <!--<version>${jackson.version}</version>-->
                 <!--</dependency>-->
 
                 <!-- https://mvnrepository.com/artifact/org.scalaj/scalaj-http -->
@@ -142,11 +141,11 @@
                     <version>3.5.0</version>
                 </dependency>
                 <!--tm mongodb聚合-->
-                <dependency>
-                    <groupId>pharbers.com</groupId>
-                    <artifactId>TM-Answer-Agg</artifactId>
-                    <version>1.0-SNAPSHOT</version>
-                </dependency>
+                <!--                <dependency>-->
+                <!--                    <groupId>pharbers.com</groupId>-->
+                <!--                    <artifactId>TM-Answer-Agg</artifactId>-->
+                <!--                    <version>1.0-SNAPSHOT</version>-->
+                <!--                </dependency>-->
             </dependencies>
         </profile>
     </profiles>
@@ -180,44 +179,44 @@
                 </executions>
             </plugin>
             <!--<plugin>-->
-                <!--<groupId>net.alchim31.maven</groupId>-->
-                <!--<artifactId>scala-maven-plugin</artifactId>-->
-                <!--<version>3.2.1</version>-->
-                <!--<executions>-->
-                    <!--<execution>-->
-                        <!--<id>scala-compile-first</id>-->
-                        <!--<phase>process-resources</phase>-->
-                        <!--<goals>-->
-                            <!--<goal>add-source</goal>-->
-                            <!--<goal>compile</goal>-->
-                        <!--</goals>-->
-                    <!--</execution>-->
-                    <!--<execution>-->
-                        <!--<id>scala-test-compile</id>-->
-                        <!--<phase>process-test-resources</phase>-->
-                        <!--<goals>-->
-                            <!--<goal>testCompile</goal>-->
-                        <!--</goals>-->
-                    <!--</execution>-->
-                    <!--<execution>-->
-                        <!--<id>Scaladoc</id>-->
-                        <!--<goals>-->
-                            <!--<goal>doc</goal>-->
-                        <!--</goals>-->
-                        <!--<phase>prepare-package</phase>-->
-                        <!--<configuration>-->
-                            <!--<args>-->
-                                <!--<arg>-no-link-warnings</arg>-->
-                            <!--</args>-->
-                        <!--</configuration>-->
-                    <!--</execution>-->
-                <!--</executions>-->
-                <!--<configuration>-->
-                    <!--<args>-->
-                        <!--&lt;!&ndash; work-around for https://issues.scala-lang.org/browse/SI-8358 &ndash;&gt;-->
-                        <!--<arg>-nobootcp</arg>-->
-                    <!--</args>-->
-                <!--</configuration>-->
+            <!--<groupId>net.alchim31.maven</groupId>-->
+            <!--<artifactId>scala-maven-plugin</artifactId>-->
+            <!--<version>3.2.1</version>-->
+            <!--<executions>-->
+            <!--<execution>-->
+            <!--<id>scala-compile-first</id>-->
+            <!--<phase>process-resources</phase>-->
+            <!--<goals>-->
+            <!--<goal>add-source</goal>-->
+            <!--<goal>compile</goal>-->
+            <!--</goals>-->
+            <!--</execution>-->
+            <!--<execution>-->
+            <!--<id>scala-test-compile</id>-->
+            <!--<phase>process-test-resources</phase>-->
+            <!--<goals>-->
+            <!--<goal>testCompile</goal>-->
+            <!--</goals>-->
+            <!--</execution>-->
+            <!--<execution>-->
+            <!--<id>Scaladoc</id>-->
+            <!--<goals>-->
+            <!--<goal>doc</goal>-->
+            <!--</goals>-->
+            <!--<phase>prepare-package</phase>-->
+            <!--<configuration>-->
+            <!--<args>-->
+            <!--<arg>-no-link-warnings</arg>-->
+            <!--</args>-->
+            <!--</configuration>-->
+            <!--</execution>-->
+            <!--</executions>-->
+            <!--<configuration>-->
+            <!--<args>-->
+            <!--&lt;!&ndash; work-around for https://issues.scala-lang.org/browse/SI-8358 &ndash;&gt;-->
+            <!--<arg>-nobootcp</arg>-->
+            <!--</args>-->
+            <!--</configuration>-->
             <!--</plugin>-->
             <!--disable surefire-->
             <plugin>
@@ -274,40 +273,40 @@
             </plugin>
             <!--主类声明-->
             <!--<plugin>-->
-                <!--<groupId>org.apache.maven.plugins</groupId>-->
-                <!--<artifactId>maven-jar-plugin</artifactId>-->
-                <!--<configuration>-->
-                    <!--<archive>-->
-                        <!--<manifest>-->
-                            <!--<addClasspath>true</addClasspath>-->
-                            <!--<classpathPrefix>lib/</classpathPrefix>&lt;!&ndash;声明主类使用类库的相对目录名称&ndash;&gt;-->
-                            <!--<mainClass>com.pharbers.ipaas.Main</mainClass>-->
-                            <!--&lt;!&ndash;默认true SNAPSHOT会变成时间戳&ndash;&gt;-->
-                            <!--<useUniqueVersions>false</useUniqueVersions>-->
-                        <!--</manifest>-->
-                    <!--</archive>-->
-                <!--</configuration>-->
+            <!--<groupId>org.apache.maven.plugins</groupId>-->
+            <!--<artifactId>maven-jar-plugin</artifactId>-->
+            <!--<configuration>-->
+            <!--<archive>-->
+            <!--<manifest>-->
+            <!--<addClasspath>true</addClasspath>-->
+            <!--<classpathPrefix>lib/</classpathPrefix>&lt;!&ndash;声明主类使用类库的相对目录名称&ndash;&gt;-->
+            <!--<mainClass>com.pharbers.ipaas.Main</mainClass>-->
+            <!--&lt;!&ndash;默认true SNAPSHOT会变成时间戳&ndash;&gt;-->
+            <!--<useUniqueVersions>false</useUniqueVersions>-->
+            <!--</manifest>-->
+            <!--</archive>-->
+            <!--</configuration>-->
             <!--</plugin>-->
             <!--依赖类库复制插件-->
             <!--<plugin>-->
-                <!--<groupId>org.apache.maven.plugins</groupId>-->
-                <!--<artifactId>maven-dependency-plugin</artifactId>-->
-                <!--<executions>-->
-                    <!--<execution>-->
-                        <!--<id>copy-dependencies</id>-->
-                        <!--<phase>prepare-package</phase>-->
-                        <!--<goals>-->
-                            <!--<goal>copy-dependencies</goal>-->
-                        <!--</goals>-->
-                        <!--<configuration>-->
-                            <!--&lt;!&ndash;${project.build.directory}是项目构建完成后的根目录，可执行的Jar在此目录&ndash;&gt;-->
-                            <!--<outputDirectory>${project.build.directory}/lib</outputDirectory>-->
-                            <!--<overWriteReleases>false</overWriteReleases>-->
-                            <!--<overWriteSnapshots>false</overWriteSnapshots>-->
-                            <!--<overWriteIfNewer>true</overWriteIfNewer>-->
-                        <!--</configuration>-->
-                    <!--</execution>-->
-                <!--</executions>-->
+            <!--<groupId>org.apache.maven.plugins</groupId>-->
+            <!--<artifactId>maven-dependency-plugin</artifactId>-->
+            <!--<executions>-->
+            <!--<execution>-->
+            <!--<id>copy-dependencies</id>-->
+            <!--<phase>prepare-package</phase>-->
+            <!--<goals>-->
+            <!--<goal>copy-dependencies</goal>-->
+            <!--</goals>-->
+            <!--<configuration>-->
+            <!--&lt;!&ndash;${project.build.directory}是项目构建完成后的根目录，可执行的Jar在此目录&ndash;&gt;-->
+            <!--<outputDirectory>${project.build.directory}/lib</outputDirectory>-->
+            <!--<overWriteReleases>false</overWriteReleases>-->
+            <!--<overWriteSnapshots>false</overWriteSnapshots>-->
+            <!--<overWriteIfNewer>true</overWriteIfNewer>-->
+            <!--</configuration>-->
+            <!--</execution>-->
+            <!--</executions>-->
             <!--</plugin>-->
             <!--将依赖打包成一个jar，与上面主类设置冲突-->
             <plugin>
