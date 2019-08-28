@@ -20,12 +20,11 @@ package com.pharbers.ipaas.data.driver.libs.input
 import java.io.InputStream
 import scala.reflect.ClassTag
 
-/** 读取输入文件接口
+/** 解析输入流接口
  *
  * @author dcs
  * @version 0.1
  * @since 2019/6/11 15:27
- * @note
  */
 trait InputTrait {
 
