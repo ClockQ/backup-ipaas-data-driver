@@ -41,7 +41,7 @@ object Main {
             case "JSON" => JsonInput().readObjects[Job](readStream)
         }
 
-        implicit val sd: PhSparkDriver = PhSparkDriver("test-driver")
+        implicit val sd: PhSparkDriver = PhSparkDriver("job-context")
         sd.sc.setLogLevel("ERROR")
         val ctx = PhMapArgs(Map(
             "sparkDriver" -> PhSparkDriverArgs(sd),
