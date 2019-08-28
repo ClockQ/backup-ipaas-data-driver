@@ -18,17 +18,17 @@
 package com.pharbers.ipaas.data.driver.api.factory
 
 import com.pharbers.ipaas.data.driver.api.model.Action
-import com.pharbers.ipaas.data.driver.exceptions.{PhBuildJobException, PhOperatorException}
-import com.pharbers.ipaas.data.driver.api.work.{PhActionTrait, PhMapArgs, PhOperatorTrait, PhStringArgs}
+import com.pharbers.ipaas.data.driver.exceptions.PhBuildJobException
+import com.pharbers.ipaas.data.driver.api.work.{PhActionTrait, PhMapArgs, PhOperatorTrait, PhStringArgs, PhWorkArgs}
 
 /** Action 实体工厂
-  *
-  * @param action model.Action 对象
-  * @author dcs
-  * @version 0.1
-  * @since 2019/06/14 15:30
-  */
-case class PhActionFactory(action: Action) extends PhFactoryTrait[PhActionTrait] {
+ *
+ * @param action model.Action 对象
+ * @author dcs
+ * @version 0.1
+ * @since 2019/06/14 15:30
+ */
+case class PhActionFactory(action: Action)(implicit ctx: PhMapArgs[PhWorkArgs[_]]) extends PhFactoryTrait[PhActionTrait] {
 
     /** 构建 Action 运行实例 */
     override def inst(): PhActionTrait = {
@@ -43,7 +43,7 @@ case class PhActionFactory(action: Action) extends PhFactoryTrait[PhActionTrait]
             case null => Seq()
             case lst => lst.map { oper =>
                 try {
-                    getMethodMirror(oper.getFactory)(oper).asInstanceOf[PhFactoryTrait[PhOperatorTrait[Any]]].inst()
+                    getMethodMirror(oper.getFactory)(oper, ctx).asInstanceOf[PhFactoryTrait[PhOperatorTrait[Any]]].inst()
                 } catch {
                     case e: PhBuildJobException => throw PhBuildJobException(e.configs ++ List(action.name + ":" + args.map(x => (x._1, x._2.get)).mkString(",")), e.exception)
                     case e: Exception => throw e
@@ -54,7 +54,8 @@ case class PhActionFactory(action: Action) extends PhFactoryTrait[PhActionTrait]
         getMethodMirror(action.getReference)(
             action.getName,
             PhMapArgs(args),
-            opers
+            opers,
+            ctx
         ).asInstanceOf[PhActionTrait]
     }
 }

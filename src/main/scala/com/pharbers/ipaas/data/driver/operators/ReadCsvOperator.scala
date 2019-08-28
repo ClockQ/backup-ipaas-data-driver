@@ -23,20 +23,23 @@ import com.pharbers.ipaas.data.driver.libs.spark.util.readCsv
 import com.pharbers.ipaas.data.driver.libs.spark.PhSparkDriver
 
 /** 读取 CSV 的算子
-  *
-  * @author clock
-  * @version 0.1
-  * @since 2019/6/15 17:59
-  * @example 默认参数例子
-  * {{{
-  *       path: hdfs:///test.csv //CSV 的路径
-  *       delimiter: "," //CSV 的分隔符，默认为 31.toChar.toString
-  * }}}
-  */
+ *
+ * @author clock
+ * @version 0.1
+ * @since 2019/6/15 17:59
+ * @example 默认参数例子
+ * {{{
+ *       path: hdfs:///test.csv //CSV 的路径
+ *       delimiter: "," //CSV 的分隔符，默认为 31.toChar.toString
+ * }}}
+ */
 case class ReadCsvOperator(name: String,
                            defaultArgs: PhMapArgs[PhWorkArgs[Any]],
-                           pluginLst: Seq[PhPluginTrait[Any]])
+                           pluginLst: Seq[PhPluginTrait[Any]])(implicit ctx: PhMapArgs[PhWorkArgs[_]])
         extends PhOperatorTrait[DataFrame] {
+
+    /** spark driver 实例 */
+    val sd: PhSparkDriver = ctx.get("sparkDriver").asInstanceOf[PhSparkDriverArgs].get
 
     /** CSV 的路径 */
     val path: String = defaultArgs.getAs[PhStringArgs]("path").get.get
@@ -47,8 +50,6 @@ case class ReadCsvOperator(name: String,
     }
 
     override def perform(pr: PhMapArgs[PhWorkArgs[Any]]): PhWorkArgs[DataFrame] = {
-        implicit val sd: PhSparkDriver = pr.get("sparkDriver").asInstanceOf[PhSparkDriverArgs].get
-
-        PhDFArgs(sd.setUtil(readCsv()).readCsv(path, delimiter))
+        PhDFArgs(sd.setUtil(readCsv()(sd)).readCsv(path, delimiter))
     }
 }

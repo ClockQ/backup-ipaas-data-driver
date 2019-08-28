@@ -34,14 +34,16 @@ import com.pharbers.ipaas.data.driver.libs.spark.util.readParquet
   */
 case class ReadParquetOperator(name: String,
                                defaultArgs: PhMapArgs[PhWorkArgs[Any]],
-                               pluginLst: Seq[PhPluginTrait[Any]])
+                               pluginLst: Seq[PhPluginTrait[Any]])(implicit ctx: PhMapArgs[PhWorkArgs[_]])
         extends PhOperatorTrait[DataFrame] {
+
+    /** spark driver 实例 */
+    val sd: PhSparkDriver = ctx.get("sparkDriver").asInstanceOf[PhSparkDriverArgs].get
 
     /** Parquet 的路径 */
     val path: String = defaultArgs.getAs[PhStringArgs]("path").get.get
 
     override def perform(pr: PhMapArgs[PhWorkArgs[Any]]): PhWorkArgs[DataFrame] = {
-        implicit val sd: PhSparkDriver = pr.get("sparkDriver").asInstanceOf[PhSparkDriverArgs].get
-        PhDFArgs(sd.setUtil(readParquet()).readParquet(path))
+        PhDFArgs(sd.setUtil(readParquet()(sd)).readParquet(path))
     }
 }

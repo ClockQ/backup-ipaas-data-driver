@@ -1,14 +1,13 @@
 package com.pharbers.ipaas.data.driver.plugins
 
-import com.pharbers.ipaas.data.driver.api.work.{PhColArgs, PhMapArgs, PhStringArgs}
-import com.pharbers.ipaas.data.driver.libs.spark.PhSparkDriver
 import org.apache.spark.sql.DataFrame
 import org.apache.spark.sql.functions._
 import org.scalatest.FunSuite
+import com.pharbers.ipaas.data.driver.api.work.{PhColArgs, PhMapArgs, PhStringArgs}
 
 class TestCalcEIPlugin extends FunSuite {
-    implicit val sparkDriver: PhSparkDriver = PhSparkDriver("testSparkDriver")
 
+    import env.sparkObj._
     import sparkDriver.ss.implicits._
 
     val partitionColumnNames = List("PROD")

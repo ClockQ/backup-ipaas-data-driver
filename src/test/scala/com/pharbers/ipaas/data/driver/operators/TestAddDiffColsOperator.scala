@@ -17,22 +17,19 @@
 
 package com.pharbers.ipaas.data.driver.operators
 
-import com.pharbers.ipaas.data.driver.api.work.{PhDFArgs, PhMapArgs, PhStringArgs}
-import com.pharbers.ipaas.data.driver.libs.spark.PhSparkDriver
-import com.pharbers.ipaas.data.driver.plugins.ExprPlugin
 import org.apache.spark.sql.DataFrame
 import org.scalatest.{BeforeAndAfterAll, FunSuite}
+import com.pharbers.ipaas.data.driver.api.work.{PhDFArgs, PhMapArgs, PhStringArgs}
 
 class TestAddDiffColsOperator extends FunSuite with BeforeAndAfterAll {
-    implicit var sd: PhSparkDriver = _
+
+    import env.sparkObj._
+    import sparkDriver.ss.implicits._
+
     var testDF1: DataFrame = _
     var testDF2: DataFrame = _
 
     override def beforeAll(): Unit = {
-        sd = PhSparkDriver("test-driver")
-        val tmp = sd.ss.implicits
-        import tmp._
-
         testDF1 = List(
             ("name1", "prod1", "201801", 1),
             ("name2", "prod1", "201801", 2),
@@ -47,7 +44,6 @@ class TestAddDiffColsOperator extends FunSuite with BeforeAndAfterAll {
             ("name4", "prod2", "201801", 4)
         ).toDF("NAME2", "PROD2", "DATE2", "VALUE2")
 
-        require(sd != null)
         require(testDF1 != null)
         require(testDF2 != null)
     }

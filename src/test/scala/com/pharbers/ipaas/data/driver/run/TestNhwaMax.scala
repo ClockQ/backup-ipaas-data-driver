@@ -1,27 +1,23 @@
 package com.pharbers.ipaas.data.driver.run
 
 import env.configObj._
+import test.tag.MaxTag
 import org.scalatest.FunSuite
 import org.apache.spark.sql.functions._
 import com.pharbers.ipaas.data.driver.api.work._
-import com.pharbers.ipaas.data.driver.libs.spark.PhSparkDriver
-import com.pharbers.ipaas.data.driver.libs.log.{PhLogDriver, formatMsg}
 import com.pharbers.ipaas.data.driver.libs.spark.util.{readCsv, readParquet}
 
+@MaxTag
 class TestNhwaMax extends FunSuite {
-    implicit val sd: PhSparkDriver = PhSparkDriver("test-driver")
-    sd.addJar("target/ipaas-data-driver-0.1.jar")
-    sd.sc.setLogLevel("ERROR")
+
+    import env.sparkObj._
 
     test("test nhwa MZ clean") {
-        val phJobs = inst(readJobConfig("max_config/nhwa/MZclean.yaml"))
-        val result = phJobs.head.perform(PhMapArgs(Map(
-            "sparkDriver" -> PhSparkDriverArgs(sd),
-            "logDriver" -> PhLogDriverArgs(PhLogDriver(formatMsg("test_user", "test_traceID", "test_jobID")))
-        )))
+        val phJobs = inst(readJobConfig("src/test/max_config/nhwa/MZclean.yaml"))
+        val result = phJobs.head.perform(PhMapArgs(Map()))
 
         val cleanDF = result.toMapArgs[PhDFArgs].get("cleanResult").get
-        val cleanTrueDF = sd.setUtil(readParquet()).readParquet("hdfs:///workData/Clean/20bfd585-c889-4385-97ec-a8d4c77d71cc")
+        val cleanTrueDF = sparkDriver.setUtil(readParquet()).readParquet("hdfs:///workData/Clean/20bfd585-c889-4385-97ec-a8d4c77d71cc")
 
         cleanDF.show(false)
         cleanTrueDF.show(false)
@@ -47,14 +43,11 @@ class TestNhwaMax extends FunSuite {
     }
 
     test("test nhwa MZ panel") {
-        val phJobs = inst(readJobConfig("max_config/nhwa/MZpanelByCpa.yaml"))
-        val result = phJobs.head.perform(PhMapArgs(Map(
-            "sparkDriver" -> PhSparkDriverArgs(sd),
-            "logDriver" -> PhLogDriverArgs(PhLogDriver(formatMsg("test_user", "test_traceID", "test_jobID")))
-        )))
+        val phJobs = inst(readJobConfig("src/test/max_config/nhwa/MZpanelByCpa.yaml"))
+        val result = phJobs.head.perform(PhMapArgs(Map()))
 
         val panelDF = result.toMapArgs[PhDFArgs].get("panelResult").get
-		val panelTrueDF = sd.setUtil(readCsv()).readCsv("hdfs:///test/qi/qi/1809_panel.csv")
+		val panelTrueDF = sparkDriver.setUtil(readCsv()).readCsv("hdfs:///test/qi/qi/1809_panel.csv")
 
         panelDF.show(false)
 		panelTrueDF.show(false)
@@ -68,24 +61,21 @@ class TestNhwaMax extends FunSuite {
         val panelTrueDFUnits = panelTrueDF.agg(sum("Units")).first.get(0).toString.toDouble
         println(panelDFUnits)
         println(panelTrueDFUnits)
-        assert(panelDFUnits == panelTrueDFUnits)
+        assert(Math.abs(panelDFUnits - panelTrueDFUnits) < panelTrueDFUnits * 0.01)
 
         val panelDFSales = panelDF.agg(sum("SALES")).first.get(0).toString.toDouble
         val panelTrueDFSales = panelTrueDF.agg(sum("Sales")).first.get(0).toString.toDouble
         println(panelDFSales)
         println(panelTrueDFSales)
-        assert(panelDFSales == panelTrueDFSales)
+        assert(Math.abs(panelDFSales - panelTrueDFSales) < panelTrueDFSales * 0.01)
     }
 
 	test("test nhwa MZ max") {
-        val phJobs = inst(readJobConfig("max_config/nhwa/MZmax.yaml"))
-        val result = phJobs.head.perform(PhMapArgs(Map(
-            "sparkDriver" -> PhSparkDriverArgs(sd),
-            "logDriver" -> PhLogDriverArgs(PhLogDriver(formatMsg("test_user", "test_traceID", "test_jobID")))
-        )))
+        val phJobs = inst(readJobConfig("src/test/max_config/nhwa/MZmax.yaml"))
+        val result = phJobs.head.perform(PhMapArgs(Map()))
 
 		val maxDF = result.toMapArgs[PhDFArgs].get("maxResult").get
-		val maxTrueDF = sd.setUtil(readParquet()).readParquet("hdfs:///test/qi/qi/new_max_true")
+		val maxTrueDF = sparkDriver.setUtil(readParquet()).readParquet("hdfs:///test/qi/qi/new_max_true")
 
         maxDF.show(false)
         maxTrueDF.show(false)

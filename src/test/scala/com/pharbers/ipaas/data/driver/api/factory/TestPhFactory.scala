@@ -1,10 +1,8 @@
 package com.pharbers.ipaas.data.driver.api.factory
 
 import java.util
-
 import com.pharbers.ipaas.data.driver.api.model._
 import org.scalatest.{BeforeAndAfterAll, FunSuite}
-
 import scala.collection.JavaConverters.mapAsJavaMapConverter
 
 class TestPhFactory extends FunSuite with BeforeAndAfterAll {
@@ -66,21 +64,21 @@ class TestPhFactory extends FunSuite with BeforeAndAfterAll {
     }
 
     test("PhPluginFactory") {
-        val inst = PhPluginFactory(plugin).inst()
+        val inst = PhPluginFactory(plugin)(env.sparkObj.ctx).inst()
 
         assert("plugin" == inst.name)
         assert("sub" == inst.subPluginLst.head.name)
     }
 
     test("PhOperatorFactory") {
-        val inst = PhOperatorFactory(operator).inst()
+        val inst = PhOperatorFactory(operator)(env.sparkObj.ctx).inst()
 
         assert("operator" == inst.name)
         assert("plugin" == inst.pluginLst.head.name)
     }
 
     test("PhActionFactory") {
-        val inst = PhActionFactory(action).inst()
+        val inst = PhActionFactory(action)(env.sparkObj.ctx).inst()
 
         assert("action" == inst.name)
         assert("operator" == inst.operatorLst.head.name)
@@ -88,7 +86,7 @@ class TestPhFactory extends FunSuite with BeforeAndAfterAll {
     }
 
     test("PhJobFactory") {
-        val inst = PhJobFactory(job).inst()
+        val inst = PhJobFactory(job)(env.sparkObj.ctx).inst()
 
         assert("job" == inst.name)
         assert("action" == inst.actionLst.head.name)

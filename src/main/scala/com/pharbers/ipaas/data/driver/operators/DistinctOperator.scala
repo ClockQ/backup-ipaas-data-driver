@@ -21,18 +21,18 @@ import com.pharbers.ipaas.data.driver.api.work._
 import org.apache.spark.sql.{Column, DataFrame}
 
 /** 随机去重算子
-  *
-  * @author clock
-  * @version 0.1
-  * @since 2019-06-18 10:21
-  * @example 默认参数例子
-  * {{{
-  * inDFName: actionName // 要作用的 DataFrame 名字
-  * }}}
-  */
+ *
+ * @author clock
+ * @version 0.1
+ * @since 2019-06-18 10:21
+ * @example 默认参数例子
+ * {{{
+ * inDFName: actionName // 要作用的 DataFrame 名字
+ * }}}
+ */
 case class DistinctOperator(name: String,
                             defaultArgs: PhMapArgs[PhWorkArgs[Any]],
-                            pluginLst: Seq[PhPluginTrait[Column]])
+                            pluginLst: Seq[PhPluginTrait[Column]])(implicit ctx: PhMapArgs[PhWorkArgs[_]])
         extends PhOperatorTrait[DataFrame] {
 
     /** 要作用的 DataFrame 名字 */

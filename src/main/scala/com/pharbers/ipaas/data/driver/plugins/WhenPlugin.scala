@@ -22,19 +22,19 @@ import org.apache.spark.sql.functions._
 import com.pharbers.ipaas.data.driver.api.work._
 
 /** 按照指定分隔符拼接多列为字符串插件
-  *
-  * @author dcs
-  * @version 0.1
-  * @since 2019/6/12 18:25
-  * @example 默认参数例子
-  * {{{
-  *         condition: "VALUE % 2 == 1" // when 条件
-  *         value: "VALUE + 1" // 符合条件的结果
-  * }}}
-  */
+ *
+ * @author dcs
+ * @version 0.1
+ * @since 2019/6/12 18:25
+ * @example 默认参数例子
+ * {{{
+ *         condition: "VALUE % 2 == 1" // when 条件
+ *         value: "VALUE + 1" // 符合条件的结果
+ * }}}
+ */
 case class WhenPlugin(name: String,
                       defaultArgs: PhMapArgs[PhWorkArgs[Any]],
-                      subPluginLst: Seq[PhPluginTrait[Column]])
+                      subPluginLst: Seq[PhPluginTrait[Column]])(implicit ctx: PhMapArgs[PhWorkArgs[_]])
         extends PhPluginTrait[Column] {
 
     /** when 条件 */

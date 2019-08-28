@@ -19,16 +19,16 @@ package com.pharbers.ipaas.data.driver.api.factory
 
 import com.pharbers.ipaas.data.driver.api.model.Job
 import com.pharbers.ipaas.data.driver.exceptions.PhBuildJobException
-import com.pharbers.ipaas.data.driver.api.work.{PhActionTrait, PhJobTrait, PhMapArgs, PhStringArgs}
+import com.pharbers.ipaas.data.driver.api.work.{PhActionTrait, PhJobTrait, PhMapArgs, PhStringArgs, PhWorkArgs}
 
 /** Job 实体工厂
-  *
-  * @param action model.Job 对象
-  * @author dcs
-  * @version 0.1
-  * @since 2019/06/14 15:30
-  */
-case class PhJobFactory(job: Job) extends PhFactoryTrait[PhJobTrait] {
+ *
+ * @param job model.Job 对象
+ * @author dcs
+ * @version 0.1
+ * @since 2019/06/14 15:30
+ */
+case class PhJobFactory(job: Job)(implicit ctx: PhMapArgs[PhWorkArgs[_]]) extends PhFactoryTrait[PhJobTrait] {
 
     /** 构建 Job 运行实例 */
     override def inst(): PhJobTrait = {
@@ -43,7 +43,7 @@ case class PhJobFactory(job: Job) extends PhFactoryTrait[PhJobTrait] {
             case null => Seq()
             case lst => lst.asScala.map { action =>
                 try {
-                    getMethodMirror(action.getFactory)(action).asInstanceOf[PhFactoryTrait[PhActionTrait]].inst()
+                    getMethodMirror(action.getFactory)(action, ctx).asInstanceOf[PhFactoryTrait[PhActionTrait]].inst()
                 } catch {
                     case e: PhBuildJobException => throw PhBuildJobException(e.configs ++ List(job.name + ":" + args.mkString(",")), e.exception)
                     case e: Exception => throw e
@@ -54,7 +54,8 @@ case class PhJobFactory(job: Job) extends PhFactoryTrait[PhJobTrait] {
         getMethodMirror(job.getReference)(
             job.getName,
             PhMapArgs(args),
-            actions
+            actions,
+            ctx
         ).asInstanceOf[PhJobTrait]
     }
 }

@@ -33,11 +33,12 @@ import org.apache.spark.sql.{Column, DataFrame}
   */
 case class UnionOperator(name: String,
                          defaultArgs: PhMapArgs[PhWorkArgs[Any]],
-                         pluginLst: Seq[PhPluginTrait[Column]]) extends PhOperatorTrait[DataFrame] {
-	/** 要作用的 DataFrame 名字 */
-	val inDFName: String = defaultArgs.getAs[PhStringArgs]("inDFName").get.get
-	/** 连接的 DataFrame 名字 */
-	val unionDFName: String = defaultArgs.getAs[PhStringArgs]("unionDFName").get.get
+                         pluginLst: Seq[PhPluginTrait[Column]])(implicit ctx: PhMapArgs[PhWorkArgs[_]])
+        extends PhOperatorTrait[DataFrame] {
+    /**要作用的 DataFrame 名字*/
+    val inDFName: String = defaultArgs.getAs[PhStringArgs]("inDFName").get.get
+    /**连接的 DataFrame 名字*/
+    val unionDFName: String = defaultArgs.getAs[PhStringArgs]("unionDFName").get.get
 
 	import org.apache.spark.sql.functions._
 

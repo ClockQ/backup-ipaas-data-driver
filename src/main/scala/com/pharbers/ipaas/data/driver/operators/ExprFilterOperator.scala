@@ -22,19 +22,19 @@ import org.apache.spark.sql.{Column, DataFrame}
 import com.pharbers.ipaas.data.driver.api.work._
 
 /** 使用 Expr 表达式过滤 DataFrame
-  *
-  * @author clock
-  * @version 0.1
-  * @since 2019/6/11 16:59
-  * @example 默认参数例子
-  * {{{
-  * inDFName: actionName // 要作用的 DataFrame 名字
-  * filter: DATE == 201801 // 过滤的 Expr 表达式
-  * }}}
-  */
+ *
+ * @author clock
+ * @version 0.1
+ * @since 2019/6/11 16:59
+ * @example 默认参数例子
+ * {{{
+ * inDFName: actionName // 要作用的 DataFrame 名字
+ * filter: DATE == 201801 // 过滤的 Expr 表达式
+ * }}}
+ */
 case class ExprFilterOperator(name: String,
                               defaultArgs: PhMapArgs[PhWorkArgs[Any]],
-                              pluginLst: Seq[PhPluginTrait[Column]])
+                              pluginLst: Seq[PhPluginTrait[Column]])(implicit ctx: PhMapArgs[PhWorkArgs[_]])
         extends PhOperatorTrait[DataFrame] {
     /** 要作用的 DataFrame 名字 */
     val inDFName: String = defaultArgs.getAs[PhStringArgs]("inDFName").get.get

@@ -22,28 +22,28 @@ import org.codehaus.jackson.map.ObjectMapper
 import scala.tools.nsc.interpreter.InputStream
 
 /** 读取json配置文件
-  *
-  * @author dcs
-  * @version 0.1
-  * @since 2019/6/11 15:27
-  */
+ *
+ * @author dcs
+ * @version 0.1
+ * @since 2019/6/11 15:27
+ */
 case class JsonInput() extends InputTrait {
 
     /** 读取Json数据为单个对象 T
-      *
-      * @example
-      * {{{
-      * val data =
-      * """
-      * |{
-      * |    "name" : "testName",
-      * |    "factory" : "testFactory"
-      * |}
-      * """.stripMargin
-      * val stream = new ByteArrayInputStream(data.getBytes)
-      * val plugin = JsonInput().readObject[Plugin](stream)
-      * }}}
-      */
+     *
+     * @example
+     * {{{
+     * val data =
+     * """
+     * |{
+     * |    "name" : "testName",
+     * |    "factory" : "testFactory"
+     * |}
+     * """.stripMargin
+     * val stream = new ByteArrayInputStream(data.getBytes)
+     * val plugin = JsonInput().readObject[Plugin](stream)
+     * }}}
+     */
     def readObject[T: ClassTag](stream: InputStream): T =
     //todo: 全局应该只有一个ObjectMapper
         JsonInput.mapper.readValue(stream, implicitly[ClassTag[T]].runtimeClass).asInstanceOf[T]
@@ -53,26 +53,26 @@ case class JsonInput() extends InputTrait {
         JsonInput.mapper.readValue(json, implicitly[ClassTag[T]].runtimeClass).asInstanceOf[T]
 
     /** 读取Json数据为对象集合 Seq[T]
-      *
-      * @example
-      * {{{
-      * val data =
-      * """
-      * |[
-      * |    {
-      * |        "name" : "testName1",
-      * |        "factory" : "testFactory1"
-      * |    },
-      * |    {
-      * |        "name" : "testName2",
-      * |        "factory" : "testFactory2"
-      * |    }
-      * |]
-      * """.stripMargin
-      * val stream = new ByteArrayInputStream(data.getBytes)
-      * val plugin = JsonInput().readObjects[Plugin](stream)
-      * }}}
-      */
+     *
+     * @example
+     * {{{
+     * val data =
+     * """
+     * |[
+     * |    {
+     * |        "name" : "testName1",
+     * |        "factory" : "testFactory1"
+     * |    },
+     * |    {
+     * |        "name" : "testName2",
+     * |        "factory" : "testFactory2"
+     * |    }
+     * |]
+     * """.stripMargin
+     * val stream = new ByteArrayInputStream(data.getBytes)
+     * val plugin = JsonInput().readObjects[Plugin](stream)
+     * }}}
+     */
     def readObjects[T: ClassTag](stream: InputStream): Seq[T] = {
         import scala.collection.JavaConverters._
         val javaType = JsonInput.mapper.getTypeFactory.constructParametricType(classOf[java.util.List[T]], implicitly[ClassTag[T]].runtimeClass)
@@ -80,6 +80,6 @@ case class JsonInput() extends InputTrait {
     }
 }
 
-object JsonInput{
-    val mapper =  new ObjectMapper()
+object JsonInput {
+    val mapper = new ObjectMapper()
 }
