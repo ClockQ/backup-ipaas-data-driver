@@ -76,7 +76,7 @@ case class MonitorOperator(name: String,
 		def pollMonitorProgress(chanelId: String): Unit = {
 			var time = 0
 			listenMonitor = true
-			val pkc = new PharbersKafkaConsumer[String, MonitorResponse](List("MonitorResponse"), 1000, Int.MaxValue, myProcess)
+			val pkc = new PharbersKafkaConsumer[String, MonitorResponse](List("MonitorResponse"), 1000, Int.MaxValue, process = myProcess)
 			val t = new Thread(pkc)
 
 			try {

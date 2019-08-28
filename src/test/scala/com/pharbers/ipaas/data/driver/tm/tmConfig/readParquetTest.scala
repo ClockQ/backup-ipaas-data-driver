@@ -237,6 +237,25 @@ class readParquetTest extends FunSuite {
 		(1 to 1).foreach(n => testExe(n))
 	}
 
+	test("UCB test 0820") {
+		val sparkDriver = PhSparkDriver("cui-test")
+		val log = PhLogDriver(formatMsg("test_user", "test_traceID", "test_jobID"))
+
+		def testExe(n: Int): Unit = {
+			println(s"第${n}次测试开始===========")
+			val phJobs = inst(readJobConfig("pharbers_config/json/tmTestConfig/UCBtest_20190820.json"))
+			phJobs.foreach(x =>
+				x.perform(PhMapArgs(Map(
+					"sparkDriver" -> PhSparkDriverArgs(sparkDriver),
+					"logDriver" -> PhLogDriverArgs(log)
+				)))
+			)
+			println(s"第${n}次测试结束==========")
+		}
+
+		(1 to 1).foreach(n => testExe(n))
+	}
+
 	test("export max") {
 		implicit val sparkDriver: PhSparkDriver = PhSparkDriver("cui-test")
 		val path = "/workData/Max/"
@@ -319,11 +338,12 @@ class readParquetTest extends FunSuite {
 	test("deng read test") {
 		implicit val sparkDriver: PhSparkDriver = PhSparkDriver("cui-test")
 		import org.apache.spark.sql.functions._
-		val path = "/logs/testLogs/topics/source_dc9aecfc1ed34e82a5631e559ebf980c/partition=0"
-		val df = sparkDriver.setUtil(readParquet()).readParquet(path)
+		val path = "/test/TMTest/input/TMInput0815/weightages.csv"
+		val df = sparkDriver.setUtil(readCsv()).readCsv(path)
 //		val savePath = "/test/UCBTest/output/csvResult"
 //		sparkDriver.setUtil(save2Csv()).save2Csv(df, savePath)
 		df.show(false)
 		println("wancheng")
 	}
+	import scala.xml.XML
 }

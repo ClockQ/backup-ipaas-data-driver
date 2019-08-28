@@ -36,11 +36,18 @@ case class Job() extends Model {
 
     var jobId = ""
 
+    var jobType = ""
+
     var actions: java.util.List[Action] = _
 
     def getJobId: String = jobId
 
     def setJobId(jobId: String): Unit = this.jobId = jobId
+
+    def getJobType: String = jobType
+
+    def setJobType(jobType: String): Unit = this.jobType = jobType
+
 
     def getActions: java.util.List[Action] = actions
 

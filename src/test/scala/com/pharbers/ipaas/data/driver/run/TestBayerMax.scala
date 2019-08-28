@@ -27,8 +27,8 @@ import org.scalatest.FunSuite
 
 class TestBayerMax extends FunSuite {
 	implicit val sd: PhSparkDriver = PhSparkDriver("test-driver")
-	sd.addJar("target/ipaas-data-driver-0.1.jar")
-	sd.sc.setLogLevel("ERROR")
+//	sd.addJar("target/ipaas-data-driver-0.1.jar")
+	sd.sc.setLogLevel("INFO")
 
 	test("clean bayer WH panel") {
 		val phJobs = inst(readJobConfig("max_config/bayer/WHcleanPanel.yaml"))
@@ -39,7 +39,8 @@ class TestBayerMax extends FunSuite {
 
 		val panelERD = result.toMapArgs[PhDFArgs].get("panelERD").get
 		val panelDF = sd.setUtil(readCsv()).readCsv("hdfs:///data/bayer/test20181106/WH_Panel+201806.csv")
-
+		panelERD.persist()
+		println(panelERD.count())
 		panelERD.show(false)
 		panelDF.show(false)
 

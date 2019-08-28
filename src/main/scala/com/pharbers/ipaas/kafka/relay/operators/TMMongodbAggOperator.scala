@@ -17,6 +17,7 @@
 
 package com.pharbers.ipaas.kafka.relay.operators
 
+import com.pharbers.TmAggregation.TmAggPreset2Cal
 import com.pharbers.ipaas.data.driver.api.work.{PhMapArgs, PhOperatorTrait, PhPluginTrait, PhStringArgs, PhWorkArgs}
 import org.apache.spark.sql.Column
 
@@ -40,6 +41,7 @@ case class TMMongodbAggOperator(name: String,
     val periodId: String = defaultArgs.getAs[PhStringArgs]("periodId").get.get
     val projectId: String = defaultArgs.getAs[PhStringArgs]("projectId").get.get
     val proposalId: String = defaultArgs.getAs[PhStringArgs]("proposalId").get.get
+    val phase: Int = defaultArgs.getAs[PhStringArgs]("phase").getOrElse(PhStringArgs("0")).get.toInt
 
     /** CMD执行方法
       *
@@ -56,7 +58,7 @@ case class TMMongodbAggOperator(name: String,
       */
     override def perform(pr: PhMapArgs[PhWorkArgs[Any]]): PhWorkArgs[String] = {
         import com.pharbers.TmAggregation._
-        val res = TmAggPreset2Cal.apply(proposalId, projectId, periodId)
+        val res = TmAggPreset2Cal.apply(proposalId, projectId, periodId, phase)
         PhStringArgs(res)
     }
 }

@@ -26,25 +26,27 @@ import org.apache.spark.sql.{Column, DataFrame}
   * @version 0.1
   * @since 2019/6/18 17:00
   * @example 默认参数例子
-  * {{{
-  *  inDFName: actionName // 要作用的 DataFrame 名字
-  *  unionDFName: unionDFName // 连接的 DataFrame 名字
-  * }}}
+  *          {{{
+  *            inDFName: actionName // 要作用的 DataFrame 名字
+  *            unionDFName: unionDFName // 连接的 DataFrame 名字
+  *          }}}
   */
 case class UnionOperator(name: String,
                          defaultArgs: PhMapArgs[PhWorkArgs[Any]],
                          pluginLst: Seq[PhPluginTrait[Column]]) extends PhOperatorTrait[DataFrame] {
-    /**要作用的 DataFrame 名字*/
-    val inDFName: String = defaultArgs.getAs[PhStringArgs]("inDFName").get.get
-    /**连接的 DataFrame 名字*/
-    val unionDFName: String = defaultArgs.getAs[PhStringArgs]("unionDFName").get.get
+	/** 要作用的 DataFrame 名字 */
+	val inDFName: String = defaultArgs.getAs[PhStringArgs]("inDFName").get.get
+	/** 连接的 DataFrame 名字 */
+	val unionDFName: String = defaultArgs.getAs[PhStringArgs]("unionDFName").get.get
 
-    override def perform(pr: PhMapArgs[PhWorkArgs[Any]]): PhWorkArgs[DataFrame] = {
-        val prMapArgs = pr.toMapArgs[PhWorkArgs[_]]
-        val inDF = prMapArgs.getAs[PhDFArgs](inDFName).get.get
-        val unionDF = prMapArgs.getAs[PhDFArgs](unionDFName).get.get
-        val outDF = inDF.unionByName(unionDF)
+	import org.apache.spark.sql.functions._
 
-        PhDFArgs(outDF)
-    }
+	override def perform(pr: PhMapArgs[PhWorkArgs[Any]]): PhWorkArgs[DataFrame] = {
+		val prMapArgs = pr.toMapArgs[PhWorkArgs[_]]
+		val inDF = prMapArgs.getAs[PhDFArgs](inDFName).get.get
+		val unionDF = prMapArgs.getAs[PhDFArgs](unionDFName).get.get
+		val outDF = inDF.unionByName(unionDF)
+
+		PhDFArgs(outDF)
+	}
 }

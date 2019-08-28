@@ -29,14 +29,16 @@ import com.sun.xml.internal.messaging.saaj.util.ByteInputStream
   * @since 2019/08/13 14:07
   * @note 铁马job builder， 用于动态填入jobId和 projectId  periodId proposalId
   */
-case class TmJobBuilder(jobMode: Job, jobId: String) {
+case class TmJobBuilder(jobMode: Job, jobId: String, jobType: String) {
     jobMode.jobId = jobId
+    jobMode.jobType = jobType
     private var jobJson = JsonInput.mapper.writeValueAsString(jobMode)
 
     def setMongoSourceFilter(config: Map[String, String]): TmJobBuilder ={
         jobJson = jobJson.replaceAll("#proposalId#", config.getOrElse("proposalId", ""))
                 .replaceAll("#projectId#", config.getOrElse("projectId", ""))
                 .replaceAll("#periodId#", config.getOrElse("periodId", ""))
+                .replaceAll("#phase#", config.getOrElse("phase", "0"))
         this
     }
 
