@@ -37,6 +37,14 @@
             </repositories>
 
             <dependencies>
+
+                <!--监控-->
+                <dependency>
+                    <groupId>com.pharbers</groupId>
+                    <artifactId>pharbers-yarn-monitor</artifactId>
+                    <version>1.0-SNAPSHOT</version>
+                </dependency>
+
                 <!-- Kafka-->
                 <dependency>
                     <groupId>com.pharbers</groupId>
@@ -139,7 +147,7 @@
         <testSourceDirectory>src/test/scala</testSourceDirectory>
         <resources>
             <resource>
-                <directory>src/main/resource</directory>
+                <directory>src/main/resources</directory>
                 <includes>
                     <include>**/*.xml</include>
                 </includes>

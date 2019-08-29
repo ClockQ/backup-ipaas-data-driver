@@ -13,8 +13,10 @@
         <securityProtocol value="SSL" />
         <sslAlgorithm value=" " />
         <sslTruststoreLocation value="pharbers_config/secrets/kafka.broker1.truststore.jks" />
+<!--        <sslTruststoreLocation value="kafka.broker1.truststore.jks" />-->
         <sslTruststorePassword value="pharbers" />
         <sslKeystoreLocation value="pharbers_config/secrets/kafka.broker1.keystore.jks" />
+<!--        <sslKeystoreLocation value="kafka.broker1.keystore.jks" />-->
         <sslKeystorePassword value="pharbers" />
     </kafka-config>
 </pharbers-modules>
