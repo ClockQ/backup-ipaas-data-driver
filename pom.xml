@@ -37,6 +37,13 @@
             </repositories>
 
             <dependencies>
+                <!-- Kafka-->
+                <dependency>
+                    <groupId>com.pharbers</groupId>
+                    <artifactId>pharbers-kafka</artifactId>
+                    <version>1.0</version>
+                </dependency>
+
                 <!-- https://mvnrepository.com/artifact/org.scalaj/scalaj-http -->
                 <dependency>
                     <groupId>org.scalaj</groupId>
@@ -137,8 +144,32 @@
                     <include>**/*.xml</include>
                 </includes>
             </resource>
+<!--            <resource>-->
+<!--                <directory>pharbers_config</directory>-->
+<!--                <targetPath>./pharbers_config</targetPath>-->
+<!--                <includes>-->
+<!--                    <include>**/*.*</include>-->
+<!--                </includes>-->
+<!--            </resource>-->
         </resources>
         <plugins>
+            <plugin>
+                <groupId>org.apache.avro</groupId>
+                <artifactId>avro-maven-plugin</artifactId>
+                <version>1.8.1</version>
+                <executions>
+                    <execution>
+                        <phase>generate-sources</phase>
+                        <goals>
+                            <goal>schema</goal>
+                        </goals>
+                        <configuration>
+                            <sourceDirectory>${project.basedir}/src/main/avro/</sourceDirectory>
+                            <outputDirectory>${project.basedir}/src/main/java/</outputDirectory>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
             <!--scala支持-->
             <plugin>
                 <groupId>org.scala-tools</groupId>
@@ -164,6 +195,7 @@
                     </execution>
                 </executions>
             </plugin>
+
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>

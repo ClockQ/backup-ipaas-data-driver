@@ -1,0 +1,11 @@
+{
+  "type": "record",
+  "name": "ListeningJobTask",
+  "namespace": "com.pharbers.kafka.schema",
+  "fields": [
+    {
+      "name": "JobId",
+      "type": "string"
+    }
+  ]
+}

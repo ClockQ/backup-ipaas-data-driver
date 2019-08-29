@@ -23,12 +23,14 @@ import com.pharbers.ipaas.data.driver.libs.spark.PhSparkDriver
 import com.pharbers.ipaas.data.driver.libs.log.{PhLogDriver, formatMsg}
 import com.pharbers.ipaas.data.driver.api.factory.{PhFactoryTrait, getMethodMirror}
 import com.pharbers.ipaas.data.driver.api.work.{PhJobTrait, PhLogDriverArgs, PhMapArgs, PhSparkDriverArgs}
+import com.pharbers.ipaas.data.driver.libs.kafka.ProducerAvroTopic
+import com.pharbers.kafka.schema.ListeningJobTask
 
 object Main {
 
     def main(args: Array[String]): Unit = {
         if(args.length != 3) throw new Exception("args length is not equal to 3")
-
+    
         val jobArgs = args(2)
         val readStream = args(1).toUpperCase() match {
             case "BUFFER" => StringRead(jobArgs).toInputStream()
@@ -40,8 +42,14 @@ object Main {
             case "YAL" | "YAML" => YamlInput().readObjects[Job](readStream)
             case "JSON" => JsonInput().readObjects[Job](readStream)
         }
-
+    
         implicit val sd: PhSparkDriver = PhSparkDriver("job-context")
+    
+        // Kafka 发送 JobID
+        val jt = new ListeningJobTask()
+        jt.put("JobId", sd.sc.getConf.getAppId)
+        ProducerAvroTopic("listeningJobTask", jt)
+    
         sd.sc.setLogLevel("ERROR")
         val ctx = PhMapArgs(Map(
             "sparkDriver" -> PhSparkDriverArgs(sd),
