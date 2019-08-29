@@ -47,7 +47,8 @@ case class YamlInput() extends InputTrait {
      * }}}
      */
     override def readObject[T: ClassTag](stream: InputStream): T = {
-        val constructor = new Constructor(implicitly[ClassTag[T]].runtimeClass)
+//        val constructor = new Constructor(implicitly[ClassTag[T]].runtimeClass)
+        val constructor = new Constructor(classOf[Object])
         new Yaml(constructor).load(stream).asInstanceOf[T]
     }
 
@@ -68,7 +69,8 @@ case class YamlInput() extends InputTrait {
      * }}}
      */
     override def readObjects[T: ClassTag](stream: InputStream): Seq[T] = {
-        val iterator = new Yaml(new Constructor(implicitly[ClassTag[T]].runtimeClass)).loadAll(stream).iterator()
+//        val iterator = new Yaml(new Constructor(implicitly[ClassTag[T]].runtimeClass)).loadAll(stream).iterator()
+        val iterator = new Yaml(new Constructor(classOf[Object])).loadAll(stream).iterator()
         var result: List[T] = Nil
         while (iterator.hasNext) {
             result = result :+ iterator.next().asInstanceOf[T]

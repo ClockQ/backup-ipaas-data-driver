@@ -45,11 +45,13 @@ case class JsonInput() extends InputTrait {
      * }}}
      */
     def readObject[T: ClassTag](stream: InputStream): T =
-        JsonInput.mapper.readValue(stream, implicitly[ClassTag[T]].runtimeClass).asInstanceOf[T]
+//        JsonInput.mapper.readValue(stream, implicitly[ClassTag[T]].runtimeClass).asInstanceOf[T]
+        JsonInput.mapper.readValue(stream, classOf[Object]).asInstanceOf[T]
 
     def readObject[T: ClassTag](json: String): T =
-        JsonInput.mapper.readValue(json, implicitly[ClassTag[T]].runtimeClass).asInstanceOf[T]
-
+//        JsonInput.mapper.readValue(json, implicitly[ClassTag[T]].runtimeClass).asInstanceOf[T]
+        JsonInput.mapper.readValue(json, classOf[Object]).asInstanceOf[T]
+    
     /** 读取Json数据为对象集合 Seq[T]
      *
      * @example
@@ -73,7 +75,8 @@ case class JsonInput() extends InputTrait {
      */
     def readObjects[T: ClassTag](stream: InputStream): Seq[T] = {
         import scala.collection.JavaConverters._
-        val javaType = JsonInput.mapper.getTypeFactory.constructParametricType(classOf[java.util.List[T]], implicitly[ClassTag[T]].runtimeClass)
+//        val javaType = JsonInput.mapper.getTypeFactory.constructParametricType(classOf[java.util.List[T]], implicitly[ClassTag[T]].runtimeClass)
+        val javaType = JsonInput.mapper.getTypeFactory.constructParametricType(classOf[java.util.List[T]], classOf[Object])
         JsonInput.mapper.readValue(stream, javaType).asInstanceOf[java.util.List[T]].asScala
     }
 }
