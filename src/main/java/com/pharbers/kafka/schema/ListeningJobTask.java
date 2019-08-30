@@ -10,10 +10,12 @@ import org.apache.avro.specific.SpecificData;
 @SuppressWarnings("all")
 @org.apache.avro.specific.AvroGenerated
 public class ListeningJobTask extends org.apache.avro.specific.SpecificRecordBase implements org.apache.avro.specific.SpecificRecord {
-  private static final long serialVersionUID = -1227051739213368068L;
-  public static final org.apache.avro.Schema SCHEMA$ = new org.apache.avro.Schema.Parser().parse("{\"type\":\"record\",\"name\":\"ListeningJobTask\",\"namespace\":\"com.pharbers.kafka.schema\",\"fields\":[{\"name\":\"JobId\",\"type\":\"string\"}]}");
+  private static final long serialVersionUID = 838899765425572320L;
+  public static final org.apache.avro.Schema SCHEMA$ = new org.apache.avro.Schema.Parser().parse("{\"type\":\"record\",\"name\":\"ListeningJobTask\",\"namespace\":\"com.pharbers.kafka.schema\",\"fields\":[{\"name\":\"JobId\",\"type\":\"string\"},{\"name\":\"Status\",\"type\":\"string\"},{\"name\":\"Message\",\"type\":\"string\"}]}");
   public static org.apache.avro.Schema getClassSchema() { return SCHEMA$; }
   @Deprecated public java.lang.CharSequence JobId;
+  @Deprecated public java.lang.CharSequence Status;
+  @Deprecated public java.lang.CharSequence Message;
 
   /**
    * Default constructor.  Note that this does not initialize fields
@@ -25,9 +27,13 @@ public class ListeningJobTask extends org.apache.avro.specific.SpecificRecordBas
   /**
    * All-args constructor.
    * @param JobId The new value for JobId
+   * @param Status The new value for Status
+   * @param Message The new value for Message
    */
-  public ListeningJobTask(java.lang.CharSequence JobId) {
+  public ListeningJobTask(java.lang.CharSequence JobId, java.lang.CharSequence Status, java.lang.CharSequence Message) {
     this.JobId = JobId;
+    this.Status = Status;
+    this.Message = Message;
   }
 
   public org.apache.avro.Schema getSchema() { return SCHEMA$; }
@@ -35,6 +41,8 @@ public class ListeningJobTask extends org.apache.avro.specific.SpecificRecordBas
   public java.lang.Object get(int field$) {
     switch (field$) {
     case 0: return JobId;
+    case 1: return Status;
+    case 2: return Message;
     default: throw new org.apache.avro.AvroRuntimeException("Bad index");
     }
   }
@@ -44,6 +52,8 @@ public class ListeningJobTask extends org.apache.avro.specific.SpecificRecordBas
   public void put(int field$, java.lang.Object value$) {
     switch (field$) {
     case 0: JobId = (java.lang.CharSequence)value$; break;
+    case 1: Status = (java.lang.CharSequence)value$; break;
+    case 2: Message = (java.lang.CharSequence)value$; break;
     default: throw new org.apache.avro.AvroRuntimeException("Bad index");
     }
   }
@@ -62,6 +72,38 @@ public class ListeningJobTask extends org.apache.avro.specific.SpecificRecordBas
    */
   public void setJobId(java.lang.CharSequence value) {
     this.JobId = value;
+  }
+
+  /**
+   * Gets the value of the 'Status' field.
+   * @return The value of the 'Status' field.
+   */
+  public java.lang.CharSequence getStatus() {
+    return Status;
+  }
+
+  /**
+   * Sets the value of the 'Status' field.
+   * @param value the value to set.
+   */
+  public void setStatus(java.lang.CharSequence value) {
+    this.Status = value;
+  }
+
+  /**
+   * Gets the value of the 'Message' field.
+   * @return The value of the 'Message' field.
+   */
+  public java.lang.CharSequence getMessage() {
+    return Message;
+  }
+
+  /**
+   * Sets the value of the 'Message' field.
+   * @param value the value to set.
+   */
+  public void setMessage(java.lang.CharSequence value) {
+    this.Message = value;
   }
 
   /**
@@ -97,6 +139,8 @@ public class ListeningJobTask extends org.apache.avro.specific.SpecificRecordBas
     implements org.apache.avro.data.RecordBuilder<ListeningJobTask> {
 
     private java.lang.CharSequence JobId;
+    private java.lang.CharSequence Status;
+    private java.lang.CharSequence Message;
 
     /** Creates a new Builder */
     private Builder() {
@@ -113,6 +157,14 @@ public class ListeningJobTask extends org.apache.avro.specific.SpecificRecordBas
         this.JobId = data().deepCopy(fields()[0].schema(), other.JobId);
         fieldSetFlags()[0] = true;
       }
+      if (isValidValue(fields()[1], other.Status)) {
+        this.Status = data().deepCopy(fields()[1].schema(), other.Status);
+        fieldSetFlags()[1] = true;
+      }
+      if (isValidValue(fields()[2], other.Message)) {
+        this.Message = data().deepCopy(fields()[2].schema(), other.Message);
+        fieldSetFlags()[2] = true;
+      }
     }
 
     /**
@@ -124,6 +176,14 @@ public class ListeningJobTask extends org.apache.avro.specific.SpecificRecordBas
       if (isValidValue(fields()[0], other.JobId)) {
         this.JobId = data().deepCopy(fields()[0].schema(), other.JobId);
         fieldSetFlags()[0] = true;
+      }
+      if (isValidValue(fields()[1], other.Status)) {
+        this.Status = data().deepCopy(fields()[1].schema(), other.Status);
+        fieldSetFlags()[1] = true;
+      }
+      if (isValidValue(fields()[2], other.Message)) {
+        this.Message = data().deepCopy(fields()[2].schema(), other.Message);
+        fieldSetFlags()[2] = true;
       }
     }
 
@@ -166,11 +226,91 @@ public class ListeningJobTask extends org.apache.avro.specific.SpecificRecordBas
       return this;
     }
 
+    /**
+      * Gets the value of the 'Status' field.
+      * @return The value.
+      */
+    public java.lang.CharSequence getStatus() {
+      return Status;
+    }
+
+    /**
+      * Sets the value of the 'Status' field.
+      * @param value The value of 'Status'.
+      * @return This builder.
+      */
+    public com.pharbers.kafka.schema.ListeningJobTask.Builder setStatus(java.lang.CharSequence value) {
+      validate(fields()[1], value);
+      this.Status = value;
+      fieldSetFlags()[1] = true;
+      return this;
+    }
+
+    /**
+      * Checks whether the 'Status' field has been set.
+      * @return True if the 'Status' field has been set, false otherwise.
+      */
+    public boolean hasStatus() {
+      return fieldSetFlags()[1];
+    }
+
+
+    /**
+      * Clears the value of the 'Status' field.
+      * @return This builder.
+      */
+    public com.pharbers.kafka.schema.ListeningJobTask.Builder clearStatus() {
+      Status = null;
+      fieldSetFlags()[1] = false;
+      return this;
+    }
+
+    /**
+      * Gets the value of the 'Message' field.
+      * @return The value.
+      */
+    public java.lang.CharSequence getMessage() {
+      return Message;
+    }
+
+    /**
+      * Sets the value of the 'Message' field.
+      * @param value The value of 'Message'.
+      * @return This builder.
+      */
+    public com.pharbers.kafka.schema.ListeningJobTask.Builder setMessage(java.lang.CharSequence value) {
+      validate(fields()[2], value);
+      this.Message = value;
+      fieldSetFlags()[2] = true;
+      return this;
+    }
+
+    /**
+      * Checks whether the 'Message' field has been set.
+      * @return True if the 'Message' field has been set, false otherwise.
+      */
+    public boolean hasMessage() {
+      return fieldSetFlags()[2];
+    }
+
+
+    /**
+      * Clears the value of the 'Message' field.
+      * @return This builder.
+      */
+    public com.pharbers.kafka.schema.ListeningJobTask.Builder clearMessage() {
+      Message = null;
+      fieldSetFlags()[2] = false;
+      return this;
+    }
+
     @Override
     public ListeningJobTask build() {
       try {
         ListeningJobTask record = new ListeningJobTask();
         record.JobId = fieldSetFlags()[0] ? this.JobId : (java.lang.CharSequence) defaultValue(fields()[0]);
+        record.Status = fieldSetFlags()[1] ? this.Status : (java.lang.CharSequence) defaultValue(fields()[1]);
+        record.Message = fieldSetFlags()[2] ? this.Message : (java.lang.CharSequence) defaultValue(fields()[2]);
         return record;
       } catch (Exception e) {
         throw new org.apache.avro.AvroRuntimeException(e);

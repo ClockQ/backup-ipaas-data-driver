@@ -6,6 +6,14 @@
     {
       "name": "JobId",
       "type": "string"
+    },
+    {
+      "name": "Status",
+      "type": "string"
+    },
+    {
+      "name": "Message",
+      "type": "string"
     }
   ]
 }
