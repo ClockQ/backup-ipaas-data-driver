@@ -27,7 +27,7 @@ import com.pharbers.ipaas.data.driver.libs.spark.session.SparkConnInstance
   * @since 2019/5/20 15:27
   * @note
   */
-case class readMongo(implicit val conn_instance: SparkConnInstance) extends SparkUtilTrait {
+case class readMongo()(implicit val conn_instance: SparkConnInstance) extends SparkUtilTrait {
     /** 读取 MongoDB 数据到 DataFrame
       *
       * @param mongodbHost        mongodb 连接地址

@@ -27,7 +27,7 @@ import com.pharbers.ipaas.data.driver.libs.spark.session.SparkConnInstance
   * @since 2019/5/20 15:27
   * @note
   */
-case class save2Mongo(implicit val conn_instance: SparkConnInstance) extends SparkUtilTrait {
+case class save2Mongo()(implicit val conn_instance: SparkConnInstance) extends SparkUtilTrait {
 
     /** 保存 DataFrame 数据到 MongoDB
       *

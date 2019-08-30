@@ -24,8 +24,6 @@ import com.pharbers.ipaas.data.driver.libs.log.{PhLogDriver, formatMsg}
 import com.pharbers.ipaas.data.driver.api.factory.{PhFactoryTrait, getMethodMirror}
 import com.pharbers.ipaas.data.driver.api.work.{PhJobTrait, PhLogDriverArgs, PhMapArgs, PhSparkDriverArgs}
 import com.pharbers.ipaas.data.driver.libs.kafka.ProducerAvroTopic
-import com.pharbers.kafka.schema.ListeningJobTask
-import com.pharbers.yarn.monitor.appmonitor.applicationMonitor
 
 object Main {
 
@@ -46,8 +44,6 @@ object Main {
     
         implicit val sd: PhSparkDriver = PhSparkDriver("job-context")
         
-        // 监控
-        Monitor(sd.sc.getConf.getAppId)
         
         sd.sc.setLogLevel("ERROR")
         val ctx = PhMapArgs(Map(
@@ -57,16 +53,15 @@ object Main {
         val phJobs = jobs.map(x => getMethodMirror(x.getFactory)(x, ctx).asInstanceOf[PhFactoryTrait[PhJobTrait]].inst())
         phJobs.head.perform(PhMapArgs(Map()))
         
+        // 执行结束
+//        Monitor(sd.sc.getConf.getAppId)
+        
         println("执行完成，job_id:" + sd.sc.getConf.getAppId)
     }
     
     def Monitor(jobId: String): Unit = {
-	    
-        println(applicationMonitor(jobId).startMonitor())
-    
-        // Kafka 发送 JobID
-        val jt = new ListeningJobTask()
-        jt.put("JobId", jobId)
-        ProducerAvroTopic("listeningJobTask", jt)
+//        val system = ActorSystem("Listening")
+//        val appID = system.actorOf(Props[Monitor], "Monitor")
+//        appID ! jobId
     }
 }

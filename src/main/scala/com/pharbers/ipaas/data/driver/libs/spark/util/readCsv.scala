@@ -27,7 +27,7 @@ import com.pharbers.ipaas.data.driver.libs.spark.session.SparkConnInstance
   * @since 2019/5/20 15:27
   * @note
   */
-case class readCsv(implicit val conn_instance: SparkConnInstance) extends SparkUtilTrait {
+case class readCsv()(implicit val conn_instance: SparkConnInstance) extends SparkUtilTrait {
     /** 读取 CSV 数据到 DataFrame
       *
       * @param file_path CSV 文件路径
