@@ -32,7 +32,7 @@ object Main {
 	    // 第一波对接成功后整理Kafka的库封装
         val record = new ListeningJobTask()
 	    try {
-            if(args.length != 3) throw new Exception("args length is not equal to 3")
+            if(args.length != 4) throw new Exception("args length is not equal to 4")
         
             val jobArgs = args(2)
             val readStream = args(1).toUpperCase() match {
@@ -48,11 +48,11 @@ object Main {
         
             implicit val sd: PhSparkDriver = PhSparkDriver("job-context")
 
-            record.put("JobId", sd.sc.getConf.getAppId)
+//            record.put("JobId", sd.sc.getConf.getAppId)
+            record.put("JobId", args(3))
             record.put("Status", "Running")
             record.put("Message", "")
 		    println("Running")
-            
             ProducerAvroTopic("listeningJobTask", record)
         
             sd.sc.setLogLevel("ERROR")
@@ -60,13 +60,19 @@ object Main {
                 "sparkDriver" -> PhSparkDriverArgs(sd),
                 "logDriver" -> PhLogDriverArgs(PhLogDriver(formatMsg("test_user", "test_traceID", "test_jobID")))
             ))
+		    
+		    println("Finish")
+		    record.put("JobId", args(3))
+		    record.put("Status", "Finish")
+		    record.put("Message", "Finish")
+		    ProducerAvroTopic("listeningJobTask", record)
+		    
             val phJobs = jobs.map(x => getMethodMirror(x.getFactory)(x, ctx).asInstanceOf[PhFactoryTrait[PhJobTrait]].inst())
             phJobs.head.perform(PhMapArgs(Map()))
-            record.put("Status", "Finish")
-            record.put("Message", "Finish")
-            ProducerAvroTopic("listeningJobTask", record)
+		   
         } catch {
             case e: Exception =>
+                record.put("JobId", args(3))
                 record.put("Status", "Error")
                 record.put("Message", e.getMessage)
                 ProducerAvroTopic("listeningJobTask", record)
