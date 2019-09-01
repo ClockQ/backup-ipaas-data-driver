@@ -33,7 +33,7 @@ object Main {
     
         val jobArgs = args(2)
         val readStream = args(1).toUpperCase() match {
-            case "BUFFER" => StringRead(jobArgs).toInputStream()
+            case "STRING" => StringRead(jobArgs).toInputStream()
             case "LOCAL" => LocalRead(jobArgs).toInputStream()
             case "HDFS" => HDFSRead(jobArgs).toInputStream()
             case "OSS" => OssRead(jobArgs).toInputStream()
