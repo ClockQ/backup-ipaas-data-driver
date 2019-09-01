@@ -26,7 +26,7 @@ import org.apache.spark.sql.DataFrame
   * @version 0.1
   * @since 2019/7/04 10:28
   */
-case class readAvro(implicit val conn_instance: SparkConnInstance) extends SparkUtilTrait {
+case class readAvro()(implicit val conn_instance: SparkConnInstance) extends SparkUtilTrait {
 	/** 读取 avro 数据到 DataFrame
 	  *
 	  * @param file_path avro 文件路径

@@ -9,7 +9,7 @@ import org.apache.spark.sql.DataFrame
   * @version 0.1
   * @since 2019-06-27 18:47
   */
-case class save2Csv(implicit val conn_instance: SparkConnInstance) extends SparkUtilTrait {
+case class save2Csv()(implicit val conn_instance: SparkConnInstance) extends SparkUtilTrait {
 	/** 将DataFrame以csv的形式保存到HDFS的一个路径
 	  *
 	  * @param df 要保存的DataFrame

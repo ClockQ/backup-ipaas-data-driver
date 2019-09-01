@@ -29,34 +29,55 @@ import com.pharbers.kafka.schema.ListeningJobTask
 object Main {
 
     def main(args: Array[String]): Unit = {
-        if(args.length != 3) throw new Exception("args length is not equal to 3")
-    
-        val jobArgs = args(2)
-        val readStream = args(1).toUpperCase() match {
-            case "STRING" => StringRead(jobArgs).toInputStream()
-            case "LOCAL" => LocalRead(jobArgs).toInputStream()
-            case "HDFS" => HDFSRead(jobArgs).toInputStream()
-            case "OSS" => OssRead(jobArgs).toInputStream()
+	    // 第一波对接成功后整理Kafka的库封装
+        val record = new ListeningJobTask()
+	    try {
+            if(args.length != 4) throw new Exception("args length is not equal to 4")
+        
+            val jobArgs = args(2)
+            val readStream = args(1).toUpperCase() match {
+                case "STRING" => StringRead(jobArgs).toInputStream()
+                case "LOCAL" => LocalRead(jobArgs).toInputStream()
+                case "HDFS" => HDFSRead(jobArgs).toInputStream()
+                case "OSS" => OssRead(jobArgs).toInputStream()
+            }
+            val jobs = args(0).toUpperCase() match {
+                case "YAL" | "YAML" => YamlInput().readObjects[Job](readStream)
+                case "JSON" => JsonInput().readObjects[Job](readStream)
+            }
+        
+            implicit val sd: PhSparkDriver = PhSparkDriver("job-context")
+
+//            record.put("JobId", sd.sc.getConf.getAppId)
+            record.put("JobId", args(3))
+            record.put("Status", "Running")
+            record.put("Message", "")
+		    println("Running")
+            ProducerAvroTopic("listeningJobTask", record)
+        
+            sd.sc.setLogLevel("ERROR")
+            val ctx = PhMapArgs(Map(
+                "sparkDriver" -> PhSparkDriverArgs(sd),
+                "logDriver" -> PhLogDriverArgs(PhLogDriver(formatMsg("test_user", "test_traceID", "test_jobID")))
+            ))
+		    
+		    println("Finish")
+		    record.put("JobId", args(3))
+		    record.put("Status", "Finish")
+		    record.put("Message", "Finish")
+		    ProducerAvroTopic("listeningJobTask", record)
+		    
+            val phJobs = jobs.map(x => getMethodMirror(x.getFactory)(x, ctx).asInstanceOf[PhFactoryTrait[PhJobTrait]].inst())
+            phJobs.head.perform(PhMapArgs(Map()))
+		   
+        } catch {
+            case e: Exception =>
+                record.put("JobId", args(3))
+                record.put("Status", "Error")
+                record.put("Message", e.getMessage)
+                ProducerAvroTopic("listeningJobTask", record)
         }
-        val jobs = args(0).toUpperCase() match {
-            case "YAL" | "YAML" => YamlInput().readObjects[Job](readStream)
-            case "JSON" => JsonInput().readObjects[Job](readStream)
-        }
-    
-        implicit val sd: PhSparkDriver = PhSparkDriver("job-context")
-    
-        // Kafka 发送 JobID
-        val jt = new ListeningJobTask()
-        jt.put("JobId", sd.sc.getConf.getAppId)
-        ProducerAvroTopic("listeningJobTask", jt)
-    
-        sd.sc.setLogLevel("ERROR")
-        val ctx = PhMapArgs(Map(
-            "sparkDriver" -> PhSparkDriverArgs(sd),
-            "logDriver" -> PhLogDriverArgs(PhLogDriver(formatMsg("test_user", "test_traceID", "test_jobID")))
-        ))
-        val phJobs = jobs.map(x => getMethodMirror(x.getFactory)(x, ctx).asInstanceOf[PhFactoryTrait[PhJobTrait]].inst())
-        phJobs.head.perform(PhMapArgs(Map()))
-        println("执行完成，job_id:" + sd.sc.getConf.getAppId)
+        
+        println("执行结束")
     }
 }
