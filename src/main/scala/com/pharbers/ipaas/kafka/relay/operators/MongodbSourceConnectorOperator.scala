@@ -102,7 +102,7 @@ case class MongodbSourceConnectorOperator(name: String,
             throw new Exception(errMsg)
         }
         //todo: 没有监控，暂时这样
-        Thread.sleep(10000)
+//        Thread.sleep(30000)
         PhNoneArgs
     }
 }

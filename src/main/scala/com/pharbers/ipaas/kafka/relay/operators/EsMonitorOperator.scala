@@ -1,0 +1,110 @@
+/*
+ * This file is part of com.pharbers.ipaas-data-driver.
+ *
+ * com.pharbers.ipaas-data-driver is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * com.pharbers.ipaas-data-driver is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with Foobar.  If not, see <https://www.gnu.org/licenses/>.
+ */
+
+package com.pharbers.ipaas.kafka.relay.operators
+
+import java.util.concurrent.TimeUnit
+
+import com.pharbers.ipaas.data.driver.api.work.{PhLogDriverArgs, PhMapArgs, PhOperatorTrait, PhPluginTrait, PhStringArgs, PhWorkArgs}
+import com.pharbers.ipaas.data.driver.libs.log.PhLogDriver
+import com.pharbers.kafka.consumer.PharbersKafkaConsumer
+import com.pharbers.kafka.producer.PharbersKafkaProducer
+import com.pharbers.kafka.schema.{MonitorRequest2, MonitorResponse2}
+import org.apache.kafka.clients.consumer.ConsumerRecord
+import org.apache.spark.sql.Column
+
+/** 功能描述
+  *
+  * @param args 构造参数
+  * @tparam T 构造泛型参数
+  * @author dcs
+  * @version 0.0
+  * @since 2019/09/01 15:42
+  * @note 一些值得注意的地方
+  */
+case class EsMonitorOperator(name: String,
+                             defaultArgs: PhMapArgs[PhWorkArgs[Any]],
+                             pluginLst: Seq[PhPluginTrait[Column]])
+        extends PhOperatorTrait[String] {
+    var listenMonitor: Boolean = false
+    val monitorRequest: String = defaultArgs.getAs[PhStringArgs]("monitorRequest").getOrElse(PhStringArgs("MonitorRequest2")).get
+    val monitorResponse: String = defaultArgs.getAs[PhStringArgs]("monitorResponse").getOrElse(PhStringArgs("MonitorResponse2")).get
+    val sinkName: String = defaultArgs.getAs[PhStringArgs]("sinkName").getOrElse(PhStringArgs("TM-EL-sink-connector-0818-6")).get
+    val topic: String = defaultArgs.getAs[PhStringArgs]("topic").getOrElse(PhStringArgs("tmrs")).get
+    val recall: String = defaultArgs.getAs[PhStringArgs]("recall").getOrElse(PhStringArgs("recall_tmrs-0818-4")).get
+    val timeOut: Int = defaultArgs.getAs[PhStringArgs]("timeOut").getOrElse(PhStringArgs("20")).get.toInt
+
+    override def perform(pr: PhMapArgs[PhWorkArgs[Any]]): PhWorkArgs[String] = {
+        val log: PhLogDriver = pr.get("logDriver").asInstanceOf[PhLogDriverArgs].get
+        val chanelId = pr.getAs[PhStringArgs]("chanelId").get.get
+        //step 3 向MonitorServer发送这次JobID的监控请求（Kafka Producer）（前提要确保MonitorServer已经启动!）
+        // 请求参数（[JobID]和[监控策略]）
+        def sendMonitorRequest(): Unit = {
+            val pkp = new PharbersKafkaProducer[String, MonitorRequest2]
+            val record = new MonitorRequest2(s"source_$chanelId" + "$$" + sinkName, chanelId, topic, recall, "default")
+            val fu = pkp.produce(monitorRequest, chanelId, record)
+            log.setInfoLog(fu.get(10, TimeUnit.SECONDS))
+            pkp.producer.close()
+        }
+
+        def myProcess(record: ConsumerRecord[String, MonitorResponse2]): Unit = {
+            log.setInfoLog("===myProcess>>>" + record.key() + ":" + record.value().toString)
+            if (record.value().getProgress == 100 && record.value().getJobId.toString == chanelId) {
+                listenMonitor = false
+            }
+            if (record.value().getError.toString != "" && record.value().getJobId.toString == chanelId) {
+                log.setInfoLog(s"收到错误信息后关闭，id: ${record.value().getJobId.toString}, error：${record.value().getError.toString}")
+                listenMonitor = false
+            }
+        }
+
+        //step 4 向MonitorServer拉取进度和处理情况（Kafka Consumer）（前提要确保MonitorServer已经启动!）
+        def pollMonitorProgress(chanelId: String): Unit = {
+            var time = 0
+            listenMonitor = true
+            val pkc = new PharbersKafkaConsumer[String, MonitorResponse2](List(monitorResponse), 1000, Int.MaxValue, process = myProcess)
+            val t = new Thread(pkc)
+
+            try {
+                log.setInfoLog("PollMonitorProgress starting!")
+                t.start()
+                log.setInfoLog("PollMonitorProgress is started! Close by enter \"exit\" in console.")
+                //            var cmd = Console.readLine()
+                while (listenMonitor) {
+                    Thread.sleep(1000)
+                    time = time + 1
+                    if (time > timeOut) {
+                        log.setErrorLog("error: 监控超时")
+                        listenMonitor = false
+                    }
+                }
+            } catch {
+                case ie: InterruptedException => {
+                    log.setInfoLog(ie.getMessage)
+                }
+            } finally {
+                pkc.close()
+                log.setInfoLog("PollMonitorProgress close!")
+            }
+        }
+        sendMonitorRequest()
+        pollMonitorProgress(chanelId)
+        //todo:为了交付
+        Thread.sleep(10000)
+        PhStringArgs(chanelId)
+    }
+}

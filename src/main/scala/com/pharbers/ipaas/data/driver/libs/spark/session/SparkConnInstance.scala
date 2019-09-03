@@ -68,6 +68,8 @@ trait SparkConnInstance {
                   | -XX:+G1SummarizeConcMark
                   | -XX:InitiatingHeapOccupancyPercent=35 -XX:ConcGCThreads=1
                 """.stripMargin)
+//            .set("spark.sql.shuffle.partitions", "4")
+//            .set("spark.sql.cbo.enabled", "true")
 
     /** SPARK Session
       *

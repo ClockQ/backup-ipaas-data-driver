@@ -17,6 +17,8 @@
 
 package com.pharbers.ipaas.data.driver.api.model
 
+import java.util
+
 /** iPaas Driver 运行实体
   *
   * @author clock
@@ -59,7 +61,7 @@ trait Model {
       * @since 2019/06/14 9:06
       * @note
       */
-    var args: java.util.Map[String, String] = _
+    var args: java.util.Map[String, String] = new util.HashMap()
 
     def getName: String = name
 
