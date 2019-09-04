@@ -75,8 +75,8 @@ case class JsonInput() extends InputTrait {
      */
     def readObjects[T: ClassTag](stream: InputStream): Seq[T] = {
         import scala.collection.JavaConverters._
-//        val javaType = JsonInput.mapper.getTypeFactory.constructParametricType(classOf[java.util.List[T]], implicitly[ClassTag[T]].runtimeClass)
-        val javaType = JsonInput.mapper.getTypeFactory.constructParametricType(classOf[java.util.List[T]], classOf[Object])
+        val javaType = JsonInput.mapper.getTypeFactory.constructParametricType(classOf[java.util.List[T]], implicitly[ClassTag[T]].runtimeClass)
+//        val javaType = JsonInput.mapper.getTypeFactory.constructParametricType(classOf[java.util.List[T]], classOf[Object])
         JsonInput.mapper.readValue(stream, javaType).asInstanceOf[java.util.List[T]].asScala
     }
 }

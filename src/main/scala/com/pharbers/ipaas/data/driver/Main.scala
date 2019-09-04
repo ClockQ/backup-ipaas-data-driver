@@ -53,7 +53,7 @@ object Main {
             record.put("Status", "Running")
             record.put("Message", "")
 		    println("Running")
-            ProducerAvroTopic("listeningJobTask", record)
+            ProducerAvroTopic("listeningJobTaskTest", record)
         
             sd.sc.setLogLevel("ERROR")
             val ctx = PhMapArgs(Map(
@@ -65,17 +65,18 @@ object Main {
 		    record.put("JobId", args(3))
 		    record.put("Status", "Finish")
 		    record.put("Message", "Finish")
-		    ProducerAvroTopic("listeningJobTask", record)
+		    ProducerAvroTopic("listeningJobTaskTest", record)
 		    
             val phJobs = jobs.map(x => getMethodMirror(x.getFactory)(x, ctx).asInstanceOf[PhFactoryTrait[PhJobTrait]].inst())
             phJobs.head.perform(PhMapArgs(Map()))
 		   
         } catch {
             case e: Exception =>
+                println(e)
                 record.put("JobId", args(3))
                 record.put("Status", "Error")
                 record.put("Message", e.getMessage)
-                ProducerAvroTopic("listeningJobTask", record)
+                ProducerAvroTopic("listeningJobTaskTest", record)
         }
         
         println("执行结束")
