@@ -1,7 +1,7 @@
 package com.pharbers.ipaas.kafka.relay.job
 
 import com.pharbers.ipaas.data.driver.api.work.{PhLogDriverArgs, PhMapArgs, PhSparkDriverArgs}
-import com.pharbers.ipaas.data.driver.libs.log.{PhLogDriver, formatMsg}
+import com.pharbers.ipaas.data.driver.libs.log.{PhLogDriver, PhLogFormat, formatMsg}
 import com.pharbers.ipaas.data.driver.libs.spark.PhSparkDriver
 import env.configObj.{inst, readJobConfig}
 import org.scalatest.FunSuite

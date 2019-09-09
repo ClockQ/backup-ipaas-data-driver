@@ -19,7 +19,7 @@ package com.pharbers.ipaas.kafka.relay.operators
 
 import java.util.concurrent.TimeUnit
 
-import com.pharbers.ipaas.data.driver.api.work.{PhLogDriverArgs, PhMapArgs, PhOperatorTrait, PhPluginTrait, PhStringArgs, PhWorkArgs}
+import com.pharbers.ipaas.data.driver.api.work.{PhFuncArgs, PhListArgs, PhLogDriverArgs, PhMapArgs, PhOperatorTrait, PhPluginTrait, PhStringArgs, PhWorkArgs}
 import com.pharbers.ipaas.data.driver.libs.log.PhLogDriver
 import com.pharbers.kafka.consumer.PharbersKafkaConsumer
 import com.pharbers.kafka.producer.PharbersKafkaProducer
@@ -49,7 +49,7 @@ case class EsMonitorOperator(name: String,
     val timeOut: Int = defaultArgs.getAs[PhStringArgs]("timeOut").getOrElse(PhStringArgs("20")).get.toInt
 
     override def perform(pr: PhMapArgs[PhWorkArgs[Any]]): PhWorkArgs[String] = {
-        val log: PhLogDriver = pr.get("logDriver").asInstanceOf[PhLogDriverArgs].get
+        val logFormat = pr.get("logFormat").asInstanceOf[PhFuncArgs[PhListArgs[PhStringArgs], PhStringArgs]].get
         val chanelId = pr.getAs[PhStringArgs]("chanelId").get.get
         //step 3 向MonitorServer发送这次JobID的监控请求（Kafka Producer）（前提要确保MonitorServer已经启动!）
         // 请求参数（[JobID]和[监控策略]）
@@ -57,17 +57,17 @@ case class EsMonitorOperator(name: String,
             val pkp = new PharbersKafkaProducer[String, MonitorRequest2]
             val record = new MonitorRequest2(s"source_$chanelId" + "$$" + sinkName, chanelId, topic, recall, "default")
             val fu = pkp.produce(monitorRequest, chanelId, record)
-            log.setInfoLog(fu.get(10, TimeUnit.SECONDS))
+            logger.info(logFormat(fu.get(10, TimeUnit.SECONDS).toString))
             pkp.producer.close()
         }
 
         def myProcess(record: ConsumerRecord[String, MonitorResponse2]): Unit = {
-            log.setInfoLog("===myProcess>>>" + record.key() + ":" + record.value().toString)
+            logger.info(logFormat("===myProcess>>>" + record.key() + ":" + record.value().toString))
             if (record.value().getProgress == 100 && record.value().getJobId.toString == chanelId) {
                 listenMonitor = false
             }
             if (record.value().getError.toString != "" && record.value().getJobId.toString == chanelId) {
-                log.setInfoLog(s"收到错误信息后关闭，id: ${record.value().getJobId.toString}, error：${record.value().getError.toString}")
+                logger.info(logFormat(s"收到错误信息后关闭，id: ${record.value().getJobId.toString}, error：${record.value().getError.toString}"))
                 listenMonitor = false
             }
         }
@@ -80,25 +80,22 @@ case class EsMonitorOperator(name: String,
             val t = new Thread(pkc)
 
             try {
-                log.setInfoLog("PollMonitorProgress starting!")
                 t.start()
-                log.setInfoLog("PollMonitorProgress is started! Close by enter \"exit\" in console.")
                 //            var cmd = Console.readLine()
                 while (listenMonitor) {
                     Thread.sleep(1000)
                     time = time + 1
                     if (time > timeOut) {
-                        log.setErrorLog("error: 监控超时")
                         listenMonitor = false
                     }
                 }
             } catch {
                 case ie: InterruptedException => {
-                    log.setInfoLog(ie.getMessage)
+                    logger.info(logFormat(ie.getMessage))
                 }
             } finally {
                 pkc.close()
-                log.setInfoLog("PollMonitorProgress close!")
+                logger.info(logFormat("PollMonitorProgress close!"))
             }
         }
         sendMonitorRequest()

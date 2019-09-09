@@ -17,8 +17,6 @@
 
 package com.pharbers.ipaas.data.driver.api.job
 import com.pharbers.ipaas.data.driver.api.work._
-import com.pharbers.ipaas.data.driver.libs.log.PhLogDriver
-import com.pharbers.ipaas.data.driver.libs.spark.PhSparkDriver
 import com.pharbers.ipaas.data.driver.exceptions.PhOperatorException
 
 /** Job 运行实体
@@ -42,17 +40,17 @@ case class PhBaseJob(name: String,
       * @since 2019/6/11 16:43
       */
     def perform(pr: PhMapArgs[PhWorkArgs[Any]]): PhWorkArgs[Any] = {
-        val log: PhLogDriver = pr.get("logDriver").asInstanceOf[PhLogDriverArgs].get
+        val logFormat = pr.get("logFormat").asInstanceOf[PhFuncArgs[PhListArgs[PhStringArgs], PhStringArgs]].get
 
         if (actionLst.isEmpty) pr
         else {
             actionLst.foldLeft(pr) { (l, r) =>
                 try {
-                    log.setInfoLog(r.name, "开始执行")
+                    logger.info(logFormat(s"${r.name},开始执行"))
                     PhMapArgs(l.get + (r.name -> r.perform(l)))
                 } catch {
                     case e: PhOperatorException =>
-                        log.setErrorLog(PhOperatorException(e.names :+ name, e.exception).getMessage)
+                        logger.error(logFormat(PhOperatorException(e.names :+ name, e.exception).getMessage))
                         throw e
                 }
             }

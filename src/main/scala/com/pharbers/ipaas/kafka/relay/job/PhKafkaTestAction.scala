@@ -21,7 +21,6 @@ import java.util.UUID
 
 import com.pharbers.ipaas.data.driver.api.work._
 import com.pharbers.ipaas.data.driver.exceptions.PhOperatorException
-import com.pharbers.ipaas.data.driver.libs.log.PhLogDriver
 
 /** Kafka Connect Action 运行实体
   *
@@ -48,12 +47,12 @@ case class PhKafkaTestAction(name: String,
 	  * @since 2019/7/5 12:20
 	  */
 	def perform(pr: PhMapArgs[PhWorkArgs[Any]]): PhWorkArgs[Any] = {
-		val log: PhLogDriver = pr.get("logDriver").asInstanceOf[PhLogDriverArgs].get
+		val logFormat = pr.get("logFormat").asInstanceOf[PhFuncArgs[PhListArgs[PhStringArgs], PhStringArgs]].get
 		val chanelId = UUID.randomUUID().toString.replaceAll("-", "")
 		if (operatorLst.isEmpty) pr
 		else {
 			operatorLst.foldLeft(pr) { (l, r) =>
-				log.setInfoLog(r.name, "开始执行")
+				logger.info(logFormat(s"${r.name},开始执行"))
 				try {
 					PhMapArgs(l.get + (r.name -> r.perform(PhMapArgs(l.get ++ defaultArgs.get ++ Map("chanelId" -> PhStringArgs(chanelId))))))
 				} catch {

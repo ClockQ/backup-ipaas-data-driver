@@ -6,7 +6,7 @@ import env.configObj.{inst, readJobConfig}
 import com.pharbers.ipaas.data.driver.api.work._
 import com.pharbers.ipaas.data.driver.libs.spark.PhSparkDriver
 import com.pharbers.ipaas.data.driver.libs.spark.util.readParquet
-import com.pharbers.ipaas.data.driver.libs.log.{PhLogDriver, formatMsg}
+import com.pharbers.ipaas.data.driver.libs.log.{PhLogFormat, formatMsg}
 
 class TestPfizerMax extends FunSuite {
 	implicit val sd: PhSparkDriver = PhSparkDriver("test-driver")
@@ -17,7 +17,7 @@ class TestPfizerMax extends FunSuite {
 		val phJobs = inst(readJobConfig("max_config/nhwa/clean.yaml"))
 		val result = phJobs.head.perform(PhMapArgs(Map(
 			"sparkDriver" -> PhSparkDriverArgs(sd),
-			"logDriver" -> PhLogDriverArgs(PhLogDriver(formatMsg("test_user", "test_traceID", "test_jobID")))
+			"logFormat" -> PhLogFormat(formatMsg("test_user", "test_traceID", "test_jobId")).get()
 		)))
 
 		val cleanDF = result.toMapArgs[PhDFArgs].get("cleanResult").get

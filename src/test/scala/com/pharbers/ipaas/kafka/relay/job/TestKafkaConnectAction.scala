@@ -20,7 +20,7 @@ package com.pharbers.ipaas.kafka.relay.job
 import org.scalatest.FunSuite
 import env.configObj.{inst, readJobConfig}
 import com.pharbers.ipaas.data.driver.api.work._
-import com.pharbers.ipaas.data.driver.libs.log.{PhLogDriver, formatMsg}
+import com.pharbers.ipaas.data.driver.libs.log.{PhLogFormat, formatMsg}
 import com.pharbers.ipaas.data.driver.libs.spark.PhSparkDriver
 import com.pharbers.ipaas.data.driver.libs.spark.util.readParquet
 import org.apache.spark.sql.Column
@@ -29,7 +29,7 @@ class TestKafkaConnectAction extends FunSuite {
 	test("kafka connect action") {
 		val phJobs = inst(readJobConfig("pharbers_config/channel/kafkaconnect.yaml"))
 		phJobs.head.perform(PhMapArgs(Map(
-			"logDriver" -> PhLogDriverArgs(PhLogDriver(formatMsg("test_user", "test_traceID", "test_jobID")))
+			"logFormat" -> PhLogFormat(formatMsg("test_user", "test_traceID", "test_jobId")).get()
 		)))
 	}
 
@@ -39,7 +39,7 @@ class TestKafkaConnectAction extends FunSuite {
 		phJobs.foreach(x =>
 			x.perform(PhMapArgs(Map(
 				"sparkDriver" -> PhSparkDriverArgs(sparkDriver),
-				"logDriver" -> PhLogDriverArgs(PhLogDriver(formatMsg("test_user", "test_traceID", "test_jobID")))
+				"logFormat" -> PhLogFormat(formatMsg("test_user", "test_traceID", "test_jobId")).get()
 			)))
 		)
 	}
@@ -48,7 +48,7 @@ class TestKafkaConnectAction extends FunSuite {
 		val phJobs = inst(readJobConfig("pharbers_config/channel/hdfsSinkToES.yaml"))
 		phJobs.foreach(x =>
 			x.perform(PhMapArgs(Map(
-				"logDriver" -> PhLogDriverArgs(PhLogDriver(formatMsg("test_user", "test_traceID", "test_jobID")))
+				"logFormat" -> PhLogFormat(formatMsg("test_user", "test_traceID", "test_jobId")).get()
 			)))
 		)
 	}
@@ -59,7 +59,7 @@ class TestKafkaConnectAction extends FunSuite {
 		phJobs.foreach(x =>
 			x.perform(PhMapArgs(Map(
 				"sparkDriver" -> PhSparkDriverArgs(sparkDriver),
-				"logDriver" -> PhLogDriverArgs(PhLogDriver(formatMsg("test_user", "test_traceID", "test_jobID")))
+				"logFormat" -> PhLogFormat(formatMsg("test_user", "test_traceID", "test_jobId")).get()
 			)))
 		)
 	}

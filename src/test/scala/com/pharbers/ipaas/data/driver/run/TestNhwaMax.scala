@@ -5,7 +5,7 @@ import org.scalatest.FunSuite
 import org.apache.spark.sql.functions._
 import com.pharbers.ipaas.data.driver.api.work._
 import com.pharbers.ipaas.data.driver.libs.spark.PhSparkDriver
-import com.pharbers.ipaas.data.driver.libs.log.{PhLogDriver, formatMsg}
+import com.pharbers.ipaas.data.driver.libs.log.{PhLogFormat, formatMsg}
 import com.pharbers.ipaas.data.driver.libs.spark.util.{readCsv, readParquet}
 
 class TestNhwaMax extends FunSuite {
@@ -17,7 +17,7 @@ class TestNhwaMax extends FunSuite {
         val phJobs = inst(readJobConfig("max_config/nhwa/MZclean.yaml"))
         val result = phJobs.head.perform(PhMapArgs(Map(
             "sparkDriver" -> PhSparkDriverArgs(sd),
-            "logDriver" -> PhLogDriverArgs(PhLogDriver(formatMsg("test_user", "test_traceID", "test_jobID")))
+            "logFormat" -> PhLogFormat(formatMsg("test_user", "test_traceID", "test_jobId")).get()
         )))
 
         val cleanDF = result.toMapArgs[PhDFArgs].get("cleanResult").get
@@ -50,7 +50,7 @@ class TestNhwaMax extends FunSuite {
         val phJobs = inst(readJobConfig("max_config/nhwa/MZpanelByCpa.yaml"))
         val result = phJobs.head.perform(PhMapArgs(Map(
             "sparkDriver" -> PhSparkDriverArgs(sd),
-            "logDriver" -> PhLogDriverArgs(PhLogDriver(formatMsg("test_user", "test_traceID", "test_jobID")))
+            "logFormat" -> PhLogFormat(formatMsg("test_user", "test_traceID", "test_jobId")).get()
         )))
 
         val panelDF = result.toMapArgs[PhDFArgs].get("panelResult").get
@@ -81,7 +81,7 @@ class TestNhwaMax extends FunSuite {
         val phJobs = inst(readJobConfig("max_config/nhwa/MZmax.yaml"))
         val result = phJobs.head.perform(PhMapArgs(Map(
             "sparkDriver" -> PhSparkDriverArgs(sd),
-            "logDriver" -> PhLogDriverArgs(PhLogDriver(formatMsg("test_user", "test_traceID", "test_jobID")))
+            "logFormat" -> PhLogFormat(formatMsg("test_user", "test_traceID", "test_jobId")).get()
         )))
 
 		val maxDF = result.toMapArgs[PhDFArgs].get("maxResult").get

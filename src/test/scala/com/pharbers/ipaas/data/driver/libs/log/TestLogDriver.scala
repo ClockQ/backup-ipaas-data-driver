@@ -1,22 +1,18 @@
 package com.pharbers.ipaas.data.driver.libs.log
 
+import com.pharbers.util.log.PhLogable
 import org.scalatest.{BeforeAndAfterAll, FunSuite}
-import com.pharbers.ipaas.data.driver.libs.spark.PhSparkDriver
+import org.apache.logging.log4j.{LogManager, Logger}
 
 class TestLogDriver extends FunSuite with BeforeAndAfterAll {
-    implicit var sd: PhSparkDriver = _
 	var log: PhLogDriver = _
 
 	override def beforeAll(): Unit = {
-		sd = PhSparkDriver("test-driver")
+//		sd = PhSparkDriver("test-driver")
+		implicit val logger: Logger = LogManager.getLogger(this)
 		log = PhLogDriver(formatMsg("test_user", "test_traceID", "test_jobID"))
 
-		require(sd != null)
 		require(log != null)
-	}
-
-	override def afterAll(): Unit = {
-		sd.stopSpark()
 	}
 
 	test("print log") {
@@ -29,4 +25,10 @@ class TestLogDriver extends FunSuite with BeforeAndAfterAll {
 			log.setInfoLog("test" + i)
 		}
 	}
+
+	test("log able"){
+		val fun = PhLogFormat(formatMsg("test_user", "test_traceID", "test_jobID")).get().get
+		println(fun(List("1", "2", "3")))
+	}
+
 }

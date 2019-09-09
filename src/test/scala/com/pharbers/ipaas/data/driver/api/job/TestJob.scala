@@ -8,7 +8,7 @@ import com.pharbers.ipaas.data.driver.api.model.Job
 import org.apache.spark.sql.{Column, DataFrame}
 import com.pharbers.ipaas.data.driver.api.work._
 import com.pharbers.ipaas.data.driver.libs.input.JsonInput
-import com.pharbers.ipaas.data.driver.libs.log.{PhLogDriver, formatMsg}
+import com.pharbers.ipaas.data.driver.libs.log.{PhLogFormat, formatMsg}
 import org.scalatest.{BeforeAndAfterAll, FunSuite}
 import com.pharbers.ipaas.data.driver.libs.spark.PhSparkDriver
 
@@ -101,7 +101,7 @@ class TestJob extends FunSuite with BeforeAndAfterAll {
         val result = action1.perform(PhMapArgs(Map(
             "df" -> PhDFArgs(testDF),
             "sparkDriver" -> PhSparkDriverArgs(sd),
-            "logDriver" -> PhLogDriverArgs(PhLogDriver(formatMsg("test_user", "test_traceID", "test_jobID")))
+            "logFormat" -> PhLogFormat(formatMsg("test_user", "test_traceID", "test_jobId")).get()
         )))
 
         println(result)
@@ -145,7 +145,7 @@ class TestJob extends FunSuite with BeforeAndAfterAll {
         val result = job1.perform(PhMapArgs(Map(
             "df" -> PhDFArgs(testDF),
             "sparkDriver" -> PhSparkDriverArgs(sd),
-            "logDriver" -> PhLogDriverArgs(PhLogDriver(formatMsg("test_user", "test_traceID", "test_jobID")))
+            "logFormat" -> PhLogFormat(formatMsg("test_user", "test_traceID", "test_jobId")).get()
         )))
 
         println(result)

@@ -5,7 +5,7 @@ import org.scalatest.{BeforeAndAfterAll, FunSuite}
 import org.apache.spark.sql.{Column, DataFrame, Row}
 import com.pharbers.ipaas.data.driver.libs.spark.PhSparkDriver
 import com.pharbers.ipaas.data.driver.api.job.{PhBaseAction, PhBaseJob}
-import com.pharbers.ipaas.data.driver.libs.log.{PhLogDriver, formatMsg}
+import com.pharbers.ipaas.data.driver.libs.log.{PhLogFormat, formatMsg}
 
 class TestPhWorkTrait extends FunSuite with BeforeAndAfterAll {
     implicit var sd: PhSparkDriver = _
@@ -117,7 +117,7 @@ class TestPhWorkTrait extends FunSuite with BeforeAndAfterAll {
         val result = job1.perform(PhMapArgs(Map(
             "df" -> PhDFArgs(testDF),
             "sparkDriver" -> PhSparkDriverArgs(sd),
-            "logDriver" -> PhLogDriverArgs(PhLogDriver(formatMsg("test_user", "test_traceID", "test_jobID")))
+            "logFormat" -> PhLogFormat(formatMsg("test_user", "test_traceID","test_jobId")).get()
         )))
 
         println(result)
@@ -180,7 +180,7 @@ class TestPhWorkTrait extends FunSuite with BeforeAndAfterAll {
         val result = job1.perform(PhMapArgs(Map(
             "rdd" -> PhRDDArgs(testDF.rdd),
             "sparkDriver" -> PhSparkDriverArgs(sd),
-            "logDriver" -> PhLogDriverArgs(PhLogDriver(formatMsg("test_user", "test_traceID", "test_jobID")))
+            "logFormat" -> PhLogFormat(formatMsg("test_user", "test_traceID", "test_jobId")).get()
         )))
 
         println(result)

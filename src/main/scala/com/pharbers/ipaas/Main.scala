@@ -34,11 +34,12 @@ import com.pharbers.ipaas.data.driver.api.model.driverConfig.DriverConfig
 import com.pharbers.ipaas.data.driver.api.work._
 import com.pharbers.ipaas.data.driver.exceptions.PhOperatorException
 import com.pharbers.ipaas.data.driver.libs.input.{JsonInput, YamlInput}
-import com.pharbers.ipaas.data.driver.libs.log.{PhLogDriver, formatMsg}
+import com.pharbers.ipaas.data.driver.libs.log.{ PhLogFormat, formatMsg}
 import com.pharbers.ipaas.data.driver.libs.spark.{PhSparkDriver, util}
 import com.pharbers.ipaas.job.tm.TmJobBuilder
 import com.pharbers.kafka.consumer.PharbersKafkaConsumer
 import com.pharbers.kafka.schema.SparkJob
+import com.pharbers.util.log.PhLogable
 import org.apache.kafka.clients.consumer.ConsumerRecord
 
 import scala.beans.BeanProperty
@@ -60,8 +61,7 @@ object Main {
     }
 }
 
-object Runner {
-    val logger = PhLogDriver(formatMsg("driver_manager", "test", "test"))
+object Runner extends PhLogable{
     //todo: 提前把job缓存到了这个队列，如果中间driver gg了，这些job就不能恢复
     var jobs: List[Job] = List()
     val lock = new ReentrantLock(true)
@@ -76,7 +76,7 @@ object Runner {
             fc = file.getChannel
             val sd: PhSparkDriver = PhSparkDriver(driverConfig.name)
             sd.sc.setLogLevel("error")
-            logger.setInfoLog("create success", s"driver name: ${driverConfig.name}")
+            logger.info("create success", s"driver name: ${driverConfig.name}")
             kafkaListener(driverConfig.topic, sd)
         } finally {
             file.close()
@@ -87,7 +87,7 @@ object Runner {
         val pkc = new PharbersKafkaConsumer[String, SparkJob](List(topic), 1000, Int.MaxValue, process)
         val t = new Thread(pkc)
         try {
-            logger.setInfoLog("DriverListener starting!")
+            logger.info("DriverListener starting!")
             t.start()
             while (!driver.sc.isStopped) {
                 //todo: 单独def
@@ -100,10 +100,10 @@ object Runner {
             }
         } catch {
             case ie: Exception =>
-                logger.setErrorLog(ie.getMessage)
+                logger.error(ie.getMessage)
         } finally {
             pkc.close()
-            logger.setInfoLog("close!")
+            logger.error("close!")
         }
     }
 
@@ -146,16 +146,16 @@ object Runner {
             Runner.aCondition.signalAll()
             Runner.lock.unlock()
         } catch {
-            case e: JsonMappingException => logger.setErrorLog(e)
-            case e: JsonParseException => logger.setErrorLog(e)
-            case e: Exception => logger.setErrorLog(e)
+            case e: JsonMappingException => logger.error(e)
+            case e: JsonParseException => logger.error(e)
+            case e: Exception => logger.error(e)
         }finally {
             client.shutdown()
         }
     }
 
     def runJob(job: Job, driver: PhSparkDriver): Unit ={
-        logger.setInfoLog("beginning job",s"name:${job.name}")
+        logger.info("beginning job",s"name:${job.name}")
         val phJob = try{
             getMethodMirror(job.getFactory)(job).asInstanceOf[PhFactoryTrait[PhJobTrait]].inst()
         }catch {
@@ -166,10 +166,10 @@ object Runner {
         try {
             val result = phJob.perform(PhMapArgs(Map(
                 "sparkDriver" -> PhSparkDriverArgs(driver),
-                "logDriver" -> PhLogDriverArgs(PhLogDriver(formatMsg("test_user", "test_traceID", job.jobId)))
+                "logFormat" -> PhLogFormat(formatMsg("test_user", "test_traceID", job.jobId)).get()
             ))).get.asInstanceOf[Map[String, PhWorkArgs[Any]]].getOrElse("result" ,PhStringArgs(job.jobId)).get
             //todo: job完成判断， recall job结果
-            logger.setInfoLog("job finish",s"jobId:${job.jobId}, name:${job.name}")
+            logger.info("job finish",s"jobId:${job.jobId}, name:${job.name}")
             writeMapped(JsonInput.mapper.writeValueAsString(new DriverJobMsg(job.jobId, "1", s"""{"job_id": "$result", "type": "${job.jobType}"}""")))
         }catch {
             case e: PhOperatorException =>
@@ -179,7 +179,7 @@ object Runner {
 
     //json必须小于1024字节
     def writeMapped(json: String): Unit ={
-        logger.setInfoLog(s"write mapped $json")
+        logger.info(s"write mapped $json")
         //todo：配置化
         val size = scala.util.Properties.envOrElse("DRIVER_MAPPED_SIZE", "1024").toInt
         val mapBuf = fc.map(FileChannel.MapMode.READ_WRITE, 0, size)

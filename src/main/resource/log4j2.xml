@@ -10,7 +10,7 @@
                 <ThresholdFilter level="all" onMatch="ACCEPT" onMismatch="DENY"/>
             </Filters>
             <PatternLayout>
-                <Pattern>%d{yyyy/MM/dd HH:mm:ss.SSS}, %p, %m%n</Pattern>
+                <Pattern>{"Time": "%d{yyyy/MM/dd HH:mm:ss.SSS}","ProjectName": "ipass-data-driver","Level": "%p","File": "%l","Func": "%M",%m}%n</Pattern>
             </PatternLayout>
         </Console>
         <RollingFile name="RollingFile" fileName="${LOG_HOME}/${FILE_NAME}.log"

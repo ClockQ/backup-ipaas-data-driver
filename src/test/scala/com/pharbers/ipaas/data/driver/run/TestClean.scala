@@ -18,7 +18,7 @@
 package com.pharbers.ipaas.data.driver.run
 
 import com.pharbers.ipaas.data.driver.api.work._
-import com.pharbers.ipaas.data.driver.libs.log.{PhLogDriver, formatMsg}
+import com.pharbers.ipaas.data.driver.libs.log.{PhLogFormat, formatMsg}
 import com.pharbers.ipaas.data.driver.libs.spark.PhSparkDriver
 import com.pharbers.ipaas.data.driver.libs.spark.util.{readCsv, save2Parquet}
 import env.configObj.{inst, readJobConfig}
@@ -34,7 +34,7 @@ class TestClean extends FunSuite {
 		val phJobs = inst(readJobConfig("max_config/common/cleanPanel.yaml"))
 		val result = phJobs.head.perform(PhMapArgs(Map(
 			"sparkDriver" -> PhSparkDriverArgs(sd),
-			"logDriver" -> PhLogDriverArgs(PhLogDriver(formatMsg("test_user", "test_traceID", "test_jobID")))
+			"logFormat" -> PhLogFormat(formatMsg("test_user", "test_traceID","test_jobId")).get()
 		)))
 
 		val panelERD = result.toMapArgs[PhDFArgs].get("panelERD").get
@@ -68,7 +68,7 @@ class TestClean extends FunSuite {
 		val phJobs = inst(readJobConfig("max_config/common/cleanUniverse.yaml"))
 		val result = phJobs.head.perform(PhMapArgs(Map(
 			"sparkDriver" -> PhSparkDriverArgs(sd),
-			"logDriver" -> PhLogDriverArgs(PhLogDriver(formatMsg("test_user", "test_traceID", "test_jobID")))
+			"logFormat" -> PhLogFormat(formatMsg("test_user", "test_traceID","test_jobId")).get()
 		)))
 
 		val universeERD = result.toMapArgs[PhDFArgs].get("universeERD").get

@@ -24,7 +24,9 @@ import org.apache.logging.log4j.{LogManager, Logger}
   * @author cui
   * @version 0.1
   * @since 2019-06-4 10:21
+  * @note 改为实现PhLogable接口
   */
+@Deprecated
 case class PhLogDriver(formatMsg: Seq[Any] => String = _.map(_.toString).mkString(", ")) {
     private val logger: Logger = LogManager.getRootLogger()
 

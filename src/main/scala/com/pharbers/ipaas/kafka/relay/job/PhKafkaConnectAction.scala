@@ -51,11 +51,11 @@ case class PhKafkaConnectAction(name: String,
 	  * @since 2019/7/5 12:20
 	  */
 	def perform(pr: PhMapArgs[PhWorkArgs[Any]]): PhWorkArgs[Any] = {
-		val log: PhLogDriver = pr.get("logDriver").asInstanceOf[PhLogDriverArgs].get
+		val logFormat = pr.get("logFormat").asInstanceOf[PhFuncArgs[PhListArgs[PhStringArgs], PhStringArgs]].get
 //		val chanelId = defaultArgs.get("chanelId").get.asInstanceOf[String] + UUID.randomUUID().toString.replaceAll("-", "")
 		if (operatorLst.isEmpty) pr
 		else operatorLst.foreach { oper => {
-			log.setInfoLog(oper.name)
+			logger.info(logFormat(oper.name))
 //			oper.perform(PhMapArgs(pr.get ++ defaultArgs.get ++ Map("chanelId" -> PhStringArgs(chanelId))))
 			oper.perform(PhMapArgs(pr.get ++ defaultArgs.get))
 		}

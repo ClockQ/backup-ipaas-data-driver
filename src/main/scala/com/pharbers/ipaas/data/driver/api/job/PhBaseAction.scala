@@ -46,12 +46,12 @@ case class PhBaseAction(name: String,
       */
     def perform(pr: PhMapArgs[PhWorkArgs[Any]]): PhWorkArgs[Any] = {
         val _: PhSparkDriver = pr.get("sparkDriver").asInstanceOf[PhSparkDriverArgs].get
-        val log: PhLogDriver = pr.get("logDriver").asInstanceOf[PhLogDriverArgs].get
+        val logFormat = pr.get("logFormat").asInstanceOf[PhFuncArgs[PhListArgs[PhStringArgs], PhStringArgs]].get
 
         if (operatorLst.isEmpty) pr
         else {
             operatorLst.foldLeft(pr) { (l, r) =>
-                log.setInfoLog(r.name, "开始执行")
+                logger.info(logFormat(s"${r.name},开始执行"))
                 try {
                     PhMapArgs(l.get + (r.name -> r.perform(l)))
                 } catch {

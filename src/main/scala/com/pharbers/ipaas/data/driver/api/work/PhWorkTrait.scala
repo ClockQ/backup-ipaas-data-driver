@@ -17,6 +17,8 @@
 
 package com.pharbers.ipaas.data.driver.api.work
 
+import com.pharbers.util.log.PhLogable
+
 /** CMD 运行实体基类
   *
   * @tparam A 运行实体泛型
@@ -24,7 +26,7 @@ package com.pharbers.ipaas.data.driver.api.work
   * @version 0.1
   * @since 2019/6/11 16:43
   */
-sealed trait PhWorkTrait[+A] extends Serializable {
+sealed trait PhWorkTrait[+A] extends Serializable with PhLogable{
 	/** 运行实例的名字
 	  *
 	  * @author clock

@@ -18,7 +18,7 @@
 package com.pharbers.ipaas.data.driver.run
 
 import com.pharbers.ipaas.data.driver.api.work._
-import com.pharbers.ipaas.data.driver.libs.log.{PhLogDriver, formatMsg}
+import com.pharbers.ipaas.data.driver.libs.log.{PhLogFormat, formatMsg}
 import com.pharbers.ipaas.data.driver.libs.spark.PhSparkDriver
 import com.pharbers.ipaas.data.driver.libs.spark.util.{readCsv, save2Parquet}
 import env.configObj.{inst, readJobConfig}
@@ -34,7 +34,7 @@ class TestQlMax extends FunSuite {
 		val phJobs = inst(readJobConfig("max_config/ql/1cleanPanel.yaml"))
 		val result = phJobs.head.perform(PhMapArgs(Map(
 			"sparkDriver" -> PhSparkDriverArgs(sd),
-			"logDriver" -> PhLogDriverArgs(PhLogDriver(formatMsg("test_user", "test_traceID", "test_jobID")))
+			"logFormat" -> PhLogFormat(formatMsg("test_user", "test_traceID", "test_jobId")).get()
 		)))
 
 		val panelERD = result.toMapArgs[PhDFArgs].get("panelERD").get
@@ -68,7 +68,7 @@ class TestQlMax extends FunSuite {
 		val phJobs = inst(readJobConfig("max_config/ql/1cleanUniverse.yaml"))
 		val result = phJobs.head.perform(PhMapArgs(Map(
 			"sparkDriver" -> PhSparkDriverArgs(sd),
-			"logDriver" -> PhLogDriverArgs(PhLogDriver(formatMsg("test_user", "test_traceID", "test_jobID")))
+			"logFormat" -> PhLogFormat(formatMsg("test_user", "test_traceID", "test_jobId")).get()
 		)))
 
 		val universeERD = result.toMapArgs[PhDFArgs].get("universeERD").get
@@ -102,7 +102,7 @@ class TestQlMax extends FunSuite {
 		val phJobs = inst(readJobConfig("max_config/ql/1max.yaml"))
 		val result = phJobs.head.perform(PhMapArgs(Map(
 			"sparkDriver" -> PhSparkDriverArgs(sd),
-			"logDriver" -> PhLogDriverArgs(PhLogDriver(formatMsg("test_user", "test_traceID", "test_jobID")))
+			"logFormat" -> PhLogFormat(formatMsg("test_user", "test_traceID", "test_jobId")).get()
 		)))
 
 		val maxDF = result.toMapArgs[PhDFArgs].get("maxResult").get
@@ -131,7 +131,7 @@ class TestQlMax extends FunSuite {
 		val phJobs = inst(readJobConfig("max_config/ql/2cleanPanel.yaml"))
 		val result = phJobs.head.perform(PhMapArgs(Map(
 			"sparkDriver" -> PhSparkDriverArgs(sd),
-			"logDriver" -> PhLogDriverArgs(PhLogDriver(formatMsg("test_user", "test_traceID", "test_jobID")))
+			"logFormat" -> PhLogFormat(formatMsg("test_user", "test_traceID", "test_jobId")).get()
 		)))
 
 		val panelERD = result.toMapArgs[PhDFArgs].get("panelERD").get
@@ -165,7 +165,7 @@ class TestQlMax extends FunSuite {
 		val phJobs = inst(readJobConfig("max_config/ql/2cleanUniverse.yaml"))
 		val result = phJobs.head.perform(PhMapArgs(Map(
 			"sparkDriver" -> PhSparkDriverArgs(sd),
-			"logDriver" -> PhLogDriverArgs(PhLogDriver(formatMsg("test_user", "test_traceID", "test_jobID")))
+			"logFormat" -> PhLogFormat(formatMsg("test_user", "test_traceID", "test_jobId")).get()
 		)))
 
 		val universeERD = result.toMapArgs[PhDFArgs].get("universeERD").get
@@ -199,7 +199,7 @@ class TestQlMax extends FunSuite {
 		val phJobs = inst(readJobConfig("max_config/ql/2max.yaml"))
 		val result = phJobs.head.perform(PhMapArgs(Map(
 			"sparkDriver" -> PhSparkDriverArgs(sd),
-			"logDriver" -> PhLogDriverArgs(PhLogDriver(formatMsg("test_user", "test_traceID", "test_jobID")))
+			"logFormat" -> PhLogFormat(formatMsg("test_user", "test_traceID", "test_jobId")).get()
 		)))
 
 		val maxDF = result.toMapArgs[PhDFArgs].get("maxResult").get
@@ -228,7 +228,7 @@ class TestQlMax extends FunSuite {
 		val phJobs = inst(readJobConfig("max_config/ql/3cleanPanel.yaml"))
 		val result = phJobs.head.perform(PhMapArgs(Map(
 			"sparkDriver" -> PhSparkDriverArgs(sd),
-			"logDriver" -> PhLogDriverArgs(PhLogDriver(formatMsg("test_user", "test_traceID", "test_jobID")))
+			"logFormat" -> PhLogFormat(formatMsg("test_user", "test_traceID", "test_jobId")).get()
 		)))
 
 		val panelERD = result.toMapArgs[PhDFArgs].get("panelERD").get
@@ -262,7 +262,7 @@ class TestQlMax extends FunSuite {
 		val phJobs = inst(readJobConfig("max_config/ql/3cleanUniverse.yaml"))
 		val result = phJobs.head.perform(PhMapArgs(Map(
 			"sparkDriver" -> PhSparkDriverArgs(sd),
-			"logDriver" -> PhLogDriverArgs(PhLogDriver(formatMsg("test_user", "test_traceID", "test_jobID")))
+			"logFormat" -> PhLogFormat(formatMsg("test_user", "test_traceID", "test_jobId")).get()
 		)))
 
 		val universeERD = result.toMapArgs[PhDFArgs].get("universeERD").get
@@ -296,7 +296,7 @@ class TestQlMax extends FunSuite {
 		val phJobs = inst(readJobConfig("max_config/ql/3max.yaml"))
 		val result = phJobs.head.perform(PhMapArgs(Map(
 			"sparkDriver" -> PhSparkDriverArgs(sd),
-			"logDriver" -> PhLogDriverArgs(PhLogDriver(formatMsg("test_user", "test_traceID", "test_jobID")))
+			"logFormat" -> PhLogFormat(formatMsg("test_user", "test_traceID", "test_jobId")).get()
 		)))
 
 		val maxDF = result.toMapArgs[PhDFArgs].get("maxResult").get
@@ -325,7 +325,7 @@ class TestQlMax extends FunSuite {
 		val phJobs = inst(readJobConfig("max_config/ql/4cleanPanel.yaml"))
 		val result = phJobs.head.perform(PhMapArgs(Map(
 			"sparkDriver" -> PhSparkDriverArgs(sd),
-			"logDriver" -> PhLogDriverArgs(PhLogDriver(formatMsg("test_user", "test_traceID", "test_jobID")))
+			"logFormat" -> PhLogFormat(formatMsg("test_user", "test_traceID", "test_jobId")).get()
 		)))
 
 		val panelERD = result.toMapArgs[PhDFArgs].get("panelERD").get
@@ -359,7 +359,7 @@ class TestQlMax extends FunSuite {
 		val phJobs = inst(readJobConfig("max_config/ql/4cleanUniverse.yaml"))
 		val result = phJobs.head.perform(PhMapArgs(Map(
 			"sparkDriver" -> PhSparkDriverArgs(sd),
-			"logDriver" -> PhLogDriverArgs(PhLogDriver(formatMsg("test_user", "test_traceID", "test_jobID")))
+			"logFormat" -> PhLogFormat(formatMsg("test_user", "test_traceID", "test_jobId")).get()
 		)))
 
 		val universeERD = result.toMapArgs[PhDFArgs].get("universeERD").get
@@ -393,7 +393,7 @@ class TestQlMax extends FunSuite {
 		val phJobs = inst(readJobConfig("max_config/ql/4max.yaml"))
 		val result = phJobs.head.perform(PhMapArgs(Map(
 			"sparkDriver" -> PhSparkDriverArgs(sd),
-			"logDriver" -> PhLogDriverArgs(PhLogDriver(formatMsg("test_user", "test_traceID", "test_jobID")))
+			"logFormat" -> PhLogFormat(formatMsg("test_user", "test_traceID", "test_jobId")).get()
 		)))
 
 		val maxDF = result.toMapArgs[PhDFArgs].get("maxResult").get
@@ -422,7 +422,7 @@ class TestQlMax extends FunSuite {
 		val phJobs = inst(readJobConfig("max_config/ql/5cleanPanel.yaml"))
 		val result = phJobs.head.perform(PhMapArgs(Map(
 			"sparkDriver" -> PhSparkDriverArgs(sd),
-			"logDriver" -> PhLogDriverArgs(PhLogDriver(formatMsg("test_user", "test_traceID", "test_jobID")))
+			"logFormat" -> PhLogFormat(formatMsg("test_user", "test_traceID", "test_jobId")).get()
 		)))
 
 		val panelERD = result.toMapArgs[PhDFArgs].get("panelERD").get
@@ -456,7 +456,7 @@ class TestQlMax extends FunSuite {
 		val phJobs = inst(readJobConfig("max_config/ql/5cleanUniverse.yaml"))
 		val result = phJobs.head.perform(PhMapArgs(Map(
 			"sparkDriver" -> PhSparkDriverArgs(sd),
-			"logDriver" -> PhLogDriverArgs(PhLogDriver(formatMsg("test_user", "test_traceID", "test_jobID")))
+			"logFormat" -> PhLogFormat(formatMsg("test_user", "test_traceID", "test_jobId")).get()
 		)))
 
 		val universeERD = result.toMapArgs[PhDFArgs].get("universeERD").get
@@ -490,7 +490,7 @@ class TestQlMax extends FunSuite {
 		val phJobs = inst(readJobConfig("max_config/ql/5max.yaml"))
 		val result = phJobs.head.perform(PhMapArgs(Map(
 			"sparkDriver" -> PhSparkDriverArgs(sd),
-			"logDriver" -> PhLogDriverArgs(PhLogDriver(formatMsg("test_user", "test_traceID", "test_jobID")))
+			"logFormat" -> PhLogFormat(formatMsg("test_user", "test_traceID", "test_jobId")).get()
 		)))
 
 		val maxDF = result.toMapArgs[PhDFArgs].get("maxResult").get
@@ -519,7 +519,7 @@ class TestQlMax extends FunSuite {
 		val phJobs = inst(readJobConfig("max_config/ql/6cleanPanel.yaml"))
 		val result = phJobs.head.perform(PhMapArgs(Map(
 			"sparkDriver" -> PhSparkDriverArgs(sd),
-			"logDriver" -> PhLogDriverArgs(PhLogDriver(formatMsg("test_user", "test_traceID", "test_jobID")))
+			"logFormat" -> PhLogFormat(formatMsg("test_user", "test_traceID", "test_jobId")).get()
 		)))
 
 		val panelERD = result.toMapArgs[PhDFArgs].get("panelERD").get
@@ -553,7 +553,7 @@ class TestQlMax extends FunSuite {
 		val phJobs = inst(readJobConfig("max_config/ql/6cleanUniverse.yaml"))
 		val result = phJobs.head.perform(PhMapArgs(Map(
 			"sparkDriver" -> PhSparkDriverArgs(sd),
-			"logDriver" -> PhLogDriverArgs(PhLogDriver(formatMsg("test_user", "test_traceID", "test_jobID")))
+			"logFormat" -> PhLogFormat(formatMsg("test_user", "test_traceID", "test_jobId")).get()
 		)))
 
 		val universeERD = result.toMapArgs[PhDFArgs].get("universeERD").get
@@ -587,7 +587,7 @@ class TestQlMax extends FunSuite {
 		val phJobs = inst(readJobConfig("max_config/ql/6max.yaml"))
 		val result = phJobs.head.perform(PhMapArgs(Map(
 			"sparkDriver" -> PhSparkDriverArgs(sd),
-			"logDriver" -> PhLogDriverArgs(PhLogDriver(formatMsg("test_user", "test_traceID", "test_jobID")))
+			"logFormat" -> PhLogFormat(formatMsg("test_user", "test_traceID", "test_jobId")).get()
 		)))
 
 		val maxDF = result.toMapArgs[PhDFArgs].get("maxResult").get
@@ -616,7 +616,7 @@ class TestQlMax extends FunSuite {
 		val phJobs = inst(readJobConfig("max_config/ql/7cleanPanel.yaml"))
 		val result = phJobs.head.perform(PhMapArgs(Map(
 			"sparkDriver" -> PhSparkDriverArgs(sd),
-			"logDriver" -> PhLogDriverArgs(PhLogDriver(formatMsg("test_user", "test_traceID", "test_jobID")))
+			"logFormat" -> PhLogFormat(formatMsg("test_user", "test_traceID", "test_jobId")).get()
 		)))
 
 		val panelERD = result.toMapArgs[PhDFArgs].get("panelERD").get
@@ -650,7 +650,7 @@ class TestQlMax extends FunSuite {
 		val phJobs = inst(readJobConfig("max_config/ql/7cleanUniverse.yaml"))
 		val result = phJobs.head.perform(PhMapArgs(Map(
 			"sparkDriver" -> PhSparkDriverArgs(sd),
-			"logDriver" -> PhLogDriverArgs(PhLogDriver(formatMsg("test_user", "test_traceID", "test_jobID")))
+			"logFormat" -> PhLogFormat(formatMsg("test_user", "test_traceID", "test_jobId")).get()
 		)))
 
 		val universeERD = result.toMapArgs[PhDFArgs].get("universeERD").get
@@ -684,7 +684,7 @@ class TestQlMax extends FunSuite {
 		val phJobs = inst(readJobConfig("max_config/ql/7max.yaml"))
 		val result = phJobs.head.perform(PhMapArgs(Map(
 			"sparkDriver" -> PhSparkDriverArgs(sd),
-			"logDriver" -> PhLogDriverArgs(PhLogDriver(formatMsg("test_user", "test_traceID", "test_jobID")))
+			"logFormat" -> PhLogFormat(formatMsg("test_user", "test_traceID", "test_jobId")).get()
 		)))
 
 		val maxDF = result.toMapArgs[PhDFArgs].get("maxResult").get
@@ -713,7 +713,7 @@ class TestQlMax extends FunSuite {
 		val phJobs = inst(readJobConfig("max_config/ql/8cleanPanel.yaml"))
 		val result = phJobs.head.perform(PhMapArgs(Map(
 			"sparkDriver" -> PhSparkDriverArgs(sd),
-			"logDriver" -> PhLogDriverArgs(PhLogDriver(formatMsg("test_user", "test_traceID", "test_jobID")))
+			"logFormat" -> PhLogFormat(formatMsg("test_user", "test_traceID", "test_jobId")).get()
 		)))
 
 		val panelERD = result.toMapArgs[PhDFArgs].get("panelERD").get
@@ -747,7 +747,7 @@ class TestQlMax extends FunSuite {
 		val phJobs = inst(readJobConfig("max_config/ql/8cleanUniverse.yaml"))
 		val result = phJobs.head.perform(PhMapArgs(Map(
 			"sparkDriver" -> PhSparkDriverArgs(sd),
-			"logDriver" -> PhLogDriverArgs(PhLogDriver(formatMsg("test_user", "test_traceID", "test_jobID")))
+			"logFormat" -> PhLogFormat(formatMsg("test_user", "test_traceID", "test_jobId")).get()
 		)))
 
 		val universeERD = result.toMapArgs[PhDFArgs].get("universeERD").get
@@ -781,7 +781,7 @@ class TestQlMax extends FunSuite {
 		val phJobs = inst(readJobConfig("max_config/ql/8max.yaml"))
 		val result = phJobs.head.perform(PhMapArgs(Map(
 			"sparkDriver" -> PhSparkDriverArgs(sd),
-			"logDriver" -> PhLogDriverArgs(PhLogDriver(formatMsg("test_user", "test_traceID", "test_jobID")))
+			"logFormat" -> PhLogFormat(formatMsg("test_user", "test_traceID", "test_jobId")).get()
 		)))
 
 		val maxDF = result.toMapArgs[PhDFArgs].get("maxResult").get
@@ -810,7 +810,7 @@ class TestQlMax extends FunSuite {
 		val phJobs = inst(readJobConfig("max_config/ql/9cleanPanel.yaml"))
 		val result = phJobs.head.perform(PhMapArgs(Map(
 			"sparkDriver" -> PhSparkDriverArgs(sd),
-			"logDriver" -> PhLogDriverArgs(PhLogDriver(formatMsg("test_user", "test_traceID", "test_jobID")))
+			"logFormat" -> PhLogFormat(formatMsg("test_user", "test_traceID", "test_jobId")).get()
 		)))
 
 		val panelERD = result.toMapArgs[PhDFArgs].get("panelERD").get
@@ -844,7 +844,7 @@ class TestQlMax extends FunSuite {
 		val phJobs = inst(readJobConfig("max_config/ql/9cleanUniverse.yaml"))
 		val result = phJobs.head.perform(PhMapArgs(Map(
 			"sparkDriver" -> PhSparkDriverArgs(sd),
-			"logDriver" -> PhLogDriverArgs(PhLogDriver(formatMsg("test_user", "test_traceID", "test_jobID")))
+			"logFormat" -> PhLogFormat(formatMsg("test_user", "test_traceID", "test_jobId")).get()
 		)))
 
 		val universeERD = result.toMapArgs[PhDFArgs].get("universeERD").get
@@ -878,7 +878,7 @@ class TestQlMax extends FunSuite {
 		val phJobs = inst(readJobConfig("max_config/ql/9max.yaml"))
 		val result = phJobs.head.perform(PhMapArgs(Map(
 			"sparkDriver" -> PhSparkDriverArgs(sd),
-			"logDriver" -> PhLogDriverArgs(PhLogDriver(formatMsg("test_user", "test_traceID", "test_jobID")))
+			"logFormat" -> PhLogFormat(formatMsg("test_user", "test_traceID", "test_jobId")).get()
 		)))
 
 		val maxDF = result.toMapArgs[PhDFArgs].get("maxResult").get
@@ -907,7 +907,7 @@ class TestQlMax extends FunSuite {
 		val phJobs = inst(readJobConfig("max_config/ql/10cleanPanel.yaml"))
 		val result = phJobs.head.perform(PhMapArgs(Map(
 			"sparkDriver" -> PhSparkDriverArgs(sd),
-			"logDriver" -> PhLogDriverArgs(PhLogDriver(formatMsg("test_user", "test_traceID", "test_jobID")))
+			"logFormat" -> PhLogFormat(formatMsg("test_user", "test_traceID", "test_jobId")).get()
 		)))
 
 		val panelERD = result.toMapArgs[PhDFArgs].get("panelERD").get
@@ -941,7 +941,7 @@ class TestQlMax extends FunSuite {
 		val phJobs = inst(readJobConfig("max_config/ql/10cleanUniverse.yaml"))
 		val result = phJobs.head.perform(PhMapArgs(Map(
 			"sparkDriver" -> PhSparkDriverArgs(sd),
-			"logDriver" -> PhLogDriverArgs(PhLogDriver(formatMsg("test_user", "test_traceID", "test_jobID")))
+			"logFormat" -> PhLogFormat(formatMsg("test_user", "test_traceID", "test_jobId")).get()
 		)))
 
 		val universeERD = result.toMapArgs[PhDFArgs].get("universeERD").get
@@ -975,7 +975,7 @@ class TestQlMax extends FunSuite {
 		val phJobs = inst(readJobConfig("max_config/ql/10max.yaml"))
 		val result = phJobs.head.perform(PhMapArgs(Map(
 			"sparkDriver" -> PhSparkDriverArgs(sd),
-			"logDriver" -> PhLogDriverArgs(PhLogDriver(formatMsg("test_user", "test_traceID", "test_jobID")))
+			"logFormat" -> PhLogFormat(formatMsg("test_user", "test_traceID", "test_jobId")).get()
 		)))
 
 		val maxDF = result.toMapArgs[PhDFArgs].get("maxResult").get
@@ -1004,7 +1004,7 @@ class TestQlMax extends FunSuite {
 		val phJobs = inst(readJobConfig("max_config/ql/11cleanPanel.yaml"))
 		val result = phJobs.head.perform(PhMapArgs(Map(
 			"sparkDriver" -> PhSparkDriverArgs(sd),
-			"logDriver" -> PhLogDriverArgs(PhLogDriver(formatMsg("test_user", "test_traceID", "test_jobID")))
+			"logFormat" -> PhLogFormat(formatMsg("test_user", "test_traceID", "test_jobId")).get()
 		)))
 
 		val panelERD = result.toMapArgs[PhDFArgs].get("panelERD").get
@@ -1038,7 +1038,7 @@ class TestQlMax extends FunSuite {
 		val phJobs = inst(readJobConfig("max_config/ql/11cleanUniverse.yaml"))
 		val result = phJobs.head.perform(PhMapArgs(Map(
 			"sparkDriver" -> PhSparkDriverArgs(sd),
-			"logDriver" -> PhLogDriverArgs(PhLogDriver(formatMsg("test_user", "test_traceID", "test_jobID")))
+			"logFormat" -> PhLogFormat(formatMsg("test_user", "test_traceID", "test_jobId")).get()
 		)))
 
 		val universeERD = result.toMapArgs[PhDFArgs].get("universeERD").get
@@ -1072,7 +1072,7 @@ class TestQlMax extends FunSuite {
 		val phJobs = inst(readJobConfig("max_config/ql/11max.yaml"))
 		val result = phJobs.head.perform(PhMapArgs(Map(
 			"sparkDriver" -> PhSparkDriverArgs(sd),
-			"logDriver" -> PhLogDriverArgs(PhLogDriver(formatMsg("test_user", "test_traceID", "test_jobID")))
+			"logFormat" -> PhLogFormat(formatMsg("test_user", "test_traceID", "test_jobId")).get()
 		)))
 
 		val maxDF = result.toMapArgs[PhDFArgs].get("maxResult").get
@@ -1101,7 +1101,7 @@ class TestQlMax extends FunSuite {
 		val phJobs = inst(readJobConfig("max_config/ql/12cleanPanel.yaml"))
 		val result = phJobs.head.perform(PhMapArgs(Map(
 			"sparkDriver" -> PhSparkDriverArgs(sd),
-			"logDriver" -> PhLogDriverArgs(PhLogDriver(formatMsg("test_user", "test_traceID", "test_jobID")))
+			"logFormat" -> PhLogFormat(formatMsg("test_user", "test_traceID", "test_jobId")).get()
 		)))
 
 		val panelERD = result.toMapArgs[PhDFArgs].get("panelERD").get
@@ -1135,7 +1135,7 @@ class TestQlMax extends FunSuite {
 		val phJobs = inst(readJobConfig("max_config/ql/12cleanUniverse.yaml"))
 		val result = phJobs.head.perform(PhMapArgs(Map(
 			"sparkDriver" -> PhSparkDriverArgs(sd),
-			"logDriver" -> PhLogDriverArgs(PhLogDriver(formatMsg("test_user", "test_traceID", "test_jobID")))
+			"logFormat" -> PhLogFormat(formatMsg("test_user", "test_traceID", "test_jobId")).get()
 		)))
 
 		val universeERD = result.toMapArgs[PhDFArgs].get("universeERD").get
@@ -1169,7 +1169,7 @@ class TestQlMax extends FunSuite {
 		val phJobs = inst(readJobConfig("max_config/ql/12max.yaml"))
 		val result = phJobs.head.perform(PhMapArgs(Map(
 			"sparkDriver" -> PhSparkDriverArgs(sd),
-			"logDriver" -> PhLogDriverArgs(PhLogDriver(formatMsg("test_user", "test_traceID", "test_jobID")))
+			"logFormat" -> PhLogFormat(formatMsg("test_user", "test_traceID", "test_jobId")).get()
 		)))
 
 		val maxDF = result.toMapArgs[PhDFArgs].get("maxResult").get
@@ -1198,7 +1198,7 @@ class TestQlMax extends FunSuite {
 		val phJobs = inst(readJobConfig("max_config/ql/13cleanPanel.yaml"))
 		val result = phJobs.head.perform(PhMapArgs(Map(
 			"sparkDriver" -> PhSparkDriverArgs(sd),
-			"logDriver" -> PhLogDriverArgs(PhLogDriver(formatMsg("test_user", "test_traceID", "test_jobID")))
+			"logFormat" -> PhLogFormat(formatMsg("test_user", "test_traceID", "test_jobId")).get()
 		)))
 
 		val panelERD = result.toMapArgs[PhDFArgs].get("panelERD").get
@@ -1232,7 +1232,7 @@ class TestQlMax extends FunSuite {
 		val phJobs = inst(readJobConfig("max_config/ql/13cleanUniverse.yaml"))
 		val result = phJobs.head.perform(PhMapArgs(Map(
 			"sparkDriver" -> PhSparkDriverArgs(sd),
-			"logDriver" -> PhLogDriverArgs(PhLogDriver(formatMsg("test_user", "test_traceID", "test_jobID")))
+			"logFormat" -> PhLogFormat(formatMsg("test_user", "test_traceID", "test_jobId")).get()
 		)))
 
 		val universeERD = result.toMapArgs[PhDFArgs].get("universeERD").get
@@ -1266,7 +1266,7 @@ class TestQlMax extends FunSuite {
 		val phJobs = inst(readJobConfig("max_config/ql/13max.yaml"))
 		val result = phJobs.head.perform(PhMapArgs(Map(
 			"sparkDriver" -> PhSparkDriverArgs(sd),
-			"logDriver" -> PhLogDriverArgs(PhLogDriver(formatMsg("test_user", "test_traceID", "test_jobID")))
+			"logFormat" -> PhLogFormat(formatMsg("test_user", "test_traceID", "test_jobId")).get()
 		)))
 
 		val maxDF = result.toMapArgs[PhDFArgs].get("maxResult").get
@@ -1295,7 +1295,7 @@ class TestQlMax extends FunSuite {
 		val phJobs = inst(readJobConfig("max_config/ql/14cleanPanel.yaml"))
 		val result = phJobs.head.perform(PhMapArgs(Map(
 			"sparkDriver" -> PhSparkDriverArgs(sd),
-			"logDriver" -> PhLogDriverArgs(PhLogDriver(formatMsg("test_user", "test_traceID", "test_jobID")))
+			"logFormat" -> PhLogFormat(formatMsg("test_user", "test_traceID", "test_jobId")).get()
 		)))
 
 		val panelERD = result.toMapArgs[PhDFArgs].get("panelERD").get
@@ -1329,7 +1329,7 @@ class TestQlMax extends FunSuite {
 		val phJobs = inst(readJobConfig("max_config/ql/14cleanUniverse.yaml"))
 		val result = phJobs.head.perform(PhMapArgs(Map(
 			"sparkDriver" -> PhSparkDriverArgs(sd),
-			"logDriver" -> PhLogDriverArgs(PhLogDriver(formatMsg("test_user", "test_traceID", "test_jobID")))
+			"logFormat" -> PhLogFormat(formatMsg("test_user", "test_traceID", "test_jobId")).get()
 		)))
 
 		val universeERD = result.toMapArgs[PhDFArgs].get("universeERD").get
@@ -1363,7 +1363,7 @@ class TestQlMax extends FunSuite {
 		val phJobs = inst(readJobConfig("max_config/ql/14max.yaml"))
 		val result = phJobs.head.perform(PhMapArgs(Map(
 			"sparkDriver" -> PhSparkDriverArgs(sd),
-			"logDriver" -> PhLogDriverArgs(PhLogDriver(formatMsg("test_user", "test_traceID", "test_jobID")))
+			"logFormat" -> PhLogFormat(formatMsg("test_user", "test_traceID", "test_jobId")).get()
 		)))
 
 		val maxDF = result.toMapArgs[PhDFArgs].get("maxResult").get
@@ -1392,7 +1392,7 @@ class TestQlMax extends FunSuite {
 		val phJobs = inst(readJobConfig("max_config/ql/15cleanPanel.yaml"))
 		val result = phJobs.head.perform(PhMapArgs(Map(
 			"sparkDriver" -> PhSparkDriverArgs(sd),
-			"logDriver" -> PhLogDriverArgs(PhLogDriver(formatMsg("test_user", "test_traceID", "test_jobID")))
+			"logFormat" -> PhLogFormat(formatMsg("test_user", "test_traceID", "test_jobId")).get()
 		)))
 
 		val panelERD = result.toMapArgs[PhDFArgs].get("panelERD").get
@@ -1426,7 +1426,7 @@ class TestQlMax extends FunSuite {
 		val phJobs = inst(readJobConfig("max_config/ql/15cleanUniverse.yaml"))
 		val result = phJobs.head.perform(PhMapArgs(Map(
 			"sparkDriver" -> PhSparkDriverArgs(sd),
-			"logDriver" -> PhLogDriverArgs(PhLogDriver(formatMsg("test_user", "test_traceID", "test_jobID")))
+			"logFormat" -> PhLogFormat(formatMsg("test_user", "test_traceID", "test_jobId")).get()
 		)))
 
 		val universeERD = result.toMapArgs[PhDFArgs].get("universeERD").get
@@ -1460,7 +1460,7 @@ class TestQlMax extends FunSuite {
 		val phJobs = inst(readJobConfig("max_config/ql/15max.yaml"))
 		val result = phJobs.head.perform(PhMapArgs(Map(
 			"sparkDriver" -> PhSparkDriverArgs(sd),
-			"logDriver" -> PhLogDriverArgs(PhLogDriver(formatMsg("test_user", "test_traceID", "test_jobID")))
+			"logFormat" -> PhLogFormat(formatMsg("test_user", "test_traceID", "test_jobId")).get()
 		)))
 
 		val maxDF = result.toMapArgs[PhDFArgs].get("maxResult").get
@@ -1489,7 +1489,7 @@ class TestQlMax extends FunSuite {
 		val phJobs = inst(readJobConfig("max_config/ql/16cleanPanel.yaml"))
 		val result = phJobs.head.perform(PhMapArgs(Map(
 			"sparkDriver" -> PhSparkDriverArgs(sd),
-			"logDriver" -> PhLogDriverArgs(PhLogDriver(formatMsg("test_user", "test_traceID", "test_jobID")))
+			"logFormat" -> PhLogFormat(formatMsg("test_user", "test_traceID", "test_jobId")).get()
 		)))
 
 		val panelERD = result.toMapArgs[PhDFArgs].get("panelERD").get
@@ -1523,7 +1523,7 @@ class TestQlMax extends FunSuite {
 		val phJobs = inst(readJobConfig("max_config/ql/16cleanUniverse.yaml"))
 		val result = phJobs.head.perform(PhMapArgs(Map(
 			"sparkDriver" -> PhSparkDriverArgs(sd),
-			"logDriver" -> PhLogDriverArgs(PhLogDriver(formatMsg("test_user", "test_traceID", "test_jobID")))
+			"logFormat" -> PhLogFormat(formatMsg("test_user", "test_traceID", "test_jobId")).get()
 		)))
 
 		val universeERD = result.toMapArgs[PhDFArgs].get("universeERD").get
@@ -1557,7 +1557,7 @@ class TestQlMax extends FunSuite {
 		val phJobs = inst(readJobConfig("max_config/ql/16max.yaml"))
 		val result = phJobs.head.perform(PhMapArgs(Map(
 			"sparkDriver" -> PhSparkDriverArgs(sd),
-			"logDriver" -> PhLogDriverArgs(PhLogDriver(formatMsg("test_user", "test_traceID", "test_jobID")))
+			"logFormat" -> PhLogFormat(formatMsg("test_user", "test_traceID", "test_jobId")).get()
 		)))
 
 		val maxDF = result.toMapArgs[PhDFArgs].get("maxResult").get

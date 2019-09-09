@@ -21,7 +21,7 @@ import java.io.{File, PrintWriter}
 import java.util
 
 import com.pharbers.ipaas.data.driver.api.work.{PhDFArgs, PhLogDriverArgs, PhMapArgs, PhSparkDriverArgs}
-import com.pharbers.ipaas.data.driver.libs.log.{PhLogDriver, formatMsg}
+import com.pharbers.ipaas.data.driver.libs.log.{PhLogFormat, formatMsg}
 import com.pharbers.ipaas.data.driver.libs.spark.PhSparkDriver
 import com.pharbers.ipaas.data.driver.libs.spark.util.{readCsv, readParquet, save2Parquet}
 import env.configObj.{inst, readJobConfig}
@@ -64,7 +64,7 @@ class TestAstellasPanel extends FunSuite {
             val phJobs = inst(readJobConfig(yamlPath))
             val result = phJobs.head.perform(PhMapArgs(Map(
                 "sparkDriver" -> PhSparkDriverArgs(sd),
-                "logDriver" -> PhLogDriverArgs(PhLogDriver(formatMsg("test_user", "test_traceID", "test_jobID")))
+                "logFormat" -> PhLogFormat(formatMsg("test_user", "test_traceID", "test_jobId")).get()
             )))
 
             val cleanDF = result.toMapArgs[PhDFArgs].get("clean").get
@@ -112,7 +112,7 @@ class TestAstellasPanel extends FunSuite {
             val phJobs = inst(readJobConfig(yamlPath))
             val result = phJobs.head.perform(PhMapArgs(Map(
                 "sparkDriver" -> PhSparkDriverArgs(sd),
-                "logDriver" -> PhLogDriverArgs(PhLogDriver(formatMsg("test_user", "test_traceID", "test_jobID")))
+                "logFormat" -> PhLogFormat(formatMsg("test_user", "test_traceID", "test_jobId")).get()
             )))
 
             val cleanDF = result.toMapArgs[PhDFArgs].get("clean").get
@@ -158,7 +158,7 @@ class TestAstellasPanel extends FunSuite {
             val phJobs = inst(readJobConfig(yamlPath))
             val result = phJobs.head.perform(PhMapArgs(Map(
                 "sparkDriver" -> PhSparkDriverArgs(sd),
-                "logDriver" -> PhLogDriverArgs(PhLogDriver(formatMsg("test_user", "test_traceID", "test_jobID")))
+                "logFormat" -> PhLogFormat(formatMsg("test_user", "test_traceID", "test_jobId")).get()
             )))
 
             val cleanDF = result.toMapArgs[PhDFArgs].get("sample_hosp").get
@@ -202,7 +202,7 @@ class TestAstellasPanel extends FunSuite {
             val phJobs = inst(readJobConfig(yamlPath))
             val result = phJobs.head.perform(PhMapArgs(Map(
                 "sparkDriver" -> PhSparkDriverArgs(sd),
-                "logDriver" -> PhLogDriverArgs(PhLogDriver(formatMsg("test_user", "test_traceID", "test_jobID")))
+                "logFormat" -> PhLogFormat(formatMsg("test_user", "test_traceID", "test_jobId")).get()
             )))
 
             val cleanDF = result.toMapArgs[PhDFArgs].get("sample_hosp").get
@@ -246,7 +246,7 @@ class TestAstellasPanel extends FunSuite {
             val phJobs = inst(readJobConfig(yamlPath))
             val result = phJobs.head.perform(PhMapArgs(Map(
                 "sparkDriver" -> PhSparkDriverArgs(sd),
-                "logDriver" -> PhLogDriverArgs(PhLogDriver(formatMsg("test_user", "test_traceID", "test_jobID")))
+                "logFormat" -> PhLogFormat(formatMsg("test_user", "test_traceID", "test_jobId")).get()
             )))
 
             val cleanDF = result.toMapArgs[PhDFArgs].get("result").get
@@ -285,7 +285,7 @@ class TestAstellasPanel extends FunSuite {
             val phJobs = inst(readJobConfig(yamlPath))
             val result = phJobs.head.perform(PhMapArgs(Map(
                 "sparkDriver" -> PhSparkDriverArgs(sd),
-                "logDriver" -> PhLogDriverArgs(PhLogDriver(formatMsg("test_user", "test_traceID", "test_jobID")))
+                "logFormat" -> PhLogFormat(formatMsg("test_user", "test_traceID", "test_jobId")).get()
             )))
 
             val cleanDF = result.toMapArgs[PhDFArgs].get("result").get
@@ -327,7 +327,7 @@ class TestAstellasPanel extends FunSuite {
             val phJobs = inst(readJobConfig(yamlPath))
             val result = phJobs.head.perform(PhMapArgs(Map(
                 "sparkDriver" -> PhSparkDriverArgs(sd),
-                "logDriver" -> PhLogDriverArgs(PhLogDriver(formatMsg("test_user", "test_traceID", "test_jobID")))
+                "logFormat" -> PhLogFormat(formatMsg("test_user", "test_traceID", "test_jobId")).get()
             )))
 
             val cleanDF = result.toMapArgs[PhDFArgs].get("panelERD").get

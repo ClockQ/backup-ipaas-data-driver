@@ -18,7 +18,6 @@
 package com.pharbers.ipaas.kafka.relay.operators
 
 import com.pharbers.ipaas.data.driver.api.work._
-import com.pharbers.ipaas.data.driver.libs.log.PhLogDriver
 import org.apache.spark.sql.Column
 import scalaj.http.Http
 
@@ -42,7 +41,7 @@ case class DeleteConnectOperator(name: String,
 	val api: String = "/connectors/"
 
 	override def perform(pr: PhMapArgs[PhWorkArgs[Any]]): PhWorkArgs[String] = {
-		val log: PhLogDriver = pr.get("logDriver").asInstanceOf[PhLogDriverArgs].get
+		val logFormat = pr.get("logFormat").asInstanceOf[PhFuncArgs[PhListArgs[PhStringArgs], PhStringArgs]].get
 		/** 调用的 Kafka Connect HTTP 协议 */
 		val protocol: String = pr.getAs[PhStringArgs]("protocol") match {
 			case Some(one) => one.get
@@ -57,20 +56,20 @@ case class DeleteConnectOperator(name: String,
 		try {
 			val deleteSourceConnectorResult = Http(local + api + s"$chanelId-source-connector").method("DELETE").asString
 			if (deleteSourceConnectorResult.code > 400) {
-				log.setErrorLog(deleteSourceConnectorResult)
+				logger.error(logFormat(deleteSourceConnectorResult.toString))
 				val body = JSON.parseFull(deleteSourceConnectorResult.body).get.asInstanceOf[Map[String, Any]]
 				val errMsg = body("message").toString
 				throw new Exception(errMsg)
-			} else log.setInfoLog(deleteSourceConnectorResult)
+			} else logger.info(logFormat(deleteSourceConnectorResult.toString))
 			val deleteSinkConnectorResult = Http(local + api + s"$chanelId-sink-connector").method("DELETE").asString
 			if (deleteSinkConnectorResult.code > 400) {
-				log.setErrorLog(deleteSinkConnectorResult)
+				logger.error(logFormat(deleteSinkConnectorResult.toString))
 				val body = JSON.parseFull(deleteSinkConnectorResult.body).get.asInstanceOf[Map[String, Any]]
 				val errMsg = body("message").toString
 				throw new Exception(errMsg)
-			} else log.setInfoLog(deleteSinkConnectorResult)
+			} else logger.info(logFormat(deleteSinkConnectorResult.toString))
 		} catch {
-			case e: Exception => log.setInfoLog(e.getMessage)
+			case e: Exception =>logger.error(logFormat(e.getMessage + e.getStackTrace.map(x => x.toString).mkString("\n")))
 		}
 
 		PhStringArgs(chanelId)
