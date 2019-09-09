@@ -17,6 +17,8 @@
 
 package com.pharbers.ipaas.data.driver.api.model
 
+import java.util
+
 /** iPaas Driver 运行实体
  *
  * @author clock

@@ -17,6 +17,8 @@
 
 package com.pharbers.ipaas.data.driver.libs
 
+import com.pharbers.ipaas.data.driver.api.work.{PhListArgs, PhStringArgs}
+
 /** work包实例
  *
  * @author clock
@@ -25,7 +27,13 @@ package com.pharbers.ipaas.data.driver.libs
  * @note 常用 log 工具
  */
 package object log {
+    implicit val string2Ph: String => PhStringArgs = x => PhStringArgs(x)
+    implicit val ph2String: PhStringArgs => String = x => x.get
+    implicit val list2Ph: Seq[String] => PhListArgs[PhStringArgs] = x => PhListArgs(x.map(string2Ph).toList)
+    implicit val ph2List: PhListArgs[PhStringArgs] => Seq[String] = x => x.get.map(x => x.get)
+    implicit val string2List: String => PhListArgs[PhStringArgs] = x =>  PhListArgs(List(x))
+
     def formatMsg(user: String, traceID: String, jobID: String)(msgs: Seq[Any]): String = {
-        s"""host: ${PhSysConsts.LOCALHOST_NAME}, user: $user, traceID: $traceID, jobID: $jobID, ${msgs.map(_.toString).mkString(", ")}"""
+        s""""Hostname": "${PhConstant.LOCALHOST_NAME}","UserId": "$user","TraceID": "$traceID","JobID": "$jobID","Message": "${msgs.map(x => if(x != null) x.toString).mkString(", ")}"""".stripMargin
     }
 }

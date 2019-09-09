@@ -1,4 +1,43 @@
-//package com.pharbers.ipaas.data.driver.run
+package com.pharbers.ipaas.data.driver.run
+
+import org.scalatest.FunSuite
+import org.apache.spark.sql.functions._
+import env.configObj.{inst, readJobConfig}
+import com.pharbers.ipaas.data.driver.api.work._
+import com.pharbers.ipaas.data.driver.libs.spark.PhSparkDriver
+import com.pharbers.ipaas.data.driver.libs.spark.util.readParquet
+import com.pharbers.ipaas.data.driver.libs.log.{PhLogFormat, formatMsg}
+
+class TestPfizerMax extends FunSuite {
+	implicit val sd: PhSparkDriver = PhSparkDriver("test-driver")
+	sd.addJar("target/ipaas-data-driver-0.1.jar")
+	sd.sc.setLogLevel("ERROR")
+
+	test("test pfizer clean") {
+		val phJobs = inst(readJobConfig("max_config/nhwa/clean.yaml"))
+		val result = phJobs.head.perform(PhMapArgs(Map(
+			"sparkDriver" -> PhSparkDriverArgs(sd),
+			"logFormat" -> PhLogFormat(formatMsg("test_user", "test_traceID", "test_jobId")).get()
+		)))
+
+		val cleanDF = result.toMapArgs[PhDFArgs].get("cleanResult").get
+		val cleanTrueDF = sd.setUtil(readParquet()).readParquet("hdfs:///workData/Clean/20bfd585-c889-4385-97ec-a8d4c77d71cc")
+
+		cleanDF.show(false)
+		cleanTrueDF.show(false)
+
+		println(cleanDF.count())
+		println(cleanTrueDF.count())
+
+		println(cleanDF.agg(sum("UNITS")).first.get(0))
+		println(cleanTrueDF.agg(sum("UNITS")).first.get(0))
+
+		println(cleanDF.agg(sum("SALES")).first.get(0))
+		println(cleanTrueDF.agg(sum("SALES")).first.get(0))
+	}
+
+//	test("test nhwa max") {
+//		implicit val sd: PhSparkDriver = PhSparkDriver("testSparkDriver")
 //
 //import org.scalatest.FunSuite
 //import org.apache.spark.sql.functions._

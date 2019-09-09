@@ -30,17 +30,19 @@ package com.pharbers.ipaas.data.driver.operators
 
 import com.pharbers.ipaas.data.driver.api.work.{PhDFArgs, PhMapArgs, PhOperatorTrait, PhPluginTrait, PhStringArgs, PhWorkArgs}
 import org.apache.spark.sql.{Column, DataFrame}
+import org.apache.spark.storage.StorageLevel
 
 case class CacheOperator(name: String,
-                         defaultArgs: PhMapArgs[PhWorkArgs[Any]],
-                         pluginLst: Seq[PhPluginTrait[Column]])(implicit ctx: PhMapArgs[PhWorkArgs[_]])
-        extends PhOperatorTrait[DataFrame] {
-    /** 要缓存的 DataFrame 名字 */
-    val inDFName: String = defaultArgs.getAs[PhStringArgs]("inDFName").get.get
-
-    override def perform(pr: PhMapArgs[PhWorkArgs[Any]]): PhWorkArgs[DataFrame] = {
-        val inDF = pr.getAs[PhDFArgs](inDFName).get.get
-        val outDF = inDF.cache()
-        PhDFArgs(outDF)
-    }
+						 defaultArgs: PhMapArgs[PhWorkArgs[Any]],
+						 pluginLst: Seq[PhPluginTrait[Column]])
+	extends PhOperatorTrait[DataFrame] {
+	/** 要缓存的 DataFrame 名字 */
+	val inDFName: String = defaultArgs.getAs[PhStringArgs]("inDFName").get.get
+	/** 缓存等级 */
+	val level: String = defaultArgs.getAs[PhStringArgs]("level").getOrElse(PhStringArgs("MEMORY_ONLY")).get
+	override def perform(pr: PhMapArgs[PhWorkArgs[Any]]): PhWorkArgs[DataFrame] = {
+		val inDF = pr.getAs[PhDFArgs](inDFName).get.get
+		val outDF = inDF.persist(StorageLevel.fromString(level))
+		PhDFArgs(outDF)
+	}
 }

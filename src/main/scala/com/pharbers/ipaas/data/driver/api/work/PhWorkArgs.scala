@@ -24,14 +24,15 @@ import com.pharbers.ipaas.data.driver.libs.log.PhLogDriver
 import com.pharbers.ipaas.data.driver.libs.spark.PhSparkDriver
 
 /** iPaas Driver 的统一参数包装类，是所有包装类的父类，相当于Any
- *
- * @param args 实际包装的参数
- * @tparam A 包装的参数类型
- * @author clock
- * @version 0.1
- * @since 2019/6/11 14:37
- * @note
- */
+  *
+  * @param args 实际包装的参数
+  * @tparam A 包装的参数类型
+  * @author clock
+  * @version 0.1
+  * @since 2019/6/11 14:37
+  * @note
+  */
+
 trait PhWorkArgs[+A] extends Serializable {
     /** 获取实际包装的参数
      *
@@ -59,6 +60,17 @@ trait PhWorkArgs[+A] extends Serializable {
      * @since 2019/6/11 14:43
      */
     final def isDefined: Boolean = !isEmpty
+
+    /** 功能描述
+      *
+
+      * @return String
+      * @author EDZ
+      * @version 0.0
+      * @since 2019/9/9 15:57
+      * @note 使用被包装对象的toString方法
+      */
+    override def toString: String = get.toString
 }
 
 /** iPaas Driver 的Boolean参数包装类
@@ -252,4 +264,14 @@ case object PhNoneArgs extends PhWorkArgs[Nothing] {
     def get: Nothing = throw new NoSuchElementException("PhNoneArgs.get")
 
     override def isEmpty = true
+}
+
+object PhWorkArgs {
+    implicit val string2Ph: String => PhStringArgs = x => PhStringArgs(x)
+    implicit val ph2String: PhStringArgs => String = x => x.get
+    implicit val list2Ph: Seq[String] => PhListArgs[PhStringArgs] = x => PhListArgs(x.map(string2Ph).toList)
+    implicit val ph2List: PhListArgs[PhStringArgs] => Seq[String] = x => x.get.map(x => x.get)
+    implicit val map2Ph: Map[String, String] => PhMapArgs[PhStringArgs] = x => PhMapArgs(x.map(x => (x._1, PhStringArgs(x._2))))
+    implicit val ph2Map: PhMapArgs[PhStringArgs] => Map[String, String] = x => x.get.map(x => (x._1, x._2.get))
+    implicit val string2List: String => PhListArgs[PhStringArgs] = x =>  PhListArgs(List(x))
 }

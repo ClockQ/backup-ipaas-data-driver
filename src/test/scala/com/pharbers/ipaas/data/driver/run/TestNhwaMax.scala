@@ -5,6 +5,8 @@ import test.tag.MaxTag
 import org.scalatest.FunSuite
 import org.apache.spark.sql.functions._
 import com.pharbers.ipaas.data.driver.api.work._
+import com.pharbers.ipaas.data.driver.libs.spark.PhSparkDriver
+import com.pharbers.ipaas.data.driver.libs.log.{PhLogFormat, formatMsg}
 import com.pharbers.ipaas.data.driver.libs.spark.util.{readCsv, readParquet}
 import org.apache.spark.launcher.SparkLauncher
 
@@ -14,8 +16,11 @@ class TestNhwaMax extends FunSuite {
     import env.sparkObj._
 
     test("test nhwa MZ clean") {
-        val phJobs = inst(readJobConfig("src/test/max_config/nhwa/MZclean.yaml"))
-        val result = phJobs.head.perform(PhMapArgs(Map()))
+        val phJobs = inst(readJobConfig("max_config/nhwa/MZclean.yaml"))
+        val result = phJobs.head.perform(PhMapArgs(Map(
+            "sparkDriver" -> PhSparkDriverArgs(sd),
+            "logFormat" -> PhLogFormat(formatMsg("test_user", "test_traceID", "test_jobId")).get()
+        )))
 
         val cleanDF = result.toMapArgs[PhDFArgs].get("cleanResult").get
         val cleanTrueDF = sparkDriver.setUtil(readParquet()).readParquet("hdfs:///workData/Clean/20bfd585-c889-4385-97ec-a8d4c77d71cc")
@@ -44,8 +49,11 @@ class TestNhwaMax extends FunSuite {
     }
 
     test("test nhwa MZ panel") {
-        val phJobs = inst(readJobConfig("src/test/max_config/nhwa/MZpanelByCpa.yaml"))
-        val result = phJobs.head.perform(PhMapArgs(Map()))
+        val phJobs = inst(readJobConfig("max_config/nhwa/MZpanelByCpa.yaml"))
+        val result = phJobs.head.perform(PhMapArgs(Map(
+            "sparkDriver" -> PhSparkDriverArgs(sd),
+            "logFormat" -> PhLogFormat(formatMsg("test_user", "test_traceID", "test_jobId")).get()
+        )))
 
         val panelDF = result.toMapArgs[PhDFArgs].get("panelResult").get
         val panelTrueDF = sparkDriver.setUtil(readCsv()).readCsv("hdfs:///test/qi/qi/1809_panel.csv")
@@ -71,9 +79,12 @@ class TestNhwaMax extends FunSuite {
         assert(Math.abs(panelDFSales - panelTrueDFSales) < panelTrueDFSales * 0.01)
     }
 
-    test("test nhwa MZ max") {
-        val phJobs = inst(readJobConfig("src/test/max_config/nhwa/MZmax.yaml"))
-        val result = phJobs.head.perform(PhMapArgs(Map()))
+	test("test nhwa MZ max") {
+        val phJobs = inst(readJobConfig("max_config/nhwa/MZmax.yaml"))
+        val result = phJobs.head.perform(PhMapArgs(Map(
+            "sparkDriver" -> PhSparkDriverArgs(sd),
+            "logFormat" -> PhLogFormat(formatMsg("test_user", "test_traceID", "test_jobId")).get()
+        )))
 
         val maxDF = result.toMapArgs[PhDFArgs].get("maxResult").get
         val maxTrueDF = sparkDriver.setUtil(readParquet()).readParquet("hdfs:///test/qi/qi/new_max_true")

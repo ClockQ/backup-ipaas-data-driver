@@ -131,6 +131,35 @@
                     <version>${scalatest.version}</version>
                     <scope>test</scope>
                 </dependency>
+
+                <!--log4j-->
+                <dependency>
+                    <groupId>org.apache.logging.log4j</groupId>
+                    <artifactId>log4j-api</artifactId>
+                    <version>${log4j.version}</version>
+                </dependency>
+                <dependency>
+                    <groupId>org.apache.logging.log4j</groupId>
+                    <artifactId>log4j-core</artifactId>
+                    <version>${log4j.version}</version>
+                </dependency>
+                <dependency>
+                    <groupId>com.pharbers</groupId>
+                    <artifactId>logs</artifactId>
+                    <version>1.0</version>
+                </dependency>
+                <!--oss-->
+                <dependency>
+                    <groupId>com.aliyun.oss</groupId>
+                    <artifactId>aliyun-sdk-oss</artifactId>
+                    <version>3.5.0</version>
+                </dependency>
+                <!--tm mongodb聚合-->
+                <dependency>
+                    <groupId>pharbers.com</groupId>
+                    <artifactId>TM-Answer-Agg</artifactId>
+                    <version>1.0-SNAPSHOT</version>
+                </dependency>
             </dependencies>
         </profile>
     </profiles>
@@ -262,6 +291,24 @@
                         <goals>
                             <goal>single</goal>
                         </goals>
+                    </execution>
+                </executions>
+            </plugin>
+            <!--avro-->
+            <plugin>
+                <groupId>org.apache.avro</groupId>
+                <artifactId>avro-maven-plugin</artifactId>
+                <version>1.8.1</version>
+                <executions>
+                    <execution>
+                        <phase>generate-sources</phase>
+                        <goals>
+                            <goal>schema</goal>
+                        </goals>
+                        <configuration>
+                            <sourceDirectory>${project.basedir}/src/main/avro/</sourceDirectory>
+                            <outputDirectory>${project.basedir}/src/main/java/</outputDirectory>
+                        </configuration>
                     </execution>
                 </executions>
             </plugin>

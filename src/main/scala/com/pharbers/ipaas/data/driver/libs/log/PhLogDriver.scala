@@ -20,11 +20,13 @@ package com.pharbers.ipaas.data.driver.libs.log
 import org.apache.logging.log4j.{LogManager, Logger}
 
 /** log4j2 驱动
- *
- * @author cui
- * @version 0.1
- * @since 2019-06-4 10:21
- */
+  *
+  * @author cui
+  * @version 0.1
+  * @since 2019-06-4 10:21
+  * @note 改为实现PhLogable接口
+  */
+@Deprecated
 case class PhLogDriver(formatMsg: Seq[Any] => String = _.map(_.toString).mkString(", ")) {
     private val logger: Logger = LogManager.getRootLogger()
 
