@@ -9,6 +9,7 @@ import org.apache.spark.sql.{Column, DataFrame}
 import com.pharbers.ipaas.data.driver.api.work._
 import com.pharbers.ipaas.data.driver.libs.input.JsonInput
 import com.pharbers.ipaas.data.driver.libs.log.{PhLogFormat, formatMsg}
+import com.pharbers.ipaas.data.driver.libs.spark.PhSparkDriver
 import org.scalatest.{BeforeAndAfterAll, FunSuite}
 
 class TestJob extends FunSuite with BeforeAndAfterAll {

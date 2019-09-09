@@ -48,7 +48,10 @@ trait SparkConnInstance {
     val connConf: SparkConnConfig.type = SparkConnConfig
 
     private val conf = new SparkConf()
-//            .set("spark.yarn.jars", connConf.yarnJars)
+            //测试用
+            .set("spark.yarn.jars", connConf.yarnJars)
+            //测试用
+            .set("spark.yarn.archive", connConf.yarnJars)
 	        .set("yarn.resourcemanager.hostname", connConf.yarnResourceHostname)
             .set("yarn.resourcemanager.address", connConf.yarnResourceAddress)
             .setAppName(applicationName)

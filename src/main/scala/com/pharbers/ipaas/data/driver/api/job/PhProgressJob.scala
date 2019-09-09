@@ -2,9 +2,10 @@ package com.pharbers.ipaas.data.driver.api.job
 
 import java.time.Duration
 
-import com.pharbers.ipaas.data.driver.api.work.{PhActionTrait, PhJobTrait, PhLogDriverArgs, PhMapArgs, PhSparkDriverArgs, PhStringArgs, PhWorkArgs}
+import com.pharbers.ipaas.data.driver.api.work.{PhActionTrait, PhFuncArgs, PhJobTrait, PhListArgs, PhLogDriverArgs, PhMapArgs, PhSparkDriverArgs, PhStringArgs, PhWorkArgs}
 import com.pharbers.ipaas.data.driver.exceptions.PhOperatorException
 import com.pharbers.ipaas.data.driver.libs.kafka.ProducerAvroTopic
+import com.pharbers.ipaas.data.driver.libs.log
 import com.pharbers.ipaas.data.driver.libs.log.PhLogDriver
 import com.pharbers.ipaas.data.driver.libs.spark.PhSparkDriver
 import com.pharbers.kafka.producer.PharbersKafkaProducer
@@ -25,7 +26,6 @@ case class PhProgressJob(name: String,
                          actionLst: Seq[PhActionTrait])(implicit ctx: PhMapArgs[PhWorkArgs[_]])
         extends PhJobTrait {
     val _: PhSparkDriver = ctx.get("sparkDriver").asInstanceOf[PhSparkDriverArgs].get
-    val log: PhLogDriver = ctx.get("logDriver").asInstanceOf[PhLogDriverArgs].get
     val topic: String = defaultArgs.getAs[PhStringArgs]("topic").getOrElse(PhStringArgs("listeningJobTaskTest")).get
     val jobId: String = defaultArgs.getAs[PhStringArgs]("jobId").getOrElse(PhStringArgs(" ")).get
     /** Job 执行入口
@@ -36,6 +36,7 @@ case class PhProgressJob(name: String,
       * @since 2019/6/11 16:43
       */
     override def perform(pr: PhMapArgs[PhWorkArgs[Any]]): PhWorkArgs[Any] =  {
+        val logFormat = pr.get("logFormat").asInstanceOf[PhFuncArgs[PhListArgs[PhStringArgs], PhStringArgs]].get
         val pkp = new PharbersKafkaProducer[String, ListeningJobTask]
         if (actionLst.isEmpty) pr
         else {
@@ -43,12 +44,12 @@ case class PhProgressJob(name: String,
                 actionLst.zipWithIndex.foldLeft(pr) { (l, right) =>
                     try {
                         val action = right._1
-                        log.setInfoLog(action.name, "开始执行")
+                        logger.info(logFormat(s"${action.name},开始执行"))
                         pkp.produce(topic, jobId, new ListeningJobTask(jobId, "Running", "", (100 * right._2 / actionLst.length).toString))
                         PhMapArgs(l.get + (action.name -> action.perform(l)))
                     } catch {
                         case e: PhOperatorException =>
-                            log.setErrorLog(PhOperatorException(e.names :+ name, e.exception).getMessage)
+                            logger.error(logFormat(PhOperatorException(e.names :+ name, e.exception).getMessage))
                             throw e
                     }
                 }

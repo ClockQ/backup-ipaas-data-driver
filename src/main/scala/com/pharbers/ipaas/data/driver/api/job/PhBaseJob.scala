@@ -35,9 +35,7 @@ case class PhBaseJob(name: String,
                      defaultArgs: PhMapArgs[PhWorkArgs[Any]],
                      actionLst: Seq[PhActionTrait])(implicit ctx: PhMapArgs[PhWorkArgs[_]])
         extends PhJobTrait {
-
     val _: PhSparkDriver = ctx.get("sparkDriver").asInstanceOf[PhSparkDriverArgs].get
-    val log: PhLogDriver = ctx.get("logDriver").asInstanceOf[PhLogDriverArgs].get
 
     /** Job 执行入口
      *

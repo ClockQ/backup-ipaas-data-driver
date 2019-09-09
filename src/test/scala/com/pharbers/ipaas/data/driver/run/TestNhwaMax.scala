@@ -1,6 +1,6 @@
 package com.pharbers.ipaas.data.driver.run
 
-import env.configObj._
+import env.configObj.{inst, readJobConfig}
 import test.tag.MaxTag
 import org.scalatest.FunSuite
 import org.apache.spark.sql.functions._
@@ -13,7 +13,9 @@ import org.apache.spark.launcher.SparkLauncher
 @MaxTag
 class TestNhwaMax extends FunSuite {
 
-    import env.sparkObj._
+
+    implicit val sd: PhSparkDriver = PhSparkDriver("test-driver")
+    sd.sc.setLogLevel("INFO")
 
     test("test nhwa MZ clean") {
         val phJobs = inst(readJobConfig("max_config/nhwa/MZclean.yaml"))
@@ -23,7 +25,7 @@ class TestNhwaMax extends FunSuite {
         )))
 
         val cleanDF = result.toMapArgs[PhDFArgs].get("cleanResult").get
-        val cleanTrueDF = sparkDriver.setUtil(readParquet()).readParquet("hdfs:///workData/Clean/20bfd585-c889-4385-97ec-a8d4c77d71cc")
+        val cleanTrueDF = sd.setUtil(readParquet()).readParquet("hdfs:///workData/Clean/20bfd585-c889-4385-97ec-a8d4c77d71cc")
 
         cleanDF.show(false)
         cleanTrueDF.show(false)
@@ -56,7 +58,7 @@ class TestNhwaMax extends FunSuite {
         )))
 
         val panelDF = result.toMapArgs[PhDFArgs].get("panelResult").get
-        val panelTrueDF = sparkDriver.setUtil(readCsv()).readCsv("hdfs:///test/qi/qi/1809_panel.csv")
+        val panelTrueDF = sd.setUtil(readCsv()).readCsv("hdfs:///test/qi/qi/1809_panel.csv")
 
         panelDF.show(false)
         panelTrueDF.show(false)
@@ -80,14 +82,14 @@ class TestNhwaMax extends FunSuite {
     }
 
 	test("test nhwa MZ max") {
-        val phJobs = inst(readJobConfig("max_config/nhwa/MZmax.yaml"))
+        val phJobs = inst(readJobConfig("src/test/max_config/nhwa/MZmax.yaml"))
         val result = phJobs.head.perform(PhMapArgs(Map(
             "sparkDriver" -> PhSparkDriverArgs(sd),
-            "logFormat" -> PhLogFormat(formatMsg("test_user", "test_traceID", "test_jobId")).get()
+            "logFormat" -> PhLogFormat(formatMsg("test_ nhwa MZ max user", "test_ nhwa MZ max traceID", "test_ nhwa MZ max jobId")).get()
         )))
 
         val maxDF = result.toMapArgs[PhDFArgs].get("maxResult").get
-        val maxTrueDF = sparkDriver.setUtil(readParquet()).readParquet("hdfs:///test/qi/qi/new_max_true")
+        val maxTrueDF = sd.setUtil(readParquet()).readParquet("hdfs:///test/qi/qi/new_max_true")
 
         maxDF.show(false)
         maxTrueDF.show(false)

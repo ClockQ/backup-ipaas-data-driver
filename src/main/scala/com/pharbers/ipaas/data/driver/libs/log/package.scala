@@ -17,6 +17,8 @@
 
 package com.pharbers.ipaas.data.driver.libs
 
+import java.net.InetAddress
+
 import com.pharbers.ipaas.data.driver.api.work.{PhListArgs, PhStringArgs}
 
 /** work包实例
@@ -34,6 +36,6 @@ package object log {
     implicit val string2List: String => PhListArgs[PhStringArgs] = x =>  PhListArgs(List(x))
 
     def formatMsg(user: String, traceID: String, jobID: String)(msgs: Seq[Any]): String = {
-        s""""Hostname": "${PhConstant.LOCALHOST_NAME}","UserId": "$user","TraceID": "$traceID","JobID": "$jobID","Message": "${msgs.map(x => if(x != null) x.toString).mkString(", ")}"""".stripMargin
+        s""""Hostname": "${InetAddress.getLocalHost.getHostName}","UserId": "$user","TraceID": "$traceID","JobID": "$jobID","Message": "${msgs.map(x => if(x != null) x.toString).mkString(", ")}"""".stripMargin
     }
 }

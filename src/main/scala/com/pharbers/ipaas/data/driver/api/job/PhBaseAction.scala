@@ -37,7 +37,6 @@ case class PhBaseAction(name: String,
         extends PhActionTrait {
 
     val _: PhSparkDriver = ctx.get("sparkDriver").asInstanceOf[PhSparkDriverArgs].get
-    val log: PhLogDriver = ctx.get("logDriver").asInstanceOf[PhLogDriverArgs].get
 
     /** Action 执行入口
      *
@@ -48,7 +47,6 @@ case class PhBaseAction(name: String,
      * @since 2019/6/11 16:43
      */
     def perform(pr: PhMapArgs[PhWorkArgs[Any]]): PhWorkArgs[Any] = {
-        val _: PhSparkDriver = pr.get("sparkDriver").asInstanceOf[PhSparkDriverArgs].get
         val logFormat = pr.get("logFormat").asInstanceOf[PhFuncArgs[PhListArgs[PhStringArgs], PhStringArgs]].get
 
         if (operatorLst.isEmpty) pr
