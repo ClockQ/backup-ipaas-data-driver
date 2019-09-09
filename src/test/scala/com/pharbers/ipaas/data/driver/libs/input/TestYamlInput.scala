@@ -47,7 +47,7 @@ class TestYamlInput extends FunSuite {
     }
 
     test("yaml input from file to Jobs") {
-        val stream = new FileInputStream(new File("src/test/scala/com/pharbers/ipaas/data/driver/libs/input/testYaml.yaml"))
+        val stream = new FileInputStream(new File("C:\\Users\\EDZ\\Desktop\\MZmax.yaml"))
         val jobs = YamlInput().readObjects[Job](stream)
         assert(jobs.size == 2)
         assert(!jobs.head.getName.isEmpty)

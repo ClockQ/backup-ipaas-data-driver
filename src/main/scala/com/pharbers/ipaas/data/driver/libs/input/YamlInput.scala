@@ -69,6 +69,10 @@ case class YamlInput() extends InputTrait {
      * }}}
      */
     override def readObjects[T: ClassTag](stream: InputStream): Seq[T] = {
+        val a = implicitly[ClassTag[T]].runtimeClass
+        val job = a.newInstance()
+        println(job.getClass.getName)
+//        val iterator = new Yaml(new Constructor(job.getClass.getName)).loadAll(stream).iterator()
 //        val iterator = new Yaml(new Constructor(implicitly[ClassTag[T]].runtimeClass)).loadAll(stream).iterator()
         val iterator = new Yaml(new Constructor(implicitly[ClassTag[T]].toString())).loadAll(stream).iterator()
         var result: List[T] = Nil

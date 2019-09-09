@@ -107,7 +107,7 @@
                 <dependency>
                     <groupId>org.yaml</groupId>
                     <artifactId>snakeyaml</artifactId>
-                    <version>1.25-SNAPSHOT</version>
+                    <version>1.25</version>
                 </dependency>
 
                 <!--json-->
@@ -144,13 +144,6 @@
                     <include>**/*.xml</include>
                 </includes>
             </resource>
-<!--            <resource>-->
-<!--                <directory>pharbers_config</directory>-->
-<!--                <targetPath>./pharbers_config</targetPath>-->
-<!--                <includes>-->
-<!--                    <include>**/*.*</include>-->
-<!--                </includes>-->
-<!--            </resource>-->
         </resources>
         <plugins>
             <plugin>

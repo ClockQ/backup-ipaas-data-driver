@@ -33,7 +33,6 @@ object Main {
         val record = new ListeningJobTask()
 	    try {
             if(args.length != 4) throw new Exception("args length is not equal to 4")
-        
             val jobArgs = args(2)
             val readStream = args(1).toUpperCase() match {
                 case "STRING" => StringRead(jobArgs).toInputStream()
@@ -52,6 +51,7 @@ object Main {
             record.put("JobId", args(3))
             record.put("Status", "Running")
             record.put("Message", "")
+            record.put("Progress", "0")
 		    println("Running")
             ProducerAvroTopic("listeningJobTaskTest", record)
         
@@ -61,24 +61,28 @@ object Main {
                 "logDriver" -> PhLogDriverArgs(PhLogDriver(formatMsg("test_user", "test_traceID", "test_jobID")))
             ))
 		    
-		    println("Finish")
-		    record.put("JobId", args(3))
-		    record.put("Status", "Finish")
-		    record.put("Message", "Finish")
-		    ProducerAvroTopic("listeningJobTaskTest", record)
-		    
-            val phJobs = jobs.map(x => getMethodMirror(x.getFactory)(x, ctx).asInstanceOf[PhFactoryTrait[PhJobTrait]].inst())
+            val phJobs = jobs.map(x =>{
+                x.jobId = args(3)
+                getMethodMirror(x.getFactory)(x, ctx).asInstanceOf[PhFactoryTrait[PhJobTrait]].inst()
+            })
             phJobs.head.perform(PhMapArgs(Map()))
-		   
+            println("Finish")
+            record.put("JobId", args(3))
+            record.put("Status", "Finish")
+            record.put("Message", "Finish")
+            record.put("Progress", "100")
+            ProducerAvroTopic("listeningJobTaskTest", record)
         } catch {
             case e: Exception =>
                 println(e)
+                e.printStackTrace()
                 record.put("JobId", args(3))
                 record.put("Status", "Error")
                 record.put("Message", e.getMessage)
+                record.put("Progress", "-1")
                 ProducerAvroTopic("listeningJobTaskTest", record)
         }
-        
+
         println("执行结束")
     }
 }
