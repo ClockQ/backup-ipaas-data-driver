@@ -6,20 +6,24 @@ import org.scalatest.FunSuite
 import com.pharbers.ipaas.data.driver.api.model.{Job, Plugin}
 
 /**
-  * @author clock
-  * @version 0.1
-  * @since 2019/06/14 11:15
-  * @note
-  */
-class TestYamlInput extends FunSuite{
+ * @author clock
+ * @version 0.1
+ * @since 2019/06/14 11:15
+ * @note
+ */
+class TestYamlInput extends FunSuite {
 
-    test("yaml input from memory to Plugin"){
+    test("yaml input from memory to Plugin") {
         val data =
             """
               |name: testName
               |factory: testFactory
+              |args:
+              |  mkt: &mkt aaa
               |sub:
-              |  name: subTestName
+              |  name: >
+              |   *mkt
+              |   == x
               |  factory: testFactory
             """.stripMargin
         val stream = new ByteArrayInputStream(data.getBytes)
@@ -29,7 +33,7 @@ class TestYamlInput extends FunSuite{
         assert("subTestName" == plugin.sub.name)
     }
 
-    test("yaml input from memory to Plugins"){
+    test("yaml input from memory to Plugins") {
         val data =
             """
               |name: testName1
@@ -47,7 +51,7 @@ class TestYamlInput extends FunSuite{
     }
 
     test("yaml input from file to Jobs") {
-        val stream = new FileInputStream(new File("src/test/scala/com/pharbers/ipaas/data/driver/libs/input/testYaml.yaml"))
+        val stream = new FileInputStream(new File("C:\\Users\\EDZ\\Desktop\\MZmax.yaml"))
         val jobs = YamlInput().readObjects[Job](stream)
         assert(jobs.size == 2)
         assert(!jobs.head.getName.isEmpty)

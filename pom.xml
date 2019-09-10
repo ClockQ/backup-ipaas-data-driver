@@ -25,6 +25,7 @@
                 <hadoop.version>2.7.2</hadoop.version>
                 <scalatest.version>3.0.1</scalatest.version>
                 <log4j.version>2.11.2</log4j.version>
+                <jackson.version>2.9.8</jackson.version>
             </properties>
 
             <repositories>
@@ -36,6 +37,32 @@
             </repositories>
 
             <dependencies>
+                <!-- Kafka-->
+                <dependency>
+                    <groupId>com.pharbers</groupId>
+                    <artifactId>pharbers-kafka</artifactId>
+                    <version>1.0</version>
+                </dependency>
+
+                <!-- https://mvnrepository.com/artifact/org.scalaj/scalaj-http -->
+                <dependency>
+                    <groupId>org.scalaj</groupId>
+                    <artifactId>scalaj-http_${scalaBinaryVersion}</artifactId>
+                    <version>2.3.0</version>
+                </dependency>
+
+                <!--log4j-->
+                <dependency>
+                    <groupId>org.apache.logging.log4j</groupId>
+                    <artifactId>log4j-api</artifactId>
+                    <version>${log4j.version}</version>
+                </dependency>
+                <dependency>
+                    <groupId>org.apache.logging.log4j</groupId>
+                    <artifactId>log4j-core</artifactId>
+                    <version>${log4j.version}</version>
+                </dependency>
+
                 <!-- spark -->
                 <dependency>
                     <groupId>org.apache.spark</groupId>
@@ -57,6 +84,12 @@
                     <artifactId>spark-yarn_${scalaBinaryVersion}</artifactId>
                     <version>${spark.version}</version>
                 </dependency>
+                <!-- https://mvnrepository.com/artifact/com.databricks/spark-avro -->
+                <dependency>
+                    <groupId>com.databricks</groupId>
+                    <artifactId>spark-avro_2.11</artifactId>
+                    <version>4.0.0</version>
+                </dependency>
 
                 <!-- hadoop -->
                 <dependency>
@@ -74,14 +107,21 @@
                 <dependency>
                     <groupId>org.yaml</groupId>
                     <artifactId>snakeyaml</artifactId>
-                    <version>1.25-SNAPSHOT</version>
+                    <version>1.25</version>
                 </dependency>
 
                 <!--json-->
                 <dependency>
                     <groupId>com.fasterxml.jackson.core</groupId>
                     <artifactId>jackson-core</artifactId>
-                    <version>2.9.8</version>
+                    <version>${jackson.version}</version>
+                </dependency>
+
+                <!--oss-->
+                <dependency>
+                    <groupId>com.aliyun.oss</groupId>
+                    <artifactId>aliyun-sdk-oss</artifactId>
+                    <version>3.5.0</version>
                 </dependency>
 
                 <!--test-->
@@ -103,11 +143,81 @@
                     <artifactId>log4j-core</artifactId>
                     <version>${log4j.version}</version>
                 </dependency>
+                <dependency>
+                    <groupId>com.pharbers</groupId>
+                    <artifactId>logs</artifactId>
+                    <version>1.0</version>
+                </dependency>
+                <!--oss-->
+                <dependency>
+                    <groupId>com.aliyun.oss</groupId>
+                    <artifactId>aliyun-sdk-oss</artifactId>
+                    <version>3.5.0</version>
+                </dependency>
+                <!--tm mongodb聚合-->
+                <dependency>
+                    <groupId>pharbers.com</groupId>
+                    <artifactId>TM-Answer-Agg</artifactId>
+                    <version>1.0-SNAPSHOT</version>
+                </dependency>
             </dependencies>
         </profile>
     </profiles>
     <build>
+        <sourceDirectory>src/main/scala</sourceDirectory>
+        <testSourceDirectory>src/test/scala</testSourceDirectory>
+        <resources>
+            <resource>
+                <directory>src/main/resources</directory>
+                <includes>
+                    <include>**/*.xml</include>
+                </includes>
+            </resource>
+        </resources>
         <plugins>
+            <plugin>
+                <groupId>org.apache.avro</groupId>
+                <artifactId>avro-maven-plugin</artifactId>
+                <version>1.8.1</version>
+                <executions>
+                    <execution>
+                        <phase>generate-sources</phase>
+                        <goals>
+                            <goal>schema</goal>
+                        </goals>
+                        <configuration>
+                            <sourceDirectory>${project.basedir}/src/main/avro/</sourceDirectory>
+                            <outputDirectory>${project.basedir}/src/main/java/</outputDirectory>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+            <!--scala支持-->
+            <plugin>
+                <groupId>org.scala-tools</groupId>
+                <artifactId>maven-scala-plugin</artifactId>
+                <version>2.15.2</version>
+                <executions>
+                    <execution>
+                        <id>scala-compile-first</id>
+                        <goals>
+                            <goal>compile</goal>
+                        </goals>
+                        <configuration>
+                            <includes>
+                                <include>**/*.scala</include>
+                            </includes>
+                        </configuration>
+                    </execution>
+                    <execution>
+                        <id>scala-test-compile</id>
+                        <goals>
+                            <goal>testCompile</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
@@ -125,47 +235,8 @@
                     </execution>
                 </executions>
             </plugin>
-            <plugin>
-                <groupId>net.alchim31.maven</groupId>
-                <artifactId>scala-maven-plugin</artifactId>
-                <version>3.2.1</version>
-                <executions>
-                    <execution>
-                        <id>scala-compile-first</id>
-                        <phase>process-resources</phase>
-                        <goals>
-                            <goal>add-source</goal>
-                            <goal>compile</goal>
-                        </goals>
-                    </execution>
-                    <execution>
-                        <id>scala-test-compile</id>
-                        <phase>process-test-resources</phase>
-                        <goals>
-                            <goal>testCompile</goal>
-                        </goals>
-                    </execution>
-                    <execution>
-                        <id>Scaladoc</id>
-                        <goals>
-                            <goal>doc</goal>
-                        </goals>
-                        <phase>prepare-package</phase>
-                        <configuration>
-                            <args>
-                                <arg>-no-link-warnings</arg>
-                            </args>
-                        </configuration>
-                    </execution>
-                </executions>
-                <configuration>
-                    <args>
-                        <!-- work-around for https://issues.scala-lang.org/browse/SI-8358 -->
-                        <arg>-nobootcp</arg>
-                    </args>
-                </configuration>
-            </plugin>
-            <!--disable surefire-->
+
+            <!-- disable surefire -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-surefire-plugin</artifactId>
@@ -174,7 +245,7 @@
                     <skipTests>true</skipTests>
                 </configuration>
             </plugin>
-            <!--enable scalatest-->
+            <!-- enable scalatest -->
             <plugin>
                 <groupId>org.scalatest</groupId>
                 <artifactId>scalatest-maven-plugin</artifactId>
@@ -190,6 +261,54 @@
                         <goals>
                             <goal>test</goal>
                         </goals>
+                        <configuration>
+                            <tagsToExclude>test.tag.MaxTag</tagsToExclude>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+
+            <!--将依赖打包成一个jar，与上面主类设置冲突-->
+            <plugin>
+                <artifactId>maven-assembly-plugin</artifactId>
+                <version>3.1.1</version>
+                <configuration>
+                    <finalName>job-context</finalName>
+                    <appendAssemblyId>false</appendAssemblyId>
+                    <descriptorRefs>
+                        <descriptorRef>jar-with-dependencies</descriptorRef>
+                    </descriptorRefs>
+                    <archive>
+                        <manifest>
+                            <mainClass>com.pharbers.ipaas.data.driver.Main</mainClass>
+                        </manifest>
+                    </archive>
+                </configuration>
+                <executions>
+                    <execution>
+                        <id>make-assembly</id>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>single</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+            <!--avro-->
+            <plugin>
+                <groupId>org.apache.avro</groupId>
+                <artifactId>avro-maven-plugin</artifactId>
+                <version>1.8.1</version>
+                <executions>
+                    <execution>
+                        <phase>generate-sources</phase>
+                        <goals>
+                            <goal>schema</goal>
+                        </goals>
+                        <configuration>
+                            <sourceDirectory>${project.basedir}/src/main/avro/</sourceDirectory>
+                            <outputDirectory>${project.basedir}/src/main/java/</outputDirectory>
+                        </configuration>
                     </execution>
                 </executions>
             </plugin>

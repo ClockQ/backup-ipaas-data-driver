@@ -5,6 +5,10 @@ import com.pharbers.ipaas.data.driver.libs.spark.PhSparkDriver
 import com.pharbers.ipaas.data.driver.api.work.{PhMapArgs, PhOperatorTrait, PhSparkDriverArgs, PhStringArgs}
 
 class TestReadCsvOperator extends FunSuite with BeforeAndAfterAll {
+
+    import env.sparkObj._
+    import sparkDriver.ss.implicits._
+
     var operator: PhOperatorTrait[_] = _
 
     val csvPath: String = "hdfs:///data/nhwa/pha_config_repository1809/Nhwa_201809_CPA_20181126.csv"

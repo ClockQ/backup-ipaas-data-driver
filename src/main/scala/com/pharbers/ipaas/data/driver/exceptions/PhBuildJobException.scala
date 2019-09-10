@@ -17,26 +17,23 @@
 
 package com.pharbers.ipaas.data.driver.exceptions
 
-/** 功能描述
-  * 捕获job构建异常job->action->operator->plugin链
-  * @param configs operator /action /job name + args
-  * @author EDZ
-  * @version 0.0
-  * @since 2019/06/24 11:50
-  * @note 一些值得注意的地方
-  */
+/** 捕获job构建异常job->action->operator->plugin链
+ *
+ * @param configs operator /action /job name + args
+ * @author EDZ
+ * @version 0.1
+ * @since 2019/06/24 11:50
+ */
 case class PhBuildJobException(configs: Seq[String], exception: Throwable) extends Exception {
-    /** 功能描述
-      *
-    获取异常描述
-      * @return _root_.scala.Predef.String
-      * @author EDZ
-      * @version 0.0
-      * @since 2019/6/11 15:55
-      * @note 一些值得注意的地方
-      * @example {{{这是一个例子}}}
-      */
+    /** 获取异常描述
+     *
+     * @return _root_.scala.Predef.String
+     * @author EDZ
+     * @version 0.1
+     * @since 2019/6/11 15:55
+     * @note 一些值得注意的地方
+     */
     override def getMessage: String = {
-        configs.mkString("\n") +  (List("\n" + exception.toString) ++ exception.getStackTrace.map(x => x.toString)).mkString("\n")
+        configs.mkString("\n") + (List("\n" + exception.toString) ++ exception.getStackTrace.map(x => x.toString)).mkString("\n")
     }
 }

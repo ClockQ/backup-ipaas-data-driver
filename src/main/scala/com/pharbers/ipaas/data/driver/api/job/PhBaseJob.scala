@@ -16,45 +16,46 @@
  */
 
 package com.pharbers.ipaas.data.driver.api.job
+
 import com.pharbers.ipaas.data.driver.api.work._
 import com.pharbers.ipaas.data.driver.libs.log.PhLogDriver
-import com.pharbers.ipaas.data.driver.libs.spark.PhSparkDriver
 import com.pharbers.ipaas.data.driver.exceptions.PhOperatorException
+import com.pharbers.ipaas.data.driver.libs.spark.PhSparkDriver
 
 /** Job 运行实体
-  *
-  * @param name        Job 名字
-  * @param defaultArgs 配置参数
-  * @param actionLst   Job 包含的 Action 列表
-  * @author dcs
-  * @version 0.1
-  * @since 2019/6/11 16:50
-  */
+ *
+ * @param name        Job 名字
+ * @param defaultArgs 配置参数
+ * @param actionLst   Job 包含的 Action 列表
+ * @author dcs
+ * @version 0.1
+ * @since 2019/6/11 16:50
+ */
 case class PhBaseJob(name: String,
                      defaultArgs: PhMapArgs[PhWorkArgs[Any]],
-                     actionLst: Seq[PhActionTrait]) extends PhJobTrait {
+                     actionLst: Seq[PhActionTrait])(implicit ctx: PhMapArgs[PhWorkArgs[_]])
+        extends PhJobTrait {
+    val _: PhSparkDriver = ctx.get("sparkDriver").asInstanceOf[PhSparkDriverArgs].get
 
     /** Job 执行入口
-      *
-      * @param pr action 运行时储存的结果
-      * @author dcs
-      * @version 0.1
-      * @since 2019/6/11 16:43
-      */
+     *
+     * @param pr action 运行时储存的结果
+     * @author dcs
+     * @version 0.1
+     * @since 2019/6/11 16:43
+     */
     def perform(pr: PhMapArgs[PhWorkArgs[Any]]): PhWorkArgs[Any] = {
-        val _: PhSparkDriver = pr.get("sparkDriver").asInstanceOf[PhSparkDriverArgs].get
-        val log: PhLogDriver = pr.get("logDriver").asInstanceOf[PhLogDriverArgs].get
 
         if (actionLst.isEmpty) pr
         else {
             actionLst.foldLeft(pr) { (l, r) =>
                 try {
-                    log.setInfoLog(r.name, "开始执行")
+                    logger.info(r.name,"开始执行")
                     PhMapArgs(l.get + (r.name -> r.perform(l)))
                 } catch {
                     case e: PhOperatorException =>
-                        log.setErrorLog(PhOperatorException(e.names :+ name, e.exception).getMessage)
-                        pr
+                        logger.error(PhOperatorException(e.names :+ name, e.exception).getMessage)
+                        throw e
                 }
             }
         }

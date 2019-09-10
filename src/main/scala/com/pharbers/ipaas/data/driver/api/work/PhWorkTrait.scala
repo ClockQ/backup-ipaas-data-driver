@@ -17,6 +17,8 @@
 
 package com.pharbers.ipaas.data.driver.api.work
 
+import com.pharbers.util.log.PhLogable
+
 /** CMD 运行实体基类
   *
   * @tparam A 运行实体泛型
@@ -24,7 +26,7 @@ package com.pharbers.ipaas.data.driver.api.work
   * @version 0.1
   * @since 2019/6/11 16:43
   */
-sealed trait PhWorkTrait[+A] extends Serializable {
+sealed trait PhWorkTrait[+A] extends Serializable with PhLogable{
 	/** 运行实例的名字
 	  *
 	  * @author clock
@@ -33,92 +35,92 @@ sealed trait PhWorkTrait[+A] extends Serializable {
 	  */
 	val name: String
 
-	/** 运行实例的默认参数
-	  *
-	  * @author clock
-	  * @version 0.1
-	  * @since 2019/6/11 16:43
-	  */
-	val defaultArgs: PhMapArgs[PhWorkArgs[Any]]
+    /** 运行实例的默认参数
+     *
+     * @author clock
+     * @version 0.1
+     * @since 2019/6/11 16:43
+     */
+    val defaultArgs: PhMapArgs[PhWorkArgs[Any]]
 
-	/** CMD执行方法
-	  *
-	  * @param pr 包含的子的 CMD 执行结果及之前执行过的 Action 中的结果
-	  * @return _root_.com.pharbers.ipaas.data.driver.api.work.PhWorkArgs[A]
-	  * @author clock
-	  * @version 0.1
-	  * @since 2019/6/15 15:24
-	  * @note
-	  * {{{
-	  *     pr中需要传递 `key` 为 `sparkDriver` 的 PhSparkDriverArgs
-	  *     pr中需要传递 `key` 为 `logDriver` 的 PhLogDriverArgs
-	  * }}}
-	  */
-	def perform(pr: PhMapArgs[PhWorkArgs[Any]]): PhWorkArgs[A]
+    /** CMD执行方法
+     *
+     * @param pr 包含的子的 CMD 执行结果及之前执行过的 Action 中的结果
+     * @return _root_.com.pharbers.ipaas.data.driver.api.work.PhWorkArgs[A]
+     * @author clock
+     * @version 0.1
+     * @since 2019/6/15 15:24
+     * @note
+     * {{{
+     *     pr中需要传递 `key` 为 `sparkDriver` 的 PhSparkDriverArgs
+     *     pr中需要传递 `key` 为 `logDriver` 的 PhLogDriverArgs
+     * }}}
+     */
+    def perform(pr: PhMapArgs[PhWorkArgs[Any]]): PhWorkArgs[A]
 }
 
 /** Plugin 运行实体基类
-  *
-  * @tparam A 运行实体泛型
-  * @author clock
-  * @version 0.1
-  * @since 2019/6/11 16:43
-  */
+ *
+ * @tparam A 运行实体泛型
+ * @author clock
+ * @version 0.1
+ * @since 2019/6/11 16:43
+ */
 trait PhPluginTrait[+A] extends PhWorkTrait[A] {
-	/** Plugin 实例中包含的子 Plugin
-	  *
-	  * @author clock
-	  * @version 0.1
-	  * @since 2019/6/11 16:43
-	  */
-	val subPluginLst: Seq[PhPluginTrait[Any]]
+    /** Plugin 实例中包含的子 Plugin
+     *
+     * @author clock
+     * @version 0.1
+     * @since 2019/6/11 16:43
+     */
+    val subPluginLst: Seq[PhPluginTrait[Any]]
 }
 
 /** Operator 运行实体基类
-  *
-  * @tparam A 运行实体泛型
-  * @author clock
-  * @version 0.1
-  * @since 2019/6/11 16:43
-  */
+ *
+ * @tparam A 运行实体泛型
+ * @author clock
+ * @version 0.1
+ * @since 2019/6/11 16:43
+ */
 trait PhOperatorTrait[+A] extends PhWorkTrait[A] {
-	/** Operator 实例中包含的 Plugin
-	  *
-	  * @author clock
-	  * @version 0.1
-	  * @since 2019/6/11 16:43
-	  */
-	val pluginLst: Seq[PhPluginTrait[Any]]
+    /** Operator 实例中包含的 Plugin
+     *
+     * @author clock
+     * @version 0.1
+     * @since 2019/6/11 16:43
+     */
+    val pluginLst: Seq[PhPluginTrait[Any]]
 }
 
 /** Action 运行实体基类
-  *
-  * @author clock
-  * @version 0.1
-  * @since 2019/6/11 16:43
-  */
+ *
+ * @author clock
+ * @version 0.1
+ * @since 2019/6/11 16:43
+ */
 trait PhActionTrait extends PhWorkTrait[Any] {
-	/** Action 实例中包含的 Operator
-	  *
-	  * @author clock
-	  * @version 0.1
-	  * @since 2019/6/11 16:43
-	  */
-	val operatorLst: Seq[PhOperatorTrait[Any]]
+    /** Action 实例中包含的 Operator
+     *
+     * @author clock
+     * @version 0.1
+     * @since 2019/6/11 16:43
+     */
+    val operatorLst: Seq[PhOperatorTrait[Any]]
 }
 
 /** Job 运行实体基类
-  *
-  * @author clock
-  * @version 0.1
-  * @since 2019/6/11 16:43
-  */
+ *
+ * @author clock
+ * @version 0.1
+ * @since 2019/6/11 16:43
+ */
 trait PhJobTrait extends PhWorkTrait[Any] {
-	/** Job 实例中包含的 Action
-	  *
-	  * @author clock
-	  * @version 0.1
-	  * @since 2019/6/11 16:43
-	  */
-	val actionLst: Seq[PhActionTrait]
+    /** Job 实例中包含的 Action
+     *
+     * @author clock
+     * @version 0.1
+     * @since 2019/6/11 16:43
+     */
+    val actionLst: Seq[PhActionTrait]
 }

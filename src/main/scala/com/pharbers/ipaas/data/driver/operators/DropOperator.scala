@@ -21,19 +21,19 @@ import com.pharbers.ipaas.data.driver.api.work._
 import org.apache.spark.sql.{Column, DataFrame}
 
 /** 删除数据集中的一列或多列
-  *
-  * @author clock
-  * @version 0.1
-  * @since 2019-06-18 10:21
-  * @example 默认参数例子
-  * {{{
-  * inDFName: actionName // 要作用的 DataFrame 名字
-  * drops: col_1#col_2 // 要删除的列名列表，用`#`号分割
-  * }}}
-  */
+ *
+ * @author clock
+ * @version 0.1
+ * @since 2019-06-18 10:21
+ * @example 默认参数例子
+ * {{{
+ * inDFName: actionName // 要作用的 DataFrame 名字
+ * drops: col_1#col_2 // 要删除的列名列表，用`#`号分割
+ * }}}
+ */
 case class DropOperator(name: String,
                         defaultArgs: PhMapArgs[PhWorkArgs[Any]],
-                        pluginLst: Seq[PhPluginTrait[Column]])
+                        pluginLst: Seq[PhPluginTrait[Column]])(implicit ctx: PhMapArgs[PhWorkArgs[_]])
         extends PhOperatorTrait[DataFrame] {
     /** 要作用的 DataFrame 名字 */
     val inDFName: String = defaultArgs.getAs[PhStringArgs]("inDFName").get.get

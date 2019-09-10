@@ -38,7 +38,7 @@ case class PhSparkDriver(applicationName: String) extends SparkConnInstance {
       */
     val runConf: SparkRunConfig.type = SparkRunConfig
 
-    if (runConf.jarsPath.startsWith("hdfs:///"))
+    if (runConf.jarsPath.startsWith("hdfs:"))
         FileSystem.get(sc.hadoopConfiguration)
                 .listStatus(new Path(runConf.jarsPath))
                 .map(_.getPath.toString)

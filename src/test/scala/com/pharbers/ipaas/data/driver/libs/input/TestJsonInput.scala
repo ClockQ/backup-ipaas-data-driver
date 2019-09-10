@@ -1,16 +1,15 @@
 package com.pharbers.ipaas.data.driver.libs.input
 
 import java.io._
-
 import org.scalatest.FunSuite
 import com.pharbers.ipaas.data.driver.api.model.{Job, Plugin}
 
 /**
-  * @author clock
-  * @version 0.1
-  * @since 2019/06/14 11:13
-  * @note
-  */
+ * @author clock
+ * @version 0.1
+ * @since 2019/06/14 11:13
+ * @note
+ */
 class TestJsonInput extends FunSuite {
 
     test("json input from memory to Plugin") {

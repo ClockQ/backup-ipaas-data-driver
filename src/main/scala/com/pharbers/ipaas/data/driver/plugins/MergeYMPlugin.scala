@@ -22,19 +22,19 @@ import org.apache.spark.sql.Column
 import org.apache.spark.sql.functions._
 
 /** 将年月两列拼接成六位长度的YM（比如把year=2018,month=1或01的数据拼接为201801）
-  *
-  * @author clock
-  * @version 0.1
-  * @since 2019/6/17 18:15
-  * @example 默认参数例子
-  * {{{
-  * yearColName: YEAR // 年列名
-  * monthColName: MONTH // 月列名
-  * }}}
-  */
+ *
+ * @author clock
+ * @version 0.1
+ * @since 2019/6/17 18:15
+ * @example 默认参数例子
+ * {{{
+ * yearColName: YEAR // 年列名
+ * monthColName: MONTH // 月列名
+ * }}}
+ */
 case class MergeYMPlugin(name: String,
                          defaultArgs: PhMapArgs[PhWorkArgs[Any]],
-                         subPluginLst: Seq[PhPluginTrait[Column]])
+                         subPluginLst: Seq[PhPluginTrait[Column]])(implicit ctx: PhMapArgs[PhWorkArgs[_]])
         extends PhPluginTrait[Column] {
     /** 年列名 */
     val yearColName: String = defaultArgs.getAs[PhStringArgs]("yearColName").getOrElse(throw new Exception("key yearColName not found")).get

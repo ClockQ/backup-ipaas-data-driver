@@ -1,20 +1,18 @@
 package com.pharbers.ipaas.data.driver.operators
 
-import org.scalatest.{BeforeAndAfterAll, FunSuite}
-import com.pharbers.ipaas.data.driver.libs.spark.PhSparkDriver
-import com.pharbers.ipaas.data.driver.plugins.ExprPlugin
 import org.apache.spark.sql.DataFrame
+import org.scalatest.{BeforeAndAfterAll, FunSuite}
+import com.pharbers.ipaas.data.driver.plugins.ExprPlugin
 import com.pharbers.ipaas.data.driver.api.work.{PhDFArgs, PhMapArgs, PhStringArgs}
 
 class TestAddColumnOperator extends FunSuite with BeforeAndAfterAll {
-    implicit var sd: PhSparkDriver = _
+
+    import env.sparkObj._
+    import sparkDriver.ss.implicits._
+
     var testDF: DataFrame = _
 
     override def beforeAll(): Unit = {
-        sd = PhSparkDriver("test-driver")
-        val tmp = sd.ss.implicits
-        import tmp._
-
         testDF = List(
             ("name1", "prod1", "201801", 1),
             ("name2", "prod1", "201801", 2),
@@ -22,7 +20,6 @@ class TestAddColumnOperator extends FunSuite with BeforeAndAfterAll {
             ("name4", "prod2", "201801", 4)
         ).toDF("NAME", "PROD", "DATE", "VALUE")
 
-        require(sd != null)
         require(testDF != null)
     }
 
@@ -39,7 +36,7 @@ class TestAddColumnOperator extends FunSuite with BeforeAndAfterAll {
                     "exprString" -> PhStringArgs("cast(VALUE as double)")
                 )),
                 Seq.empty
-            ))
+            )(env.sparkObj.ctx))
         )
         val result = operator.perform(PhMapArgs(Map("inDFName" -> PhDFArgs(testDF))))
         assert(result.toDFArgs.get.columns.contains("newColName"))

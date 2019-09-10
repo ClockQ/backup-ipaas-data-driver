@@ -22,21 +22,21 @@ import org.apache.spark.sql.{Column, DataFrame}
 import com.pharbers.ipaas.data.driver.api.work._
 
 /** JOIN 算子
-  *
-  * @author clock
-  * @version 0.1
-  * @since 2019/6/11 16:50
-  * @example 默认参数例子
-  * {{{
-  * inDFName: actionName // 要作用的 DataFrame 名字
-  * joinDFName: joinDFName // 要 Join 的 DataFrame 名字
-  * joinExpr: col_a = col_b // Join 表达式
-  * joinType: left // Join 方式
-  * }}}
-  */
+ *
+ * @author clock
+ * @version 0.1
+ * @since 2019/6/11 16:50
+ * @example 默认参数例子
+ * {{{
+ * inDFName: actionName // 要作用的 DataFrame 名字
+ * joinDFName: joinDFName // 要 Join 的 DataFrame 名字
+ * joinExpr: col_a = col_b // Join 表达式
+ * joinType: left // Join 方式
+ * }}}
+ */
 case class JoinOperator(name: String,
                         defaultArgs: PhMapArgs[PhWorkArgs[Any]],
-                        pluginLst: Seq[PhPluginTrait[Column]])
+                        pluginLst: Seq[PhPluginTrait[Column]])(implicit ctx: PhMapArgs[PhWorkArgs[_]])
         extends PhOperatorTrait[DataFrame] {
     /** 要作用的 DataFrame 名字 */
     val inDFName: String = defaultArgs.getAs[PhStringArgs]("inDFName").get.get

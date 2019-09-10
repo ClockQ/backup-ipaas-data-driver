@@ -23,15 +23,14 @@ import org.apache.spark.sql.DataFrame
 import org.scalatest.{BeforeAndAfterAll, FunSuite}
 
 class TestUnionOperator extends FunSuite with BeforeAndAfterAll {
-    implicit var sd: PhSparkDriver = _
+
+    import env.sparkObj._
+    import sparkDriver.ss.implicits._
+
     var testDF1: DataFrame = _
     var testDF2: DataFrame = _
 
     override def beforeAll(): Unit = {
-        sd = PhSparkDriver("test-driver")
-        val tmp = sd.ss.implicits
-        import tmp._
-
         testDF1 = List(
             ("name1", "prod1", "201801", 1),
             ("name2", "prod1", "201801", 2),
@@ -46,7 +45,6 @@ class TestUnionOperator extends FunSuite with BeforeAndAfterAll {
             ("name4", "prod2", "201801", 4)
         ).toDF("NAME", "PROD", "DATE", "VALUE")
 
-        require(sd != null)
         require(testDF1 != null)
         require(testDF2 != null)
     }

@@ -18,20 +18,18 @@
 package com.pharbers.ipaas.data.driver.plugins
 
 import com.pharbers.ipaas.data.driver.api.work.{PhDFArgs, PhMapArgs, PhStringArgs}
-import com.pharbers.ipaas.data.driver.libs.spark.PhSparkDriver
 import com.pharbers.ipaas.data.driver.operators.AddColumnOperator
 import org.apache.spark.sql.DataFrame
 import org.scalatest.{BeforeAndAfterAll, FunSuite}
 
 class TestWhenPlugin extends FunSuite with BeforeAndAfterAll {
-    implicit var sd: PhSparkDriver = _
+
+    import env.sparkObj._
+    import sparkDriver.ss.implicits._
+
     var testDF: DataFrame = _
 
     override def beforeAll(): Unit = {
-        sd = PhSparkDriver("test-driver")
-        val tmp = sd.ss.implicits
-        import tmp._
-
         testDF = List(
             ("name1", "prod1", "2018", "1"),
             ("name2", "prod1", "2018", "2"),
@@ -39,7 +37,6 @@ class TestWhenPlugin extends FunSuite with BeforeAndAfterAll {
             ("name4", "prod2", "2018", "4")
         ).toDF("NAME", "PROD", "DATE", "VALUE")
 
-        require(sd != null)
         require(testDF != null)
     }
 

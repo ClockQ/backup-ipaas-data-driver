@@ -1,0 +1,27 @@
+name: AI_D Panel Clean
+reference: com.pharbers.ipaas.data.driver.api.job.PhBaseJob
+factory: com.pharbers.ipaas.data.driver.api.factory.PhJobFactory
+args:
+    panel: &panel hdfs:///test/dcs/Clean/panel/pfizer/AI_D
+actions:
+-   name: panelData
+    reference: com.pharbers.ipaas.data.driver.api.job.PhBaseAction
+    factory: com.pharbers.ipaas.data.driver.api.factory.PhActionFactory
+    opers:
+    -   name: readParquet
+        factory: com.pharbers.ipaas.data.driver.api.factory.PhOperatorFactory
+        reference: com.pharbers.ipaas.data.driver.api.job.PhReadParquetOperator
+        args:
+            path: *panel
+
+-   name: panelSummed
+    reference: com.pharbers.ipaas.data.driver.api.job.PhBaseAction
+    factory: com.pharbers.ipaas.data.driver.api.factory.PhActionFactory
+    opers:
+    -   name: group by YM#HOSPITAL_ID#PRODUCT_ID sum(UNITS) as sumUnits,sum(SALES) as sumSales, first(YM) as P_YM, first(HOSPITAL_ID) as P_HOSPITAL_ID, first(PRODUCT_ID) as P_PRODUCT_ID
+        factory: com.pharbers.ipaas.data.driver.api.factory.PhOperatorFactory
+        reference: com.pharbers.ipaas.data.driver.operators.GroupOperator
+        args:
+            inDFName: panelData
+            groups: YM#HOSPITAL_ID#PRODUCT_ID
+            aggExprs: sum(UNITS) as sumUnits,sum(SALES) as sumSales, first(YM) as P_YM, first(HOSPITAL_ID) as P_HOSPITAL_ID, first(PRODUCT_ID) as P_PRODUCT_ID

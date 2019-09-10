@@ -21,7 +21,7 @@ import java.io._
 import java.util
 import org.scalatest.FunSuite
 import com.pharbers.ipaas.data.driver.api.work.{PhDFArgs, PhLogDriverArgs, PhMapArgs, PhSparkDriverArgs}
-import com.pharbers.ipaas.data.driver.libs.log.{PhLogDriver, formatMsg}
+import com.pharbers.ipaas.data.driver.libs.log.{PhLogFormat, formatMsg}
 import com.pharbers.ipaas.data.driver.libs.spark.PhSparkDriver
 import com.pharbers.ipaas.data.driver.libs.spark.util.{readCsv, readParquet, save2Parquet}
 import env.configObj.{inst, readJobConfig}
@@ -33,7 +33,7 @@ import scala.io.Source
 
 class TestPfizerPanel extends FunSuite {
     implicit val sd: PhSparkDriver = PhSparkDriver("test-driver")
-    sd.addJar("target/ipaas-data-driver-0.1.jar")
+//    sd.addJar("target/ipaas-data-driver-0.1.jar")
     sd.sc.setLogLevel("ERROR")
     test("test pfizer gycx clean") {
         def cleanGycx(shouldSave: Boolean, name: String, gycxPath: String, ProductMatchPath: String, ProductERDPath: String, hospERDPath: String, PhaPath: String, savePath: String): DataFrame = {
@@ -48,7 +48,7 @@ class TestPfizerPanel extends FunSuite {
             val phJobs = inst(readJobConfig(yamlPath))
             val result = phJobs.head.perform(PhMapArgs(Map(
                 "sparkDriver" -> PhSparkDriverArgs(sd),
-                "logDriver" -> PhLogDriverArgs(PhLogDriver(formatMsg("test_user", "test_traceID", "test_jobID")))
+                "logFormat" -> PhLogFormat(formatMsg("test_user", "test_traceID", "test_jobId")).get()
             )))
 
             val cleanDF = result.toMapArgs[PhDFArgs].get("clean").get
@@ -96,7 +96,7 @@ class TestPfizerPanel extends FunSuite {
             val phJobs = inst(readJobConfig(yamlPath))
             val result = phJobs.head.perform(PhMapArgs(Map(
                 "sparkDriver" -> PhSparkDriverArgs(sd),
-                "logDriver" -> PhLogDriverArgs(PhLogDriver(formatMsg("test_user", "test_traceID", "test_jobID")))
+                "logFormat" -> PhLogFormat(formatMsg("test_user", "test_traceID", "test_jobId")).get()
             )))
 
             val cleanDF = result.toMapArgs[PhDFArgs].get("clean").get
@@ -144,7 +144,7 @@ class TestPfizerPanel extends FunSuite {
             val phJobs = inst(readJobConfig(yamlPath))
             val result = phJobs.head.perform(PhMapArgs(Map(
                 "sparkDriver" -> PhSparkDriverArgs(sd),
-                "logDriver" -> PhLogDriverArgs(PhLogDriver(formatMsg("test_user", "test_traceID", "test_jobID")))
+                "logFormat" -> PhLogFormat(formatMsg("test_user", "test_traceID", "test_jobId")).get()
             )))
 
             val cleanDF = result.toMapArgs[PhDFArgs].get("clean").get
@@ -191,7 +191,7 @@ class TestPfizerPanel extends FunSuite {
             val phJobs = inst(readJobConfig(yamlPath))
             val result = phJobs.head.perform(PhMapArgs(Map(
                 "sparkDriver" -> PhSparkDriverArgs(sd),
-                "logDriver" -> PhLogDriverArgs(PhLogDriver(formatMsg("test_user", "test_traceID", "test_jobID")))
+                "logFormat" -> PhLogFormat(formatMsg("test_user", "test_traceID", "test_jobId")).get()
             )))
 
             val cleanDF = result.toMapArgs[PhDFArgs].get("not_arrival_hosp").get
@@ -232,7 +232,7 @@ class TestPfizerPanel extends FunSuite {
             val phJobs = inst(readJobConfig(yamlPath))
             val result = phJobs.head.perform(PhMapArgs(Map(
                 "sparkDriver" -> PhSparkDriverArgs(sd),
-                "logDriver" -> PhLogDriverArgs(PhLogDriver(formatMsg("test_user", "test_traceID", "test_jobID")))
+                "logFormat" -> PhLogFormat(formatMsg("test_user", "test_traceID", "test_jobId")).get()
             )))
 
             val cleanDF = result.toMapArgs[PhDFArgs].get("sample_hosp").get
@@ -275,7 +275,7 @@ class TestPfizerPanel extends FunSuite {
             val phJobs = inst(readJobConfig(yamlPath))
             val result = phJobs.head.perform(PhMapArgs(Map(
                 "sparkDriver" -> PhSparkDriverArgs(sd),
-                "logDriver" -> PhLogDriverArgs(PhLogDriver(formatMsg("test_user", "test_traceID", "test_jobID")))
+                "logFormat" -> PhLogFormat(formatMsg("test_user", "test_traceID", "test_jobId")).get()
             )))
 
             val cleanDF = result.toMapArgs[PhDFArgs].get("sample_hosp").get
@@ -321,7 +321,7 @@ class TestPfizerPanel extends FunSuite {
             val phJobs = inst(readJobConfig(yamlPath))
             val result = phJobs.head.perform(PhMapArgs(Map(
                 "sparkDriver" -> PhSparkDriverArgs(sd),
-                "logDriver" -> PhLogDriverArgs(PhLogDriver(formatMsg("test_user", "test_traceID", "test_jobID")))
+                "logFormat" -> PhLogFormat(formatMsg("test_user", "test_traceID", "test_jobId")).get()
             )))
 
             val cleanDF = result.toMapArgs[PhDFArgs].get("panelERD").get
@@ -401,7 +401,7 @@ class TestPfizerPanel extends FunSuite {
             val phJobs = inst(readJobConfig(yamlPath))
             val result = phJobs.head.perform(PhMapArgs(Map(
                 "sparkDriver" -> PhSparkDriverArgs(sd),
-                "logDriver" -> PhLogDriverArgs(PhLogDriver(formatMsg("test_user", "test_traceID", "test_jobID")))
+                "logFormat" -> PhLogFormat(formatMsg("test_user", "test_traceID", "test_jobId")).get()
             )))
 
             val cleanDF = result.toMapArgs[PhDFArgs].get("universeDF").get
@@ -443,7 +443,7 @@ class TestPfizerPanel extends FunSuite {
             val phJobs = inst(readJobConfig(yamlPath))
             val result = phJobs.head.perform(PhMapArgs(Map(
                 "sparkDriver" -> PhSparkDriverArgs(sd),
-                "logDriver" -> PhLogDriverArgs(PhLogDriver(formatMsg("test_user", "test_traceID", "test_jobID")))
+                "logFormat" -> PhLogFormat(formatMsg("test_user", "test_traceID", "test_jobId")).get()
             )))
 
             val cleanDF = result.toMapArgs[PhDFArgs].get("maxResultDF").get
@@ -462,10 +462,10 @@ class TestPfizerPanel extends FunSuite {
             val checkDF = sd.setUtil(readParquet()).readParquet(s"/workData/Max/${x._1}")
             val resultDF = max(
                 false,
-                s"pfizer${x._2}MaxTest",
+                s"astellas${x._2}MaxTest",
                 s"hdfs:///test/dcs/Clean/panel/pfizer/${x._2}",
                 s"hdfs:///test/dcs/Clean/universe/pfizer/${x._2}",
-                s"hdfs:///test/dcs/Clean/max/pfizer/${x._2}"
+                s"hdfs:///test/dcs/Clean/max/astellas/${x._2}"
             )
 
             val checkUnits = checkDF.agg(sum("f_units")).first.get(0).toString.toDouble

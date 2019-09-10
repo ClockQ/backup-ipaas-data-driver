@@ -1,20 +1,25 @@
 package com.pharbers.ipaas.data.driver.api.job
 
+import java.io.{File, FileInputStream}
+import java.util.Scanner
+
+import com.pharbers.ipaas.data.driver.api.factory.PhJobFactory
+import com.pharbers.ipaas.data.driver.api.model.Job
 import org.apache.spark.sql.{Column, DataFrame}
 import com.pharbers.ipaas.data.driver.api.work._
-import com.pharbers.ipaas.data.driver.libs.log.{PhLogDriver, formatMsg}
-import org.scalatest.{BeforeAndAfterAll, FunSuite}
+import com.pharbers.ipaas.data.driver.libs.input.JsonInput
+import com.pharbers.ipaas.data.driver.libs.log.{PhLogFormat, formatMsg}
 import com.pharbers.ipaas.data.driver.libs.spark.PhSparkDriver
+import org.scalatest.{BeforeAndAfterAll, FunSuite}
 
 class TestJob extends FunSuite with BeforeAndAfterAll {
     implicit var sd: PhSparkDriver = _
-
     var testDF: DataFrame = _
 
     override def beforeAll(): Unit = {
-        sd = PhSparkDriver("test-driver")
-        val tmp = sd.ss.implicits
+        val tmp = env.sparkObj.sparkDriver.ss.implicits
         import tmp._
+
         testDF = List(
             ("name1", "prod1", "201801", 1),
             ("name2", "prod1", "201801", 2),
@@ -22,12 +27,7 @@ class TestJob extends FunSuite with BeforeAndAfterAll {
             ("name4", "prod2", "201801", 4)
         ).toDF("NAME", "PROD", "DATE", "VALUE")
 
-        require(sd != null)
         require(testDF != null)
-    }
-
-    override def afterAll(): Unit = {
-        sd.stopSpark()
     }
 
     case class lit(name: String, defaultArgs: PhMapArgs[PhWorkArgs[Any]], subPluginLst: Seq[PhPluginTrait[Any]])
@@ -77,7 +77,6 @@ class TestJob extends FunSuite with BeforeAndAfterAll {
 
 
     test("PhBaseAction") {
-
         val action1 = PhBaseAction("testAction1", PhMapArgs(), List(
             withColumn("withColumn1",
                 PhMapArgs(Map("inDFName" -> PhStringArgs("df"), "newColName" -> PhStringArgs("a"))),
@@ -91,12 +90,10 @@ class TestJob extends FunSuite with BeforeAndAfterAll {
                 PhMapArgs(Map("inDFName" -> PhStringArgs("withColumn2"), "newColName" -> PhStringArgs("c"))),
                 Seq(generateIdUdf("", PhMapArgs(), Nil))
             )
-        ))
+        ))(env.sparkObj.ctx)
 
         val result = action1.perform(PhMapArgs(Map(
-            "df" -> PhDFArgs(testDF),
-            "sparkDriver" -> PhSparkDriverArgs(sd),
-            "logDriver" -> PhLogDriverArgs(PhLogDriver(formatMsg("test_user", "test_traceID", "test_jobID")))
+            "df" -> PhDFArgs(testDF)
         )))
 
         println(result)
@@ -105,7 +102,6 @@ class TestJob extends FunSuite with BeforeAndAfterAll {
     }
 
     test("PhBaseJob") {
-
         val action1 = PhBaseAction("testAction1", PhMapArgs(), List(
             withColumn("withColumn1",
                 PhMapArgs(Map("inDFName" -> PhStringArgs("df"), "newColName" -> PhStringArgs("a"))),
@@ -119,7 +115,7 @@ class TestJob extends FunSuite with BeforeAndAfterAll {
                 PhMapArgs(Map("inDFName" -> PhStringArgs("withColumn2"), "newColName" -> PhStringArgs("c"))),
                 Seq(generateIdUdf("", PhMapArgs(), Nil))
             )
-        ))
+        ))(env.sparkObj.ctx)
 
         val action2 = PhBaseAction("testAction2", PhMapArgs(), List(
             withColumn("withColumn1",
@@ -134,13 +130,12 @@ class TestJob extends FunSuite with BeforeAndAfterAll {
                 PhMapArgs(Map("inDFName" -> PhStringArgs("withColumn2"), "newColName" -> PhStringArgs("cc"))),
                 Seq(generateIdUdf("", PhMapArgs(), Nil))
             )
-        ))
+        ))(env.sparkObj.ctx)
 
-        val job1 = PhBaseJob("testJob", PhMapArgs(), List(action1, action2))
+        val job1 = PhBaseJob("testJob", PhMapArgs(), List(action1, action2))(env.sparkObj.ctx)
+
         val result = job1.perform(PhMapArgs(Map(
-            "df" -> PhDFArgs(testDF),
-            "sparkDriver" -> PhSparkDriverArgs(sd),
-            "logDriver" -> PhLogDriverArgs(PhLogDriver(formatMsg("test_user", "test_traceID", "test_jobID")))
+            "df" -> PhDFArgs(testDF)
         )))
 
         println(result)
@@ -148,5 +143,21 @@ class TestJob extends FunSuite with BeforeAndAfterAll {
         result.toMapArgs.getAs[PhDFArgs]("testAction2").get.get.show(false)
         assert(result.toMapArgs.getAs[PhDFArgs]("testAction1").get.get.columns.length == 7)
         assert(result.toMapArgs.getAs[PhDFArgs]("testAction2").get.get.columns.length == 10)
+    }
+
+    test("test map"){
+        import scala.collection.JavaConverters._
+        val stream = new FileInputStream(new File("D:\\文件\\tm计算\\TMCal.json"))
+        val job = JsonInput().readObject[Job](stream)
+//        val phJob = PhJobFactory(job).inst()
+        val actionMap: collection.mutable.Map[String, Int] = collection.mutable.Map(job.getActions.asScala.map(x => (x.name, 0)): _*)
+        job.getActions.asScala.foreach(x => {
+            x.opers.asScala.foreach(oper => {
+                oper.args.asScala.values.foreach(v => {
+                    if (actionMap.contains(v)) actionMap.put(v , actionMap(v) + 1)
+                })
+            })
+        })
+        actionMap.foreach(x => if(x._2 > 1) println(s"${x._1}, ${x._2}"))
     }
 }
