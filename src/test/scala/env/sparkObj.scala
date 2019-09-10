@@ -15,7 +15,7 @@ import org.apache.spark.sql.SparkSession
  */
 @deprecated
 object sparkObj {
-    implicit lazy val sparkDriver: PhTestSparkDriver = PhTestSparkDriver("test-driver")
+    implicit lazy val sparkDriver: PhTestSparkDriver = new PhTestSparkDriver("test-driver")
 //    sparkDriver.sc.setLogLevel("ERROR")
 
     val logDriver = PhLogDriver(formatMsg("test_user", "test_traceID", "test_jobID"))
@@ -26,7 +26,7 @@ object sparkObj {
     ))
 }
 
-case class PhTestSparkDriver(override val applicationName: String) extends PhSparkDriver(applicationName) {
+class PhTestSparkDriver(applicationTestName: String) extends PhSparkDriver(applicationTestName) {
     private val conf = new SparkConf()
             //测试用
             .set("spark.yarn.jars", SparkTestConnConfig.yarnJars)

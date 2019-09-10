@@ -26,9 +26,4 @@ class TestLogDriver extends FunSuite with BeforeAndAfterAll {
 		}
 	}
 
-	test("log able"){
-		val fun = PhLogFormat(formatMsg("test_user", "test_traceID", "test_jobID")).get().get
-		println(fun(List("1", "2", "3")))
-	}
-
 }
