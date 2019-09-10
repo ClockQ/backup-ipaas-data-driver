@@ -10,7 +10,7 @@
                 <ThresholdFilter level="all" onMatch="ACCEPT" onMismatch="DENY"/>
             </Filters>
             <PatternLayout>
-                <Pattern>{"Time": "%d{yyyy/MM/dd HH:mm:ss.SSS}","Hostname": "%host","ProjectName": "ipass-data-driver","Level": "%p","File": "%l","Func": "%M","UserId": "%X{userId}","TraceId": "%X{traceID}","JobId": "%X{jobID}","Message": "%m"}%n</Pattern>
+                <Pattern>{"Time": "%d{yyyy/MM/dd HH:mm:ss.SSS}","Hostname": "%host","ProjectName": "ipass-data-driver","Level": "%p","File": "%l","Func": "%M","UserId": "%X{USERID}","TraceId": "%X{TRACEID}","JobId": "%X{JOBID}","Message": "%m"}%n</Pattern>
             </PatternLayout>
         </Console>
         <RollingFile name="RollingFile" fileName="${LOG_HOME}/${FILE_NAME}.log"
@@ -19,7 +19,7 @@
                 <ThresholdFilter level="INFO" onMatch="ACCEPT" onMismatch="DENY"/>
             </Filters>
             <PatternLayout>
-                <Pattern>%d{yyyy/MM/dd HH:mm:ss.SSS}, %p, %m%n</Pattern>
+                <Pattern>{"Time": "%d{yyyy/MM/dd HH:mm:ss.SSS}","Hostname": "%host","ProjectName": "ipass-data-driver","Level": "%p","File": "%l","Func": "%M","UserId": "%X{USERID}","TraceId": "%X{TRACEID}","JobId": "%X{JOBID}","Message": "%m"}%n</Pattern>
             </PatternLayout>
             <Policies>
                 <TimeBasedTriggeringPolicy/>

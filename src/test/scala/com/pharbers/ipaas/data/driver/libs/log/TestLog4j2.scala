@@ -14,7 +14,7 @@ import org.scalatest.FunSuite
   * @note 一些值得注意的地方
   */
 class TestLog4j2 extends FunSuite {
-    test("test log4j config"){
+    test("test log4j config") {
         val logger: Logger = LogManager.getLogger(this)
         logger.debug("test debug")
         logger.trace("test trace")
@@ -24,15 +24,16 @@ class TestLog4j2 extends FunSuite {
         logger.info("infoTest")
     }
 
-    test("test logable"){
+    test("test logable") {
         import com.pharbers.util.log.PhLogable._
-        val logable = new PhLogable {
-            def run(): Unit ={
-                logger.info("run")
-            }
-        }
-        useJobId("user", "trace", "job")(logable){
-            test => test.run()
+
+        useJobId("user", "trace", "job") {
+            _ =>
+                new PhLogable {
+                    def run(): Unit = {
+                        logger.info("run")
+                    }
+                }.run()
         }
     }
 }
