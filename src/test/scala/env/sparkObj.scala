@@ -2,12 +2,9 @@ package env
 
 import com.pharbers.ipaas.data.driver.api.work.{PhLogDriverArgs, PhMapArgs, PhSparkDriverArgs}
 import com.pharbers.ipaas.data.driver.libs.log.{PhLogDriver, formatMsg}
-import com.pharbers.ipaas.data.driver.libs.spark.session.{SparkConnConfig, SparkConnInstance}
-import com.pharbers.ipaas.data.driver.libs.spark.util.SparkUtilTrait
-import com.pharbers.ipaas.data.driver.libs.spark.{PhSparkDriver, SparkRunConfig}
-import org.apache.hadoop.fs.{FileSystem, Path}
-import org.apache.spark.{SparkConf, SparkContext}
-import org.apache.spark.sql.{SQLContext, SparkSession}
+import com.pharbers.ipaas.data.driver.libs.spark.PhSparkDriver
+import org.apache.spark.SparkConf
+import org.apache.spark.sql.SparkSession
 
 /** Spark Driver 实例
  *
@@ -18,7 +15,7 @@ import org.apache.spark.sql.{SQLContext, SparkSession}
  */
 @deprecated
 object sparkObj {
-    implicit lazy val sparkDriver = PhTestSparkDriver("test-driver")
+    implicit lazy val sparkDriver: PhTestSparkDriver = PhTestSparkDriver("test-driver")
 //    sparkDriver.sc.setLogLevel("ERROR")
 
     val logDriver = PhLogDriver(formatMsg("test_user", "test_traceID", "test_jobID"))
