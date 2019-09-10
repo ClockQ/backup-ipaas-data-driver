@@ -22,7 +22,7 @@ import com.pharbers.ipaas.data.driver.libs.input.{JsonInput, YamlInput}
 import com.pharbers.ipaas.data.driver.libs.spark.PhSparkDriver
 import com.pharbers.util.log.PhLogable._
 import com.pharbers.ipaas.data.driver.api.factory.{PhFactoryTrait, getMethodMirror}
-import com.pharbers.ipaas.data.driver.api.work.{PhJobTrait, PhLogDriverArgs, PhMapArgs, PhSparkDriverArgs}
+import com.pharbers.ipaas.data.driver.api.work.{PhJobTrait, PhLogDriverArgs, PhMapArgs, PhSparkDriverArgs, PhWorkArgs}
 import com.pharbers.ipaas.data.driver.libs.kafka.ProducerAvroTopic
 import com.pharbers.kafka.schema.ListeningJobTask
 
@@ -64,8 +64,8 @@ object Main {
                 x.jobId = args(3)
                 getMethodMirror(x.getFactory)(x, ctx).asInstanceOf[PhFactoryTrait[PhJobTrait]].inst()
             })
-            useJobId("test_user", "test_trace", args(3))(phJobs.head){
-                x => x.perform(PhMapArgs(Map()))
+            useJobId("test_user", "test_trace", args(3)){
+                _ => phJobs.head.perform(PhMapArgs(Map()))
             }
             println("Finish")
             record.put("JobId", args(3))
