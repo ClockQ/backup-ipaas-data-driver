@@ -36,7 +36,6 @@ case class PhProgressJob(name: String,
       * @since 2019/6/11 16:43
       */
     override def perform(pr: PhMapArgs[PhWorkArgs[Any]]): PhWorkArgs[Any] =  {
-        val logFormat = pr.get("logFormat").asInstanceOf[PhFuncArgs[PhListArgs[PhStringArgs], PhStringArgs]].get
         val pkp = new PharbersKafkaProducer[String, ListeningJobTask]
         if (actionLst.isEmpty) pr
         else {
@@ -44,12 +43,12 @@ case class PhProgressJob(name: String,
                 actionLst.zipWithIndex.foldLeft(pr) { (l, right) =>
                     try {
                         val action = right._1
-                        logger.info(logFormat(s"${action.name},开始执行"))
+                        logger.info("${action.name},开始执行")
                         pkp.produce(topic, jobId, new ListeningJobTask(jobId, "Running", "", (100 * right._2 / actionLst.length).toString))
                         PhMapArgs(l.get + (action.name -> action.perform(l)))
                     } catch {
                         case e: PhOperatorException =>
-                            logger.error(logFormat(PhOperatorException(e.names :+ name, e.exception).getMessage))
+                            logger.error(PhOperatorException(e.names :+ name, e.exception).getMessage)
                             throw e
                     }
                 }

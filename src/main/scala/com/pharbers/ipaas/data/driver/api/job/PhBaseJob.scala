@@ -45,17 +45,16 @@ case class PhBaseJob(name: String,
      * @since 2019/6/11 16:43
      */
     def perform(pr: PhMapArgs[PhWorkArgs[Any]]): PhWorkArgs[Any] = {
-        val logFormat = pr.get("logFormat").asInstanceOf[PhFuncArgs[PhListArgs[PhStringArgs], PhStringArgs]].get
 
         if (actionLst.isEmpty) pr
         else {
             actionLst.foldLeft(pr) { (l, r) =>
                 try {
-                    logger.info(logFormat(s"${r.name},开始执行"))
+                    logger.info(r.name,"开始执行")
                     PhMapArgs(l.get + (r.name -> r.perform(l)))
                 } catch {
                     case e: PhOperatorException =>
-                        logger.error(logFormat(PhOperatorException(e.names :+ name, e.exception).getMessage))
+                        logger.error(PhOperatorException(e.names :+ name, e.exception).getMessage)
                         throw e
                 }
             }

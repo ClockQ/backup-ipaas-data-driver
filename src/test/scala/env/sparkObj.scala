@@ -13,8 +13,8 @@ import com.pharbers.ipaas.data.driver.libs.spark.PhSparkDriver
  */
 @deprecated
 object sparkObj {
-    implicit val sparkDriver = PhSparkDriver("test-driver")
-    sparkDriver.sc.setLogLevel("ERROR")
+    implicit lazy val sparkDriver = PhSparkDriver("test-driver")
+//    sparkDriver.sc.setLogLevel("ERROR")
 
     val logDriver = PhLogDriver(formatMsg("test_user", "test_traceID", "test_jobID"))
 

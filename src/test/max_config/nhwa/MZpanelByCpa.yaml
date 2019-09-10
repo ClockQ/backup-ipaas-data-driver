@@ -2,9 +2,9 @@ name: panel
 factory: com.pharbers.ipaas.data.driver.api.factory.PhJobFactory
 reference: com.pharbers.ipaas.data.driver.api.job.PhBaseJob
 args:
-  mkt: &mkt "MARKET == '麻醉市场' AND SAMPLE == 1"
-  ym: &ym YM == 201809
-  date: &date DATE == 201809
+  mkt: &mkt '麻醉市场'
+  ym: &ym 201809
+  date: &date 201809
   clean: &clean hdfs:///workData/Clean/20bfd585-c889-4385-97ec-a8d4c77d71cc
   missHosp: &missHosp hdfs:///repository/miss_hosp/5ca069bceeefcc012918ec72
   notPublishHosp: &notPublishHosp hdfs:///repository/not_published_hosp/5ca069bceeefcc012918ec72
@@ -70,7 +70,8 @@ actions:
     reference: com.pharbers.ipaas.data.driver.operators.ExprFilterOperator
     args:
       inDFName: readMissHosp
-      filter: *date
+      filter: YM == '#ym#'
+      ym: *ym
   - name: drop
     factory: com.pharbers.ipaas.data.driver.api.factory.PhOperatorFactory
     reference: com.pharbers.ipaas.data.driver.operators.DropOperator
@@ -111,7 +112,9 @@ actions:
     reference: com.pharbers.ipaas.data.driver.operators.ExprFilterOperator
     args:
       inDFName: readCpa
-      filter: *ym
+      filter: >
+        YM ==
+        *ym
 
 - name: reducedCpa
   factory: com.pharbers.ipaas.data.driver.api.factory.PhActionFactory
@@ -147,7 +150,9 @@ actions:
     reference: com.pharbers.ipaas.data.driver.operators.ExprFilterOperator
     args:
       inDFName: readFullHosp
-      filter: *ym
+      filter: >
+        YM ==
+        *ym
   - name: join
     factory: com.pharbers.ipaas.data.driver.api.factory.PhOperatorFactory
     reference: com.pharbers.ipaas.data.driver.operators.JoinOperator
@@ -178,7 +183,8 @@ actions:
     reference: com.pharbers.ipaas.data.driver.operators.ExprFilterOperator
     args:
       inDFName: readSampleHosp
-      filter: *mkt
+      filter: MARKET == '#mkt#' AND SAMPLE == 1
+      mkt: *mkt
   - name: rename
     factory: com.pharbers.ipaas.data.driver.api.factory.PhOperatorFactory
     reference: com.pharbers.ipaas.data.driver.operators.WithColumnRenamedOperator

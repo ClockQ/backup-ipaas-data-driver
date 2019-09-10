@@ -20,7 +20,7 @@ import com.pharbers.ipaas.data.driver.libs.read._
 import com.pharbers.ipaas.data.driver.api.model.Job
 import com.pharbers.ipaas.data.driver.libs.input.{JsonInput, YamlInput}
 import com.pharbers.ipaas.data.driver.libs.spark.PhSparkDriver
-import com.pharbers.ipaas.data.driver.libs.log.{PhLogDriver, formatMsg}
+import com.pharbers.util.log.PhLogable._
 import com.pharbers.ipaas.data.driver.api.factory.{PhFactoryTrait, getMethodMirror}
 import com.pharbers.ipaas.data.driver.api.work.{PhJobTrait, PhLogDriverArgs, PhMapArgs, PhSparkDriverArgs}
 import com.pharbers.ipaas.data.driver.libs.kafka.ProducerAvroTopic
@@ -57,15 +57,16 @@ object Main {
         
             sd.sc.setLogLevel("ERROR")
             val ctx = PhMapArgs(Map(
-                "sparkDriver" -> PhSparkDriverArgs(sd),
-                "logDriver" -> PhLogDriverArgs(PhLogDriver(formatMsg("test_user", "test_traceID", "test_jobID")))
+                "sparkDriver" -> PhSparkDriverArgs(sd)
             ))
 		    
             val phJobs = jobs.map(x =>{
                 x.jobId = args(3)
                 getMethodMirror(x.getFactory)(x, ctx).asInstanceOf[PhFactoryTrait[PhJobTrait]].inst()
             })
-            phJobs.head.perform(PhMapArgs(Map()))
+            useJobId("test_user", "test_trace", args(3))(phJobs.head){
+                x => x.perform(PhMapArgs(Map()))
+            }
             println("Finish")
             record.put("JobId", args(3))
             record.put("Status", "Finish")
@@ -74,8 +75,6 @@ object Main {
             ProducerAvroTopic("listeningJobTaskTest", record)
         } catch {
             case e: Exception =>
-                println(e)
-                e.printStackTrace()
                 record.put("JobId", args(3))
                 record.put("Status", "Error")
                 record.put("Message", e.getMessage)

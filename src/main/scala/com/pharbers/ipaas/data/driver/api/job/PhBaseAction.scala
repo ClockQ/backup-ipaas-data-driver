@@ -47,12 +47,11 @@ case class PhBaseAction(name: String,
      * @since 2019/6/11 16:43
      */
     def perform(pr: PhMapArgs[PhWorkArgs[Any]]): PhWorkArgs[Any] = {
-        val logFormat = pr.get("logFormat").asInstanceOf[PhFuncArgs[PhListArgs[PhStringArgs], PhStringArgs]].get
 
         if (operatorLst.isEmpty) pr
         else {
             operatorLst.foldLeft(pr) { (l, r) =>
-                logger.info(logFormat(s"${r.name},开始执行"))
+                logger.info(r.name, "开始执行")
                 try {
                     PhMapArgs(l.get + (r.name -> r.perform(l)))
                 } catch {

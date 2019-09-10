@@ -18,8 +18,12 @@ class TestYamlInput extends FunSuite {
             """
               |name: testName
               |factory: testFactory
+              |args:
+              |  mkt: &mkt aaa
               |sub:
-              |  name: subTestName
+              |  name: >
+              |   *mkt
+              |   == x
               |  factory: testFactory
             """.stripMargin
         val stream = new ByteArrayInputStream(data.getBytes)

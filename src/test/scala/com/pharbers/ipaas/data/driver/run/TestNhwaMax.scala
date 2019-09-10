@@ -51,7 +51,7 @@ class TestNhwaMax extends FunSuite {
     }
 
     test("test nhwa MZ panel") {
-        val phJobs = inst(readJobConfig("max_config/nhwa/MZpanelByCpa.yaml"))
+        val phJobs = inst(readJobConfig("src/test/max_config/nhwa/MZpanelByCpa.yaml"))
         val result = phJobs.head.perform(PhMapArgs(Map(
             "sparkDriver" -> PhSparkDriverArgs(sd),
             "logFormat" -> PhLogFormat(formatMsg("test_user", "test_traceID", "test_jobId")).get()
@@ -111,6 +111,14 @@ class TestNhwaMax extends FunSuite {
         println(maxDFSales)
         println(maxTrueDFSales)
         assert(Math.abs(maxDFSales - maxTrueDFSales) < maxTrueDFSales * 0.01)
+    }
+
+    test("nhwa all"){
+        val phJobs = inst(readJobConfig("src/test/max_config/nhwa/temp.yaml"))
+        val result = phJobs.head.perform(PhMapArgs(Map(
+            "sparkDriver" -> PhSparkDriverArgs(sd),
+            "logFormat" -> PhLogFormat(formatMsg("test_ nhwa MZ max user", "test_ nhwa MZ max traceID", "test_ nhwa MZ max jobId")).get()
+        )))
     }
 
     test("submit") {

@@ -40,10 +40,14 @@ case class ExprFilterOperator(name: String,
     val inDFName: String = defaultArgs.getAs[PhStringArgs]("inDFName").get.get
     /** filter expr 表达式 */
     val exprFilter: String = defaultArgs.getAs[PhStringArgs]("filter").get.get
+    val replaceString: Map[String, String] = defaultArgs.get.map(x => (x._1, x._2.get.toString))
 
     override def perform(pr: PhMapArgs[PhWorkArgs[Any]]): PhWorkArgs[DataFrame] = {
+        val exprStr = replaceString.foldLeft(exprFilter)((l, r) => {
+            l.replace(s"#${r._1}#", r._2)
+        })
         val inDF = pr.getAs[PhDFArgs](inDFName).get.get
-        val outDF = inDF.filter(expr(exprFilter))
+        val outDF = inDF.filter(expr(exprStr))
         PhDFArgs(outDF)
     }
 }

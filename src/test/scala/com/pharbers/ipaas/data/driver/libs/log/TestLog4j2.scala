@@ -1,5 +1,6 @@
 package com.pharbers.ipaas.data.driver.libs.log
 
+import com.pharbers.util.log.PhLogable
 import org.apache.logging.log4j.{LogManager, Logger}
 import org.scalatest.FunSuite
 
@@ -21,5 +22,17 @@ class TestLog4j2 extends FunSuite {
         logger.error("test error")
         logger.fatal("test fatal")
         logger.info("infoTest")
+    }
+
+    test("test logable"){
+        import com.pharbers.util.log.PhLogable._
+        val logable = new PhLogable {
+            def run(): Unit ={
+                logger.info("run")
+            }
+        }
+        useJobId("user", "trace", "job")(logable){
+            test => test.run()
+        }
     }
 }

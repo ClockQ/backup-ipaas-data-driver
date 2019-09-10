@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<Configuration status="OFF" name="MyApp" packages="">
+<Configuration status="OFF" name="MyApp" packages="com.pharbers.util.log.plugin">
     <properties>
         <property name="LOG_HOME">logs</property>
         <property name="FILE_NAME">app</property>
@@ -10,7 +10,7 @@
                 <ThresholdFilter level="all" onMatch="ACCEPT" onMismatch="DENY"/>
             </Filters>
             <PatternLayout>
-                <Pattern>{"Time": "%d{yyyy/MM/dd HH:mm:ss.SSS}","ProjectName": "ipass-data-driver","Level": "%p","File": "%l","Func": "%M",%m}%n</Pattern>
+                <Pattern>{"Time": "%d{yyyy/MM/dd HH:mm:ss.SSS}","Hostname": "%host","ProjectName": "ipass-data-driver","Level": "%p","File": "%l","Func": "%M","UserId": "%X{userId}","TraceId": "%X{traceID}","JobId": "%X{jobID}","Message": "%m"}%n</Pattern>
             </PatternLayout>
         </Console>
         <RollingFile name="RollingFile" fileName="${LOG_HOME}/${FILE_NAME}.log"
