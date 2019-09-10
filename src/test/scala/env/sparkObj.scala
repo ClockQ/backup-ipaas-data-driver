@@ -29,83 +29,19 @@ object sparkObj {
     ))
 }
 
-case class PhTestSparkDriver(applicationName: String) extends SparkConnInstance {
-
-    /** 设置 Spark 工具集
-      *
-      * @param helper 工具集实例
-      * @tparam T <: SparkUtilTrait 工具集的子类
-      * @author clock
-      * @version 0.1
-      * @since 2019/6/17 11:15
-      * @example 默认参数例子
-      *          {{{
-      *           this.setUtil(readParquet()).readParquet("hdfs:///test")
-      *          }}}
-      */
-    def setUtil[T <: SparkUtilTrait](helper: T): T = helper
-
-    /** 添加 Spark 运行时 Jar
-      *
-      * @param jarPath Jar包路径
-      * @author clock
-      * @version 0.1
-      * @since 2019/6/17 11:17
-      * @example 默认参数例子
-      *          {{{
-      *           this.addJar("hdfs:///test.jar")
-      *          }}}
-      */
-    def addJar(jarPath: String): PhSparkDriver = {
-        sc.addJar(jarPath)
-        this
-    }
-
-    /** 停止 Spark 驱动，关闭 Spark Context 连接
-      *
-      * @author clock
-      * @version 0.1
-      * @since 2019/6/17 11:17
-      * @example 默认参数例子
-      *          {{{
-      *           this.stopSpark()
-      *          }}}
-      */
-    def stopSpark(): Unit = this.sc.stop()
-}
-
-trait SparkTestConnInstance {
-
-    //    System.setProperty("HADOOP_USER_NAME","spark")
-
-    /** SPARK 连接实例名
-      *
-      * @author clock
-      * @version 0.1
-      * @since 2019/6/17 11:08
-      */
-    val applicationName: String
-
-    /** SPARK 连接配置
-      *
-      * @author clock
-      * @version 0.1
-      * @since 2019/6/17 11:08
-      */
-    val connConf: SparkTestConnConfig.type = SparkTestConnConfig
-
+case class PhTestSparkDriver(override val applicationName: String) extends PhSparkDriver(applicationName) {
     private val conf = new SparkConf()
             //测试用
-            .set("spark.yarn.jars", connConf.yarnJars)
-            .set("spark.yarn.archive", connConf.yarnJars)
-            .set("yarn.resourcemanager.hostname", connConf.yarnResourceHostname)
-            .set("yarn.resourcemanager.address", connConf.yarnResourceAddress)
+            .set("spark.yarn.jars", SparkTestConnConfig.yarnJars)
+            .set("spark.yarn.archive", SparkTestConnConfig.yarnJars)
+            .set("yarn.resourcemanager.hostname", SparkTestConnConfig.yarnResourceHostname)
+            .set("yarn.resourcemanager.address", SparkTestConnConfig.yarnResourceAddress)
             .setAppName(applicationName)
             .setMaster("yarn")
             .set("spark.scheduler.mode", "FAIR")
             .set("spark.sql.crossJoin.enabled", "true")
-            .set("spark.yarn.dist.files", connConf.yarnDistFiles)
-            .set("spark.executor.memory", connConf.executorMemory)
+            .set("spark.yarn.dist.files", SparkTestConnConfig.yarnDistFiles)
+            .set("spark.executor.memory", SparkTestConnConfig.executorMemory)
             .set("spark.driver.extraJavaOptions", "-Xdebug -Xrunjdwp:transport=dt_socket,server=y,suspend=y,adress=5005")
             .set("spark.executor.extraJavaOptions",
                 """
@@ -118,33 +54,11 @@ trait SparkTestConnInstance {
                 """.stripMargin)
     //            .set("spark.sql.shuffle.partitions", "4")
     //            .set("spark.sql.cbo.enabled", "true")
+    override  implicit val ss: SparkSession = SparkSession.builder().config(conf).getOrCreate()
 
-    /** SPARK Session
-      *
-      * @author clock
-      * @version 0.1
-      * @since 2019/6/17 11:08
-      */
-    implicit val ss: SparkSession = SparkSession.builder().config(conf).getOrCreate()
-
-    /** SPARK Context
-      *
-      * @author clock
-      * @version 0.1
-      * @since 2019/6/17 11:09
-      */
-    implicit val sc: SparkContext = ss.sparkContext
-
-    /** SPARK SQL Context
-      *
-      * @author clock
-      * @version 0.1
-      * @since 2019/6/17 11:09
-      */
-    implicit val sqc: SQLContext = ss.sqlContext
 }
 
-object SparkTestConnConfig {
+object SparkTestConnConfig{
     //    val configPath: String = "pharbers_config/spark-config.xml"
 
     val yarnJars: String = "hdfs://spark.master:9000/jars/sparkJars"
