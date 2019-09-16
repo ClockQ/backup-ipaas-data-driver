@@ -3,8 +3,9 @@ package env
 import com.pharbers.ipaas.data.driver.api.work.{PhLogDriverArgs, PhMapArgs, PhSparkDriverArgs}
 import com.pharbers.ipaas.data.driver.libs.log.{PhLogDriver, formatMsg}
 import com.pharbers.ipaas.data.driver.libs.spark.PhSparkDriver
-import org.apache.spark.SparkConf
-import org.apache.spark.sql.SparkSession
+import com.pharbers.ipaas.data.driver.libs.spark.session.SparkConnInstance
+import org.apache.spark.{SparkConf, SparkContext}
+import org.apache.spark.sql.{SQLContext, SparkSession}
 
 /** Spark Driver 实例
  *
@@ -26,14 +27,14 @@ object sparkObj {
     ))
 }
 
-class PhTestSparkDriver(applicationTestName: String) extends PhSparkDriver(applicationTestName) {
+class PhTestSparkDriver(applicationTestName: String) extends{
     private val conf = new SparkConf()
             //测试用
             .set("spark.yarn.jars", SparkTestConnConfig.yarnJars)
             .set("spark.yarn.archive", SparkTestConnConfig.yarnJars)
             .set("yarn.resourcemanager.hostname", SparkTestConnConfig.yarnResourceHostname)
             .set("yarn.resourcemanager.address", SparkTestConnConfig.yarnResourceAddress)
-            .setAppName(applicationName)
+            .setAppName(applicationTestName)
             .setMaster("yarn")
             .set("spark.scheduler.mode", "FAIR")
             .set("spark.sql.crossJoin.enabled", "true")
@@ -49,11 +50,11 @@ class PhTestSparkDriver(applicationTestName: String) extends PhSparkDriver(appli
                   | -XX:+G1SummarizeConcMark
                   | -XX:InitiatingHeapOccupancyPercent=35 -XX:ConcGCThreads=1
                 """.stripMargin)
-    //            .set("spark.sql.shuffle.partitions", "4")
-    //            .set("spark.sql.cbo.enabled", "true")
-    override  implicit val ss: SparkSession = SparkSession.builder().config(conf).getOrCreate()
+                .set("spark.sql.shuffle.partitions", "4")
+                .set("spark.sql.cbo.enabled", "true")
+    override implicit val ss: SparkSession = SparkSession.builder().config(conf).getOrCreate()
 
-}
+} with PhSparkDriver(applicationTestName)
 
 object SparkTestConnConfig{
     //    val configPath: String = "pharbers_config/spark-config.xml"
