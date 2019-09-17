@@ -46,7 +46,9 @@ case class PhJobFactory(job: Job)(implicit ctx: PhMapArgs[PhWorkArgs[_]]) extend
                     getMethodMirror(action.getFactory)(action, ctx).asInstanceOf[PhFactoryTrait[PhActionTrait]].inst()
                 } catch {
                     case e: PhBuildJobException => throw PhBuildJobException(e.configs ++ List(job.name + ":" + args.mkString(",")), e.exception)
-                    case e: Exception => throw e
+                    case e: Exception =>
+                        logger.error(s"build action error job: ${job.name}, action: ${action.name}")
+                        throw e
                 }
             }
         }

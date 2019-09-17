@@ -18,6 +18,7 @@
 package com.pharbers.ipaas.data.driver.api.factory
 
 import com.pharbers.ipaas.data.driver.api.work._
+import com.pharbers.util.log.PhLogable
 
 /** iPaas Driver 运行实体工厂
  *
@@ -25,7 +26,7 @@ import com.pharbers.ipaas.data.driver.api.work._
  * @version 0.1
  * @since 2019/06/14 15:26
  */
-trait PhFactoryTrait[T <: PhWorkTrait[_]] {
+trait PhFactoryTrait[T <: PhWorkTrait[_]] extends PhLogable{
     /** 构建运行实例
      *
      * @return _root_.com.pharbers.ipaas.data.driver.api.work.PhWorkTrait[T]
