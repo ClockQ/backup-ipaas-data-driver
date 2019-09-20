@@ -54,8 +54,8 @@ case class DistinctByKeyOperator(name: String,
         val inDF = pr.getAs[PhDFArgs](inDFName).get.get
         val columns = inDF.columns
         val sortBy = chooseBy match {
-            case Some(one) => one.get
-            case None => columns.head
+            case Some(one) if one.get != null => one.get
+            case _ => columns.head
         }
 
         def sortFun(col: Column): Column = chooseFun match {

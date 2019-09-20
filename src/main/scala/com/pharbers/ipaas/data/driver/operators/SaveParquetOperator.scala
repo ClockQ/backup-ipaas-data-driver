@@ -34,11 +34,11 @@ case class SaveParquetOperator(name: String,
     val path: String = defaultArgs.getAs[PhStringArgs]("path").get.get
     /** 要保存的方式 */
     val saveMode: SaveMode = defaultArgs.getAs[PhStringArgs]("saveMode") match {
-        case Some(one) => one.get.toUpperCase() match {
+        case Some(one) if one.get != null => one.get.toUpperCase() match {
             case "OVERWRITE" => SaveMode.Overwrite
             case _ => SaveMode.Append
         }
-        case None => SaveMode.Append
+        case _ => SaveMode.Append
     }
 
     override def perform(pr: PhMapArgs[PhWorkArgs[Any]]): PhWorkArgs[String] = {

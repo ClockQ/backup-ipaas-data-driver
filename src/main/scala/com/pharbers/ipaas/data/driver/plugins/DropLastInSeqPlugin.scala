@@ -43,7 +43,7 @@ case class DropLastInSeqPlugin(name: String,
     val colName: String = defaultArgs.getAs[PhStringArgs]("colName").get.get
     /** 分隔符 */
     val delimiter: String = defaultArgs.getAs[PhStringArgs]("delimiter") match {
-        case Some(one) => one.get
+        case Some(one) if one.get != null => one.get
         case None => " "
     }
 

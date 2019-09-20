@@ -47,7 +47,7 @@ case class ReadCsvOperator(name: String,
     val path: String = defaultArgs.getAs[PhStringArgs]("path").get.get
     /** CSV 的分隔符，默认为 31.toChar.toString */
     val delimiter: String = defaultArgs.getAs[PhStringArgs]("delimiter") match {
-        case Some(one) => one.get
+        case Some(one) if one.get != null => one.get
         case _ => 31.toChar.toString
     }
 
