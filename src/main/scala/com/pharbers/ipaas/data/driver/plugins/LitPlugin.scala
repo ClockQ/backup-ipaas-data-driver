@@ -1,5 +1,6 @@
 package com.pharbers.ipaas.data.driver.plugins
 
+import com.pharbers.ipaas.data.driver.api.Annotation.Plugin
 import com.pharbers.ipaas.data.driver.api.work.{PhColArgs, PhMapArgs, PhPluginTrait, PhStringArgs, PhWorkArgs}
 import org.apache.spark.sql.Column
 import org.apache.spark.sql.functions._
@@ -13,6 +14,7 @@ import org.apache.spark.sql.functions._
   * @since 2019/09/06 18:28
   * @note 一些值得注意的地方
   */
+@Plugin(name = "expr lit", args = Array("exprString"), msg = "expr only a string not column")
 case class LitPlugin(name: String,
                      defaultArgs: PhMapArgs[PhWorkArgs[Any]],
                      subPluginLst: Seq[PhPluginTrait[Column]])(implicit ctx: PhMapArgs[PhWorkArgs[_]])

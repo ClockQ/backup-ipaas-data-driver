@@ -17,6 +17,7 @@
 
 package com.pharbers.ipaas.data.driver.operators
 
+import com.pharbers.ipaas.data.driver.api.Annotation.Operator
 import org.apache.spark.sql.functions.expr
 import org.apache.spark.sql.{Column, DataFrame}
 import com.pharbers.ipaas.data.driver.api.work._
@@ -32,6 +33,7 @@ import com.pharbers.ipaas.data.driver.api.work._
  * filter: DATE == 201801 // 过滤的 Expr 表达式
  * }}}
  */
+@Operator(args = Array("filter"), msg = "filter", name = "filter")
 case class ExprFilterOperator(name: String,
                               defaultArgs: PhMapArgs[PhWorkArgs[Any]],
                               pluginLst: Seq[PhPluginTrait[Column]])(implicit ctx: PhMapArgs[PhWorkArgs[_]])

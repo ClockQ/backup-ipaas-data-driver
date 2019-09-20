@@ -17,6 +17,7 @@
 
 package com.pharbers.ipaas.data.driver.plugins
 
+import com.pharbers.ipaas.data.driver.api.Annotation.Plugin
 import org.bson.types.ObjectId
 import org.apache.spark.sql.Column
 import org.apache.spark.sql.functions.udf
@@ -29,6 +30,7 @@ import com.pharbers.ipaas.data.driver.api.work.{PhColArgs, PhMapArgs, PhPluginTr
  * @version 0.1
  * @since 2019/6/17 18:50
  */
+@Plugin(name = "objectId", msg = "create objectId")
 case class GenerateObjectIdPlugin(name: String,
                                   defaultArgs: PhMapArgs[PhWorkArgs[Any]],
                                   subPluginLst: Seq[PhPluginTrait[Column]])(implicit ctx: PhMapArgs[PhWorkArgs[_]])

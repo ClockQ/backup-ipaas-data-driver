@@ -17,6 +17,7 @@
 
 package com.pharbers.ipaas.data.driver.plugins
 
+import com.pharbers.ipaas.data.driver.api.Annotation.Plugin
 import com.pharbers.ipaas.data.driver.api.work._
 import org.apache.spark.sql.Column
 import org.apache.spark.sql.functions._
@@ -32,6 +33,7 @@ import org.apache.spark.sql.functions._
  * monthColName: MONTH // 月列名
  * }}}
  */
+@Plugin(name = "merge_ym", args = Array("yearColName", "monthColName"), msg = "merge ym like 2010  01 as 1001")
 case class MergeYMPlugin(name: String,
                          defaultArgs: PhMapArgs[PhWorkArgs[Any]],
                          subPluginLst: Seq[PhPluginTrait[Column]])(implicit ctx: PhMapArgs[PhWorkArgs[_]])

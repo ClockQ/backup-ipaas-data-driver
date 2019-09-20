@@ -1,5 +1,6 @@
 package com.pharbers.ipaas.data.driver.operators
 
+import com.pharbers.ipaas.data.driver.api.Annotation.Operator
 import com.pharbers.ipaas.data.driver.api.work.{PhDFArgs, PhMapArgs, PhOperatorTrait, PhPluginTrait, PhStringArgs, PhWorkArgs}
 import org.apache.spark.sql.{Column, DataFrame, functions}
 
@@ -14,7 +15,7 @@ import org.apache.spark.sql.{Column, DataFrame, functions}
  *     moreColDFName: String // 目标多列 DataFrame 名字
  * }}}
  */
-
+@Operator(source = Array("moreColDFName", "inDFName"), msg = "make tow df column num equaled", name = "diff_column")
 case class AddDiffColsOperator(name: String,
                                defaultArgs: PhMapArgs[PhWorkArgs[Any]],
                                pluginLst: Seq[PhPluginTrait[Column]])(implicit ctx: PhMapArgs[PhWorkArgs[_]])

@@ -17,6 +17,7 @@
 
 package com.pharbers.ipaas.data.driver.operators
 
+import com.pharbers.ipaas.data.driver.api.Annotation.Operator
 import org.apache.spark.sql.DataFrame
 import com.pharbers.ipaas.data.driver.api.work._
 import com.pharbers.ipaas.data.driver.libs.spark.PhSparkDriver
@@ -32,6 +33,7 @@ import com.pharbers.ipaas.data.driver.libs.spark.util.readParquet
   *        path: hdfs:///test //Parquet 的路径
   * }}}
   */
+@Operator(name = "read_parquet", source = Array(), args = Array("path"))
 case class ReadParquetOperator(name: String,
                                defaultArgs: PhMapArgs[PhWorkArgs[Any]],
                                pluginLst: Seq[PhPluginTrait[Any]])(implicit ctx: PhMapArgs[PhWorkArgs[_]])

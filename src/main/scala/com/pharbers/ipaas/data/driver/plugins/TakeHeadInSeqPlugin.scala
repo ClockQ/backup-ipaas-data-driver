@@ -17,6 +17,7 @@
 
 package com.pharbers.ipaas.data.driver.plugins
 
+import com.pharbers.ipaas.data.driver.api.Annotation.Plugin
 import com.pharbers.ipaas.data.driver.api.work.{PhColArgs, PhMapArgs, PhPluginTrait, PhStringArgs, PhWorkArgs}
 import org.apache.spark.sql.Column
 import org.apache.spark.sql.expressions.UserDefinedFunction
@@ -32,6 +33,7 @@ import org.apache.spark.sql.functions.{col, udf}
  *      colName: String 要取头元素的列名
  * }}}
  */
+@Plugin(name = "get_head", args = Array("colName"), msg = "get seq head")
 case class TakeHeadInSeqPlugin(name: String,
                                defaultArgs: PhMapArgs[PhWorkArgs[Any]],
                                subPluginLst: Seq[PhPluginTrait[Column]])(implicit ctx: PhMapArgs[PhWorkArgs[_]])

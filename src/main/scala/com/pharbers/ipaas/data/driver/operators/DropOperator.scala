@@ -17,6 +17,7 @@
 
 package com.pharbers.ipaas.data.driver.operators
 
+import com.pharbers.ipaas.data.driver.api.Annotation.Operator
 import com.pharbers.ipaas.data.driver.api.work._
 import org.apache.spark.sql.{Column, DataFrame}
 
@@ -31,6 +32,7 @@ import org.apache.spark.sql.{Column, DataFrame}
  * drops: col_1#col_2 // 要删除的列名列表，用`#`号分割
  * }}}
  */
+@Operator(args = Array("drops"), msg = "drop columns", name = "drop")
 case class DropOperator(name: String,
                         defaultArgs: PhMapArgs[PhWorkArgs[Any]],
                         pluginLst: Seq[PhPluginTrait[Column]])(implicit ctx: PhMapArgs[PhWorkArgs[_]])

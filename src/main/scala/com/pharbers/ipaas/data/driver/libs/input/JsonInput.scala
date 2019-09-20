@@ -45,8 +45,8 @@ case class JsonInput() extends InputTrait {
      * }}}
      */
     def readObject[T: ClassTag](stream: InputStream): T =
-//        JsonInput.mapper.readValue(stream, implicitly[ClassTag[T]].runtimeClass).asInstanceOf[T]
-        JsonInput.mapper.readValue(stream, classOf[Object]).asInstanceOf[T]
+        JsonInput.mapper.readValue(stream, implicitly[ClassTag[T]].runtimeClass).asInstanceOf[T]
+//        JsonInput.mapper.readValue(stream, classOf[Object]).asInstanceOf[T]
 
     def readObject[T: ClassTag](json: String): T =
 //        JsonInput.mapper.readValue(json, implicitly[ClassTag[T]].runtimeClass).asInstanceOf[T]

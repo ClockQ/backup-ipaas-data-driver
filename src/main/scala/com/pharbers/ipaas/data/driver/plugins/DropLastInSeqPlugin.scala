@@ -17,6 +17,7 @@
 
 package com.pharbers.ipaas.data.driver.plugins
 
+import com.pharbers.ipaas.data.driver.api.Annotation.Plugin
 import com.pharbers.ipaas.data.driver.api.work.{PhColArgs, PhMapArgs, PhPluginTrait, PhStringArgs, PhWorkArgs}
 import org.apache.spark.sql.Column
 import org.apache.spark.sql.expressions.UserDefinedFunction
@@ -33,6 +34,7 @@ import org.apache.spark.sql.functions.{col, udf}
  *     delimiter: "," // 合并后字符串的分隔符，默认为空格
  * }}}
  */
+@Plugin(name = "drop_seq_last", args = Array("colName", "delimiter"), msg = "Remove the last of the Seq and to string")
 case class DropLastInSeqPlugin(name: String,
                                defaultArgs: PhMapArgs[PhWorkArgs[Any]],
                                subPluginLst: Seq[PhPluginTrait[Column]])(implicit ctx: PhMapArgs[PhWorkArgs[_]])

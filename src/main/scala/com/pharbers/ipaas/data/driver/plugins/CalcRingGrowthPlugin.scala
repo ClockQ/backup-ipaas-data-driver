@@ -17,6 +17,7 @@
 
 package com.pharbers.ipaas.data.driver.plugins
 
+import com.pharbers.ipaas.data.driver.api.Annotation.Plugin
 import com.pharbers.ipaas.data.driver.api.work._
 import org.apache.spark.sql.Column
 import org.apache.spark.sql.expressions.Window
@@ -35,6 +36,7 @@ import org.apache.spark.sql.functions.{col, first, to_date}
  *      partitionColumnNames: List[String] 需要分组列的集合，使用"#"分隔
  * }}}
  */
+@Plugin(name = "calc_ring_growth", args = Array("valueColumnName", "dateColName", "partitionColumnNames"), msg = "calc ring growth")
 case class CalcRingGrowthPlugin(name: String,
                                 defaultArgs: PhMapArgs[PhWorkArgs[Any]],
                                 subPluginLst: Seq[PhPluginTrait[Column]])(implicit ctx: PhMapArgs[PhWorkArgs[_]])

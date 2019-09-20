@@ -17,6 +17,7 @@
 
 package com.pharbers.ipaas.data.driver.plugins
 
+import com.pharbers.ipaas.data.driver.api.Annotation.Plugin
 import com.pharbers.ipaas.data.driver.api.work.{PhColArgs, PhListArgs, PhMapArgs, PhPluginTrait, PhStringArgs, PhWorkArgs}
 import org.apache.spark.sql.Column
 import org.apache.spark.sql.expressions.Window
@@ -33,6 +34,7 @@ import org.apache.spark.sql.functions._
  *      partitionColumnNames: String 需要分组列的集合，使用"#"分隔
  * }}}
  */
+@Plugin(name = "calc_rank", args = Array("valueColumnName", "partitionColumnNames"), msg = "calc rank")
 case class CalcRankByWindowPlugin(name: String,
                                   defaultArgs: PhMapArgs[PhWorkArgs[Any]],
                                   subPluginLst: Seq[PhPluginTrait[Column]])(implicit ctx: PhMapArgs[PhWorkArgs[_]])

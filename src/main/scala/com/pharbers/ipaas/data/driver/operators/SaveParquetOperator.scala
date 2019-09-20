@@ -1,5 +1,6 @@
 package com.pharbers.ipaas.data.driver.operators
 
+import com.pharbers.ipaas.data.driver.api.Annotation.Operator
 import org.apache.spark.sql.{Column, SaveMode}
 import com.pharbers.ipaas.data.driver.libs.spark.PhSparkDriver
 import com.pharbers.ipaas.data.driver.libs.spark.util.save2Parquet
@@ -17,6 +18,7 @@ import com.pharbers.ipaas.data.driver.api.work.{PhDFArgs, PhMapArgs, PhOperatorT
  * saveMode: append // 要保存的方式 append（追加，默认），overwrite（覆盖）
  * }}}
  */
+@Operator(args = Array("path", "saveMode"), msg = "save df to hdfs as parquet", name = "save_parquet")
 case class SaveParquetOperator(name: String,
                                defaultArgs: PhMapArgs[PhWorkArgs[Any]],
                                pluginLst: Seq[PhPluginTrait[Column]])(implicit ctx: PhMapArgs[PhWorkArgs[_]])

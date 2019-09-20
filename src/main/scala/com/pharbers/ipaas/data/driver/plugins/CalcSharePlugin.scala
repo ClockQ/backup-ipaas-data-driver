@@ -17,6 +17,7 @@
 
 package com.pharbers.ipaas.data.driver.plugins
 
+import com.pharbers.ipaas.data.driver.api.Annotation.Plugin
 import com.pharbers.ipaas.data.driver.api.work.{PhColArgs, PhListArgs, PhMapArgs, PhNoneArgs, PhOperatorTrait, PhPluginTrait, PhStringArgs, PhWorkArgs}
 import org.apache.spark.sql.Column
 import org.apache.spark.sql.expressions.Window
@@ -34,7 +35,7 @@ import org.apache.spark.sql.functions._
  *       partitionColumnNames: String 需要分组列的集合，使用"#"分隔
  * }}}
  */
-
+@Plugin(name = "calc_share", args = Array("valueColumnName", "partitionColumnNames"), msg = "calc share")
 case class CalcSharePlugin(name: String,
                            defaultArgs: PhMapArgs[PhWorkArgs[Any]],
                            subPluginLst: Seq[PhPluginTrait[Column]])(implicit ctx: PhMapArgs[PhWorkArgs[_]])

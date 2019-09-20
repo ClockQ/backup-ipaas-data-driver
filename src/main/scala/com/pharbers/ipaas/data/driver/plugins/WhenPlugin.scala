@@ -17,6 +17,7 @@
 
 package com.pharbers.ipaas.data.driver.plugins
 
+import com.pharbers.ipaas.data.driver.api.Annotation.Plugin
 import org.apache.spark.sql.Column
 import org.apache.spark.sql.functions._
 import com.pharbers.ipaas.data.driver.api.work._
@@ -32,6 +33,7 @@ import com.pharbers.ipaas.data.driver.api.work._
  *         value: "VALUE + 1" // 符合条件的结果
  * }}}
  */
+@Plugin(name = "when", args = Array("condition", "value"), msg = "like sql when")
 case class WhenPlugin(name: String,
                       defaultArgs: PhMapArgs[PhWorkArgs[Any]],
                       subPluginLst: Seq[PhPluginTrait[Column]])(implicit ctx: PhMapArgs[PhWorkArgs[_]])

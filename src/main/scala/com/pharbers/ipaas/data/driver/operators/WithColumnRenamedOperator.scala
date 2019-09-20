@@ -17,6 +17,7 @@
 
 package com.pharbers.ipaas.data.driver.operators
 
+import com.pharbers.ipaas.data.driver.api.Annotation.Operator
 import com.pharbers.ipaas.data.driver.api.work._
 import org.apache.spark.sql.{Column, DataFrame}
 
@@ -32,6 +33,8 @@ import org.apache.spark.sql.{Column, DataFrame}
   * newColName: col_new // 修改后的列名
   * }}}
   */
+
+@Operator(args = Array("oldColName", "newColName"), msg = "column rename", name = "rename")
 case class WithColumnRenamedOperator(name: String,
                                      defaultArgs: PhMapArgs[PhWorkArgs[Any]],
                                      pluginLst: Seq[PhPluginTrait[Column]])(implicit ctx: PhMapArgs[PhWorkArgs[_]])

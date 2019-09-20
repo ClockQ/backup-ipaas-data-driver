@@ -17,6 +17,7 @@
 
 package com.pharbers.ipaas.data.driver.operators
 
+import com.pharbers.ipaas.data.driver.api.Annotation.Operator
 import org.apache.spark.sql.DataFrame
 import com.pharbers.ipaas.data.driver.api.work._
 import com.pharbers.ipaas.data.driver.libs.spark.util.readCsv
@@ -33,6 +34,7 @@ import com.pharbers.ipaas.data.driver.libs.spark.PhSparkDriver
  *       delimiter: "," //CSV 的分隔符，默认为 31.toChar.toString
  * }}}
  */
+@Operator(args = Array("path", "delimiter"), source = Array(), msg = "read csv", name = "read_csv")
 case class ReadCsvOperator(name: String,
                            defaultArgs: PhMapArgs[PhWorkArgs[Any]],
                            pluginLst: Seq[PhPluginTrait[Any]])(implicit ctx: PhMapArgs[PhWorkArgs[_]])

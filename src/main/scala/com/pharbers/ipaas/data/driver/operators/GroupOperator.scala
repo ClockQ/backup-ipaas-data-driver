@@ -17,6 +17,7 @@
 
 package com.pharbers.ipaas.data.driver.operators
 
+import com.pharbers.ipaas.data.driver.api.Annotation.Operator
 import org.apache.spark.sql.{Column, DataFrame}
 import org.apache.spark.sql.functions.expr
 import com.pharbers.ipaas.data.driver.api.work._
@@ -33,6 +34,7 @@ import com.pharbers.ipaas.data.driver.api.work._
  * aggExprs: sum(UNITS) as UNITS // group 的 聚合操作集合，用`#`号分割
  * }}}
  */
+@Operator(args = Array("groups", "aggExprs"), msg = "group", name = "group")
 case class GroupOperator(name: String,
                          defaultArgs: PhMapArgs[PhWorkArgs[Any]],
                          pluginLst: Seq[PhPluginTrait[Column]])(implicit ctx: PhMapArgs[PhWorkArgs[_]])

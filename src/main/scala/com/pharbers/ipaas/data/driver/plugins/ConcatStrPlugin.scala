@@ -17,6 +17,7 @@
 
 package com.pharbers.ipaas.data.driver.plugins
 
+import com.pharbers.ipaas.data.driver.api.Annotation.Plugin
 import org.apache.spark.sql.Column
 import org.apache.spark.sql.functions.{col, concat, lit}
 import com.pharbers.ipaas.data.driver.api.work.{PhColArgs, PhMapArgs, PhPluginTrait, PhStringArgs, PhWorkArgs}
@@ -32,6 +33,7 @@ import com.pharbers.ipaas.data.driver.api.work.{PhColArgs, PhMapArgs, PhPluginTr
  *         dilimiter: "," //拼接后字符串的分隔符
  * }}}
  */
+@Plugin(name = "merge_columns", args = Array("columns", "dilimiter"), msg = "merge column by dilimiter")
 case class ConcatStrPlugin(name: String,
                            defaultArgs: PhMapArgs[PhWorkArgs[Any]],
                            subPluginLst: Seq[PhPluginTrait[Column]])(implicit ctx: PhMapArgs[PhWorkArgs[_]])

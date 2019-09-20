@@ -16,7 +16,8 @@ import java.util.Map;
 @Retention(RetentionPolicy.RUNTIME)
 public @interface Operator {
     boolean needPlugin() default false;
-    String[] args() default {""};
+    String[] args() default {};
     String[] source() default {"inDFName"};
+    String name() default "";
     String msg() default "";
 }

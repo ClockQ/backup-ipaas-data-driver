@@ -17,6 +17,7 @@
 
 package com.pharbers.ipaas.data.driver.operators
 
+import com.pharbers.ipaas.data.driver.api.Annotation.Operator
 import com.pharbers.ipaas.data.driver.api.work._
 import org.apache.spark.sql.{Column, DataFrame}
 
@@ -31,6 +32,7 @@ import org.apache.spark.sql.{Column, DataFrame}
   *  unionDFName: unionDFName // 连接的 DataFrame 名字
   * }}}
   */
+@Operator(source = Array("inDFName", "unionDFName"), msg = "union df", name = "union")
 case class UnionOperator(name: String,
                          defaultArgs: PhMapArgs[PhWorkArgs[Any]],
                          pluginLst: Seq[PhPluginTrait[Column]])(implicit ctx: PhMapArgs[PhWorkArgs[_]])

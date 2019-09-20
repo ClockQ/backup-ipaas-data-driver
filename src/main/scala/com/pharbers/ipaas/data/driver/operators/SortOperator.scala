@@ -17,6 +17,7 @@
 
 package com.pharbers.ipaas.data.driver.operators
 
+import com.pharbers.ipaas.data.driver.api.Annotation.Operator
 import com.pharbers.ipaas.data.driver.api.work.{PhDFArgs, PhMapArgs, PhOperatorTrait, PhPluginTrait, PhStringArgs, PhWorkArgs}
 import org.apache.spark.sql.functions.col
 import org.apache.spark.sql.{Column, DataFrame}
@@ -33,6 +34,7 @@ import org.apache.spark.sql.{Column, DataFrame}
   *     orderStr: String // 排序方式 升序 asc, 降序desc
   * }}}
   */
+@Operator(args = Array("orderStr", "sortList"), msg = "sort", name = "sort")
 case class SortOperator(name: String,
                         defaultArgs: PhMapArgs[PhWorkArgs[Any]],
                         pluginLst: Seq[PhPluginTrait[Column]])

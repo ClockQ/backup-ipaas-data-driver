@@ -28,10 +28,13 @@ package com.pharbers.ipaas.data.driver.operators
  * }}}
  */
 
+import com.pharbers.ipaas.data.driver.api.Annotation.Operator
 import com.pharbers.ipaas.data.driver.api.work.{PhDFArgs, PhMapArgs, PhOperatorTrait, PhPluginTrait, PhStringArgs, PhWorkArgs}
 import org.apache.spark.sql.{Column, DataFrame}
 import org.apache.spark.storage.StorageLevel
+import org.apache.spark.storage.StorageLevel._
 
+@Operator(args = Array("level"), msg = "cache df", name = "cache")
 case class CacheOperator(name: String,
 						 defaultArgs: PhMapArgs[PhWorkArgs[Any]],
 						 pluginLst: Seq[PhPluginTrait[Column]])
@@ -39,10 +42,24 @@ case class CacheOperator(name: String,
 	/** 要缓存的 DataFrame 名字 */
 	val inDFName: String = defaultArgs.getAs[PhStringArgs]("inDFName").get.get
 	/** 缓存等级 */
-	val level: String = defaultArgs.getAs[PhStringArgs]("level").getOrElse(PhStringArgs("MEMORY_ONLY")).get
+	val level: StorageLevel = defaultArgs.getAs[PhStringArgs]("level").getOrElse(PhStringArgs("MEMORY_ONLY")).get match {
+		case "NONE" => NONE
+		case "DISK_ONLY" => DISK_ONLY
+		case "DISK_ONLY_2" => DISK_ONLY_2
+		case "MEMORY_ONLY" => MEMORY_ONLY
+		case "MEMORY_ONLY_2" => MEMORY_ONLY_2
+		case "MEMORY_ONLY_SER" => MEMORY_ONLY_SER
+		case "MEMORY_ONLY_SER_2" => MEMORY_ONLY_SER_2
+		case "MEMORY_AND_DISK" => MEMORY_AND_DISK
+		case "MEMORY_AND_DISK_2" => MEMORY_AND_DISK_2
+		case "MEMORY_AND_DISK_SER" => MEMORY_AND_DISK_SER
+		case "MEMORY_AND_DISK_SER_2" => MEMORY_AND_DISK_SER_2
+		case "OFF_HEAP" => OFF_HEAP
+		case _ => MEMORY_ONLY
+	}
 	override def perform(pr: PhMapArgs[PhWorkArgs[Any]]): PhWorkArgs[DataFrame] = {
 		val inDF = pr.getAs[PhDFArgs](inDFName).get.get
-		val outDF = inDF.persist(StorageLevel.fromString(level))
+		val outDF = inDF.persist(level)
 		PhDFArgs(outDF)
 	}
 }

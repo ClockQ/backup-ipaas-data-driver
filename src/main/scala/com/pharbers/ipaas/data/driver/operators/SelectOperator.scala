@@ -17,6 +17,7 @@
 
 package com.pharbers.ipaas.data.driver.operators
 
+import com.pharbers.ipaas.data.driver.api.Annotation.Operator
 import org.apache.spark.sql.{Column, DataFrame}
 import com.pharbers.ipaas.data.driver.api.work._
 
@@ -31,6 +32,7 @@ import com.pharbers.ipaas.data.driver.api.work._
   *  selects: col_1#col_2 // 选择的列名，用`#`号分割
   * }}}
   */
+@Operator(args = Array("selects"), msg = "select column", name = "select")
 case class SelectOperator(name: String,
                           defaultArgs: PhMapArgs[PhWorkArgs[Any]],
                           pluginLst: Seq[PhPluginTrait[Column]])(implicit ctx: PhMapArgs[PhWorkArgs[_]])

@@ -17,6 +17,7 @@
 
 package com.pharbers.ipaas.data.driver.plugins
 
+import com.pharbers.ipaas.data.driver.api.Annotation.Plugin
 import com.pharbers.ipaas.data.driver.api.work._
 import org.apache.spark.sql.Column
 import org.apache.spark.sql.functions.expr
@@ -31,6 +32,7 @@ import org.apache.spark.sql.functions.expr
  *     exprString: cast(id as int) // expr 表达式
  * }}}
  */
+@Plugin(name = "expr", args = Array("exprString"), msg = "expr")
 case class ExprPlugin(name: String,
                       defaultArgs: PhMapArgs[PhWorkArgs[Any]],
                       subPluginLst: Seq[PhPluginTrait[Column]])(implicit ctx: PhMapArgs[PhWorkArgs[_]])

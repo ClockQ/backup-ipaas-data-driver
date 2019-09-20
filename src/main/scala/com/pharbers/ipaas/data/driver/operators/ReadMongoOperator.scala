@@ -1,5 +1,6 @@
 package com.pharbers.ipaas.data.driver.operators
 
+import com.pharbers.ipaas.data.driver.api.Annotation.Operator
 import org.apache.spark.sql.DataFrame
 import com.pharbers.ipaas.data.driver.api.work._
 import com.pharbers.ipaas.data.driver.libs.spark.util._
@@ -18,6 +19,7 @@ import com.pharbers.ipaas.data.driver.libs.spark.PhSparkDriver
  *       collName: "coll" //表名
  * }}}
  */
+@Operator(args = Array("mongodbHost", "mongodbPort", "databaseName", "collName"), source = Array(), msg = "read mongoDB", name = "read_mongoDB")
 case class ReadMongoOperator(name: String,
                              defaultArgs: PhMapArgs[PhWorkArgs[Any]],
                              pluginLst: Seq[PhPluginTrait[Any]])(implicit ctx: PhMapArgs[PhWorkArgs[_]])

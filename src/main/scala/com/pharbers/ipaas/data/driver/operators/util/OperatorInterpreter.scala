@@ -3,6 +3,9 @@ package com.pharbers.ipaas.data.driver.operators.util
 import java.io.File
 import java.lang.annotation.Annotation
 import java.net.URL
+import java.util
+import java.util.jar.{JarEntry, JarFile}
+
 import com.pharbers.ipaas.data.driver.api.Annotation.{Operator, Plugin}
 
 /** 功能描述
@@ -50,7 +53,11 @@ object OperatorInterpreter {
         val packagePath: String = packageName.replace(".", "/")
         val url: URL = loader.getResource(packagePath)
         if (url != null) {
-            getClassNameByFile(url.getPath, childPackage).map(x => {
+            val classes = url.getProtocol match {
+                case "file" => getClassNameByFile(url.getPath, childPackage)
+                case "jar" => getClassNameByJar(url.getPath, childPackage)
+            }
+            classes.map(x => {
                 val classPath = x.substring(x.indexOf(packageName))
                 (classPath, Class.forName(classPath).getAnnotation(tag))
             }).filter(x => x._2 != null)
@@ -72,5 +79,41 @@ object OperatorInterpreter {
         childFiles.filter(x => !x.isDirectory && x.getPath.endsWith(".class"))
                 .map(x => x.getPath.substring(x.getPath.indexOf("\\classes") + 9, x.getPath.lastIndexOf(".")).replace("\\", ".")) ++
                 childFiles.filter(x => x.isDirectory && childPackage).flatMap(x => getClassNameByFile(x.getPath, childPackage))
+    }
+
+    private def getClassNameByJar(jarPath: String, childPackage: Boolean): Seq[String] = {
+        import scala.collection.JavaConverters._
+        val myClassName: util.List[String] = new util.ArrayList[String]
+        val jarInfo: Array[String] = jarPath.split("!")
+        val jarFilePath: String = jarInfo(0).substring(jarInfo(0).indexOf("/"))
+        val packagePath: String = jarInfo(1).substring(1)
+        try {
+            val jarFile: JarFile = new JarFile(jarFilePath)
+            val entrys: util.Enumeration[JarEntry] = jarFile.entries
+            while ( {
+                entrys.hasMoreElements
+            }) {
+                val jarEntry: JarEntry = entrys.nextElement
+                var entryName: String = jarEntry.getName
+                if (entryName.endsWith(".class")) if (childPackage) if (entryName.startsWith(packagePath)) {
+                    entryName = entryName.replace("/", ".").substring(0, entryName.lastIndexOf("."))
+                    myClassName.add(entryName)
+                }
+                else {
+                    val index: Int = entryName.lastIndexOf("/")
+                    var myPackagePath: String = null
+                    if (index != -1) myPackagePath = entryName.substring(0, index)
+                    else myPackagePath = entryName
+                    if (myPackagePath == packagePath) {
+                        entryName = entryName.replace("/", ".").substring(0, entryName.lastIndexOf("."))
+                        myClassName.add(entryName)
+                    }
+                }
+            }
+        } catch {
+            case e: Exception =>
+                e.printStackTrace()
+        }
+        myClassName.asScala
     }
 }

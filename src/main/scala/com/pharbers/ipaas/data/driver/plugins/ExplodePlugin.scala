@@ -17,6 +17,7 @@
 
 package com.pharbers.ipaas.data.driver.plugins
 
+import com.pharbers.ipaas.data.driver.api.Annotation.Plugin
 import com.pharbers.ipaas.data.driver.api.work.{PhColArgs, PhMapArgs, PhPluginTrait, PhStringArgs, PhWorkArgs}
 import org.apache.spark.sql.Column
 import org.apache.spark.sql.functions.{col, explode, split}
@@ -32,6 +33,7 @@ import org.apache.spark.sql.functions.{col, explode, split}
  * delimiter: "," // 拆分的column是按这个字符串分割
  * }}}
  */
+@Plugin(name = "break_up", args = Array("splitColName", "delimiter"), msg = "break up a column by delimiter")
 case class ExplodePlugin(name: String,
                          defaultArgs: PhMapArgs[PhWorkArgs[Any]],
                          subPluginLst: Seq[PhPluginTrait[Column]])(implicit ctx: PhMapArgs[PhWorkArgs[_]])

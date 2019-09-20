@@ -1,5 +1,6 @@
 package com.pharbers.ipaas.data.driver.operators
 
+import com.pharbers.ipaas.data.driver.api.Annotation.Operator
 import com.pharbers.ipaas.data.driver.api.work._
 import org.apache.spark.sql.{DataFrame, SaveMode}
 import com.pharbers.ipaas.data.driver.libs.spark.PhSparkDriver
@@ -19,6 +20,7 @@ import com.pharbers.ipaas.data.driver.libs.spark.util.save2Mongo
  *       saveMode: "append" //保存模式, append（追加），overwrite（覆盖）
  * }}}
  */
+@Operator(args = Array("mongodbHost", "mongodbPort", "databaseName", "collName", "saveMode"), msg = "save df to mongoDB", name = "save_mongoDB")
 case class SaveMongoOperator(name: String,
                              defaultArgs: PhMapArgs[PhWorkArgs[Any]],
                              pluginLst: Seq[PhPluginTrait[Any]])(implicit ctx: PhMapArgs[PhWorkArgs[_]])

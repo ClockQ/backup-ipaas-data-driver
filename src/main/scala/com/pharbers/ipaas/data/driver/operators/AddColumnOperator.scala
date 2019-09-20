@@ -17,6 +17,7 @@
 
 package com.pharbers.ipaas.data.driver.operators
 
+import com.pharbers.ipaas.data.driver.api.Annotation.Operator
 import org.apache.spark.sql.{Column, DataFrame}
 import com.pharbers.ipaas.data.driver.api.work._
 
@@ -31,6 +32,7 @@ import com.pharbers.ipaas.data.driver.api.work._
  *     newColName: newCol // 新增的列名
  * }}}
  */
+@Operator(needPlugin = true, args = Array("newColName"), msg = "add a column", name = "add_column")
 case class AddColumnOperator(name: String,
                              defaultArgs: PhMapArgs[PhWorkArgs[Any]],
                              pluginLst: Seq[PhPluginTrait[Column]])(implicit ctx: PhMapArgs[PhWorkArgs[_]])

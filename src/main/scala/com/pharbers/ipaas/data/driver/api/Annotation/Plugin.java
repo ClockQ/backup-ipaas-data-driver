@@ -14,6 +14,7 @@ import java.lang.annotation.RetentionPolicy;
  */
 @Retention(RetentionPolicy.RUNTIME)
 public @interface Plugin {
-    String[] args();
+    String[] args() default {};
+    String name() default "";
     String msg() default "";
 }

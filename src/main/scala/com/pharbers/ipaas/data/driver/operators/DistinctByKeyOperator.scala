@@ -17,6 +17,7 @@
 
 package com.pharbers.ipaas.data.driver.operators
 
+import com.pharbers.ipaas.data.driver.api.Annotation.Operator
 import org.apache.spark.sql.{Column, DataFrame, functions}
 import org.apache.spark.sql.functions.struct
 import com.pharbers.ipaas.data.driver.api.work._
@@ -34,6 +35,8 @@ import com.pharbers.ipaas.data.driver.api.work._
  * chooseFun: max // 保留col_3中最大的一条（缺省值），或最小的一条（min）
  * }}}
  */
+
+@Operator(args = Array("keys", "chooseBy", "chooseFun"), msg = "distinct by key", name = "distinct_by_key")
 case class DistinctByKeyOperator(name: String,
                                  defaultArgs: PhMapArgs[PhWorkArgs[Any]],
                                  pluginLst: Seq[PhPluginTrait[Column]])(implicit ctx: PhMapArgs[PhWorkArgs[_]])
